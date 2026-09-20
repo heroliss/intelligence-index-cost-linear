@@ -1,6 +1,8 @@
 # Intelligence Index vs. Cost（线性横轴）
 
-这是一个可部署到 GitHub Pages 的静态网页。网页读取 `data/current.json`，GitHub Actions 每天抓取 Artificial Analysis 的公开页面数据并更新这个文件，然后重新部署 Pages。
+线上地址： https://heroliss.github.io/intelligence-index-cost-linear/
+
+这是一个部署到 GitHub Pages 的静态网页。网页读取 `data/current.json`，GitHub Actions 每天抓取 Artificial Analysis 的公开页面数据并更新这个文件，然后重新部署 Pages。
 
 ## 部署
 
