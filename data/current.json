@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-09-20T21:04:44.330Z",
+  "updatedAt": "2026-09-21T01:43:32.012Z",
   "modelCount": 130,
   "models": [
     {
@@ -1033,7 +1033,7 @@
       "name": "Step 5 Preview",
       "shortName": "Step 5 Preview",
       "intelligenceIndex": 43.7343049141614,
-      "cost": 0.714687455959812,
+      "cost": 0.715523357458521,
       "creator": {
         "name": "StepFun",
         "color": "#00F5E7"
