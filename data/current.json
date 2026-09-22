@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-09-21T07:59:03.575Z",
-  "modelCount": 130,
+  "updatedAt": "2026-09-22T05:02:19.229Z",
+  "modelCount": 134,
   "models": [
     {
       "id": "0c64b008-20c3-408d-bd68-15136df8cd2c",
@@ -449,6 +449,20 @@
       "creator": {
         "name": "Google",
         "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "24d8fdfe-6241-424e-b7b7-1b6efb06e4fb",
+      "slug": "mimo-v2-6-pro",
+      "name": "MiMo-V2.6-Pro",
+      "shortName": "MiMo-V2.6-Pro",
+      "intelligenceIndex": 46.3242065310383,
+      "cost": 0.13322318937213493,
+      "creator": {
+        "name": "Xiaomi",
+        "color": "#ff6900"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1252,20 +1266,6 @@
       "deprecated": true
     },
     {
-      "id": "63872e9c-3377-4a6b-b477-7bba244c38e9",
-      "slug": "nvidia-nemotron-3-super-120b-a12b",
-      "name": "Nemotron 3 Super 120B A12B (Reasoning)",
-      "shortName": "Nemotron 3 Super",
-      "intelligenceIndex": 12.8287575290979,
-      "cost": 1.0599863852193983,
-      "creator": {
-        "name": "NVIDIA",
-        "color": "#76b900"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "20928ba9-3a3f-415f-9519-b84ff64ecf34",
       "slug": "claude-opus-5-low",
       "name": "Claude Opus 5 (Adaptive Reasoning, Low Effort)",
@@ -1434,6 +1434,20 @@
       "deprecated": false
     },
     {
+      "id": "63872e9c-3377-4a6b-b477-7bba244c38e9",
+      "slug": "nvidia-nemotron-3-super-120b-a12b",
+      "name": "Nemotron 3 Super 120B A12B (Reasoning)",
+      "shortName": "Nemotron 3 Super",
+      "intelligenceIndex": 12.8287575290979,
+      "cost": 1.6390663672616101,
+      "creator": {
+        "name": "NVIDIA",
+        "color": "#76b900"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "e05a4828-0536-4876-870d-a235023f992b",
       "slug": "gpt-6-astra-high",
       "name": "GPT-6 Astra (high)",
@@ -1473,6 +1487,20 @@
         "color": "#736cd3"
       },
       "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "353c92f3-2148-4c2d-9231-aa7e1322a1fd",
+      "slug": "qwen3-8-27b-non-reasoning",
+      "name": "Qwen3.8 27B (Non-reasoning)",
+      "shortName": "Qwen3.8 27B",
+      "intelligenceIndex": 20.1502427055595,
+      "cost": 1.9071250542601492,
+      "creator": {
+        "name": "Alibaba",
+        "color": "#ff7018"
+      },
+      "isReasoning": false,
       "deprecated": false
     },
     {
@@ -1644,6 +1672,20 @@
       "deprecated": true
     },
     {
+      "id": "272f5f03-aea9-4675-a244-2b753b618cdf",
+      "slug": "grok-4-7-high",
+      "name": "Grok 4.7 (high)",
+      "shortName": "Grok 4.7 (high)",
+      "intelligenceIndex": 46.3321770885625,
+      "cost": 2.726106691786027,
+      "creator": {
+        "name": "SpaceXAI",
+        "color": "#736cd3"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "99f376bf-cbcb-4124-bf3e-6b0a4e6e9bea",
       "slug": "claude-sonnet-5-xhigh",
       "name": "Claude Sonnet 5 (Adaptive Reasoning, Xhigh Effort)",
@@ -1695,6 +1737,20 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "59627802-1546-422c-9a65-65b61c022d36",
+      "slug": "grok-4-7",
+      "name": "Grok 4.7 (xhigh)",
+      "shortName": "Grok 4.7 (xhigh)",
+      "intelligenceIndex": 46.4465506302286,
+      "cost": 3.738325952106939,
+      "creator": {
+        "name": "SpaceXAI",
+        "color": "#736cd3"
       },
       "isReasoning": true,
       "deprecated": false
