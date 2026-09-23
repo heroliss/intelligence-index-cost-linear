@@ -3,7 +3,8 @@ name: Update chart and deploy
 on:
   workflow_dispatch:
   schedule:
-    - cron: '17 2 * * *'
+    # Beijing time (UTC+8): 06:00, 12:00, 18:00, 00:00
+    - cron: '0 4,10,16,22 * * *'
 
 permissions:
   contents: write
