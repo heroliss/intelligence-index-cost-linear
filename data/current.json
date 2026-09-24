@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-09-23T07:46:52.617Z",
-  "modelCount": 151,
+  "updatedAt": "2026-09-24T00:16:24.785Z",
+  "modelCount": 150,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -31,6 +31,20 @@
         "color": "#0f62fe"
       },
       "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "66f4ce73-9a9b-4b49-9c6e-bedb9bfdc720",
+      "slug": "ministral-3-3b",
+      "name": "Ministral 3 3B",
+      "shortName": "Ministral 3 3B",
+      "intelligenceIndex": 4.83760020546443,
+      "cost": 0.007846860809830004,
+      "creator": {
+        "name": "Mistral",
+        "color": "#fd6f00"
+      },
+      "isReasoning": false,
       "deprecated": false
     },
     {
@@ -62,6 +76,20 @@
       "deprecated": true
     },
     {
+      "id": "9741f3c2-cbb1-4a3f-99ee-7bd7384d9038",
+      "slug": "ministral-3-8b",
+      "name": "Ministral 3 8B",
+      "shortName": "Ministral 3 8B",
+      "intelligenceIndex": 5.47767370454416,
+      "cost": 0.011086416592507111,
+      "creator": {
+        "name": "Mistral",
+        "color": "#fd6f00"
+      },
+      "isReasoning": false,
+      "deprecated": false
+    },
+    {
       "id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
       "slug": "gpt-6-luna-non-reasoning",
       "name": "GPT-6 Luna (Non-reasoning)",
@@ -85,6 +113,20 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "3fd96175-4ef1-434c-8795-f873aec2abc1",
+      "slug": "mistral-small-4",
+      "name": "Mistral Small 4 (Reasoning)",
+      "shortName": "Mistral Small 4",
+      "intelligenceIndex": 11.2675794141469,
+      "cost": 0.01504679036588765,
+      "creator": {
+        "name": "Mistral",
+        "color": "#fd6f00"
       },
       "isReasoning": true,
       "deprecated": false
@@ -129,6 +171,20 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "713fae11-c75c-4f10-ae2c-8e4074cd58af",
+      "slug": "ministral-3-14b",
+      "name": "Ministral 3 14B",
+      "shortName": "Ministral 3 14B",
+      "intelligenceIndex": 6.04436817215002,
+      "cost": 0.01943640228162961,
+      "creator": {
+        "name": "Mistral",
+        "color": "#fd6f00"
+      },
+      "isReasoning": false,
       "deprecated": false
     },
     {
@@ -179,7 +235,7 @@
       "name": "Mistral Small 3.1",
       "shortName": "Mistral Small 3.1",
       "intelligenceIndex": 7.11735622656558,
-      "cost": 0.03276229387252031,
+      "cost": 0.03502860053476431,
       "creator": {
         "name": "Mistral",
         "color": "#fd6f00"
@@ -216,20 +272,6 @@
       "deprecated": false
     },
     {
-      "id": "66f4ce73-9a9b-4b49-9c6e-bedb9bfdc720",
-      "slug": "ministral-3-3b",
-      "name": "Ministral 3 3B",
-      "shortName": "Ministral 3 3B",
-      "intelligenceIndex": 4.83760020546443,
-      "cost": 0.042290829470686256,
-      "creator": {
-        "name": "Mistral",
-        "color": "#fd6f00"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
       "id": "aa55297e-8fbf-4372-b4ab-9b068dc6396c",
       "slug": "gpt-5-6-luna-high",
       "name": "GPT-5.6 Luna (high)",
@@ -242,20 +284,6 @@
       },
       "isReasoning": true,
       "deprecated": true
-    },
-    {
-      "id": "3fd96175-4ef1-434c-8795-f873aec2abc1",
-      "slug": "mistral-small-4",
-      "name": "Mistral Small 4 (Reasoning)",
-      "shortName": "Mistral Small 4",
-      "intelligenceIndex": 11.2675794141469,
-      "cost": 0.045070159253737405,
-      "creator": {
-        "name": "Mistral",
-        "color": "#fd6f00"
-      },
-      "isReasoning": true,
-      "deprecated": false
     },
     {
       "id": "8014c311-fa23-4a4b-8485-8a864db8a113",
@@ -284,6 +312,20 @@
       },
       "isReasoning": true,
       "deprecated": true
+    },
+    {
+      "id": "4928e950-7f37-4475-b0dc-c5bad781a321",
+      "slug": "mistral-large-3",
+      "name": "Mistral Large 3",
+      "shortName": "Mistral Large 3",
+      "intelligenceIndex": 9.26608812860467,
+      "cost": 0.05380432272748174,
+      "creator": {
+        "name": "Mistral",
+        "color": "#fd6f00"
+      },
+      "isReasoning": false,
+      "deprecated": false
     },
     {
       "id": "00f1248e-78e3-4230-8dc8-5e13ba8645e2",
@@ -328,17 +370,17 @@
       "deprecated": false
     },
     {
-      "id": "9741f3c2-cbb1-4a3f-99ee-7bd7384d9038",
-      "slug": "ministral-3-8b",
-      "name": "Ministral 3 8B",
-      "shortName": "Ministral 3 8B",
-      "intelligenceIndex": 5.47767370454416,
-      "cost": 0.0655161894090132,
+      "id": "765c9f31-95ec-4f14-900a-80614c3b0777",
+      "slug": "mercury-2-5",
+      "name": "Mercury 2.5",
+      "shortName": "Mercury 2.5",
+      "intelligenceIndex": 12.3408453757638,
+      "cost": 0.06417269581708425,
       "creator": {
-        "name": "Mistral",
-        "color": "#fd6f00"
+        "name": "Inception",
+        "color": "#021B30"
       },
-      "isReasoning": false,
+      "isReasoning": true,
       "deprecated": false
     },
     {
@@ -454,20 +496,6 @@
       "deprecated": true
     },
     {
-      "id": "4928e950-7f37-4475-b0dc-c5bad781a321",
-      "slug": "mistral-large-3",
-      "name": "Mistral Large 3",
-      "shortName": "Mistral Large 3",
-      "intelligenceIndex": 9.26608812860467,
-      "cost": 0.10436844417697419,
-      "creator": {
-        "name": "Mistral",
-        "color": "#fd6f00"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
       "id": "75e1c197-f239-4361-a9d6-66dccfead236",
       "slug": "deepseek-v3-0324",
       "name": "DeepSeek V3 0324",
@@ -578,20 +606,6 @@
       },
       "isReasoning": false,
       "deprecated": true
-    },
-    {
-      "id": "713fae11-c75c-4f10-ae2c-8e4074cd58af",
-      "slug": "ministral-3-14b",
-      "name": "Ministral 3 14B",
-      "shortName": "Ministral 3 14B",
-      "intelligenceIndex": 6.04436817215002,
-      "cost": 0.13923016604368538,
-      "creator": {
-        "name": "Mistral",
-        "color": "#fd6f00"
-      },
-      "isReasoning": false,
-      "deprecated": false
     },
     {
       "id": "9b97a35e-6ac7-44d9-91c6-422fa678963e",
@@ -874,20 +888,6 @@
       "deprecated": false
     },
     {
-      "id": "b6d2e43d-3082-43f5-9318-0f4dbcb54163",
-      "slug": "trinity-large-thinking",
-      "name": "Trinity Large Thinking",
-      "shortName": "Trinity Large Thinking",
-      "intelligenceIndex": 10.8242425924218,
-      "cost": 0.3533614843871682,
-      "creator": {
-        "name": "Arcee AI",
-        "color": "#008c8d"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "9ac3908c-9eb2-44db-8c01-3ec7da6fc2ae",
       "slug": "qwen3-8-flash-next",
       "name": "Qwen3.8-Flash-Next",
@@ -914,20 +914,6 @@
       },
       "isReasoning": true,
       "deprecated": false
-    },
-    {
-      "id": "05a32e26-e609-4377-951b-8fa23d329926",
-      "slug": "mistral-medium-3-1",
-      "name": "Mistral Medium 3.1",
-      "shortName": "Mistral Medium 3.1",
-      "intelligenceIndex": 9.18437902519296,
-      "cost": 0.39219786538109047,
-      "creator": {
-        "name": "Mistral",
-        "color": "#fd6f00"
-      },
-      "isReasoning": false,
-      "deprecated": true
     },
     {
       "id": "ba242e40-83b7-4cd3-a0e0-b56237984914",
