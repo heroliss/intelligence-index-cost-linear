@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-09-25T00:18:47.656Z",
-  "modelCount": 152,
+  "updatedAt": "2026-09-25T09:26:46.116Z",
+  "modelCount": 153,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -953,6 +953,20 @@
       "creator": {
         "name": "Mistral",
         "color": "#fd6f00"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "08242385-ee91-4de6-be7f-271a6d9780ce",
+      "slug": "apodex-1-1",
+      "name": "Apodex 1.1",
+      "shortName": "Apodex 1.1",
+      "intelligenceIndex": 26.4103686249117,
+      "cost": 0.4637245706928438,
+      "creator": {
+        "name": "Apodex",
+        "color": "#0FD9D2"
       },
       "isReasoning": true,
       "deprecated": false
