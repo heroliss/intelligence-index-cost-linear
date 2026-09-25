@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-09-24T19:50:42.251Z",
-  "modelCount": 151,
+  "updatedAt": "2026-09-25T00:18:47.656Z",
+  "modelCount": 152,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -347,7 +347,7 @@
       "name": "Muse Glimmer (high)",
       "shortName": "Muse Glimmer (high)",
       "intelligenceIndex": 17.4754176089465,
-      "cost": 0.05509175451443994,
+      "cost": 0.05670634665029995,
       "creator": {
         "name": "Meta",
         "color": "#0089f4"
@@ -1964,6 +1964,20 @@
       },
       "isReasoning": true,
       "deprecated": true
+    },
+    {
+      "id": "cc1e488b-8ba4-464d-875d-690166b15ad3",
+      "slug": "glm-5-3-low",
+      "name": "GLM-5.3 (low)",
+      "shortName": "GLM-5.3 (low)",
+      "intelligenceIndex": 34.2990078159643,
+      "cost": 3.6634208691514356,
+      "creator": {
+        "name": "Z AI",
+        "color": "#1c7ff8"
+      },
+      "isReasoning": true,
+      "deprecated": false
     },
     {
       "id": "59627802-1546-422c-9a65-65b61c022d36",
