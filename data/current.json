@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-09-27T09:52:11.686Z",
-  "modelCount": 152,
+  "updatedAt": "2026-09-27T15:01:13.538Z",
+  "modelCount": 153,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -365,6 +365,20 @@
       "creator": {
         "name": "LongCat",
         "color": "#2adb65"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "127de816-57d3-4037-8484-480a613cd413",
+      "slug": "mimo-v2-6-flash",
+      "name": "MiMo-V2.6-Flash",
+      "shortName": "MiMo-V2.6-Flash",
+      "intelligenceIndex": 37.8843590141754,
+      "cost": 0.0621899731897297,
+      "creator": {
+        "name": "Xiaomi",
+        "color": "#ff6900"
       },
       "isReasoning": true,
       "deprecated": false
