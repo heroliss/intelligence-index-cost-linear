@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-09-28T21:37:07.952Z",
-  "modelCount": 158,
+  "updatedAt": "2026-09-29T01:31:14.696Z",
+  "modelCount": 159,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -718,6 +718,20 @@
       },
       "isReasoning": true,
       "deprecated": true
+    },
+    {
+      "id": "2d28a13a-096e-475a-beb8-26bbd1c7d51c",
+      "slug": "qwen3-5-9b",
+      "name": "Qwen3.5 9B (Reasoning)",
+      "shortName": "Qwen3.5 9B",
+      "intelligenceIndex": 11.1961650827156,
+      "cost": 0.21257844933934256,
+      "creator": {
+        "name": "Alibaba",
+        "color": "#ff7018"
+      },
+      "isReasoning": true,
+      "deprecated": false
     },
     {
       "id": "a87fce42-eea3-4e45-a96d-fe057814f371",
