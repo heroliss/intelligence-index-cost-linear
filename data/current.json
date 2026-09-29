@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-09-29T10:27:28.731Z",
-  "modelCount": 159,
+  "updatedAt": "2026-09-29T20:28:56.820Z",
+  "modelCount": 164,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -202,6 +202,20 @@
       "deprecated": true
     },
     {
+      "id": "75e1c197-f239-4361-a9d6-66dccfead236",
+      "slug": "deepseek-v3-0324",
+      "name": "DeepSeek V3 0324",
+      "shortName": "DeepSeek V3 0324",
+      "intelligenceIndex": 9.72000501684011,
+      "cost": 0.020199039576443884,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": false,
+      "deprecated": true
+    },
+    {
       "id": "adfae555-f489-4f3e-9064-c6b7fcdd0783",
       "slug": "granite-4-2-8b",
       "name": "Granite 4.2 8B",
@@ -339,7 +353,7 @@
         "color": "#ff6900"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "583f98fb-c4b8-4df3-8d40-60ac0ed69882",
@@ -482,20 +496,6 @@
       "deprecated": false
     },
     {
-      "id": "75e1c197-f239-4361-a9d6-66dccfead236",
-      "slug": "deepseek-v3-0324",
-      "name": "DeepSeek V3 0324",
-      "shortName": "DeepSeek V3 0324",
-      "intelligenceIndex": 9.72000501684011,
-      "cost": 0.10527388598776051,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": false,
-      "deprecated": true
-    },
-    {
       "id": "f0083258-8646-45b8-8082-7aaf6c2ea82a",
       "slug": "gpt-oss-120b",
       "name": "gpt-oss-120b (high)",
@@ -575,6 +575,20 @@
       "creator": {
         "name": "Google",
         "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "e76e0fe5-93ca-4272-9359-2eb1740467d1",
+      "slug": "gpt-6-1-sol-low",
+      "name": "GPT-6.1 Sol (low)",
+      "shortName": "GPT-6.1 Sol (low)",
+      "intelligenceIndex": 42.0835618555848,
+      "cost": 0.13075190869859377,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "isReasoning": true,
       "deprecated": false
@@ -734,6 +748,20 @@
       "deprecated": false
     },
     {
+      "id": "a2e51d62-ea4e-4f15-8be0-be9dc1fb489d",
+      "slug": "gpt-6-1-sol-medium",
+      "name": "GPT-6.1 Sol (medium)",
+      "shortName": "GPT-6.1 Sol (medium)",
+      "intelligenceIndex": 47.7833271274065,
+      "cost": 0.21370088267875537,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "a87fce42-eea3-4e45-a96d-fe057814f371",
       "slug": "qwen3-7-plus",
       "name": "Qwen3.7 Plus",
@@ -888,6 +916,20 @@
       "deprecated": false
     },
     {
+      "id": "3b84fee3-b70a-41bc-819e-5fbdef9a0042",
+      "slug": "gpt-6-1-sol-high",
+      "name": "GPT-6.1 Sol (high)",
+      "shortName": "GPT-6.1 Sol (high)",
+      "intelligenceIndex": 50.2377777519769,
+      "cost": 0.31914442375664703,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "2236df45-0699-40d1-b5cc-69ee345d2257",
       "slug": "qwen3-5-122b-a10b",
       "name": "Qwen3.5 122B A10B (Reasoning)",
@@ -950,6 +992,20 @@
       "shortName": "GPT-6 Sol (high)",
       "intelligenceIndex": 42.8215513642985,
       "cost": 0.3753396394543572,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "092a3b0e-c5c8-45dc-bf1b-53673c8ff352",
+      "slug": "gpt-6-1-sol-xhigh",
+      "name": "GPT-6.1 Sol (xhigh)",
+      "shortName": "GPT-6.1 Sol (xhigh)",
+      "intelligenceIndex": 51.0377679093761,
+      "cost": 0.39286117158850653,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -1039,7 +1095,7 @@
         "color": "#736cd3"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "dd059b25-d82a-4ead-82a4-4adceaaec48b",
@@ -1095,7 +1151,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "da2642fe-9f73-4788-b5af-24edcd55b37e",
@@ -1280,6 +1336,20 @@
       "deprecated": false
     },
     {
+      "id": "b25ac058-1e33-4c31-bbc9-a20c3ad0717a",
+      "slug": "gpt-6-1-sol",
+      "name": "GPT-6.1 Sol (max)",
+      "shortName": "GPT-6.1 Sol (max)",
+      "intelligenceIndex": 51.8332597011541,
+      "cost": 0.7241670655535033,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "0de67206-4d36-4d10-b8f6-cf37fa747a03",
       "slug": "kimi-k2-6",
       "name": "Kimi K2.6",
@@ -1417,7 +1487,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "b01dee41-c62b-48ed-8d16-984adc405e5c",
@@ -1655,7 +1725,7 @@
         "color": "#736cd3"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "e97a4ef5-e817-480e-9595-12f81dc4974f",
@@ -1753,7 +1823,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "f314eade-2232-44bf-a3ab-9b326bc67de6",
@@ -1781,7 +1851,7 @@
         "color": "#736cd3"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "d93edfe8-bf35-49ad-b56e-b18116142a1c",
@@ -1893,7 +1963,7 @@
         "color": "#736cd3"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "05776db7-f5c0-40f7-b824-079160f8cfa8",
@@ -2005,7 +2075,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "3b7de71c-e034-4591-8ca6-6b6be2fa471f",
@@ -2131,7 +2201,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "b112af07-3bd5-4647-b09f-b23204361bb2",
