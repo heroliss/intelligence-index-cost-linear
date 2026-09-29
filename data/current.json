@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-09-29T01:31:14.696Z",
+  "updatedAt": "2026-09-29T10:27:28.731Z",
   "modelCount": 159,
   "models": [
     {
@@ -11,7 +11,7 @@
       "name": "GPT-6 Luna (low)",
       "shortName": "GPT-6 Luna (low)",
       "intelligenceIndex": 20.9225480080866,
-      "cost": 0.004483809259539013,
+      "cost": 0.0045215478273067,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -95,7 +95,7 @@
       "name": "GPT-6 Luna (Non-reasoning)",
       "shortName": "GPT-6 Luna (Non-reasoning)",
       "intelligenceIndex": 18.2617465935701,
-      "cost": 0.01112449676670144,
+      "cost": 0.01146983124544933,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -165,7 +165,7 @@
       "name": "GPT-6 Luna (medium)",
       "shortName": "GPT-6 Luna (medium)",
       "intelligenceIndex": 29.4619523515762,
-      "cost": 0.01725359419426588,
+      "cost": 0.01756122553820397,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -221,7 +221,7 @@
       "name": "GPT-6 Luna (high)",
       "shortName": "GPT-6 Luna (high)",
       "intelligenceIndex": 32.1482304150837,
-      "cost": 0.02861964876935845,
+      "cost": 0.029067566599182932,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -277,7 +277,7 @@
       "name": "GPT-6 Luna (xhigh)",
       "shortName": "GPT-6 Luna (xhigh)",
       "intelligenceIndex": 33.8845820217785,
-      "cost": 0.041708771594451556,
+      "cost": 0.04208218646439018,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -389,7 +389,7 @@
       "name": "GPT-6 Luna (max)",
       "shortName": "GPT-6 Luna (max)",
       "intelligenceIndex": 37.2559686869738,
-      "cost": 0.06809498628701058,
+      "cost": 0.06792906856485216,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -585,7 +585,7 @@
       "name": "GPT-6 Sol (low)",
       "shortName": "GPT-6 Sol (low)",
       "intelligenceIndex": 33.9008505585733,
-      "cost": 0.13224085088798104,
+      "cost": 0.1326186130291875,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -725,7 +725,7 @@
       "name": "Qwen3.5 9B (Reasoning)",
       "shortName": "Qwen3.5 9B",
       "intelligenceIndex": 11.1961650827156,
-      "cost": 0.21257844933934256,
+      "cost": 0.21258346272934256,
       "creator": {
         "name": "Alibaba",
         "color": "#ff7018"
@@ -781,7 +781,7 @@
       "name": "GPT-6 Sol (medium)",
       "shortName": "GPT-6 Sol (medium)",
       "intelligenceIndex": 39.7820971749522,
-      "cost": 0.24820209578663968,
+      "cost": 0.24721927010382636,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -907,7 +907,7 @@
       "name": "GPT-6 Sol (Non-reasoning)",
       "shortName": "GPT-6 Sol (Non-reasoning)",
       "intelligenceIndex": 28.0921663410513,
-      "cost": 0.33144507449754673,
+      "cost": 0.333379364253275,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -949,7 +949,7 @@
       "name": "GPT-6 Sol (high)",
       "shortName": "GPT-6 Sol (high)",
       "intelligenceIndex": 42.8215513642985,
-      "cost": 0.3746326907148203,
+      "cost": 0.3753396394543572,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -1103,7 +1103,7 @@
       "name": "GPT-6 Sol (xhigh)",
       "shortName": "GPT-6 Sol (xhigh)",
       "intelligenceIndex": 44.1009705516407,
-      "cost": 0.5318962692390143,
+      "cost": 0.523567515784736,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -1481,7 +1481,7 @@
       "name": "GPT-6 Sol (max)",
       "shortName": "GPT-6 Sol (max)",
       "intelligenceIndex": 47.5276426437724,
-      "cost": 1.0564240894076389,
+      "cost": 1.049410804880785,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
