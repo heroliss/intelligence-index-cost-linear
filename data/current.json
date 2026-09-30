@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-09-30T01:07:41.429Z",
-  "modelCount": 163,
+  "updatedAt": "2026-09-30T10:19:26.064Z",
+  "modelCount": 167,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -482,6 +482,20 @@
       "deprecated": true
     },
     {
+      "id": "7261504e-503c-4a66-a9d3-a3272cdf9ad6",
+      "slug": "inkling-small",
+      "name": "Inkling Small",
+      "shortName": "Inkling Small",
+      "intelligenceIndex": 25.6582584411942,
+      "cost": 0.0894649973284348,
+      "creator": {
+        "name": "Thinking Machines",
+        "color": "#676767"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "29976311-665a-4b2f-ac72-557c33e0758e",
       "slug": "nemotron-3-5-lightning",
       "name": "Nemotron 3.5 Lightning",
@@ -578,6 +592,20 @@
       },
       "isReasoning": true,
       "deprecated": false
+    },
+    {
+      "id": "89a2c945-1fab-4ee4-9f45-83a9f46cb221",
+      "slug": "deepseek-v4-flash-0420-high",
+      "name": "DeepSeek V4 Flash 0420 (Reasoning, High Effort)",
+      "shortName": "DeepSeek V4 Flash (high)",
+      "intelligenceIndex": 24.3839569152521,
+      "cost": 0.12711665874155298,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": true,
+      "deprecated": true
     },
     {
       "id": "e76e0fe5-93ca-4272-9359-2eb1740467d1",
@@ -1084,6 +1112,20 @@
       "deprecated": true
     },
     {
+      "id": "d4f5b250-be37-4801-85e6-32fda4179337",
+      "slug": "deepseek-v4-pro-non-reasoning",
+      "name": "DeepSeek V4 Pro 0813 (Non-reasoning)",
+      "shortName": "DeepSeek V4 Pro 0813 (Non-reasoning)",
+      "intelligenceIndex": 20.3605101726847,
+      "cost": 0.47742401619163854,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": false,
+      "deprecated": false
+    },
+    {
       "id": "dd059b25-d82a-4ead-82a4-4adceaaec48b",
       "slug": "mistral-medium-3-5",
       "name": "Mistral Medium 3.5",
@@ -1583,6 +1625,20 @@
       "creator": {
         "name": "Alibaba",
         "color": "#ff7018"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "512d17ef-13d2-4f65-bf9b-154b0dec7e8d",
+      "slug": "kimi-k3-low",
+      "name": "Kimi K3 (low)",
+      "shortName": "Kimi K3 (low)",
+      "intelligenceIndex": 30.0666987529068,
+      "cost": 1.1463056165227514,
+      "creator": {
+        "name": "Kimi",
+        "color": "#047AFE"
       },
       "isReasoning": true,
       "deprecated": false
