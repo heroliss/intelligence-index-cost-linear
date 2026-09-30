@@ -2,13 +2,13 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-09-30T10:19:26.064Z",
-  "modelCount": 167,
+  "updatedAt": "2026-09-30T20:36:36.491Z",
+  "modelCount": 168,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
       "slug": "gpt-6-luna-low",
-      "name": "GPT-6 Luna (low)",
+      "name": "GPT-6 Luna (Low)",
       "shortName": "GPT-6 Luna (low)",
       "intelligenceIndex": 20.9225480080866,
       "cost": 0.0045215478273067,
@@ -50,7 +50,7 @@
     {
       "id": "050c61cd-cddc-463a-a30a-a82aaa37be59",
       "slug": "gpt-5-6-luna-low",
-      "name": "GPT-5.6 Luna (low)",
+      "name": "GPT-5.6 Luna (Low)",
       "shortName": "GPT-5.6 Luna (low)",
       "intelligenceIndex": 21.0124783424265,
       "cost": 0.009827249754655997,
@@ -65,7 +65,7 @@
       "id": "dc64f856-3ded-497d-9527-d41d31267ed5",
       "slug": "gpt-5-6-luna-non-reasoning",
       "name": "GPT-5.6 Luna (Non-reasoning)",
-      "shortName": "GPT-5.6 Luna (Non-reasoning)",
+      "shortName": "GPT-5.6 Luna (non-reasoning)",
       "intelligenceIndex": 15.5270002110259,
       "cost": 0.010091821810180262,
       "creator": {
@@ -93,7 +93,7 @@
       "id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
       "slug": "gpt-6-luna-non-reasoning",
       "name": "GPT-6 Luna (Non-reasoning)",
-      "shortName": "GPT-6 Luna (Non-reasoning)",
+      "shortName": "GPT-6 Luna (non-reasoning)",
       "intelligenceIndex": 18.2617465935701,
       "cost": 0.01146983124544933,
       "creator": {
@@ -106,7 +106,7 @@
     {
       "id": "36f73aaf-d38a-4b56-a2b3-d04d17186910",
       "slug": "gpt-oss-20b",
-      "name": "gpt-oss-20b (high)",
+      "name": "gpt-oss-20b (High)",
       "shortName": "gpt-oss-20b (high)",
       "intelligenceIndex": 8.9675171856126,
       "cost": 0.012460640242179213,
@@ -134,7 +134,7 @@
     {
       "id": "58b812bf-8498-46db-b834-f43ccc614b61",
       "slug": "gpt-5-6-luna-medium",
-      "name": "GPT-5.6 Luna (medium)",
+      "name": "GPT-5.6 Luna (Medium)",
       "shortName": "GPT-5.6 Luna (medium)",
       "intelligenceIndex": 25.0358741440784,
       "cost": 0.015598049609820011,
@@ -162,7 +162,7 @@
     {
       "id": "36667da0-9222-4967-adbb-f7efa15ad213",
       "slug": "gpt-6-luna-medium",
-      "name": "GPT-6 Luna (medium)",
+      "name": "GPT-6 Luna (Medium)",
       "shortName": "GPT-6 Luna (medium)",
       "intelligenceIndex": 29.4619523515762,
       "cost": 0.01756122553820397,
@@ -232,7 +232,7 @@
     {
       "id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
       "slug": "gpt-6-luna-high",
-      "name": "GPT-6 Luna (high)",
+      "name": "GPT-6 Luna (High)",
       "shortName": "GPT-6 Luna (high)",
       "intelligenceIndex": 32.1482304150837,
       "cost": 0.029067566599182932,
@@ -288,7 +288,7 @@
     {
       "id": "19813eb2-460a-475c-af65-810bb8660fec",
       "slug": "gpt-6-luna-xhigh",
-      "name": "GPT-6 Luna (xhigh)",
+      "name": "GPT-6 Luna (Xhigh)",
       "shortName": "GPT-6 Luna (xhigh)",
       "intelligenceIndex": 33.8845820217785,
       "cost": 0.04208218646439018,
@@ -302,7 +302,7 @@
     {
       "id": "aa55297e-8fbf-4372-b4ab-9b068dc6396c",
       "slug": "gpt-5-6-luna-high",
-      "name": "GPT-5.6 Luna (high)",
+      "name": "GPT-5.6 Luna (High)",
       "shortName": "GPT-5.6 Luna (high)",
       "intelligenceIndex": 32.1196453501091,
       "cost": 0.043981552251920096,
@@ -330,7 +330,7 @@
     {
       "id": "29855680-7469-43eb-8b88-cd3fb1d99da3",
       "slug": "gpt-5-mini",
-      "name": "GPT-5 mini (high)",
+      "name": "GPT-5 mini (High)",
       "shortName": "GPT-5 mini (high)",
       "intelligenceIndex": 16.7730881042515,
       "cost": 0.05349965791130692,
@@ -358,7 +358,7 @@
     {
       "id": "583f98fb-c4b8-4df3-8d40-60ac0ed69882",
       "slug": "muse-glimmer",
-      "name": "Muse Glimmer (high)",
+      "name": "Muse Glimmer (High)",
       "shortName": "Muse Glimmer (high)",
       "intelligenceIndex": 17.4754176089465,
       "cost": 0.05670634665029995,
@@ -400,7 +400,7 @@
     {
       "id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
       "slug": "gpt-6-luna",
-      "name": "GPT-6 Luna (max)",
+      "name": "GPT-6 Luna (Max)",
       "shortName": "GPT-6 Luna (max)",
       "intelligenceIndex": 37.2559686869738,
       "cost": 0.06792906856485216,
@@ -470,7 +470,7 @@
     {
       "id": "87110ff0-1f79-41b4-9976-eda250597317",
       "slug": "gpt-5-6-luna-xhigh",
-      "name": "GPT-5.6 Luna (xhigh)",
+      "name": "GPT-5.6 Luna (Xhigh)",
       "shortName": "GPT-5.6 Luna (xhigh)",
       "intelligenceIndex": 34.555348822309,
       "cost": 0.085342806135728,
@@ -512,7 +512,7 @@
     {
       "id": "f0083258-8646-45b8-8082-7aaf6c2ea82a",
       "slug": "gpt-oss-120b",
-      "name": "gpt-oss-120b (high)",
+      "name": "gpt-oss-120b (High)",
       "shortName": "gpt-oss-120b (high)",
       "intelligenceIndex": 11.6028431512592,
       "cost": 0.10742452290394947,
@@ -526,7 +526,7 @@
     {
       "id": "d8ddb241-b3e4-4c25-a6a3-72eb1b30c541",
       "slug": "deepseek-v4-flash-0420",
-      "name": "DeepSeek V4 Flash 0420 (Reasoning, Max Effort)",
+      "name": "DeepSeek V4 Flash 0420 (Max)",
       "shortName": "DeepSeek V4 Flash (max)",
       "intelligenceIndex": 24.1673138235549,
       "cost": 0.1074631228275786,
@@ -568,7 +568,7 @@
     {
       "id": "bf220674-68bd-43cc-a1b8-ce5ed4d2f18d",
       "slug": "deepseek-v4-pro-0424",
-      "name": "DeepSeek V4 Pro 0424 (Reasoning, Max Effort)",
+      "name": "DeepSeek V4 Pro 0424 (Max)",
       "shortName": "DeepSeek V4 Pro (max)",
       "intelligenceIndex": 30.4496601315524,
       "cost": 0.12152059767597723,
@@ -596,7 +596,7 @@
     {
       "id": "89a2c945-1fab-4ee4-9f45-83a9f46cb221",
       "slug": "deepseek-v4-flash-0420-high",
-      "name": "DeepSeek V4 Flash 0420 (Reasoning, High Effort)",
+      "name": "DeepSeek V4 Flash 0420 (High)",
       "shortName": "DeepSeek V4 Flash (high)",
       "intelligenceIndex": 24.3839569152521,
       "cost": 0.12711665874155298,
@@ -610,7 +610,7 @@
     {
       "id": "e76e0fe5-93ca-4272-9359-2eb1740467d1",
       "slug": "gpt-6-1-sol-low",
-      "name": "GPT-6.1 Sol (low)",
+      "name": "GPT-6.1 Sol (Low)",
       "shortName": "GPT-6.1 Sol (low)",
       "intelligenceIndex": 42.0835618555848,
       "cost": 0.13075190869859377,
@@ -624,7 +624,7 @@
     {
       "id": "01459872-433a-4ab2-8e99-7083162172eb",
       "slug": "gpt-6-sol-low",
-      "name": "GPT-6 Sol (low)",
+      "name": "GPT-6 Sol (Low)",
       "shortName": "GPT-6 Sol (low)",
       "intelligenceIndex": 33.9008505585733,
       "cost": 0.1326186130291875,
@@ -653,7 +653,7 @@
       "id": "9b97a35e-6ac7-44d9-91c6-422fa678963e",
       "slug": "gpt-5-6-terra-non-reasoning",
       "name": "GPT-5.6 Terra (Non-reasoning)",
-      "shortName": "GPT-5.6 Terra (Non-reasoning)",
+      "shortName": "GPT-5.6 Terra (non-reasoning)",
       "intelligenceIndex": 20.7797013584503,
       "cost": 0.13972397093498629,
       "creator": {
@@ -666,7 +666,7 @@
     {
       "id": "cc4a20cd-09fe-4962-a430-119c815e85fa",
       "slug": "gpt-5-6-terra-low",
-      "name": "GPT-5.6 Terra (low)",
+      "name": "GPT-5.6 Terra (Low)",
       "shortName": "GPT-5.6 Terra (low)",
       "intelligenceIndex": 27.496203401716,
       "cost": 0.1444617614290821,
@@ -680,8 +680,8 @@
     {
       "id": "73c96f99-0de3-4668-a4bd-b106a0fe18f2",
       "slug": "deepseek-v4-1-flash-non-reasoning",
-      "name": "DeepSeek V4.1 Flash (Non-Reasoning)",
-      "shortName": "DeepSeek V4.1 Flash (Non-reasoning)",
+      "name": "DeepSeek V4.1 Flash (Non-reasoning)",
+      "shortName": "DeepSeek V4.1 Flash (non-reasoning)",
       "intelligenceIndex": 24.6733593924318,
       "cost": 0.14670039195227308,
       "creator": {
@@ -695,7 +695,7 @@
       "id": "90c2a9cf-ad7e-4332-9be2-2fd1309833e2",
       "slug": "grok-4-3-non-reasoning",
       "name": "Grok 4.3 (Non-reasoning)",
-      "shortName": "Grok 4.3 (Non-reasoning)",
+      "shortName": "Grok 4.3 (non-reasoning)",
       "intelligenceIndex": 13.9926809505055,
       "cost": 0.16974590796834474,
       "creator": {
@@ -708,7 +708,7 @@
     {
       "id": "426d24c8-49ae-482a-b4a8-20f1c53f21c1",
       "slug": "gpt-5-6-luna",
-      "name": "GPT-5.6 Luna (max)",
+      "name": "GPT-5.6 Luna (Max)",
       "shortName": "GPT-5.6 Luna (max)",
       "intelligenceIndex": 37.3244239690841,
       "cost": 0.17829726152289094,
@@ -722,7 +722,7 @@
     {
       "id": "d4fc3f33-f2b0-4da1-88ee-f1f82bd4de31",
       "slug": "gpt-5-4-nano",
-      "name": "GPT-5.4 nano (xhigh)",
+      "name": "GPT-5.4 nano (Xhigh)",
       "shortName": "GPT-5.4 nano (xhigh)",
       "intelligenceIndex": 20.7197352504557,
       "cost": 0.1830802502922872,
@@ -736,7 +736,7 @@
     {
       "id": "26e0f83a-ca98-4f34-94ac-7c5e251ee410",
       "slug": "gpt-5-6-terra-medium",
-      "name": "GPT-5.6 Terra (medium)",
+      "name": "GPT-5.6 Terra (Medium)",
       "shortName": "GPT-5.6 Terra (medium)",
       "intelligenceIndex": 30.0938023419377,
       "cost": 0.18337295992969213,
@@ -750,7 +750,7 @@
     {
       "id": "948892b5-db03-4118-a4a8-ccd51ed871ea",
       "slug": "grok-4-3",
-      "name": "Grok 4.3 (high)",
+      "name": "Grok 4.3 (High)",
       "shortName": "Grok 4.3 (high)",
       "intelligenceIndex": 24.8801191398002,
       "cost": 0.20537871205068303,
@@ -778,7 +778,7 @@
     {
       "id": "a2e51d62-ea4e-4f15-8be0-be9dc1fb489d",
       "slug": "gpt-6-1-sol-medium",
-      "name": "GPT-6.1 Sol (medium)",
+      "name": "GPT-6.1 Sol (Medium)",
       "shortName": "GPT-6.1 Sol (medium)",
       "intelligenceIndex": 47.7833271274065,
       "cost": 0.21370088267875537,
@@ -806,7 +806,7 @@
     {
       "id": "fe4c0848-e284-4e52-a79d-cdc28392f1a9",
       "slug": "deepseek-v4-flash",
-      "name": "DeepSeek V4 Flash 0731 (Reasoning, Max Effort)",
+      "name": "DeepSeek V4 Flash 0731 (Max)",
       "shortName": "DeepSeek V4 Flash 0731 (max)",
       "intelligenceIndex": 34.3305129347816,
       "cost": 0.21964484501171036,
@@ -834,7 +834,7 @@
     {
       "id": "780a4a85-17ff-4175-a8dd-ebca4823e61b",
       "slug": "gpt-6-sol-medium",
-      "name": "GPT-6 Sol (medium)",
+      "name": "GPT-6 Sol (Medium)",
       "shortName": "GPT-6 Sol (medium)",
       "intelligenceIndex": 39.7820971749522,
       "cost": 0.24721927010382636,
@@ -862,7 +862,7 @@
     {
       "id": "0904b596-8932-43bd-9b21-324f128e1723",
       "slug": "gpt-5-6-sol-low",
-      "name": "GPT-5.6 Sol (low)",
+      "name": "GPT-5.6 Sol (Low)",
       "shortName": "GPT-5.6 Sol (low)",
       "intelligenceIndex": 33.4731387646002,
       "cost": 0.2606419442090313,
@@ -890,7 +890,7 @@
     {
       "id": "dbe7c625-3100-4463-b479-a228c41f75dd",
       "slug": "deepseek-v4-1-flash",
-      "name": "DeepSeek V4.1 Flash (Reasoning, Max Effort)",
+      "name": "DeepSeek V4.1 Flash (Max)",
       "shortName": "DeepSeek V4.1 Flash (max)",
       "intelligenceIndex": 39.456167472527,
       "cost": 0.26522527009606844,
@@ -932,7 +932,7 @@
     {
       "id": "7707a46f-895f-4247-b7a8-ddab87c9a11d",
       "slug": "deepseek-v4-flash-vision",
-      "name": "DeepSeek V4 Flash Vision (Reasoning, Max Effort)",
+      "name": "DeepSeek V4 Flash Vision (Max)",
       "shortName": "DeepSeek V4 Flash Vision (max)",
       "intelligenceIndex": 34.8390628035969,
       "cost": 0.314372044499279,
@@ -946,7 +946,7 @@
     {
       "id": "3b84fee3-b70a-41bc-819e-5fbdef9a0042",
       "slug": "gpt-6-1-sol-high",
-      "name": "GPT-6.1 Sol (high)",
+      "name": "GPT-6.1 Sol (High)",
       "shortName": "GPT-6.1 Sol (high)",
       "intelligenceIndex": 50.2377777519769,
       "cost": 0.31914442375664703,
@@ -975,7 +975,7 @@
       "id": "d3e20e76-9e1a-45b6-b809-ad6aa37430cf",
       "slug": "gpt-6-sol-non-reasoning",
       "name": "GPT-6 Sol (Non-reasoning)",
-      "shortName": "GPT-6 Sol (Non-reasoning)",
+      "shortName": "GPT-6 Sol (non-reasoning)",
       "intelligenceIndex": 28.0921663410513,
       "cost": 0.333379364253275,
       "creator": {
@@ -988,7 +988,7 @@
     {
       "id": "81972fba-1219-477e-bbfb-18c656a63ff7",
       "slug": "gpt-5-6-terra-high",
-      "name": "GPT-5.6 Terra (high)",
+      "name": "GPT-5.6 Terra (High)",
       "shortName": "GPT-5.6 Terra (high)",
       "intelligenceIndex": 34.2376558067555,
       "cost": 0.3378727947949101,
@@ -1016,7 +1016,7 @@
     {
       "id": "52eebe3e-6ede-4e46-92db-c5dea49fc410",
       "slug": "gpt-6-sol-high",
-      "name": "GPT-6 Sol (high)",
+      "name": "GPT-6 Sol (High)",
       "shortName": "GPT-6 Sol (high)",
       "intelligenceIndex": 42.8215513642985,
       "cost": 0.3753396394543572,
@@ -1030,7 +1030,7 @@
     {
       "id": "092a3b0e-c5c8-45dc-bf1b-53673c8ff352",
       "slug": "gpt-6-1-sol-xhigh",
-      "name": "GPT-6.1 Sol (xhigh)",
+      "name": "GPT-6.1 Sol (Xhigh)",
       "shortName": "GPT-6.1 Sol (xhigh)",
       "intelligenceIndex": 51.0377679093761,
       "cost": 0.39286117158850653,
@@ -1044,7 +1044,7 @@
     {
       "id": "ba242e40-83b7-4cd3-a0e0-b56237984914",
       "slug": "gpt-5-4-mini",
-      "name": "GPT-5.4 mini (xhigh)",
+      "name": "GPT-5.4 mini (Xhigh)",
       "shortName": "GPT-5.4 mini (xhigh)",
       "intelligenceIndex": 24.0682169231964,
       "cost": 0.4473810333705224,
@@ -1100,7 +1100,7 @@
     {
       "id": "c07e65e6-32fc-451e-938d-7477a1c3ffcc",
       "slug": "grok-4-6-low",
-      "name": "Grok 4.6 (low)",
+      "name": "Grok 4.6 (Low)",
       "shortName": "Grok 4.6 (low)",
       "intelligenceIndex": 35.1246953482174,
       "cost": 0.47528534374531,
@@ -1115,7 +1115,7 @@
       "id": "d4f5b250-be37-4801-85e6-32fda4179337",
       "slug": "deepseek-v4-pro-non-reasoning",
       "name": "DeepSeek V4 Pro 0813 (Non-reasoning)",
-      "shortName": "DeepSeek V4 Pro 0813 (Non-reasoning)",
+      "shortName": "DeepSeek V4 Pro 0813 (non-reasoning)",
       "intelligenceIndex": 20.3605101726847,
       "cost": 0.47742401619163854,
       "creator": {
@@ -1142,7 +1142,7 @@
     {
       "id": "6f174934-5b7d-4333-86cb-f5ebf4a862e3",
       "slug": "gpt-5-6-sol-medium",
-      "name": "GPT-5.6 Sol (medium)",
+      "name": "GPT-5.6 Sol (Medium)",
       "shortName": "GPT-5.6 Sol (medium)",
       "intelligenceIndex": 39.2363585889147,
       "cost": 0.5049926304382959,
@@ -1184,7 +1184,7 @@
     {
       "id": "da2642fe-9f73-4788-b5af-24edcd55b37e",
       "slug": "gpt-6-sol-xhigh",
-      "name": "GPT-6 Sol (xhigh)",
+      "name": "GPT-6 Sol (Xhigh)",
       "shortName": "GPT-6 Sol (xhigh)",
       "intelligenceIndex": 44.1009705516407,
       "cost": 0.523567515784736,
@@ -1296,7 +1296,7 @@
     {
       "id": "9e30696f-16fa-4b4f-ba53-161895a85fed",
       "slug": "gpt-5-6-terra-xhigh",
-      "name": "GPT-5.6 Terra (xhigh)",
+      "name": "GPT-5.6 Terra (Xhigh)",
       "shortName": "GPT-5.6 Terra (xhigh)",
       "intelligenceIndex": 37.9513370742927,
       "cost": 0.6317911346924275,
@@ -1310,7 +1310,7 @@
     {
       "id": "83173329-c09a-41f1-a028-a282a5f908d7",
       "slug": "deepseek-v4-pro",
-      "name": "DeepSeek V4 Pro 0813 (Reasoning, Max Effort)",
+      "name": "DeepSeek V4 Pro 0813 (Max)",
       "shortName": "DeepSeek V4 Pro 0813 (max)",
       "intelligenceIndex": 35.9967791278402,
       "cost": 0.6740219040435134,
@@ -1366,7 +1366,7 @@
     {
       "id": "b25ac058-1e33-4c31-bbc9-a20c3ad0717a",
       "slug": "gpt-6-1-sol",
-      "name": "GPT-6.1 Sol (max)",
+      "name": "GPT-6.1 Sol (Max)",
       "shortName": "GPT-6.1 Sol (max)",
       "intelligenceIndex": 51.8332597011541,
       "cost": 0.7241670655535033,
@@ -1394,7 +1394,7 @@
     {
       "id": "8afc250d-b538-45a2-812a-4605f4ffd87e",
       "slug": "gpt-5-6-sol-high",
-      "name": "GPT-5.6 Sol (high)",
+      "name": "GPT-5.6 Sol (High)",
       "shortName": "GPT-5.6 Sol (high)",
       "intelligenceIndex": 42.3461010420519,
       "cost": 0.807982690134498,
@@ -1408,7 +1408,7 @@
     {
       "id": "a3f8100d-e38f-408b-b0fa-0085dae18dc1",
       "slug": "gpt-6-astra-low",
-      "name": "GPT-6 Astra (low)",
+      "name": "GPT-6 Astra (Low)",
       "shortName": "GPT-6 Astra (low)",
       "intelligenceIndex": 45.7819243120341,
       "cost": 0.8175139285656057,
@@ -1422,7 +1422,7 @@
     {
       "id": "cc1e488b-8ba4-464d-875d-690166b15ad3",
       "slug": "glm-5-3-low",
-      "name": "GLM-5.3 (low)",
+      "name": "GLM-5.3 (Low)",
       "shortName": "GLM-5.3 (low)",
       "intelligenceIndex": 34.2990078159643,
       "cost": 0.8522174973386498,
@@ -1436,7 +1436,7 @@
     {
       "id": "6b79f899-e3c0-45f6-923c-243faccdb2fc",
       "slug": "gpt-5-5-medium",
-      "name": "GPT-5.5 (medium)",
+      "name": "GPT-5.5 (Medium)",
       "shortName": "GPT-5.5 (medium)",
       "intelligenceIndex": 33.8043604432432,
       "cost": 0.9016588021523384,
@@ -1450,7 +1450,7 @@
     {
       "id": "b2331108-72ed-415a-82d1-188633875bbc",
       "slug": "gemini-3-7-flash",
-      "name": "Gemini 3.7 Flash (high)",
+      "name": "Gemini 3.7 Flash (High)",
       "shortName": "Gemini 3.7 Flash (high)",
       "intelligenceIndex": 39.0594566404896,
       "cost": 0.9253359372385677,
@@ -1464,8 +1464,8 @@
     {
       "id": "78332c88-fe60-42c8-af9d-3617e44cf1f5",
       "slug": "gemini-3-6-flash",
-      "name": "Gemini 3.6 Flash (high)",
-      "shortName": "Gemini 3.6 Flash",
+      "name": "Gemini 3.6 Flash (High)",
+      "shortName": "Gemini 3.6 Flash (high)",
       "intelligenceIndex": 33.9785928920714,
       "cost": 0.9288448964661649,
       "creator": {
@@ -1478,7 +1478,7 @@
     {
       "id": "744fa3c1-42a7-4995-b138-fb6be11f463c",
       "slug": "gemini-3-8-flash-medium",
-      "name": "Gemini 3.8 Flash (medium)",
+      "name": "Gemini 3.8 Flash (Medium)",
       "shortName": "Gemini 3.8 Flash (medium)",
       "intelligenceIndex": 39.7740187061926,
       "cost": 0.9310379374376306,
@@ -1492,7 +1492,7 @@
     {
       "id": "04ee6719-0327-463b-a1a1-70a6a78254f9",
       "slug": "muse-spark-1-2",
-      "name": "Muse Spark 1.2 (xhigh)",
+      "name": "Muse Spark 1.2 (Xhigh)",
       "shortName": "Muse Spark 1.2 (xhigh)",
       "intelligenceIndex": 39.5758607970943,
       "cost": 0.9746948879931989,
@@ -1520,7 +1520,7 @@
     {
       "id": "b01dee41-c62b-48ed-8d16-984adc405e5c",
       "slug": "qwen3-8-27b",
-      "name": "Qwen3.8 27B (xhigh)",
+      "name": "Qwen3.8 27B (Xhigh)",
       "shortName": "Qwen3.8 27B (xhigh)",
       "intelligenceIndex": 33.6962858057476,
       "cost": 1.0073149536565944,
@@ -1548,7 +1548,7 @@
     {
       "id": "794f69b5-cede-482b-b1cc-d769478497cd",
       "slug": "grok-4-5",
-      "name": "Grok 4.5 (high)",
+      "name": "Grok 4.5 (High)",
       "shortName": "Grok 4.5 (high)",
       "intelligenceIndex": 38.8121153240657,
       "cost": 1.0364552526545159,
@@ -1562,7 +1562,7 @@
     {
       "id": "7e30585f-fad7-40df-a8cb-03c1d96df38a",
       "slug": "qwen3-8-27b-low",
-      "name": "Qwen3.8 27B (low)",
+      "name": "Qwen3.8 27B (Low)",
       "shortName": "Qwen3.8 27B (low)",
       "intelligenceIndex": 26.2047978189896,
       "cost": 1.0482225365160391,
@@ -1576,7 +1576,7 @@
     {
       "id": "c50ea08c-88c0-4eb7-85b8-27f2bbf6d527",
       "slug": "gpt-6-sol",
-      "name": "GPT-6 Sol (max)",
+      "name": "GPT-6 Sol (Max)",
       "shortName": "GPT-6 Sol (max)",
       "intelligenceIndex": 47.5276426437724,
       "cost": 1.049410804880785,
@@ -1618,7 +1618,7 @@
     {
       "id": "6657d7de-a2a9-40bc-a32f-86e80ad63698",
       "slug": "qwen3-8-27b-medium",
-      "name": "Qwen3.8 27B (medium)",
+      "name": "Qwen3.8 27B (Medium)",
       "shortName": "Qwen3.8 27B (medium)",
       "intelligenceIndex": 27.5508228231586,
       "cost": 1.133063774030521,
@@ -1632,7 +1632,7 @@
     {
       "id": "512d17ef-13d2-4f65-bf9b-154b0dec7e8d",
       "slug": "kimi-k3-low",
-      "name": "Kimi K3 (low)",
+      "name": "Kimi K3 (Low)",
       "shortName": "Kimi K3 (low)",
       "intelligenceIndex": 30.0666987529068,
       "cost": 1.1463056165227514,
@@ -1660,7 +1660,7 @@
     {
       "id": "d998db47-9b67-4727-a2bb-2e1261020ac0",
       "slug": "gpt-5-6-sol-xhigh",
-      "name": "GPT-5.6 Sol (xhigh)",
+      "name": "GPT-5.6 Sol (Xhigh)",
       "shortName": "GPT-5.6 Sol (xhigh)",
       "intelligenceIndex": 44.008876369169,
       "cost": 1.1843629381907275,
@@ -1674,7 +1674,7 @@
     {
       "id": "8a999846-4c1d-4ce7-a8b7-1310a7166fd7",
       "slug": "gemini-3-8-flash",
-      "name": "Gemini 3.8 Flash (high)",
+      "name": "Gemini 3.8 Flash (High)",
       "shortName": "Gemini 3.8 Flash (high)",
       "intelligenceIndex": 40.9262321765904,
       "cost": 1.2427947606950427,
@@ -1702,7 +1702,7 @@
     {
       "id": "d5170215-69be-4129-849b-26d8d8825bfc",
       "slug": "muse-spark-1-3-xhigh",
-      "name": "Muse Spark 1.3 (xhigh)",
+      "name": "Muse Spark 1.3 (Xhigh)",
       "shortName": "Muse Spark 1.3 (xhigh)",
       "intelligenceIndex": 45.0732966922226,
       "cost": 1.3677936514692752,
@@ -1716,7 +1716,7 @@
     {
       "id": "d61493e2-43ff-460c-9054-eaf6ba317360",
       "slug": "muse-spark-1-1",
-      "name": "Muse Spark 1.1 (xhigh)",
+      "name": "Muse Spark 1.1 (Xhigh)",
       "shortName": "Muse Spark 1.1 (xhigh)",
       "intelligenceIndex": 33.7298425919846,
       "cost": 1.3802453886670354,
@@ -1730,7 +1730,7 @@
     {
       "id": "bcf8db0a-3bb6-4d82-9516-0f57370c85a6",
       "slug": "gpt-5-6-terra",
-      "name": "GPT-5.6 Terra (max)",
+      "name": "GPT-5.6 Terra (Max)",
       "shortName": "GPT-5.6 Terra (max)",
       "intelligenceIndex": 42.0829248239494,
       "cost": 1.3987235612691513,
@@ -1744,7 +1744,7 @@
     {
       "id": "f7a4ea75-e548-4069-80d4-9be8bc7c009b",
       "slug": "glm-5-2",
-      "name": "GLM-5.2 (max)",
+      "name": "GLM-5.2 (Max)",
       "shortName": "GLM-5.2 (max)",
       "intelligenceIndex": 33.7054572377545,
       "cost": 1.4726179494034382,
@@ -1758,7 +1758,7 @@
     {
       "id": "26614164-6840-4e17-a65a-2deb2fe7e87b",
       "slug": "grok-4-6-medium",
-      "name": "Grok 4.6 (medium)",
+      "name": "Grok 4.6 (Medium)",
       "shortName": "Grok 4.6 (medium)",
       "intelligenceIndex": 42.836322654063,
       "cost": 1.4963233956114492,
@@ -1772,7 +1772,7 @@
     {
       "id": "e97a4ef5-e817-480e-9595-12f81dc4974f",
       "slug": "gpt-6-astra-medium",
-      "name": "GPT-6 Astra (medium)",
+      "name": "GPT-6 Astra (Medium)",
       "shortName": "GPT-6 Astra (medium)",
       "intelligenceIndex": 49.5704363034369,
       "cost": 1.5406493220021167,
@@ -1786,7 +1786,7 @@
     {
       "id": "b13c1257-d746-4027-8fc8-4892dc14701c",
       "slug": "gpt-5-5-high",
-      "name": "GPT-5.5 (high)",
+      "name": "GPT-5.5 (High)",
       "shortName": "GPT-5.5 (high)",
       "intelligenceIndex": 36.9793737887731,
       "cost": 1.541289049705234,
@@ -1800,8 +1800,8 @@
     {
       "id": "0097ebf5-124f-42f6-9463-33b00e711f03",
       "slug": "gemini-3-5-flash",
-      "name": "Gemini 3.5 Flash (high)",
-      "shortName": "Gemini 3.5 Flash",
+      "name": "Gemini 3.5 Flash (High)",
+      "shortName": "Gemini 3.5 Flash (high)",
       "intelligenceIndex": 32.5983283695905,
       "cost": 1.5625413241435933,
       "creator": {
@@ -1814,7 +1814,7 @@
     {
       "id": "9999672c-b687-4026-9c15-5cef02ff53bb",
       "slug": "muse-spark-1-3",
-      "name": "Muse Spark 1.3 (max)",
+      "name": "Muse Spark 1.3 (Max)",
       "shortName": "Muse Spark 1.3 (max)",
       "intelligenceIndex": 48.0923107719685,
       "cost": 1.6048932100125866,
@@ -1842,7 +1842,7 @@
     {
       "id": "e05a4828-0536-4876-870d-a235023f992b",
       "slug": "gpt-6-astra-high",
-      "name": "GPT-6 Astra (high)",
+      "name": "GPT-6 Astra (High)",
       "shortName": "GPT-6 Astra (high)",
       "intelligenceIndex": 50.9191471636152,
       "cost": 1.7252530861048456,
@@ -1884,7 +1884,7 @@
     {
       "id": "c8adc5cf-fd5a-407b-af51-dc3bede3e49c",
       "slug": "grok-4-6",
-      "name": "Grok 4.6 (high)",
+      "name": "Grok 4.6 (High)",
       "shortName": "Grok 4.6 (high)",
       "intelligenceIndex": 44.3113073012592,
       "cost": 1.8589423352127492,
@@ -1898,7 +1898,7 @@
     {
       "id": "d93edfe8-bf35-49ad-b56e-b18116142a1c",
       "slug": "gpt-5-6-sol",
-      "name": "GPT-5.6 Sol (max)",
+      "name": "GPT-5.6 Sol (Max)",
       "shortName": "GPT-5.6 Sol (max)",
       "intelligenceIndex": 46.9727068915036,
       "cost": 1.98845538085375,
@@ -1910,9 +1910,23 @@
       "deprecated": true
     },
     {
+      "id": "d366dfa1-d940-4788-aa73-d298c45699b3",
+      "slug": "gemini-4-argon",
+      "name": "Gemini 4 Argon (High)",
+      "shortName": "Gemini 4 Argon (high)",
+      "intelligenceIndex": 52.5605655745982,
+      "cost": 1.990322379299008,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "f7d2fc3e-1f7b-405f-818c-07952a4af78f",
       "slug": "kimi-k3",
-      "name": "Kimi K3 (max)",
+      "name": "Kimi K3 (Max)",
       "shortName": "Kimi K3 (max)",
       "intelligenceIndex": 43.5938229518782,
       "cost": 2.0001323004425493,
@@ -1926,7 +1940,7 @@
     {
       "id": "cd684ea4-b475-4269-b001-d469d06d8a7a",
       "slug": "glm-5-3",
-      "name": "GLM-5.3 (max)",
+      "name": "GLM-5.3 (Max)",
       "shortName": "GLM-5.3 (max)",
       "intelligenceIndex": 44.777392385614,
       "cost": 2.0056375150449584,
@@ -1940,7 +1954,7 @@
     {
       "id": "f9739750-6d42-450f-ba1e-2f76c869b4fe",
       "slug": "quasar-438b",
-      "name": "Quasar 438B (max, based on GLM-5.2)",
+      "name": "Quasar 438B (Max, Based on GLM-5.2)",
       "shortName": "Quasar 438B (max)",
       "intelligenceIndex": 26.7372536607816,
       "cost": 2.024611832657714,
@@ -1982,7 +1996,7 @@
     {
       "id": "1f541ef3-913f-4eb2-9d07-0e93c7a9a5e3",
       "slug": "gpt-6-astra-xhigh",
-      "name": "GPT-6 Astra (xhigh)",
+      "name": "GPT-6 Astra (Xhigh)",
       "shortName": "GPT-6 Astra (xhigh)",
       "intelligenceIndex": 52.3863277108782,
       "cost": 2.308795912269076,
@@ -1996,7 +2010,7 @@
     {
       "id": "d6f43d0a-e8c4-447c-9ff7-5cf0a9d59aa3",
       "slug": "grok-4-6-xhigh",
-      "name": "Grok 4.6 (xhigh)",
+      "name": "Grok 4.6 (Xhigh)",
       "shortName": "Grok 4.6 (xhigh)",
       "intelligenceIndex": 44.199810436996,
       "cost": 2.323692124283027,
@@ -2039,7 +2053,7 @@
       "id": "353c92f3-2148-4c2d-9231-aa7e1322a1fd",
       "slug": "qwen3-8-27b-non-reasoning",
       "name": "Qwen3.8 27B (Non-reasoning)",
-      "shortName": "Qwen3.8 27B",
+      "shortName": "Qwen3.8 27B (non-reasoning)",
       "intelligenceIndex": 20.1502427055595,
       "cost": 2.487757391889078,
       "creator": {
@@ -2052,7 +2066,7 @@
     {
       "id": "1f054429-397e-4fdb-9e71-67bc92c1735e",
       "slug": "gpt-5-5",
-      "name": "GPT-5.5 (xhigh)",
+      "name": "GPT-5.5 (Xhigh)",
       "shortName": "GPT-5.5 (xhigh)",
       "intelligenceIndex": 38.3556437590607,
       "cost": 2.6339796841243297,
@@ -2080,7 +2094,7 @@
     {
       "id": "272f5f03-aea9-4675-a244-2b753b618cdf",
       "slug": "grok-4-7-high",
-      "name": "Grok 4.7 (high)",
+      "name": "Grok 4.7 (High)",
       "shortName": "Grok 4.7 (high)",
       "intelligenceIndex": 46.3321770885625,
       "cost": 2.726106691786027,
@@ -2136,7 +2150,7 @@
     {
       "id": "2f339a97-9a0d-499a-9cb5-e0db665bfa25",
       "slug": "gpt-6-astra",
-      "name": "GPT-6 Astra (max)",
+      "name": "GPT-6 Astra (Max)",
       "shortName": "GPT-6 Astra (max)",
       "intelligenceIndex": 52.673669395513,
       "cost": 3.2575003134834164,
@@ -2178,7 +2192,7 @@
     {
       "id": "59627802-1546-422c-9a65-65b61c022d36",
       "slug": "grok-4-7",
-      "name": "Grok 4.7 (xhigh)",
+      "name": "Grok 4.7 (Xhigh)",
       "shortName": "Grok 4.7 (xhigh)",
       "intelligenceIndex": 46.4465506302286,
       "cost": 3.738325952106939,
@@ -2307,7 +2321,7 @@
       "name": "Claude Sonnet 5.5 (Adaptive Reasoning, Max Effort, Default Fallback)",
       "shortName": "Claude Sonnet 5.5 (max with fallback)",
       "intelligenceIndex": 55.9779549012591,
-      "cost": 7.602633532969859,
+      "cost": 7.62064302108643,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
