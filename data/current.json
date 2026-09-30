@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-09-29T20:28:56.820Z",
-  "modelCount": 164,
+  "updatedAt": "2026-09-30T01:07:41.429Z",
+  "modelCount": 163,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -1009,20 +1009,6 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "bbc2ffea-cf6b-43be-8c41-1769347e234d",
-      "slug": "claude-sonnet-5-5-low",
-      "name": "Claude Sonnet 5.5 (Adaptive Reasoning, Low Effort, Default Fallback)",
-      "shortName": "Claude Sonnet 5.5 (low with fallback)",
-      "intelligenceIndex": 35.8430309275022,
-      "cost": 0.41439222745942095,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
       },
       "isReasoning": true,
       "deprecated": false
