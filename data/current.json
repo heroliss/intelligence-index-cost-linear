@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-09-30T20:36:36.491Z",
-  "modelCount": 168,
+  "updatedAt": "2026-10-01T01:06:35.758Z",
+  "modelCount": 169,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -501,7 +501,7 @@
       "name": "Nemotron 3.5 Lightning",
       "shortName": "Nemotron 3.5 Lightning",
       "intelligenceIndex": 12.8572306217144,
-      "cost": 0.10037244756930194,
+      "cost": 0.09309918417597017,
       "creator": {
         "name": "NVIDIA",
         "color": "#76b900"
@@ -995,6 +995,20 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "62ea3198-9866-4d9f-8406-a79ee78c7164",
+      "slug": "solar-mini4",
+      "name": "Solar Mini 4",
+      "shortName": "Solar Mini 4",
+      "intelligenceIndex": 24.0522018844171,
+      "cost": 0.36336112521859043,
+      "creator": {
+        "name": "Upstage",
+        "color": "#7c59f5"
       },
       "isReasoning": true,
       "deprecated": false
