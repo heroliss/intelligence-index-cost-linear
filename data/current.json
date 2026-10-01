@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-01T10:45:59.316Z",
-  "modelCount": 169,
+  "updatedAt": "2026-10-01T20:50:48.499Z",
+  "modelCount": 170,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -633,7 +633,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "24d8fdfe-6241-424e-b7b7-1b6efb06e4fb",
@@ -843,7 +843,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
@@ -983,7 +983,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": false,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "81972fba-1219-477e-bbfb-18c656a63ff7",
@@ -1039,7 +1039,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "092a3b0e-c5c8-45dc-bf1b-53673c8ff352",
@@ -1207,7 +1207,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "8d0cb231-7303-452c-9923-a9620b948475",
@@ -1585,7 +1585,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "7e30585f-fad7-40df-a8cb-03c1d96df38a",
@@ -1695,6 +1695,20 @@
       "creator": {
         "name": "Google",
         "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "208c16f0-8c5b-4524-ac8a-ac74c02e80a9",
+      "slug": "grok-4-7-low",
+      "name": "Grok 4.7 (Low)",
+      "shortName": "Grok 4.7 (low)",
+      "intelligenceIndex": 42.2166560223448,
+      "cost": 1.2479664056943975,
+      "creator": {
+        "name": "SpaceXAI",
+        "color": "#736cd3"
       },
       "isReasoning": true,
       "deprecated": false
