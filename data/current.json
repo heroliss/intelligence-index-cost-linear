@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-02T01:20:07.726Z",
-  "modelCount": 170,
+  "updatedAt": "2026-10-02T10:20:51.815Z",
+  "modelCount": 171,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -1056,6 +1056,20 @@
       "deprecated": false
     },
     {
+      "id": "bbc2ffea-cf6b-43be-8c41-1769347e234d",
+      "slug": "claude-sonnet-5-5-low",
+      "name": "Claude Sonnet 5.5 (Adaptive Reasoning, Low Effort, Default Fallback)",
+      "shortName": "Claude Sonnet 5.5 (low with fallback)",
+      "intelligenceIndex": 35.8681594577587,
+      "cost": 0.41697045178975856,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "ba242e40-83b7-4cd3-a0e0-b56237984914",
       "slug": "gpt-5-4-mini",
       "name": "GPT-5.4 mini (Xhigh)",
@@ -1270,8 +1284,8 @@
       "slug": "claude-sonnet-5-5-medium",
       "name": "Claude Sonnet 5.5 (Adaptive Reasoning, Medium Effort, Default Fallback)",
       "shortName": "Claude Sonnet 5.5 (medium with fallback)",
-      "intelligenceIndex": 40.7386909594307,
-      "cost": 0.5861822401191022,
+      "intelligenceIndex": 40.838652287929,
+      "cost": 0.5894076802052765,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -1602,20 +1616,6 @@
       "deprecated": false
     },
     {
-      "id": "268525e2-f873-4178-bc07-e6a0ee1f002d",
-      "slug": "claude-sonnet-5-5-high",
-      "name": "Claude Sonnet 5.5 (Adaptive Reasoning, High Effort, Default Fallback)",
-      "shortName": "Claude Sonnet 5.5 (high with fallback)",
-      "intelligenceIndex": 46.7356921799024,
-      "cost": 1.079758672715514,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "20928ba9-3a3f-415f-9519-b84ff64ecf34",
       "slug": "claude-opus-5-low",
       "name": "Claude Opus 5 (Adaptive Reasoning, Low Effort)",
@@ -1628,6 +1628,20 @@
       },
       "isReasoning": true,
       "deprecated": true
+    },
+    {
+      "id": "268525e2-f873-4178-bc07-e6a0ee1f002d",
+      "slug": "claude-sonnet-5-5-high",
+      "name": "Claude Sonnet 5.5 (Adaptive Reasoning, High Effort, Default Fallback)",
+      "shortName": "Claude Sonnet 5.5 (high with fallback)",
+      "intelligenceIndex": 46.7533528066958,
+      "cost": 1.1224835755720677,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
     },
     {
       "id": "6657d7de-a2a9-40bc-a32f-86e80ad63698",
@@ -2138,8 +2152,8 @@
       "slug": "claude-sonnet-5-5-xhigh",
       "name": "Claude Sonnet 5.5 (Adaptive Reasoning, Xhigh Effort, Default Fallback)",
       "shortName": "Claude Sonnet 5.5 (xhigh with fallback)",
-      "intelligenceIndex": 51.8522867021152,
-      "cost": 2.742576603824205,
+      "intelligenceIndex": 51.8955544183089,
+      "cost": 2.7461969619444453,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -2344,12 +2358,12 @@
       "deprecated": false
     },
     {
-      "id": "b171d979-5ec1-45de-b8b9-db1ee65e77ec",
-      "slug": "claude-sonnet-5-5",
-      "name": "Claude Sonnet 5.5 (Adaptive Reasoning, Max Effort, Default Fallback)",
-      "shortName": "Claude Sonnet 5.5 (max with fallback)",
-      "intelligenceIndex": 55.9779549012591,
-      "cost": 7.62064302108643,
+      "id": "3e87c73e-a257-495e-9730-367a66229811",
+      "slug": "claude-fable-5-1",
+      "name": "Claude Fable 5.1 (Adaptive Reasoning, Max Effort, Default Fallback)",
+      "shortName": "Claude Fable 5.1 (max with fallback)",
+      "intelligenceIndex": 53.3549259623252,
+      "cost": 7.629706364004841,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -2358,12 +2372,12 @@
       "deprecated": false
     },
     {
-      "id": "3e87c73e-a257-495e-9730-367a66229811",
-      "slug": "claude-fable-5-1",
-      "name": "Claude Fable 5.1 (Adaptive Reasoning, Max Effort, Default Fallback)",
-      "shortName": "Claude Fable 5.1 (max with fallback)",
-      "intelligenceIndex": 53.3549259623252,
-      "cost": 7.629706364004841,
+      "id": "b171d979-5ec1-45de-b8b9-db1ee65e77ec",
+      "slug": "claude-sonnet-5-5",
+      "name": "Claude Sonnet 5.5 (Adaptive Reasoning, Max Effort, Default Fallback)",
+      "shortName": "Claude Sonnet 5.5 (max with fallback)",
+      "intelligenceIndex": 56.0001286580794,
+      "cost": 7.666776317411276,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
