@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-02T20:24:04.792Z",
+  "updatedAt": "2026-10-03T00:58:20.954Z",
   "modelCount": 171,
   "models": [
     {
@@ -11,7 +11,7 @@
       "name": "GPT-6 Luna (Low)",
       "shortName": "GPT-6 Luna (low)",
       "intelligenceIndex": 21.5261980080866,
-      "cost": 0.0045151153559203,
+      "cost": 0.004516607569410252,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -25,7 +25,7 @@
       "name": "Granite 4.2 3B",
       "shortName": "Granite 4.2 3B",
       "intelligenceIndex": 9.05588232376756,
-      "cost": 0.005980247671024821,
+      "cost": 0.005985262336744139,
       "creator": {
         "name": "IBM",
         "color": "#0f62fe"
@@ -95,7 +95,7 @@
       "name": "GPT-6 Luna (Non-reasoning)",
       "shortName": "GPT-6 Luna (non-reasoning)",
       "intelligenceIndex": 18.4678465935701,
-      "cost": 0.011341233858951989,
+      "cost": 0.011342690862652438,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -235,7 +235,7 @@
       "name": "GPT-6 Luna (High)",
       "shortName": "GPT-6 Luna (high)",
       "intelligenceIndex": 32.9282054150837,
-      "cost": 0.029023834521101737,
+      "cost": 0.02903157640372802,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -389,7 +389,7 @@
       "name": "MiMo-V2.6-Flash",
       "shortName": "MiMo-V2.6-Flash",
       "intelligenceIndex": 37.8843590141754,
-      "cost": 0.0621899731897297,
+      "cost": 0.06231470136619077,
       "creator": {
         "name": "Xiaomi",
         "color": "#ff6900"
@@ -403,7 +403,7 @@
       "name": "GPT-6 Luna (Max)",
       "shortName": "GPT-6 Luna (max)",
       "intelligenceIndex": 38.1245186869738,
-      "cost": 0.06765421772017903,
+      "cost": 0.06782295669812205,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -972,6 +972,20 @@
       "deprecated": false
     },
     {
+      "id": "d4f5b250-be37-4801-85e6-32fda4179337",
+      "slug": "deepseek-v4-pro-non-reasoning",
+      "name": "DeepSeek V4 Pro 0813 (Non-reasoning)",
+      "shortName": "DeepSeek V4 Pro 0813 (non-reasoning)",
+      "intelligenceIndex": 20.3605101726847,
+      "cost": 0.3296953563474809,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": false,
+      "deprecated": false
+    },
+    {
       "id": "d3e20e76-9e1a-45b6-b809-ad6aa37430cf",
       "slug": "gpt-6-sol-non-reasoning",
       "name": "GPT-6 Sol (Non-reasoning)",
@@ -1058,7 +1072,7 @@
     {
       "id": "bbc2ffea-cf6b-43be-8c41-1769347e234d",
       "slug": "claude-sonnet-5-5-low",
-      "name": "Claude Sonnet 5.5 (Adaptive Reasoning, Low Effort, Default Fallback)",
+      "name": "Claude Sonnet 5.5 (Low, Default Fallback)",
       "shortName": "Claude Sonnet 5.5 (low with fallback)",
       "intelligenceIndex": 35.8681594577587,
       "cost": 0.41697045178975856,
@@ -1140,20 +1154,6 @@
       "deprecated": true
     },
     {
-      "id": "d4f5b250-be37-4801-85e6-32fda4179337",
-      "slug": "deepseek-v4-pro-non-reasoning",
-      "name": "DeepSeek V4 Pro 0813 (Non-reasoning)",
-      "shortName": "DeepSeek V4 Pro 0813 (non-reasoning)",
-      "intelligenceIndex": 20.3605101726847,
-      "cost": 0.47742401619163854,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
       "id": "dd059b25-d82a-4ead-82a4-4adceaaec48b",
       "slug": "mistral-medium-3-5",
       "name": "Mistral Medium 3.5",
@@ -1198,7 +1198,7 @@
     {
       "id": "142b93bf-09c4-42dc-9c3a-50b1a222cbd4",
       "slug": "claude-sonnet-5-low",
-      "name": "Claude Sonnet 5 (Adaptive Reasoning, Low Effort)",
+      "name": "Claude Sonnet 5 (Low)",
       "shortName": "Claude Sonnet 5 (low)",
       "intelligenceIndex": 24.2638393579597,
       "cost": 0.5087545600633299,
@@ -1240,7 +1240,7 @@
     {
       "id": "4416ca93-fde6-4b7b-abbc-3a6be109cc3d",
       "slug": "claude-opus-5-5-low",
-      "name": "Claude Opus 5.5 (Adaptive Reasoning, Low Effort, Default Fallback)",
+      "name": "Claude Opus 5.5 (Low, Default Fallback)",
       "shortName": "Claude Opus 5.5 (low with fallback)",
       "intelligenceIndex": 42.3077781466168,
       "cost": 0.551180473909146,
@@ -1282,7 +1282,7 @@
     {
       "id": "042e8a37-fcd0-40f4-8f41-99215fb68eda",
       "slug": "claude-sonnet-5-5-medium",
-      "name": "Claude Sonnet 5.5 (Adaptive Reasoning, Medium Effort, Default Fallback)",
+      "name": "Claude Sonnet 5.5 (Medium, Default Fallback)",
       "shortName": "Claude Sonnet 5.5 (medium with fallback)",
       "intelligenceIndex": 40.838652287929,
       "cost": 0.5894076802052765,
@@ -1534,7 +1534,7 @@
     {
       "id": "effcd151-7c31-4437-af3d-e88daeae9385",
       "slug": "claude-sonnet-5-medium",
-      "name": "Claude Sonnet 5 (Adaptive Reasoning, Medium Effort)",
+      "name": "Claude Sonnet 5 (Medium)",
       "shortName": "Claude Sonnet 5 (medium)",
       "intelligenceIndex": 28.0531468379456,
       "cost": 0.9991061406688175,
@@ -1618,7 +1618,7 @@
     {
       "id": "20928ba9-3a3f-415f-9519-b84ff64ecf34",
       "slug": "claude-opus-5-low",
-      "name": "Claude Opus 5 (Adaptive Reasoning, Low Effort)",
+      "name": "Claude Opus 5 (Low)",
       "shortName": "Claude Opus 5 (low)",
       "intelligenceIndex": 39.3543357992936,
       "cost": 1.098302324514437,
@@ -1632,7 +1632,7 @@
     {
       "id": "268525e2-f873-4178-bc07-e6a0ee1f002d",
       "slug": "claude-sonnet-5-5-high",
-      "name": "Claude Sonnet 5.5 (Adaptive Reasoning, High Effort, Default Fallback)",
+      "name": "Claude Sonnet 5.5 (High, Default Fallback)",
       "shortName": "Claude Sonnet 5.5 (high with fallback)",
       "intelligenceIndex": 46.7533528066958,
       "cost": 1.1224835755720677,
@@ -1730,7 +1730,7 @@
     {
       "id": "ea9e0da6-169f-43c6-92f5-730a10d6ff8d",
       "slug": "claude-opus-5-5-medium",
-      "name": "Claude Opus 5.5 (Adaptive Reasoning, Medium Effort, Default Fallback)",
+      "name": "Claude Opus 5.5 (Medium, Default Fallback)",
       "shortName": "Claude Opus 5.5 (medium with fallback)",
       "intelligenceIndex": 51.2434931792768,
       "cost": 1.3360093438976588,
@@ -1898,7 +1898,7 @@
     {
       "id": "ba0224cf-0351-4f56-8508-b3f1a740ae4a",
       "slug": "claude-sonnet-5-high",
-      "name": "Claude Sonnet 5 (Adaptive Reasoning, High Effort)",
+      "name": "Claude Sonnet 5 (High)",
       "shortName": "Claude Sonnet 5 (high)",
       "intelligenceIndex": 31.6623246664651,
       "cost": 1.7924692244111728,
@@ -1912,7 +1912,7 @@
     {
       "id": "f314eade-2232-44bf-a3ab-9b326bc67de6",
       "slug": "claude-opus-5-5-high",
-      "name": "Claude Opus 5.5 (Adaptive Reasoning, High Effort, Default Fallback)",
+      "name": "Claude Opus 5.5 (High, Default Fallback)",
       "shortName": "Claude Opus 5.5 (high with fallback)",
       "intelligenceIndex": 53.5831959822067,
       "cost": 1.822504718771704,
@@ -2024,7 +2024,7 @@
     {
       "id": "ff51be8f-e362-4a7e-9043-687ba15de207",
       "slug": "claude-opus-5-medium",
-      "name": "Claude Opus 5 (Adaptive Reasoning, Medium Effort)",
+      "name": "Claude Opus 5 (Medium)",
       "shortName": "Claude Opus 5 (medium)",
       "intelligenceIndex": 44.8253265420613,
       "cost": 2.1894793086538695,
@@ -2066,7 +2066,7 @@
     {
       "id": "05776db7-f5c0-40f7-b824-079160f8cfa8",
       "slug": "claude-fable-5-1-low",
-      "name": "Claude Fable 5.1 (Adaptive Reasoning, Low Effort, Default Fallback)",
+      "name": "Claude Fable 5.1 (Low, Default Fallback)",
       "shortName": "Claude Fable 5.1 (low with fallback)",
       "intelligenceIndex": 46.8163422014862,
       "cost": 2.371025320183763,
@@ -2080,7 +2080,7 @@
     {
       "id": "df8d14e0-3997-4e4d-b4ad-9c047acc9c69",
       "slug": "claude-sonnet-4-6-adaptive",
-      "name": "Claude Sonnet 4.6 (Adaptive Reasoning, Max Effort)",
+      "name": "Claude Sonnet 4.6 (Max)",
       "shortName": "Claude Sonnet 4.6 (max)",
       "intelligenceIndex": 30.0575611117644,
       "cost": 2.4858655963942224,
@@ -2150,7 +2150,7 @@
     {
       "id": "975aeaef-50bd-4a65-9c73-f1015adcd4d4",
       "slug": "claude-sonnet-5-5-xhigh",
-      "name": "Claude Sonnet 5.5 (Adaptive Reasoning, Xhigh Effort, Default Fallback)",
+      "name": "Claude Sonnet 5.5 (Xhigh, Default Fallback)",
       "shortName": "Claude Sonnet 5.5 (xhigh with fallback)",
       "intelligenceIndex": 51.8955544183089,
       "cost": 2.7461969619444453,
@@ -2164,7 +2164,7 @@
     {
       "id": "99f376bf-cbcb-4124-bf3e-6b0a4e6e9bea",
       "slug": "claude-sonnet-5-xhigh",
-      "name": "Claude Sonnet 5 (Adaptive Reasoning, Xhigh Effort)",
+      "name": "Claude Sonnet 5 (Xhigh)",
       "shortName": "Claude Sonnet 5 (xhigh)",
       "intelligenceIndex": 34.384211557212,
       "cost": 2.8720437784323134,
@@ -2178,7 +2178,7 @@
     {
       "id": "3b7de71c-e034-4591-8ca6-6b6be2fa471f",
       "slug": "claude-fable-5-1-medium",
-      "name": "Claude Fable 5.1 (Adaptive Reasoning, Medium Effort, Default Fallback)",
+      "name": "Claude Fable 5.1 (Medium, Default Fallback)",
       "shortName": "Claude Fable 5.1 (medium with fallback)",
       "intelligenceIndex": 48.9206162609523,
       "cost": 2.982597436096585,
@@ -2206,7 +2206,7 @@
     {
       "id": "df5bf99d-d228-4715-b41b-19ca86118777",
       "slug": "claude-opus-5-5-xhigh",
-      "name": "Claude Opus 5.5 (Adaptive Reasoning, Xhigh Effort, Default Fallback)",
+      "name": "Claude Opus 5.5 (Xhigh, Default Fallback)",
       "shortName": "Claude Opus 5.5 (xhigh with fallback)",
       "intelligenceIndex": 55.9873505840139,
       "cost": 3.459110175822289,
@@ -2220,7 +2220,7 @@
     {
       "id": "712be54a-77ae-41b2-9a58-21181479d6ee",
       "slug": "claude-opus-5-high",
-      "name": "Claude Opus 5 (Adaptive Reasoning, High Effort)",
+      "name": "Claude Opus 5 (High)",
       "shortName": "Claude Opus 5 (high)",
       "intelligenceIndex": 48.1219182595908,
       "cost": 3.6132670078004714,
@@ -2248,7 +2248,7 @@
     {
       "id": "9d7d72cd-d95d-45a0-b109-4ad292c9aabd",
       "slug": "claude-fable-5-1-high",
-      "name": "Claude Fable 5.1 (Adaptive Reasoning, High Effort, Default Fallback)",
+      "name": "Claude Fable 5.1 (High, Default Fallback)",
       "shortName": "Claude Fable 5.1 (high with fallback)",
       "intelligenceIndex": 51.1515708852237,
       "cost": 3.912526554325558,
@@ -2262,7 +2262,7 @@
     {
       "id": "992b7b84-5069-4c6a-9295-834252553d50",
       "slug": "claude-opus-4-8",
-      "name": "Claude Opus 4.8 (Adaptive Reasoning, Max Effort)",
+      "name": "Claude Opus 4.8 (Max)",
       "shortName": "Claude Opus 4.8 (max)",
       "intelligenceIndex": 41.7899103794639,
       "cost": 4.080976976477826,
@@ -2276,7 +2276,7 @@
     {
       "id": "1305c921-7aaa-4d6d-99b5-99b3acf15e19",
       "slug": "claude-opus-5-xhigh",
-      "name": "Claude Opus 5 (Adaptive Reasoning, Xhigh Effort)",
+      "name": "Claude Opus 5 (Xhigh)",
       "shortName": "Claude Opus 5 (xhigh)",
       "intelligenceIndex": 49.6773552926939,
       "cost": 4.877843772646787,
@@ -2290,7 +2290,7 @@
     {
       "id": "23c86e4a-c769-43c0-a056-79e3cd15834f",
       "slug": "claude-sonnet-5",
-      "name": "Claude Sonnet 5 (Adaptive Reasoning, Max Effort)",
+      "name": "Claude Sonnet 5 (Max)",
       "shortName": "Claude Sonnet 5 (max)",
       "intelligenceIndex": 38.1638712882576,
       "cost": 5.091163584815694,
@@ -2318,7 +2318,7 @@
     {
       "id": "b8fc61f7-5e9a-49e6-8547-6ac56db24627",
       "slug": "claude-opus-5",
-      "name": "Claude Opus 5 (Adaptive Reasoning, Max Effort)",
+      "name": "Claude Opus 5 (Max)",
       "shortName": "Claude Opus 5 (max)",
       "intelligenceIndex": 50.7771115797629,
       "cost": 5.858396237036018,
@@ -2332,7 +2332,7 @@
     {
       "id": "9b166bf3-42db-4f63-8338-1c4a1244ffe8",
       "slug": "claude-fable-5-1-xhigh",
-      "name": "Claude Fable 5.1 (Adaptive Reasoning, Xhigh Effort, Default Fallback)",
+      "name": "Claude Fable 5.1 (Xhigh, Default Fallback)",
       "shortName": "Claude Fable 5.1 (xhigh with fallback)",
       "intelligenceIndex": 53.2032587538944,
       "cost": 5.978304247388257,
@@ -2346,7 +2346,7 @@
     {
       "id": "2f3c4dc9-a450-4303-8697-0237257cf08f",
       "slug": "claude-opus-5-5",
-      "name": "Claude Opus 5.5 (Adaptive Reasoning, Max Effort, Default Fallback)",
+      "name": "Claude Opus 5.5 (Max, Default Fallback)",
       "shortName": "Claude Opus 5.5 (max with fallback)",
       "intelligenceIndex": 57.6223698102963,
       "cost": 5.982012019521066,
@@ -2360,7 +2360,7 @@
     {
       "id": "3e87c73e-a257-495e-9730-367a66229811",
       "slug": "claude-fable-5-1",
-      "name": "Claude Fable 5.1 (Adaptive Reasoning, Max Effort, Default Fallback)",
+      "name": "Claude Fable 5.1 (Max, Default Fallback)",
       "shortName": "Claude Fable 5.1 (max with fallback)",
       "intelligenceIndex": 53.3549259623252,
       "cost": 7.629706364004841,
@@ -2374,7 +2374,7 @@
     {
       "id": "b171d979-5ec1-45de-b8b9-db1ee65e77ec",
       "slug": "claude-sonnet-5-5",
-      "name": "Claude Sonnet 5.5 (Adaptive Reasoning, Max Effort, Default Fallback)",
+      "name": "Claude Sonnet 5.5 (Max, Default Fallback)",
       "shortName": "Claude Sonnet 5.5 (max with fallback)",
       "intelligenceIndex": 56.0001286580794,
       "cost": 7.666776317411276,
@@ -2388,7 +2388,7 @@
     {
       "id": "cd55210d-358e-4df1-ba9c-9acb5f186cc9",
       "slug": "claude-fable-5",
-      "name": "Claude Fable 5 (Adaptive Reasoning, Max Effort, Opus 4.8 Fallback)",
+      "name": "Claude Fable 5 (Max, Opus 4.8 Fallback)",
       "shortName": "Claude Fable 5 (with fallback)",
       "intelligenceIndex": 49.6258202733378,
       "cost": 8.745961651687406,
