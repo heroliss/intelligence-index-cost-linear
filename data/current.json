@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-03T09:42:27.319Z",
-  "modelCount": 171,
+  "updatedAt": "2026-10-03T14:35:34.628Z",
+  "modelCount": 172,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -1530,6 +1530,20 @@
       },
       "isReasoning": true,
       "deprecated": true
+    },
+    {
+      "id": "a6043b9b-628a-4a76-a021-2834e0627d05",
+      "slug": "ling-3-1-flash",
+      "name": "Ling 3.1 Flash",
+      "shortName": "Ling 3.1 Flash",
+      "intelligenceIndex": 41.0906200397391,
+      "cost": 0.9856894983836784,
+      "creator": {
+        "name": "InclusionAI",
+        "color": "#4fb5ff"
+      },
+      "isReasoning": true,
+      "deprecated": false
     },
     {
       "id": "effcd151-7c31-4437-af3d-e88daeae9385",
