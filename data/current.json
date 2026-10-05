@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-05T11:13:59.904Z",
+  "updatedAt": "2026-10-05T22:20:46.766Z",
   "modelCount": 172,
   "models": [
     {
@@ -42,7 +42,7 @@
       "cost": 0.007846860809830004,
       "creator": {
         "name": "Mistral",
-        "color": "#fd6f00"
+        "color": "#f32e02"
       },
       "isReasoning": false,
       "deprecated": false
@@ -84,7 +84,7 @@
       "cost": 0.011086416592507111,
       "creator": {
         "name": "Mistral",
-        "color": "#fd6f00"
+        "color": "#f32e02"
       },
       "isReasoning": false,
       "deprecated": false
@@ -126,7 +126,7 @@
       "cost": 0.01504679036588765,
       "creator": {
         "name": "Mistral",
-        "color": "#fd6f00"
+        "color": "#f32e02"
       },
       "isReasoning": true,
       "deprecated": false
@@ -182,7 +182,7 @@
       "cost": 0.01943640228162961,
       "creator": {
         "name": "Mistral",
-        "color": "#fd6f00"
+        "color": "#f32e02"
       },
       "isReasoning": false,
       "deprecated": false
@@ -252,7 +252,7 @@
       "cost": 0.031125992260624492,
       "creator": {
         "name": "Mistral",
-        "color": "#fd6f00"
+        "color": "#f32e02"
       },
       "isReasoning": false,
       "deprecated": false
@@ -266,7 +266,7 @@
       "cost": 0.03502860053476431,
       "creator": {
         "name": "Mistral",
-        "color": "#fd6f00"
+        "color": "#f32e02"
       },
       "isReasoning": false,
       "deprecated": true
@@ -1162,7 +1162,7 @@
       "cost": 0.5020382394983653,
       "creator": {
         "name": "Mistral",
-        "color": "#fd6f00"
+        "color": "#f32e02"
       },
       "isReasoning": true,
       "deprecated": false
