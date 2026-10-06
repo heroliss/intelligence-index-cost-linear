@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-05T22:20:46.766Z",
+  "updatedAt": "2026-10-06T11:03:35.317Z",
   "modelCount": 172,
   "models": [
     {
@@ -207,7 +207,7 @@
       "name": "DeepSeek V3 0324",
       "shortName": "DeepSeek V3 0324",
       "intelligenceIndex": 9.72000501684011,
-      "cost": 0.020199039576443884,
+      "cost": 0.02113171101787361,
       "creator": {
         "name": "DeepSeek",
         "color": "#2243e6"
@@ -269,20 +269,6 @@
         "color": "#f32e02"
       },
       "isReasoning": false,
-      "deprecated": true
-    },
-    {
-      "id": "598190f8-dc9c-4fea-a7ea-4b81c402ab18",
-      "slug": "gemini-3-1-flash-lite-preview",
-      "name": "Gemini 3.1 Flash-Lite",
-      "shortName": "Gemini 3.1 Flash-Lite",
-      "intelligenceIndex": 15.554288713025,
-      "cost": 0.03940671951220252,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "isReasoning": true,
       "deprecated": true
     },
     {
@@ -382,6 +368,20 @@
       },
       "isReasoning": true,
       "deprecated": false
+    },
+    {
+      "id": "598190f8-dc9c-4fea-a7ea-4b81c402ab18",
+      "slug": "gemini-3-1-flash-lite-preview",
+      "name": "Gemini 3.1 Flash-Lite",
+      "shortName": "Gemini 3.1 Flash-Lite",
+      "intelligenceIndex": 15.554288713025,
+      "cost": 0.06018072627659897,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": true
     },
     {
       "id": "127de816-57d3-4037-8484-480a613cd413",
@@ -580,20 +580,6 @@
       "deprecated": true
     },
     {
-      "id": "093b9df2-ebee-4309-943f-5a7e88360adf",
-      "slug": "gemini-3-5-flash-lite",
-      "name": "Gemini 3.5 Flash-Lite",
-      "shortName": "Gemini 3.5 Flash-Lite",
-      "intelligenceIndex": 22.1685424839812,
-      "cost": 0.12352689651593446,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "89a2c945-1fab-4ee4-9f45-83a9f46cb221",
       "slug": "deepseek-v4-flash-0420-high",
       "name": "DeepSeek V4 Flash 0420 (High)",
@@ -748,6 +734,20 @@
       "deprecated": false
     },
     {
+      "id": "093b9df2-ebee-4309-943f-5a7e88360adf",
+      "slug": "gemini-3-5-flash-lite",
+      "name": "Gemini 3.5 Flash-Lite",
+      "shortName": "Gemini 3.5 Flash-Lite",
+      "intelligenceIndex": 22.1685424839812,
+      "cost": 0.1927430131409478,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "948892b5-db03-4118-a4a8-ccd51ed871ea",
       "slug": "grok-4-3",
       "name": "Grok 4.3 (High)",
@@ -813,20 +813,6 @@
       "creator": {
         "name": "DeepSeek",
         "color": "#2243e6"
-      },
-      "isReasoning": true,
-      "deprecated": true
-    },
-    {
-      "id": "27202e5f-c82d-4710-92e9-4317877d4883",
-      "slug": "gemini-2-5-pro",
-      "name": "Gemini 2.5 Pro",
-      "shortName": "Gemini 2.5 Pro",
-      "intelligenceIndex": 16.0778962941864,
-      "cost": 0.23166603200256353,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": true
@@ -972,18 +958,18 @@
       "deprecated": false
     },
     {
-      "id": "d4f5b250-be37-4801-85e6-32fda4179337",
-      "slug": "deepseek-v4-pro-non-reasoning",
-      "name": "DeepSeek V4 Pro 0813 (Non-reasoning)",
-      "shortName": "DeepSeek V4 Pro 0813 (non-reasoning)",
-      "intelligenceIndex": 20.3605101726847,
-      "cost": 0.3296953563474809,
+      "id": "27202e5f-c82d-4710-92e9-4317877d4883",
+      "slug": "gemini-2-5-pro",
+      "name": "Gemini 2.5 Pro",
+      "shortName": "Gemini 2.5 Pro",
+      "intelligenceIndex": 16.0778962941864,
+      "cost": 0.33028590601998487,
       "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
+        "name": "Google",
+        "color": "#34A853"
       },
-      "isReasoning": false,
-      "deprecated": false
+      "isReasoning": true,
+      "deprecated": true
     },
     {
       "id": "d3e20e76-9e1a-45b6-b809-ad6aa37430cf",
@@ -1051,6 +1037,20 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": true
+    },
+    {
+      "id": "c07e65e6-32fc-451e-938d-7477a1c3ffcc",
+      "slug": "grok-4-6-low",
+      "name": "Grok 4.6 (Low)",
+      "shortName": "Grok 4.6 (low)",
+      "intelligenceIndex": 35.1246953482174,
+      "cost": 0.37578773607022314,
+      "creator": {
+        "name": "SpaceXAI",
+        "color": "#736cd3"
       },
       "isReasoning": true,
       "deprecated": true
@@ -1140,18 +1140,18 @@
       "deprecated": false
     },
     {
-      "id": "c07e65e6-32fc-451e-938d-7477a1c3ffcc",
-      "slug": "grok-4-6-low",
-      "name": "Grok 4.6 (Low)",
-      "shortName": "Grok 4.6 (low)",
-      "intelligenceIndex": 35.1246953482174,
-      "cost": 0.47528534374531,
+      "id": "d4f5b250-be37-4801-85e6-32fda4179337",
+      "slug": "deepseek-v4-pro-non-reasoning",
+      "name": "DeepSeek V4 Pro 0813 (Non-reasoning)",
+      "shortName": "DeepSeek V4 Pro 0813 (non-reasoning)",
+      "intelligenceIndex": 20.3605101726847,
+      "cost": 0.47742401619163854,
       "creator": {
-        "name": "SpaceXAI",
-        "color": "#736cd3"
+        "name": "DeepSeek",
+        "color": "#2243e6"
       },
-      "isReasoning": true,
-      "deprecated": true
+      "isReasoning": false,
+      "deprecated": false
     },
     {
       "id": "dd059b25-d82a-4ead-82a4-4adceaaec48b",
@@ -1350,20 +1350,6 @@
       "deprecated": false
     },
     {
-      "id": "bbd93ebe-80da-4594-bb19-61e69d0331df",
-      "slug": "gemini-3-1-pro-preview",
-      "name": "Gemini 3.1 Pro Preview",
-      "shortName": "Gemini 3.1 Pro Preview",
-      "intelligenceIndex": 29.7185656132261,
-      "cost": 0.6747317275695374,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "c4169d75-9d24-4794-a9c3-69e1fe364de5",
       "slug": "gpt-5-5-instant-06-26",
       "name": "GPT-5.5 Instant (June 2026)",
@@ -1462,6 +1448,20 @@
       "deprecated": false
     },
     {
+      "id": "794f69b5-cede-482b-b1cc-d769478497cd",
+      "slug": "grok-4-5",
+      "name": "Grok 4.5 (High)",
+      "shortName": "Grok 4.5 (high)",
+      "intelligenceIndex": 38.8121153240657,
+      "cost": 0.8806608417078763,
+      "creator": {
+        "name": "SpaceXAI",
+        "color": "#736cd3"
+      },
+      "isReasoning": true,
+      "deprecated": true
+    },
+    {
       "id": "6b79f899-e3c0-45f6-923c-243faccdb2fc",
       "slug": "gpt-5-5-medium",
       "name": "GPT-5.5 (Medium)",
@@ -1482,20 +1482,6 @@
       "shortName": "Gemini 3.7 Flash (high)",
       "intelligenceIndex": 39.0594566404896,
       "cost": 0.9253359372385677,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "isReasoning": true,
-      "deprecated": true
-    },
-    {
-      "id": "78332c88-fe60-42c8-af9d-3617e44cf1f5",
-      "slug": "gemini-3-6-flash",
-      "name": "Gemini 3.6 Flash (High)",
-      "shortName": "Gemini 3.6 Flash (high)",
-      "intelligenceIndex": 33.9785928920714,
-      "cost": 0.9288448964661649,
       "creator": {
         "name": "Google",
         "color": "#34A853"
@@ -1588,20 +1574,6 @@
       "deprecated": true
     },
     {
-      "id": "794f69b5-cede-482b-b1cc-d769478497cd",
-      "slug": "grok-4-5",
-      "name": "Grok 4.5 (High)",
-      "shortName": "Grok 4.5 (high)",
-      "intelligenceIndex": 38.8121153240657,
-      "cost": 1.0364552526545159,
-      "creator": {
-        "name": "SpaceXAI",
-        "color": "#736cd3"
-      },
-      "isReasoning": true,
-      "deprecated": true
-    },
-    {
       "id": "c50ea08c-88c0-4eb7-85b8-27f2bbf6d527",
       "slug": "gpt-6-sol",
       "name": "GPT-6 Sol (Max)",
@@ -1672,6 +1644,20 @@
       "deprecated": false
     },
     {
+      "id": "26614164-6840-4e17-a65a-2deb2fe7e87b",
+      "slug": "grok-4-6-medium",
+      "name": "Grok 4.6 (Medium)",
+      "shortName": "Grok 4.6 (medium)",
+      "intelligenceIndex": 42.836322654063,
+      "cost": 1.14381661681713,
+      "creator": {
+        "name": "SpaceXAI",
+        "color": "#736cd3"
+      },
+      "isReasoning": true,
+      "deprecated": true
+    },
+    {
       "id": "512d17ef-13d2-4f65-bf9b-154b0dec7e8d",
       "slug": "kimi-k3-low",
       "name": "Kimi K3 (Low)",
@@ -1737,6 +1723,20 @@
       "creator": {
         "name": "SpaceXAI",
         "color": "#736cd3"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "bbd93ebe-80da-4594-bb19-61e69d0331df",
+      "slug": "gemini-3-1-pro-preview",
+      "name": "Gemini 3.1 Pro Preview",
+      "shortName": "Gemini 3.1 Pro Preview",
+      "intelligenceIndex": 29.7185656132261,
+      "cost": 1.2985855086120641,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1812,12 +1812,12 @@
       "deprecated": true
     },
     {
-      "id": "26614164-6840-4e17-a65a-2deb2fe7e87b",
-      "slug": "grok-4-6-medium",
-      "name": "Grok 4.6 (Medium)",
-      "shortName": "Grok 4.6 (medium)",
-      "intelligenceIndex": 42.836322654063,
-      "cost": 1.4963233956114492,
+      "id": "c8adc5cf-fd5a-407b-af51-dc3bede3e49c",
+      "slug": "grok-4-6",
+      "name": "Grok 4.6 (High)",
+      "shortName": "Grok 4.6 (high)",
+      "intelligenceIndex": 44.3113073012592,
+      "cost": 1.4848449196688633,
       "creator": {
         "name": "SpaceXAI",
         "color": "#736cd3"
@@ -1854,12 +1854,12 @@
       "deprecated": true
     },
     {
-      "id": "0097ebf5-124f-42f6-9463-33b00e711f03",
-      "slug": "gemini-3-5-flash",
-      "name": "Gemini 3.5 Flash (High)",
-      "shortName": "Gemini 3.5 Flash (high)",
-      "intelligenceIndex": 32.5983283695905,
-      "cost": 1.5625413241435933,
+      "id": "78332c88-fe60-42c8-af9d-3617e44cf1f5",
+      "slug": "gemini-3-6-flash",
+      "name": "Gemini 3.6 Flash (High)",
+      "shortName": "Gemini 3.6 Flash (high)",
+      "intelligenceIndex": 33.9785928920714,
+      "cost": 1.600530533263267,
       "creator": {
         "name": "Google",
         "color": "#34A853"
@@ -1910,6 +1910,20 @@
       "deprecated": false
     },
     {
+      "id": "d6f43d0a-e8c4-447c-9ff7-5cf0a9d59aa3",
+      "slug": "grok-4-6-xhigh",
+      "name": "Grok 4.6 (Xhigh)",
+      "shortName": "Grok 4.6 (xhigh)",
+      "intelligenceIndex": 44.199810436996,
+      "cost": 1.7523145158282367,
+      "creator": {
+        "name": "SpaceXAI",
+        "color": "#736cd3"
+      },
+      "isReasoning": true,
+      "deprecated": true
+    },
+    {
       "id": "ba0224cf-0351-4f56-8508-b3f1a740ae4a",
       "slug": "claude-sonnet-5-high",
       "name": "Claude Sonnet 5 (High)",
@@ -1936,20 +1950,6 @@
       },
       "isReasoning": true,
       "deprecated": false
-    },
-    {
-      "id": "c8adc5cf-fd5a-407b-af51-dc3bede3e49c",
-      "slug": "grok-4-6",
-      "name": "Grok 4.6 (High)",
-      "shortName": "Grok 4.6 (high)",
-      "intelligenceIndex": 44.3113073012592,
-      "cost": 1.8589423352127492,
-      "creator": {
-        "name": "SpaceXAI",
-        "color": "#736cd3"
-      },
-      "isReasoning": true,
-      "deprecated": true
     },
     {
       "id": "d93edfe8-bf35-49ad-b56e-b18116142a1c",
@@ -2062,20 +2062,6 @@
       },
       "isReasoning": true,
       "deprecated": false
-    },
-    {
-      "id": "d6f43d0a-e8c4-447c-9ff7-5cf0a9d59aa3",
-      "slug": "grok-4-6-xhigh",
-      "name": "Grok 4.6 (Xhigh)",
-      "shortName": "Grok 4.6 (xhigh)",
-      "intelligenceIndex": 44.199810436996,
-      "cost": 2.323692124283027,
-      "creator": {
-        "name": "SpaceXAI",
-        "color": "#736cd3"
-      },
-      "isReasoning": true,
-      "deprecated": true
     },
     {
       "id": "05776db7-f5c0-40f7-b824-079160f8cfa8",
@@ -2241,6 +2227,20 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": true
+    },
+    {
+      "id": "0097ebf5-124f-42f6-9463-33b00e711f03",
+      "slug": "gemini-3-5-flash",
+      "name": "Gemini 3.5 Flash (High)",
+      "shortName": "Gemini 3.5 Flash (high)",
+      "intelligenceIndex": 32.5983283695905,
+      "cost": 3.6936902127611133,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": true
