@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-07T10:53:31.911Z",
-  "modelCount": 173,
+  "updatedAt": "2026-10-07T21:02:58.258Z",
+  "modelCount": 178,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -230,6 +230,20 @@
       "deprecated": false
     },
     {
+      "id": "42908ae3-d3bd-4934-be19-fbff93d3fde8",
+      "slug": "claude-haiku-5-5-low",
+      "name": "Claude Haiku 5.5 (Low, Default Fallback)",
+      "shortName": "Claude Haiku 5.5 (low with fallback)",
+      "intelligenceIndex": 29.4494981304947,
+      "cost": 0.02445936101890973,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
       "slug": "gpt-6-luna-high",
       "name": "GPT-6 Luna (High)",
@@ -298,6 +312,20 @@
       },
       "isReasoning": true,
       "deprecated": true
+    },
+    {
+      "id": "af26fff4-8120-41be-a5f0-86aaea023f20",
+      "slug": "claude-haiku-5-5-medium",
+      "name": "Claude Haiku 5.5 (Medium, Default Fallback)",
+      "shortName": "Claude Haiku 5.5 (medium with fallback)",
+      "intelligenceIndex": 34.4646519474657,
+      "cost": 0.04703084793955566,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
     },
     {
       "id": "8014c311-fa23-4a4b-8485-8a864db8a113",
@@ -438,6 +466,20 @@
       },
       "isReasoning": true,
       "deprecated": true
+    },
+    {
+      "id": "20829974-af06-497e-9f42-77fb958d43b9",
+      "slug": "claude-haiku-5-5-high",
+      "name": "Claude Haiku 5.5 (High, Default Fallback)",
+      "shortName": "Claude Haiku 5.5 (high with fallback)",
+      "intelligenceIndex": 37.8240211671094,
+      "cost": 0.07942671568737021,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
     },
     {
       "id": "b89c4faf-219e-4171-a1aa-e3bd2fd0a924",
@@ -585,13 +627,27 @@
       "name": "DeepSeek V4 Flash 0420 (High)",
       "shortName": "DeepSeek V4 Flash (high)",
       "intelligenceIndex": 24.3839569152521,
-      "cost": 0.12711665874155298,
+      "cost": 0.12313084891092088,
       "creator": {
         "name": "DeepSeek",
         "color": "#2243e6"
       },
       "isReasoning": true,
       "deprecated": true
+    },
+    {
+      "id": "41b5bf5e-daf6-42d9-b8d1-60e340a3028d",
+      "slug": "claude-haiku-5-5-xhigh",
+      "name": "Claude Haiku 5.5 (Xhigh, Default Fallback)",
+      "shortName": "Claude Haiku 5.5 (xhigh with fallback)",
+      "intelligenceIndex": 41.2489304677024,
+      "cost": 0.12378561092096102,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
     },
     {
       "id": "e76e0fe5-93ca-4272-9359-2eb1740467d1",
@@ -771,6 +827,20 @@
       "creator": {
         "name": "Alibaba",
         "color": "#ff7018"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "7d064a11-6e78-4030-b535-cdf940615041",
+      "slug": "claude-haiku-5-5",
+      "name": "Claude Haiku 5.5 (Max, Default Fallback)",
+      "shortName": "Claude Haiku 5.5 (max with fallback)",
+      "intelligenceIndex": 43.3950199670746,
+      "cost": 0.21276971216992022,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1000,6 +1070,20 @@
       "deprecated": false
     },
     {
+      "id": "bbc2ffea-cf6b-43be-8c41-1769347e234d",
+      "slug": "claude-sonnet-5-5-low",
+      "name": "Claude Sonnet 5.5 (Low, Default Fallback)",
+      "shortName": "Claude Sonnet 5.5 (low with fallback)",
+      "intelligenceIndex": 35.8681594577587,
+      "cost": 0.3451610270666562,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "62ea3198-9866-4d9f-8406-a79ee78c7164",
       "slug": "solar-mini4",
       "name": "Solar Mini 4",
@@ -1070,20 +1154,6 @@
       "deprecated": false
     },
     {
-      "id": "bbc2ffea-cf6b-43be-8c41-1769347e234d",
-      "slug": "claude-sonnet-5-5-low",
-      "name": "Claude Sonnet 5.5 (Low, Default Fallback)",
-      "shortName": "Claude Sonnet 5.5 (low with fallback)",
-      "intelligenceIndex": 35.8681594577587,
-      "cost": 0.41697045178975856,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "ba242e40-83b7-4cd3-a0e0-b56237984914",
       "slug": "gpt-5-4-mini",
       "name": "GPT-5.4 mini (Xhigh)",
@@ -1149,6 +1219,20 @@
       "creator": {
         "name": "Alibaba",
         "color": "#ff7018"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "042e8a37-fcd0-40f4-8f41-99215fb68eda",
+      "slug": "claude-sonnet-5-5-medium",
+      "name": "Claude Sonnet 5.5 (Medium, Default Fallback)",
+      "shortName": "Claude Sonnet 5.5 (medium with fallback)",
+      "intelligenceIndex": 40.838652287929,
+      "cost": 0.48326378260543096,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1278,20 +1362,6 @@
       },
       "isReasoning": true,
       "deprecated": true
-    },
-    {
-      "id": "042e8a37-fcd0-40f4-8f41-99215fb68eda",
-      "slug": "claude-sonnet-5-5-medium",
-      "name": "Claude Sonnet 5.5 (Medium, Default Fallback)",
-      "shortName": "Claude Sonnet 5.5 (medium with fallback)",
-      "intelligenceIndex": 40.838652287929,
-      "cost": 0.5894076802052765,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
     },
     {
       "id": "5b52def2-ac9b-4465-ad80-91ea8079e253",
@@ -1462,6 +1532,20 @@
       "deprecated": true
     },
     {
+      "id": "268525e2-f873-4178-bc07-e6a0ee1f002d",
+      "slug": "claude-sonnet-5-5-high",
+      "name": "Claude Sonnet 5.5 (High, Default Fallback)",
+      "shortName": "Claude Sonnet 5.5 (high with fallback)",
+      "intelligenceIndex": 46.7533528066958,
+      "cost": 0.8844498581005511,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "6b79f899-e3c0-45f6-923c-243faccdb2fc",
       "slug": "gpt-5-5-medium",
       "name": "GPT-5.5 (Medium)",
@@ -1614,20 +1698,6 @@
       },
       "isReasoning": true,
       "deprecated": true
-    },
-    {
-      "id": "268525e2-f873-4178-bc07-e6a0ee1f002d",
-      "slug": "claude-sonnet-5-5-high",
-      "name": "Claude Sonnet 5.5 (High, Default Fallback)",
-      "shortName": "Claude Sonnet 5.5 (high with fallback)",
-      "intelligenceIndex": 46.7533528066958,
-      "cost": 1.1224835755720677,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
     },
     {
       "id": "34fc646a-0174-470e-9e62-d8df452210b3",
@@ -2022,6 +2092,20 @@
       "deprecated": false
     },
     {
+      "id": "975aeaef-50bd-4a65-9c73-f1015adcd4d4",
+      "slug": "claude-sonnet-5-5-xhigh",
+      "name": "Claude Sonnet 5.5 (Xhigh, Default Fallback)",
+      "shortName": "Claude Sonnet 5.5 (xhigh with fallback)",
+      "intelligenceIndex": 51.8955544183089,
+      "cost": 2.0120345801545785,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "f9739750-6d42-450f-ba1e-2f76c869b4fe",
       "slug": "quasar-438b",
       "name": "Quasar 438B (Max, Based on GLM-5.2)",
@@ -2157,20 +2241,6 @@
       "creator": {
         "name": "SpaceXAI",
         "color": "#736cd3"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "975aeaef-50bd-4a65-9c73-f1015adcd4d4",
-      "slug": "claude-sonnet-5-5-xhigh",
-      "name": "Claude Sonnet 5.5 (Xhigh, Default Fallback)",
-      "shortName": "Claude Sonnet 5.5 (xhigh with fallback)",
-      "intelligenceIndex": 51.8955544183089,
-      "cost": 2.7461969619444453,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
       },
       "isReasoning": true,
       "deprecated": false
@@ -2344,6 +2414,20 @@
       "deprecated": false
     },
     {
+      "id": "b171d979-5ec1-45de-b8b9-db1ee65e77ec",
+      "slug": "claude-sonnet-5-5",
+      "name": "Claude Sonnet 5.5 (Max, Default Fallback)",
+      "shortName": "Claude Sonnet 5.5 (max with fallback)",
+      "intelligenceIndex": 56.0001286580794,
+      "cost": 5.4608525948098325,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "b8fc61f7-5e9a-49e6-8547-6ac56db24627",
       "slug": "claude-opus-5",
       "name": "Claude Opus 5 (Max)",
@@ -2392,20 +2476,6 @@
       "shortName": "Claude Fable 5.1 (max with fallback)",
       "intelligenceIndex": 53.3549259623252,
       "cost": 7.629706364004841,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "b171d979-5ec1-45de-b8b9-db1ee65e77ec",
-      "slug": "claude-sonnet-5-5",
-      "name": "Claude Sonnet 5.5 (Max, Default Fallback)",
-      "shortName": "Claude Sonnet 5.5 (max with fallback)",
-      "intelligenceIndex": 56.0001286580794,
-      "cost": 7.666776317411276,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
