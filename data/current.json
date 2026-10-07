@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-06T20:49:38.415Z",
+  "updatedAt": "2026-10-07T01:14:16.501Z",
   "modelCount": 173,
   "models": [
     {
@@ -1098,6 +1098,20 @@
       "deprecated": true
     },
     {
+      "id": "d4f5b250-be37-4801-85e6-32fda4179337",
+      "slug": "deepseek-v4-pro-non-reasoning",
+      "name": "DeepSeek V4 Pro 0813 (Non-reasoning)",
+      "shortName": "DeepSeek V4 Pro 0813 (non-reasoning)",
+      "intelligenceIndex": 20.3605101726847,
+      "cost": 0.4552528984420853,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": false,
+      "deprecated": false
+    },
+    {
       "id": "08242385-ee91-4de6-be7f-271a6d9780ce",
       "slug": "apodex-1-1",
       "name": "Apodex 1.1",
@@ -1137,20 +1151,6 @@
         "color": "#ff7018"
       },
       "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "d4f5b250-be37-4801-85e6-32fda4179337",
-      "slug": "deepseek-v4-pro-non-reasoning",
-      "name": "DeepSeek V4 Pro 0813 (Non-reasoning)",
-      "shortName": "DeepSeek V4 Pro 0813 (non-reasoning)",
-      "intelligenceIndex": 20.3605101726847,
-      "cost": 0.47742401619163854,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": false,
       "deprecated": false
     },
     {
