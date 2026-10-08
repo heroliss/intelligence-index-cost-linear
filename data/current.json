@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-07T21:02:58.258Z",
+  "updatedAt": "2026-10-08T01:35:59.172Z",
   "modelCount": 178,
   "models": [
     {
@@ -232,8 +232,8 @@
     {
       "id": "42908ae3-d3bd-4934-be19-fbff93d3fde8",
       "slug": "claude-haiku-5-5-low",
-      "name": "Claude Haiku 5.5 (Low, Default Fallback)",
-      "shortName": "Claude Haiku 5.5 (low with fallback)",
+      "name": "Claude Haiku 5.5 (Low)",
+      "shortName": "Claude Haiku 5.5 (low)",
       "intelligenceIndex": 29.4494981304947,
       "cost": 0.02445936101890973,
       "creator": {
@@ -269,7 +269,7 @@
         "color": "#f32e02"
       },
       "isReasoning": false,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "24ac5b00-5f03-4c47-8e37-522d1195383e",
@@ -316,8 +316,8 @@
     {
       "id": "af26fff4-8120-41be-a5f0-86aaea023f20",
       "slug": "claude-haiku-5-5-medium",
-      "name": "Claude Haiku 5.5 (Medium, Default Fallback)",
-      "shortName": "Claude Haiku 5.5 (medium with fallback)",
+      "name": "Claude Haiku 5.5 (Medium)",
+      "shortName": "Claude Haiku 5.5 (medium)",
       "intelligenceIndex": 34.4646519474657,
       "cost": 0.04703084793955566,
       "creator": {
@@ -470,8 +470,8 @@
     {
       "id": "20829974-af06-497e-9f42-77fb958d43b9",
       "slug": "claude-haiku-5-5-high",
-      "name": "Claude Haiku 5.5 (High, Default Fallback)",
-      "shortName": "Claude Haiku 5.5 (high with fallback)",
+      "name": "Claude Haiku 5.5 (High)",
+      "shortName": "Claude Haiku 5.5 (high)",
       "intelligenceIndex": 37.8240211671094,
       "cost": 0.07942671568737021,
       "creator": {
@@ -638,8 +638,8 @@
     {
       "id": "41b5bf5e-daf6-42d9-b8d1-60e340a3028d",
       "slug": "claude-haiku-5-5-xhigh",
-      "name": "Claude Haiku 5.5 (Xhigh, Default Fallback)",
-      "shortName": "Claude Haiku 5.5 (xhigh with fallback)",
+      "name": "Claude Haiku 5.5 (Xhigh)",
+      "shortName": "Claude Haiku 5.5 (xhigh)",
       "intelligenceIndex": 41.2489304677024,
       "cost": 0.12378561092096102,
       "creator": {
@@ -834,8 +834,8 @@
     {
       "id": "7d064a11-6e78-4030-b535-cdf940615041",
       "slug": "claude-haiku-5-5",
-      "name": "Claude Haiku 5.5 (Max, Default Fallback)",
-      "shortName": "Claude Haiku 5.5 (max with fallback)",
+      "name": "Claude Haiku 5.5 (Max)",
+      "shortName": "Claude Haiku 5.5 (max)",
       "intelligenceIndex": 43.3950199670746,
       "cost": 0.21276971216992022,
       "creator": {
