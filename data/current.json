@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-08T01:35:59.172Z",
+  "updatedAt": "2026-10-08T11:10:57.158Z",
   "modelCount": 178,
   "models": [
     {
@@ -904,7 +904,7 @@
     {
       "id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
       "slug": "glm-5-3-flash",
-      "name": "GLM 5.3 Flash",
+      "name": "GLM-5.3-Flash",
       "shortName": "GLM-5.3-Flash",
       "intelligenceIndex": 41.807466113455,
       "cost": 0.2532595604307378,
@@ -1434,20 +1434,6 @@
       "deprecated": false
     },
     {
-      "id": "094ea3e3-ce41-419e-8bd1-723389663158",
-      "slug": "step-5",
-      "name": "Step 5 Preview",
-      "shortName": "Step 5 Preview",
-      "intelligenceIndex": 43.7343049141614,
-      "cost": 0.7174901509283937,
-      "creator": {
-        "name": "StepFun",
-        "color": "#00F5E7"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "b25ac058-1e33-4c31-bbc9-a20c3ad0717a",
       "slug": "gpt-6-1-sol",
       "name": "GPT-6.1 Sol (Max)",
@@ -1656,6 +1642,20 @@
       },
       "isReasoning": true,
       "deprecated": true
+    },
+    {
+      "id": "094ea3e3-ce41-419e-8bd1-723389663158",
+      "slug": "step-5",
+      "name": "Step 5 Preview",
+      "shortName": "Step 5 Preview",
+      "intelligenceIndex": 43.7343049141614,
+      "cost": 1.0264068637684054,
+      "creator": {
+        "name": "StepFun",
+        "color": "#00F5E7"
+      },
+      "isReasoning": true,
+      "deprecated": false
     },
     {
       "id": "c50ea08c-88c0-4eb7-85b8-27f2bbf6d527",
