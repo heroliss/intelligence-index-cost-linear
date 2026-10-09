@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-08T21:04:27.336Z",
-  "modelCount": 178,
+  "updatedAt": "2026-10-09T01:46:15.124Z",
+  "modelCount": 179,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -435,6 +435,20 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "1071dea1-43e7-4fe9-b936-3034bb622b2e",
+      "slug": "granite-4-2-30b",
+      "name": "Granite 4.2 30B",
+      "shortName": "Granite 4.2 30B",
+      "intelligenceIndex": 12.68315341158,
+      "cost": 0.0716641484962871,
+      "creator": {
+        "name": "IBM",
+        "color": "#0f62fe"
       },
       "isReasoning": true,
       "deprecated": false
