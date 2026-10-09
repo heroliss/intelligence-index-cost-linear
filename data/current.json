@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-09T11:09:45.095Z",
+  "updatedAt": "2026-10-09T20:35:35.973Z",
   "modelCount": 179,
   "models": [
     {
@@ -95,7 +95,7 @@
       "name": "GPT-6 Luna (Non-reasoning)",
       "shortName": "GPT-6 Luna (non-reasoning)",
       "intelligenceIndex": 18.4678465935701,
-      "cost": 0.011342690862652438,
+      "cost": 0.011345057120527267,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -109,7 +109,7 @@
       "name": "gpt-oss-20b (High)",
       "shortName": "gpt-oss-20b (high)",
       "intelligenceIndex": 8.9675171856126,
-      "cost": 0.012460640242179213,
+      "cost": 0.0130944482975404,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -384,20 +384,6 @@
       "deprecated": false
     },
     {
-      "id": "5c3bdc0d-abab-4526-8079-34de4089bb4a",
-      "slug": "longcat-2-0",
-      "name": "LongCat 2.0",
-      "shortName": "LongCat 2.0",
-      "intelligenceIndex": 19.1123256610623,
-      "cost": 0.05898990881433253,
-      "creator": {
-        "name": "LongCat",
-        "color": "#2adb65"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "598190f8-dc9c-4fea-a7ea-4b81c402ab18",
       "slug": "gemini-3-1-flash-lite-preview",
       "name": "Gemini 3.1 Flash-Lite",
@@ -417,7 +403,7 @@
       "name": "MiMo-V2.6-Flash",
       "shortName": "MiMo-V2.6-Flash",
       "intelligenceIndex": 37.8843590141754,
-      "cost": 0.06231470136619077,
+      "cost": 0.06237567475410205,
       "creator": {
         "name": "Xiaomi",
         "color": "#ff6900"
@@ -729,6 +715,20 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "5c3bdc0d-abab-4526-8079-34de4089bb4a",
+      "slug": "longcat-2-0",
+      "name": "LongCat 2.0",
+      "shortName": "LongCat 2.0",
+      "intelligenceIndex": 19.1123256610623,
+      "cost": 0.14624850952440743,
+      "creator": {
+        "name": "LongCat",
+        "color": "#2adb65"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1103,7 +1103,7 @@
       "name": "Solar Mini 4",
       "shortName": "Solar Mini 4",
       "intelligenceIndex": 24.0522018844171,
-      "cost": 0.36336112521859043,
+      "cost": 0.3655852120863359,
       "creator": {
         "name": "Upstage",
         "color": "#7c59f5"
@@ -1350,20 +1350,6 @@
       "deprecated": false
     },
     {
-      "id": "fc92f822-04b7-420d-9c07-a21af5e9aac7",
-      "slug": "qwen3-coder-next",
-      "name": "Qwen3 Coder Next",
-      "shortName": "Qwen3 Coder Next",
-      "intelligenceIndex": 9.23682203219174,
-      "cost": 0.5518041274940361,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
       "id": "90e078f2-051b-4c63-8919-76618971cb3f",
       "slug": "claude-4-5-sonnet-thinking",
       "name": "Claude 4.5 Sonnet (Reasoning)",
@@ -1459,6 +1445,20 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "fc92f822-04b7-420d-9c07-a21af5e9aac7",
+      "slug": "qwen3-coder-next",
+      "name": "Qwen3 Coder Next",
+      "shortName": "Qwen3 Coder Next",
+      "intelligenceIndex": 9.23682203219174,
+      "cost": 0.7805028420975578,
+      "creator": {
+        "name": "Alibaba",
+        "color": "#ff7018"
+      },
+      "isReasoning": false,
       "deprecated": false
     },
     {
@@ -1602,20 +1602,6 @@
       "deprecated": true
     },
     {
-      "id": "a6043b9b-628a-4a76-a021-2834e0627d05",
-      "slug": "ling-3-1-flash",
-      "name": "Ling 3.1 Flash",
-      "shortName": "Ling 3.1 Flash",
-      "intelligenceIndex": 41.0906200397391,
-      "cost": 0.9856894983836784,
-      "creator": {
-        "name": "InclusionAI",
-        "color": "#4fb5ff"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "effcd151-7c31-4437-af3d-e88daeae9385",
       "slug": "claude-sonnet-5-medium",
       "name": "Claude Sonnet 5 (Medium)",
@@ -1628,6 +1614,20 @@
       },
       "isReasoning": true,
       "deprecated": true
+    },
+    {
+      "id": "a6043b9b-628a-4a76-a021-2834e0627d05",
+      "slug": "ling-3-1-flash",
+      "name": "Ling 3.1 Flash",
+      "shortName": "Ling 3.1 Flash",
+      "intelligenceIndex": 41.0906200397391,
+      "cost": 1.00160288019986,
+      "creator": {
+        "name": "InclusionAI",
+        "color": "#4fb5ff"
+      },
+      "isReasoning": true,
+      "deprecated": false
     },
     {
       "id": "b01dee41-c62b-48ed-8d16-984adc405e5c",
