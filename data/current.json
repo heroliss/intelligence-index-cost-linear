@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-09T01:46:15.124Z",
+  "updatedAt": "2026-10-09T11:09:45.095Z",
   "modelCount": 179,
   "models": [
     {
@@ -234,7 +234,7 @@
       "slug": "claude-haiku-5-5-low",
       "name": "Claude Haiku 5.5 (Low)",
       "shortName": "Claude Haiku 5.5 (low)",
-      "intelligenceIndex": 29.4494981304947,
+      "intelligenceIndex": 29.4523685891139,
       "cost": 0.02445936101890973,
       "creator": {
         "name": "Anthropic",
@@ -983,7 +983,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "eb4ba465-3fcd-4065-9fe2-e8225e7b2c6c",
