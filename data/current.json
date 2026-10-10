@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-09T20:35:35.973Z",
+  "updatedAt": "2026-10-10T01:32:59.197Z",
   "modelCount": 179,
   "models": [
     {
@@ -109,7 +109,7 @@
       "name": "gpt-oss-20b (High)",
       "shortName": "gpt-oss-20b (high)",
       "intelligenceIndex": 8.9675171856126,
-      "cost": 0.0130944482975404,
+      "cost": 0.012460640242179213,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -244,6 +244,20 @@
       "deprecated": false
     },
     {
+      "id": "24ac5b00-5f03-4c47-8e37-522d1195383e",
+      "slug": "mistral-small-3-1",
+      "name": "Mistral Small 3.1",
+      "shortName": "Mistral Small 3.1",
+      "intelligenceIndex": 7.11735622656558,
+      "cost": 0.02554707330972973,
+      "creator": {
+        "name": "Mistral",
+        "color": "#f32e02"
+      },
+      "isReasoning": false,
+      "deprecated": true
+    },
+    {
       "id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
       "slug": "gpt-6-luna-high",
       "name": "GPT-6 Luna (High)",
@@ -264,20 +278,6 @@
       "shortName": "Mistral Large 3",
       "intelligenceIndex": 9.26608812860467,
       "cost": 0.031125992260624492,
-      "creator": {
-        "name": "Mistral",
-        "color": "#f32e02"
-      },
-      "isReasoning": false,
-      "deprecated": true
-    },
-    {
-      "id": "24ac5b00-5f03-4c47-8e37-522d1195383e",
-      "slug": "mistral-small-3-1",
-      "name": "Mistral Small 3.1",
-      "shortName": "Mistral Small 3.1",
-      "intelligenceIndex": 7.11735622656558,
-      "cost": 0.03502860053476431,
       "creator": {
         "name": "Mistral",
         "color": "#f32e02"
@@ -557,7 +557,7 @@
       "name": "gpt-oss-120b (High)",
       "shortName": "gpt-oss-120b (high)",
       "intelligenceIndex": 11.6028431512592,
-      "cost": 0.10742452290394947,
+      "cost": 0.10728975304606923,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
