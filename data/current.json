@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-10T01:32:59.197Z",
+  "updatedAt": "2026-10-10T10:27:03.354Z",
   "modelCount": 179,
   "models": [
     {
@@ -1098,6 +1098,20 @@
       "deprecated": false
     },
     {
+      "id": "d4f5b250-be37-4801-85e6-32fda4179337",
+      "slug": "deepseek-v4-pro-non-reasoning",
+      "name": "DeepSeek V4 Pro 0813 (Non-reasoning)",
+      "shortName": "DeepSeek V4 Pro 0813 (non-reasoning)",
+      "intelligenceIndex": 20.3605101726847,
+      "cost": 0.35547065335335964,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": false,
+      "deprecated": false
+    },
+    {
       "id": "62ea3198-9866-4d9f-8406-a79ee78c7164",
       "slug": "solar-mini4",
       "name": "Solar Mini 4",
@@ -1180,20 +1194,6 @@
       },
       "isReasoning": true,
       "deprecated": true
-    },
-    {
-      "id": "d4f5b250-be37-4801-85e6-32fda4179337",
-      "slug": "deepseek-v4-pro-non-reasoning",
-      "name": "DeepSeek V4 Pro 0813 (Non-reasoning)",
-      "shortName": "DeepSeek V4 Pro 0813 (non-reasoning)",
-      "intelligenceIndex": 20.3605101726847,
-      "cost": 0.4552528984420853,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": false,
-      "deprecated": false
     },
     {
       "id": "08242385-ee91-4de6-be7f-271a6d9780ce",
