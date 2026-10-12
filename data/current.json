@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-12T11:42:42.631Z",
+  "updatedAt": "2026-10-12T22:45:24.558Z",
   "modelCount": 179,
   "models": [
     {
@@ -412,6 +412,20 @@
       "deprecated": false
     },
     {
+      "id": "5e0164b3-d902-4bcb-a1b2-83b4f4cd6143",
+      "slug": "qwen3-30b-a3b-2507-reasoning",
+      "name": "Qwen3 30B A3B 2507 (Reasoning)",
+      "shortName": "Qwen3 30B A3B 2507",
+      "intelligenceIndex": 9.80537532870426,
+      "cost": 0.06594880518459643,
+      "creator": {
+        "name": "Alibaba",
+        "color": "#ff7018"
+      },
+      "isReasoning": true,
+      "deprecated": true
+    },
+    {
       "id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
       "slug": "gpt-6-luna",
       "name": "GPT-6 Luna (Max)",
@@ -454,20 +468,6 @@
       "deprecated": false
     },
     {
-      "id": "5e0164b3-d902-4bcb-a1b2-83b4f4cd6143",
-      "slug": "qwen3-30b-a3b-2507-reasoning",
-      "name": "Qwen3 30B A3B 2507 (Reasoning)",
-      "shortName": "Qwen3 30B A3B 2507",
-      "intelligenceIndex": 9.80537532870426,
-      "cost": 0.0765560533905436,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": true,
-      "deprecated": true
-    },
-    {
       "id": "20829974-af06-497e-9f42-77fb958d43b9",
       "slug": "claude-haiku-5-5-high",
       "name": "Claude Haiku 5.5 (High)",
@@ -491,20 +491,6 @@
       "creator": {
         "name": "Upstage",
         "color": "#7c59f5"
-      },
-      "isReasoning": true,
-      "deprecated": true
-    },
-    {
-      "id": "f6ccbe1d-bd7e-484b-9795-18cc9f91552d",
-      "slug": "qwen3-235b-a22b-instruct-2507-reasoning",
-      "name": "Qwen3 235B A22B 2507 (Reasoning)",
-      "shortName": "Qwen3 235B A22B 2507",
-      "intelligenceIndex": 12.7108511527974,
-      "cost": 0.08055542892015415,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
       },
       "isReasoning": true,
       "deprecated": true
@@ -538,6 +524,20 @@
       "deprecated": false
     },
     {
+      "id": "d8ddb241-b3e4-4c25-a6a3-72eb1b30c541",
+      "slug": "deepseek-v4-flash-0420",
+      "name": "DeepSeek V4 Flash 0420 (Max)",
+      "shortName": "DeepSeek V4 Flash (max)",
+      "intelligenceIndex": 24.1673138235549,
+      "cost": 0.08953612525522162,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": true,
+      "deprecated": true
+    },
+    {
       "id": "29976311-665a-4b2f-ac72-557c33e0758e",
       "slug": "nemotron-3-5-lightning",
       "name": "Nemotron 3.5 Lightning",
@@ -552,6 +552,20 @@
       "deprecated": false
     },
     {
+      "id": "89a2c945-1fab-4ee4-9f45-83a9f46cb221",
+      "slug": "deepseek-v4-flash-0420-high",
+      "name": "DeepSeek V4 Flash 0420 (High)",
+      "shortName": "DeepSeek V4 Flash (high)",
+      "intelligenceIndex": 24.3839569152521,
+      "cost": 0.10256688240478459,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": true,
+      "deprecated": true
+    },
+    {
       "id": "f0083258-8646-45b8-8082-7aaf6c2ea82a",
       "slug": "gpt-oss-120b",
       "name": "gpt-oss-120b (High)",
@@ -564,20 +578,6 @@
       },
       "isReasoning": true,
       "deprecated": false
-    },
-    {
-      "id": "d8ddb241-b3e4-4c25-a6a3-72eb1b30c541",
-      "slug": "deepseek-v4-flash-0420",
-      "name": "DeepSeek V4 Flash 0420 (Max)",
-      "shortName": "DeepSeek V4 Flash (max)",
-      "intelligenceIndex": 24.1673138235549,
-      "cost": 0.1074631228275786,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": true,
-      "deprecated": true
     },
     {
       "id": "765c9f31-95ec-4f14-900a-80614c3b0777",
@@ -614,20 +614,6 @@
       "shortName": "DeepSeek V4 Pro (max)",
       "intelligenceIndex": 30.4496601315524,
       "cost": 0.12152059767597723,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": true,
-      "deprecated": true
-    },
-    {
-      "id": "89a2c945-1fab-4ee4-9f45-83a9f46cb221",
-      "slug": "deepseek-v4-flash-0420-high",
-      "name": "DeepSeek V4 Flash 0420 (High)",
-      "shortName": "DeepSeek V4 Flash (high)",
-      "intelligenceIndex": 24.3839569152521,
-      "cost": 0.12313084891092088,
       "creator": {
         "name": "DeepSeek",
         "color": "#2243e6"
@@ -2384,6 +2370,20 @@
       },
       "isReasoning": true,
       "deprecated": true
+    },
+    {
+      "id": "ff2f3f3d-783f-4e27-8a39-47237501a313",
+      "slug": "muse-wonder",
+      "name": "Muse Wonder (Max)",
+      "shortName": "Muse Wonder (max)",
+      "intelligenceIndex": 52.393894697293,
+      "cost": 4.515677444063016,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
+      },
+      "isReasoning": true,
+      "deprecated": false
     },
     {
       "id": "1305c921-7aaa-4d6d-99b5-99b3acf15e19",
