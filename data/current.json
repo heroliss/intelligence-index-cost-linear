@@ -1,8 +1,8 @@
 {
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
-  "manifestPath": "/data/2a1c2b25faec2404.txt",
-  "updatedAt": "2026-10-13T21:01:24.918Z",
+  "manifestPath": "/data/b2ca3023f67eb50f.txt",
+  "updatedAt": "2026-10-14T00:55:14.637Z",
   "modelCount": 179,
   "models": [
     {
@@ -356,6 +356,20 @@
       "deprecated": true
     },
     {
+      "id": "583f98fb-c4b8-4df3-8d40-60ac0ed69882",
+      "slug": "muse-glimmer",
+      "name": "Muse Glimmer (High)",
+      "shortName": "Muse Glimmer (high)",
+      "intelligenceIndex": 17.4754176089465,
+      "cost": 0.05354887073483047,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "00f1248e-78e3-4230-8dc8-5e13ba8645e2",
       "slug": "mimo-v2-5-pro",
       "name": "MiMo-V2.5-Pro (Reasoning)",
@@ -368,20 +382,6 @@
       },
       "isReasoning": true,
       "deprecated": true
-    },
-    {
-      "id": "583f98fb-c4b8-4df3-8d40-60ac0ed69882",
-      "slug": "muse-glimmer",
-      "name": "Muse Glimmer (High)",
-      "shortName": "Muse Glimmer (high)",
-      "intelligenceIndex": 17.4754176089465,
-      "cost": 0.05670634665029995,
-      "creator": {
-        "name": "Meta",
-        "color": "#0089f4"
-      },
-      "isReasoning": true,
-      "deprecated": false
     },
     {
       "id": "598190f8-dc9c-4fea-a7ea-4b81c402ab18",
