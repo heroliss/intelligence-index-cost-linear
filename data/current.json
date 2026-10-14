@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-14T00:55:14.637Z",
+  "updatedAt": "2026-10-14T09:20:42.308Z",
   "modelCount": 179,
   "models": [
     {
@@ -1620,8 +1620,8 @@
       "slug": "qwen3-8-27b",
       "name": "Qwen3.8 27B (Xhigh)",
       "shortName": "Qwen3.8 27B (xhigh)",
-      "intelligenceIndex": 33.6962858057476,
-      "cost": 1.0073149536565944,
+      "intelligenceIndex": 33.6762858057476,
+      "cost": 1.0074896941565943,
       "creator": {
         "name": "Alibaba",
         "color": "#ff7018"
