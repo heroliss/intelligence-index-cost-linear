@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-15T14:42:47.289Z",
+  "updatedAt": "2026-10-15T19:44:07.441Z",
   "modelCount": 185,
   "models": [
     {
@@ -2061,7 +2061,7 @@
         "color": "#76b900"
       },
       "isReasoning": true,
-      "deprecated": false
+      "deprecated": true
     },
     {
       "id": "e05a4828-0536-4876-870d-a235023f992b",
