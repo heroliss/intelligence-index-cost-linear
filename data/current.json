@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-15T19:44:07.441Z",
-  "modelCount": 185,
+  "updatedAt": "2026-10-16T00:06:48.242Z",
+  "modelCount": 187,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -1168,6 +1168,20 @@
       "deprecated": false
     },
     {
+      "id": "e2c0623e-c855-4a61-bb66-be1f1ed43234",
+      "slug": "nemotron-3-5-super-vl",
+      "name": "Nemotron 3.5 Super VL",
+      "shortName": "Nemotron 3.5 Super VL",
+      "intelligenceIndex": 26.4910658661689,
+      "cost": 0.34678125883568717,
+      "creator": {
+        "name": "NVIDIA",
+        "color": "#76b900"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "d4f5b250-be37-4801-85e6-32fda4179337",
       "slug": "deepseek-v4-pro-non-reasoning",
       "name": "DeepSeek V4 Pro 0813 (Non-reasoning)",
@@ -1569,6 +1583,20 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "3661c8fb-caf7-4118-aa18-65b84fea8e44",
+      "slug": "muse-spark-open",
+      "name": "Muse Spark Open (Xhigh)",
+      "shortName": "Muse Spark Open (xhigh)",
+      "intelligenceIndex": 38.8666662997805,
+      "cost": 0.8435187802958677,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
       },
       "isReasoning": true,
       "deprecated": false
