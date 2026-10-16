@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-16T00:06:48.242Z",
-  "modelCount": 187,
+  "updatedAt": "2026-10-16T08:48:05.683Z",
+  "modelCount": 188,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -986,6 +986,20 @@
       "deprecated": true
     },
     {
+      "id": "e2c0623e-c855-4a61-bb66-be1f1ed43234",
+      "slug": "nemotron-3-5-super-vl",
+      "name": "Nemotron 3.5 Super VL",
+      "shortName": "Nemotron 3.5 Super VL",
+      "intelligenceIndex": 26.4910658661689,
+      "cost": 0.2508090805577973,
+      "creator": {
+        "name": "NVIDIA",
+        "color": "#76b900"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "0904b596-8932-43bd-9b21-324f128e1723",
       "slug": "gpt-5-6-sol-low",
       "name": "GPT-5.6 Sol (Low)",
@@ -1163,20 +1177,6 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "e2c0623e-c855-4a61-bb66-be1f1ed43234",
-      "slug": "nemotron-3-5-super-vl",
-      "name": "Nemotron 3.5 Super VL",
-      "shortName": "Nemotron 3.5 Super VL",
-      "intelligenceIndex": 26.4910658661689,
-      "cost": 0.34678125883568717,
-      "creator": {
-        "name": "NVIDIA",
-        "color": "#76b900"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1513,6 +1513,20 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "15c4cbd7-b9aa-42c8-9ce5-5abbde0e6963",
+      "slug": "solar-pro4",
+      "name": "Solar Pro 4",
+      "shortName": "Solar Pro 4",
+      "intelligenceIndex": 26.5600314812231,
+      "cost": 0.7113065897513132,
+      "creator": {
+        "name": "Upstage",
+        "color": "#7c59f5"
       },
       "isReasoning": true,
       "deprecated": false
