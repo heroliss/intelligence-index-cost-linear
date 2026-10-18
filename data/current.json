@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-16T14:35:55.228Z",
-  "modelCount": 188,
+  "updatedAt": "2026-10-18T14:04:30.716Z",
+  "modelCount": 189,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -73,7 +73,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "dc64f856-3ded-497d-9527-d41d31267ed5",
@@ -87,7 +87,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": false,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "9741f3c2-cbb1-4a3f-99ee-7bd7384d9038",
@@ -123,7 +123,7 @@
       "name": "gpt-oss-20b (High)",
       "shortName": "gpt-oss-20b (high)",
       "intelligenceIndex": 8.9675171856126,
-      "cost": 0.012460640242179213,
+      "cost": 0.011451402590850306,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -157,7 +157,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "76dcf6ef-39ea-4be0-b693-b88da25b4caf",
@@ -199,7 +199,7 @@
         "color": "#ff6900"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "713fae11-c75c-4f10-ae2c-8e4074cd58af",
@@ -227,7 +227,7 @@
         "color": "#2243e6"
       },
       "isReasoning": false,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "75e1c197-f239-4361-a9d6-66dccfead236",
@@ -241,7 +241,7 @@
         "color": "#2243e6"
       },
       "isReasoning": false,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "adfae555-f489-4f3e-9064-c6b7fcdd0783",
@@ -283,7 +283,7 @@
         "color": "#f32e02"
       },
       "isReasoning": false,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
@@ -311,7 +311,7 @@
         "color": "#f32e02"
       },
       "isReasoning": false,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "922c69c7-9037-43c6-8bcf-a1c555e7f3eb",
@@ -319,7 +319,7 @@
       "name": "Llama 4 Maverick",
       "shortName": "Llama 4 Maverick",
       "intelligenceIndex": 9.29902687437199,
-      "cost": 0.03819743472822281,
+      "cost": 0.038299797707028495,
       "creator": {
         "name": "Meta",
         "color": "#0089f4"
@@ -339,7 +339,7 @@
         "color": "#021B30"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "19813eb2-460a-475c-af65-810bb8660fec",
@@ -367,7 +367,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "af26fff4-8120-41be-a5f0-86aaea023f20",
@@ -409,20 +409,6 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
-    },
-    {
-      "id": "583f98fb-c4b8-4df3-8d40-60ac0ed69882",
-      "slug": "muse-glimmer",
-      "name": "Muse Glimmer (High)",
-      "shortName": "Muse Glimmer (high)",
-      "intelligenceIndex": 17.4754176089465,
-      "cost": 0.05354887073483047,
-      "creator": {
-        "name": "Meta",
-        "color": "#0089f4"
-      },
-      "isReasoning": true,
       "deprecated": false
     },
     {
@@ -437,7 +423,21 @@
         "color": "#ff6900"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
+    },
+    {
+      "id": "583f98fb-c4b8-4df3-8d40-60ac0ed69882",
+      "slug": "muse-glimmer",
+      "name": "Muse Glimmer (High)",
+      "shortName": "Muse Glimmer (high)",
+      "intelligenceIndex": 17.4754176089465,
+      "cost": 0.05755125039078422,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
+      },
+      "isReasoning": true,
+      "deprecated": false
     },
     {
       "id": "598190f8-dc9c-4fea-a7ea-4b81c402ab18",
@@ -451,7 +451,7 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "127de816-57d3-4037-8484-480a613cd413",
@@ -479,7 +479,7 @@
         "color": "#ff7018"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
@@ -549,7 +549,7 @@
         "color": "#7c59f5"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "87110ff0-1f79-41b4-9976-eda250597317",
@@ -563,7 +563,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "7261504e-503c-4a66-a9d3-a3272cdf9ad6",
@@ -591,7 +591,21 @@
         "color": "#2243e6"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
+    },
+    {
+      "id": "f0083258-8646-45b8-8082-7aaf6c2ea82a",
+      "slug": "gpt-oss-120b",
+      "name": "gpt-oss-120b (High)",
+      "shortName": "gpt-oss-120b (high)",
+      "intelligenceIndex": 11.6028431512592,
+      "cost": 0.0921933712679154,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
     },
     {
       "id": "29976311-665a-4b2f-ac72-557c33e0758e",
@@ -619,20 +633,6 @@
         "color": "#2243e6"
       },
       "isReasoning": true,
-      "deprecated": true
-    },
-    {
-      "id": "f0083258-8646-45b8-8082-7aaf6c2ea82a",
-      "slug": "gpt-oss-120b",
-      "name": "gpt-oss-120b (High)",
-      "shortName": "gpt-oss-120b (high)",
-      "intelligenceIndex": 11.6028431512592,
-      "cost": 0.10728975304606923,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
       "deprecated": false
     },
     {
@@ -647,7 +647,7 @@
         "color": "#f32e02"
       },
       "isReasoning": false,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "adf9a85e-abc3-4f28-937b-db6655cc5238",
@@ -703,7 +703,7 @@
         "color": "#2243e6"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "41b5bf5e-daf6-42d9-b8d1-60e340a3028d",
@@ -745,7 +745,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "24d8fdfe-6241-424e-b7b7-1b6efb06e4fb",
@@ -804,20 +804,6 @@
       "deprecated": false
     },
     {
-      "id": "73c96f99-0de3-4668-a4bd-b106a0fe18f2",
-      "slug": "deepseek-v4-1-flash-non-reasoning",
-      "name": "DeepSeek V4.1 Flash (Non-reasoning)",
-      "shortName": "DeepSeek V4.1 Flash (non-reasoning)",
-      "intelligenceIndex": 24.6733593924318,
-      "cost": 0.14670039195227308,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
       "id": "90c2a9cf-ad7e-4332-9be2-2fd1309833e2",
       "slug": "grok-4-3-non-reasoning",
       "name": "Grok 4.3 (Non-reasoning)",
@@ -829,7 +815,21 @@
         "color": "#736cd3"
       },
       "isReasoning": false,
-      "deprecated": true
+      "deprecated": false
+    },
+    {
+      "id": "fe4c0848-e284-4e52-a79d-cdc28392f1a9",
+      "slug": "deepseek-v4-flash",
+      "name": "DeepSeek V4 Flash 0731 (Max)",
+      "shortName": "DeepSeek V4 Flash 0731 (max)",
+      "intelligenceIndex": 34.3305129347816,
+      "cost": 0.1744055331356121,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": true,
+      "deprecated": false
     },
     {
       "id": "426d24c8-49ae-482a-b4a8-20f1c53f21c1",
@@ -843,7 +843,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "d4fc3f33-f2b0-4da1-88ee-f1f82bd4de31",
@@ -857,7 +857,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "26e0f83a-ca98-4f34-94ac-7c5e251ee410",
@@ -869,6 +869,20 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "e2c0623e-c855-4a61-bb66-be1f1ed43234",
+      "slug": "nemotron-3-5-super-vl",
+      "name": "Nemotron 3.5 Super VL",
+      "shortName": "Nemotron 3.5 Super VL",
+      "intelligenceIndex": 26.4910658661689,
+      "cost": 0.18823665957318256,
+      "creator": {
+        "name": "NVIDIA",
+        "color": "#76b900"
       },
       "isReasoning": true,
       "deprecated": false
@@ -899,7 +913,7 @@
         "color": "#736cd3"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "2d28a13a-096e-475a-beb8-26bbd1c7d51c",
@@ -958,18 +972,18 @@
       "deprecated": false
     },
     {
-      "id": "fe4c0848-e284-4e52-a79d-cdc28392f1a9",
-      "slug": "deepseek-v4-flash",
-      "name": "DeepSeek V4 Flash 0731 (Max)",
-      "shortName": "DeepSeek V4 Flash 0731 (max)",
-      "intelligenceIndex": 34.3305129347816,
-      "cost": 0.21964484501171036,
+      "id": "73c96f99-0de3-4668-a4bd-b106a0fe18f2",
+      "slug": "deepseek-v4-1-flash-non-reasoning",
+      "name": "DeepSeek V4.1 Flash (Non-reasoning)",
+      "shortName": "DeepSeek V4.1 Flash (non-reasoning)",
+      "intelligenceIndex": 24.6733593924318,
+      "cost": 0.22122822673888506,
       "creator": {
         "name": "DeepSeek",
         "color": "#2243e6"
       },
-      "isReasoning": true,
-      "deprecated": true
+      "isReasoning": false,
+      "deprecated": false
     },
     {
       "id": "780a4a85-17ff-4175-a8dd-ebca4823e61b",
@@ -981,20 +995,6 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": true
-    },
-    {
-      "id": "e2c0623e-c855-4a61-bb66-be1f1ed43234",
-      "slug": "nemotron-3-5-super-vl",
-      "name": "Nemotron 3.5 Super VL",
-      "shortName": "Nemotron 3.5 Super VL",
-      "intelligenceIndex": 26.4910658661689,
-      "cost": 0.2508090805577973,
-      "creator": {
-        "name": "NVIDIA",
-        "color": "#76b900"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1011,7 +1011,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "0e34f05c-387e-4968-be15-ccec4a55d8c1",
@@ -1020,20 +1020,6 @@
       "shortName": "DeepSeek R1 (Jan)",
       "intelligenceIndex": 11.4109820044475,
       "cost": 0.2617212405141733,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": true,
-      "deprecated": true
-    },
-    {
-      "id": "dbe7c625-3100-4463-b479-a228c41f75dd",
-      "slug": "deepseek-v4-1-flash",
-      "name": "DeepSeek V4.1 Flash (Max)",
-      "shortName": "DeepSeek V4.1 Flash (max)",
-      "intelligenceIndex": 39.456167472527,
-      "cost": 0.26522527009606844,
       "creator": {
         "name": "DeepSeek",
         "color": "#2243e6"
@@ -1053,7 +1039,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
@@ -1079,20 +1065,6 @@
       "creator": {
         "name": "InclusionAI",
         "color": "#4fb5ff"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "7707a46f-895f-4247-b7a8-ddab87c9a11d",
-      "slug": "deepseek-v4-flash-vision",
-      "name": "DeepSeek V4 Flash Vision (Max)",
-      "shortName": "DeepSeek V4 Flash Vision (max)",
-      "intelligenceIndex": 34.8390628035969,
-      "cost": 0.314372044499279,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1137,7 +1109,7 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "d3e20e76-9e1a-45b6-b809-ad6aa37430cf",
@@ -1151,7 +1123,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": false,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "81972fba-1219-477e-bbfb-18c656a63ff7",
@@ -1235,7 +1207,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "c07e65e6-32fc-451e-938d-7477a1c3ffcc",
@@ -1249,7 +1221,7 @@
         "color": "#736cd3"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "092a3b0e-c5c8-45dc-bf1b-53673c8ff352",
@@ -1277,7 +1249,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "08242385-ee91-4de6-be7f-271a6d9780ce",
@@ -1291,6 +1263,20 @@
         "color": "#0FD9D2"
       },
       "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "fc92f822-04b7-420d-9c07-a21af5e9aac7",
+      "slug": "qwen3-coder-next",
+      "name": "Qwen3 Coder Next",
+      "shortName": "Qwen3 Coder Next",
+      "intelligenceIndex": 9.23682203219174,
+      "cost": 0.46969565354948617,
+      "creator": {
+        "name": "Alibaba",
+        "color": "#ff7018"
+      },
+      "isReasoning": false,
       "deprecated": false
     },
     {
@@ -1336,6 +1322,20 @@
       "deprecated": false
     },
     {
+      "id": "dbe7c625-3100-4463-b479-a228c41f75dd",
+      "slug": "deepseek-v4-1-flash",
+      "name": "DeepSeek V4.1 Flash (Max)",
+      "shortName": "DeepSeek V4.1 Flash (max)",
+      "intelligenceIndex": 39.456167472527,
+      "cost": 0.485662249576018,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "dd059b25-d82a-4ead-82a4-4adceaaec48b",
       "slug": "mistral-medium-3-5",
       "name": "Mistral Medium 3.5",
@@ -1361,7 +1361,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "277f939a-985b-4b37-859d-b3eabc7c0b26",
@@ -1389,7 +1389,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "da2642fe-9f73-4788-b5af-24edcd55b37e",
@@ -1403,7 +1403,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "8d0cb231-7303-452c-9923-a9620b948475",
@@ -1445,7 +1445,21 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
+    },
+    {
+      "id": "69468cce-7b5c-414a-b498-41df4c34df85",
+      "slug": "reflection-beam",
+      "name": "Beam 1.0",
+      "shortName": "Beam 1.0",
+      "intelligenceIndex": 30.3334426348039,
+      "cost": 0.5657163841991104,
+      "creator": {
+        "name": "Reflection",
+        "color": "#195428"
+      },
+      "isReasoning": true,
+      "deprecated": false
     },
     {
       "id": "5b52def2-ac9b-4465-ad80-91ea8079e253",
@@ -1453,7 +1467,7 @@
       "name": "Nemotron 3 Ultra 550B A55B (Reasoning)",
       "shortName": "Nemotron 3 Ultra",
       "intelligenceIndex": 22.9279123422858,
-      "cost": 0.5975984799533358,
+      "cost": 0.5769597489420976,
       "creator": {
         "name": "NVIDIA",
         "color": "#76b900"
@@ -1473,7 +1487,7 @@
         "color": "#ff7018"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "9e30696f-16fa-4b4f-ba53-161895a85fed",
@@ -1546,20 +1560,6 @@
       "deprecated": false
     },
     {
-      "id": "fc92f822-04b7-420d-9c07-a21af5e9aac7",
-      "slug": "qwen3-coder-next",
-      "name": "Qwen3 Coder Next",
-      "shortName": "Qwen3 Coder Next",
-      "intelligenceIndex": 9.23682203219174,
-      "cost": 0.7805028420975578,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
       "id": "0de67206-4d36-4d10-b8f6-cf37fa747a03",
       "slug": "kimi-k2-6",
       "name": "Kimi K2.6 (Reasoning)",
@@ -1571,7 +1571,7 @@
         "color": "#047AFE"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "8afc250d-b538-45a2-812a-4605f4ffd87e",
@@ -1585,7 +1585,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "a3f8100d-e38f-408b-b0fa-0085dae18dc1",
@@ -1641,7 +1641,7 @@
         "color": "#736cd3"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "268525e2-f873-4178-bc07-e6a0ee1f002d",
@@ -1669,7 +1669,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "b2331108-72ed-415a-82d1-188633875bbc",
@@ -1683,7 +1683,7 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "744fa3c1-42a7-4995-b138-fb6be11f463c",
@@ -1711,7 +1711,7 @@
         "color": "#0089f4"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "effcd151-7c31-4437-af3d-e88daeae9385",
@@ -1725,7 +1725,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "a6043b9b-628a-4a76-a021-2834e0627d05",
@@ -1767,7 +1767,7 @@
         "color": "#1c7ff8"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "094ea3e3-ce41-419e-8bd1-723389663158",
@@ -1784,6 +1784,20 @@
       "deprecated": false
     },
     {
+      "id": "7707a46f-895f-4247-b7a8-ddab87c9a11d",
+      "slug": "deepseek-v4-flash-vision",
+      "name": "DeepSeek V4 Flash Vision (Max)",
+      "shortName": "DeepSeek V4 Flash Vision (max)",
+      "intelligenceIndex": 34.8390628035969,
+      "cost": 1.037910627432751,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "c50ea08c-88c0-4eb7-85b8-27f2bbf6d527",
       "slug": "gpt-6-sol",
       "name": "GPT-6 Sol (Max)",
@@ -1795,7 +1809,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "7e30585f-fad7-40df-a8cb-03c1d96df38a",
@@ -1823,7 +1837,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "6657d7de-a2a9-40bc-a32f-86e80ad63698",
@@ -1865,7 +1879,7 @@
         "color": "#736cd3"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "512d17ef-13d2-4f65-bf9b-154b0dec7e8d",
@@ -1893,7 +1907,7 @@
         "color": "#ff7018"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "d998db47-9b67-4727-a2bb-2e1261020ac0",
@@ -1907,7 +1921,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "8a999846-4c1d-4ce7-a8b7-1310a7166fd7",
@@ -1991,7 +2005,7 @@
         "color": "#0089f4"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "bcf8db0a-3bb6-4d82-9516-0f57370c85a6",
@@ -2019,7 +2033,7 @@
         "color": "#1c7ff8"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "c8adc5cf-fd5a-407b-af51-dc3bede3e49c",
@@ -2033,7 +2047,7 @@
         "color": "#736cd3"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "e97a4ef5-e817-480e-9595-12f81dc4974f",
@@ -2061,7 +2075,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "78332c88-fe60-42c8-af9d-3617e44cf1f5",
@@ -2075,7 +2089,7 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "9999672c-b687-4026-9c15-5cef02ff53bb",
@@ -2103,7 +2117,7 @@
         "color": "#76b900"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "e05a4828-0536-4876-870d-a235023f992b",
@@ -2131,7 +2145,7 @@
         "color": "#736cd3"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "ba0224cf-0351-4f56-8508-b3f1a740ae4a",
@@ -2145,7 +2159,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "f314eade-2232-44bf-a3ab-9b326bc67de6",
@@ -2173,7 +2187,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "d366dfa1-d940-4788-aa73-d298c45699b3",
@@ -2271,7 +2285,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "1f541ef3-913f-4eb2-9d07-0e93c7a9a5e3",
@@ -2313,7 +2327,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "353c92f3-2148-4c2d-9231-aa7e1322a1fd",
@@ -2341,7 +2355,7 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "5e5b4ce7-bc54-47b2-b911-21b9cad8394c",
@@ -2355,7 +2369,7 @@
         "color": "#ff7018"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "272f5f03-aea9-4675-a244-2b753b618cdf",
@@ -2383,7 +2397,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "3b7de71c-e034-4591-8ca6-6b6be2fa471f",
@@ -2439,7 +2453,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "0097ebf5-124f-42f6-9463-33b00e711f03",
@@ -2453,7 +2467,7 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "59627802-1546-422c-9a65-65b61c022d36",
@@ -2495,7 +2509,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "ff2f3f3d-783f-4e27-8a39-47237501a313",
@@ -2523,7 +2537,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "23c86e4a-c769-43c0-a056-79e3cd15834f",
@@ -2537,7 +2551,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "b112af07-3bd5-4647-b09f-b23204361bb2",
@@ -2579,7 +2593,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     },
     {
       "id": "9b166bf3-42db-4f63-8338-1c4a1244ffe8",
@@ -2635,7 +2649,7 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": true
+      "deprecated": false
     }
   ]
 }

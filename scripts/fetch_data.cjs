@@ -16,11 +16,12 @@ async function getBuffer(url) {
   return Buffer.from(await response.arrayBuffer());
 }
 
-function readManifest(pageHtml) {
+function readManifests(pageHtml) {
   const matches = [...pageHtml.matchAll(/manifest\\":\{\\"path\\":\\"([^"\\]+)\\",\\"key\\":\\"([0-9a-f]+)\\"/gi)];
-  if (!matches.length) throw new Error('Could not find Artificial Analysis data manifest in the page');
-  const match = matches[matches.length - 1];
-  return { path: match[1], key: match[2] };
+  const unique = new Map();
+  for (const match of matches) unique.set(`${match[1]}:${match[2]}`, { path: match[1], key: match[2] });
+  if (!unique.size) throw new Error('Could not find Artificial Analysis data manifest in the page');
+  return [...unique.values()];
 }
 
 function decryptPayload(encrypted, keyHex) {
@@ -34,7 +35,7 @@ function decryptPayload(encrypted, keyHex) {
 }
 
 function simplifyModel(model) {
-  const cost = model.intelligenceIndexCostPerTask?.cost?.total;
+  const cost = model.intelligenceIndexCostPerTask?.cost?.total ?? model.intelligenceIndexCostPerTask?.total;
   const score = model.intelligenceIndex;
   if (!Number.isFinite(cost) || cost <= 0 || !Number.isFinite(score)) return null;
   return {
@@ -55,10 +56,24 @@ function simplifyModel(model) {
 
 async function main() {
   const page = (await getBuffer(sourceUrl)).toString('utf8');
-  const manifest = readManifest(page);
-  const manifestUrl = new URL(manifest.path, sourceUrl).href;
-  const payload = JSON.parse(decryptPayload(await getBuffer(manifestUrl), manifest.key));
-  const models = (payload.models || []).map(simplifyModel).filter(Boolean);
+  const manifests = readManifests(page);
+  let manifest = null;
+  let payload = null;
+  let models = [];
+  for (const candidate of manifests) {
+    try {
+      const manifestUrl = new URL(candidate.path, sourceUrl).href;
+      const candidatePayload = JSON.parse(decryptPayload(await getBuffer(manifestUrl), candidate.key));
+      const candidateModels = (candidatePayload.models || []).map(simplifyModel).filter(Boolean);
+      if (candidateModels.length > models.length) {
+        manifest = candidate;
+        payload = candidatePayload;
+        models = candidateModels;
+      }
+    } catch (error) {
+      console.warn(`Skipping manifest ${candidate.path}: ${error.message}`);
+    }
+  }
   if (models.length < 50) throw new Error(`Unexpectedly low model count: ${models.length}`);
   models.sort((a, b) => a.cost - b.cost || b.intelligenceIndex - a.intelligenceIndex);
   const output = {
@@ -76,3 +91,4 @@ async function main() {
 }
 
 main().catch(error => { console.error(error.stack || error); process.exit(1); });
+
