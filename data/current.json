@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-19T09:40:14.827Z",
-  "modelCount": 190,
+  "updatedAt": "2026-10-19T16:49:45.262Z",
+  "modelCount": 191,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -967,6 +967,20 @@
       "creator": {
         "name": "Alibaba",
         "color": "#ff7018"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "d49c8680-e29b-400e-9511-824f7ddebe07",
+      "slug": "minimax-m3-1-flash",
+      "name": "MiniMax-M3.1-Flash",
+      "shortName": "MiniMax-M3.1-Flash",
+      "intelligenceIndex": 42.3811052132362,
+      "cost": 0.2201135746720313,
+      "creator": {
+        "name": "MiniMax",
+        "color": "#EB3568"
       },
       "isReasoning": true,
       "deprecated": false
