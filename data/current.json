@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-20T14:44:49.935Z",
-  "modelCount": 191,
+  "updatedAt": "2026-10-20T19:52:03.121Z",
+  "modelCount": 189,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -123,7 +123,7 @@
       "name": "gpt-oss-20b (High)",
       "shortName": "gpt-oss-20b (high)",
       "intelligenceIndex": 8.9675171856126,
-      "cost": 0.011451402590850306,
+      "cost": 0.01372825635290159,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -468,20 +468,6 @@
       "deprecated": false
     },
     {
-      "id": "5e0164b3-d902-4bcb-a1b2-83b4f4cd6143",
-      "slug": "qwen3-30b-a3b-2507-reasoning",
-      "name": "Qwen3 30B A3B 2507 (Reasoning)",
-      "shortName": "Qwen3 30B A3B 2507",
-      "intelligenceIndex": 9.80537532870426,
-      "cost": 0.06594880518459643,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
       "slug": "gpt-6-luna",
       "name": "GPT-6 Luna (Max)",
@@ -608,20 +594,6 @@
       "deprecated": false
     },
     {
-      "id": "f0083258-8646-45b8-8082-7aaf6c2ea82a",
-      "slug": "gpt-oss-120b",
-      "name": "gpt-oss-120b (High)",
-      "shortName": "gpt-oss-120b (high)",
-      "intelligenceIndex": 11.6028431512592,
-      "cost": 0.0921933712679154,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "89a2c945-1fab-4ee4-9f45-83a9f46cb221",
       "slug": "deepseek-v4-flash-0420-high",
       "name": "DeepSeek V4 Flash 0420 (High)",
@@ -631,6 +603,20 @@
       "creator": {
         "name": "DeepSeek",
         "color": "#2243e6"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "f0083258-8646-45b8-8082-7aaf6c2ea82a",
+      "slug": "gpt-oss-120b",
+      "name": "gpt-oss-120b (High)",
+      "shortName": "gpt-oss-120b (high)",
+      "intelligenceIndex": 11.6028431512592,
+      "cost": 0.10755929276182966,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1695,20 +1681,6 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "b2331108-72ed-415a-82d1-188633875bbc",
-      "slug": "gemini-3-7-flash",
-      "name": "Gemini 3.7 Flash (High)",
-      "shortName": "Gemini 3.7 Flash (high)",
-      "intelligenceIndex": 39.0594566404896,
-      "cost": 0.9253359372385677,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": false
