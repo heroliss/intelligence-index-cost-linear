@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-20T19:52:03.121Z",
+  "updatedAt": "2026-10-21T00:24:15.306Z",
   "modelCount": 189,
   "models": [
     {
@@ -972,20 +972,6 @@
       "deprecated": false
     },
     {
-      "id": "73c96f99-0de3-4668-a4bd-b106a0fe18f2",
-      "slug": "deepseek-v4-1-flash-non-reasoning",
-      "name": "DeepSeek V4.1 Flash (Non-reasoning)",
-      "shortName": "DeepSeek V4.1 Flash (non-reasoning)",
-      "intelligenceIndex": 24.6733593924318,
-      "cost": 0.22122822673888506,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
       "id": "780a4a85-17ff-4175-a8dd-ebca4823e61b",
       "slug": "gpt-6-sol-medium",
       "name": "GPT-6 Sol (Medium)",
@@ -997,6 +983,20 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "73c96f99-0de3-4668-a4bd-b106a0fe18f2",
+      "slug": "deepseek-v4-1-flash-non-reasoning",
+      "name": "DeepSeek V4.1 Flash (Non-reasoning)",
+      "shortName": "DeepSeek V4.1 Flash (non-reasoning)",
+      "intelligenceIndex": 24.6733593924318,
+      "cost": 0.2488243348377231,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": false,
       "deprecated": false
     },
     {
@@ -1336,20 +1336,6 @@
       "deprecated": false
     },
     {
-      "id": "dbe7c625-3100-4463-b479-a228c41f75dd",
-      "slug": "deepseek-v4-1-flash",
-      "name": "DeepSeek V4.1 Flash (Max)",
-      "shortName": "DeepSeek V4.1 Flash (max)",
-      "intelligenceIndex": 39.456167472527,
-      "cost": 0.485662249576018,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "dd059b25-d82a-4ead-82a4-4adceaaec48b",
       "slug": "mistral-medium-3-5",
       "name": "Mistral Medium 3.5",
@@ -1471,6 +1457,20 @@
       "creator": {
         "name": "Reflection",
         "color": "#195428"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "dbe7c625-3100-4463-b479-a228c41f75dd",
+      "slug": "deepseek-v4-1-flash",
+      "name": "DeepSeek V4.1 Flash (Max)",
+      "shortName": "DeepSeek V4.1 Flash (max)",
+      "intelligenceIndex": 39.456167472527,
+      "cost": 0.5710707873977727,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
       },
       "isReasoning": true,
       "deprecated": false
