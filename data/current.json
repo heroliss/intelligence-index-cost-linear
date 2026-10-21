@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-21T14:54:15.501Z",
+  "updatedAt": "2026-10-21T19:56:49.346Z",
   "modelCount": 189,
   "models": [
     {
@@ -790,6 +790,20 @@
       "deprecated": false
     },
     {
+      "id": "fe4c0848-e284-4e52-a79d-cdc28392f1a9",
+      "slug": "deepseek-v4-flash",
+      "name": "DeepSeek V4 Flash 0731 (Max)",
+      "shortName": "DeepSeek V4 Flash 0731 (max)",
+      "intelligenceIndex": 34.3305129347816,
+      "cost": 0.14869446586378726,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "90c2a9cf-ad7e-4332-9be2-2fd1309833e2",
       "slug": "grok-4-3-non-reasoning",
       "name": "Grok 4.3 (Non-reasoning)",
@@ -801,20 +815,6 @@
         "color": "#736cd3"
       },
       "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "fe4c0848-e284-4e52-a79d-cdc28392f1a9",
-      "slug": "deepseek-v4-flash",
-      "name": "DeepSeek V4 Flash 0731 (Max)",
-      "shortName": "DeepSeek V4 Flash 0731 (max)",
-      "intelligenceIndex": 34.3305129347816,
-      "cost": 0.1744055331356121,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": true,
       "deprecated": false
     },
     {
@@ -1252,6 +1252,20 @@
       "deprecated": false
     },
     {
+      "id": "dbe7c625-3100-4463-b479-a228c41f75dd",
+      "slug": "deepseek-v4-1-flash",
+      "name": "DeepSeek V4.1 Flash (Max)",
+      "shortName": "DeepSeek V4.1 Flash (max)",
+      "intelligenceIndex": 39.456167472527,
+      "cost": 0.4002537117542633,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "ba242e40-83b7-4cd3-a0e0-b56237984914",
       "slug": "gpt-5-4-mini",
       "name": "GPT-5.4 mini (Xhigh)",
@@ -1291,6 +1305,20 @@
         "color": "#ff7018"
       },
       "isReasoning": false,
+      "deprecated": false
+    },
+    {
+      "id": "5b52def2-ac9b-4465-ad80-91ea8079e253",
+      "slug": "nvidia-nemotron-3-ultra-550b-a55b",
+      "name": "Nemotron 3 Ultra 550B A55B (Reasoning)",
+      "shortName": "Nemotron 3 Ultra",
+      "intelligenceIndex": 22.9279123422858,
+      "cost": 0.4696973787770703,
+      "creator": {
+        "name": "NVIDIA",
+        "color": "#76b900"
+      },
+      "isReasoning": true,
       "deprecated": false
     },
     {
@@ -1392,6 +1420,20 @@
       "deprecated": false
     },
     {
+      "id": "69468cce-7b5c-414a-b498-41df4c34df85",
+      "slug": "reflection-beam",
+      "name": "Beam 1.0",
+      "shortName": "Beam 1.0",
+      "intelligenceIndex": 30.3334426348039,
+      "cost": 0.5137230742530603,
+      "creator": {
+        "name": "Reflection",
+        "color": "#195428"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "da2642fe-9f73-4788-b5af-24edcd55b37e",
       "slug": "gpt-6-sol-xhigh",
       "name": "GPT-6 Sol (Xhigh)",
@@ -1443,48 +1485,6 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "69468cce-7b5c-414a-b498-41df4c34df85",
-      "slug": "reflection-beam",
-      "name": "Beam 1.0",
-      "shortName": "Beam 1.0",
-      "intelligenceIndex": 30.3334426348039,
-      "cost": 0.5657163841991104,
-      "creator": {
-        "name": "Reflection",
-        "color": "#195428"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "dbe7c625-3100-4463-b479-a228c41f75dd",
-      "slug": "deepseek-v4-1-flash",
-      "name": "DeepSeek V4.1 Flash (Max)",
-      "shortName": "DeepSeek V4.1 Flash (max)",
-      "intelligenceIndex": 39.456167472527,
-      "cost": 0.5710707873977727,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "5b52def2-ac9b-4465-ad80-91ea8079e253",
-      "slug": "nvidia-nemotron-3-ultra-550b-a55b",
-      "name": "Nemotron 3 Ultra 550B A55B (Reasoning)",
-      "shortName": "Nemotron 3 Ultra",
-      "intelligenceIndex": 22.9279123422858,
-      "cost": 0.5769597489420976,
-      "creator": {
-        "name": "NVIDIA",
-        "color": "#76b900"
       },
       "isReasoning": true,
       "deprecated": false
