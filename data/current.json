@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-21T19:56:49.346Z",
+  "updatedAt": "2026-10-22T00:27:34.195Z",
   "modelCount": 189,
   "models": [
     {
@@ -972,6 +972,20 @@
       "deprecated": false
     },
     {
+      "id": "69468cce-7b5c-414a-b498-41df4c34df85",
+      "slug": "reflection-beam",
+      "name": "Beam 1.0",
+      "shortName": "Beam 1.0",
+      "intelligenceIndex": 30.3334426348039,
+      "cost": 0.22624169286047544,
+      "creator": {
+        "name": "Reflection",
+        "color": "#195428"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "780a4a85-17ff-4175-a8dd-ebca4823e61b",
       "slug": "gpt-6-sol-medium",
       "name": "GPT-6 Sol (Medium)",
@@ -1415,20 +1429,6 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "69468cce-7b5c-414a-b498-41df4c34df85",
-      "slug": "reflection-beam",
-      "name": "Beam 1.0",
-      "shortName": "Beam 1.0",
-      "intelligenceIndex": 30.3334426348039,
-      "cost": 0.5137230742530603,
-      "creator": {
-        "name": "Reflection",
-        "color": "#195428"
       },
       "isReasoning": true,
       "deprecated": false
