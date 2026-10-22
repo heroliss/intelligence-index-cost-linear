@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-22T00:27:34.195Z",
-  "modelCount": 189,
+  "updatedAt": "2026-10-22T09:12:45.120Z",
+  "modelCount": 188,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -1546,20 +1546,6 @@
       "deprecated": false
     },
     {
-      "id": "15c4cbd7-b9aa-42c8-9ce5-5abbde0e6963",
-      "slug": "solar-pro4",
-      "name": "Solar Pro 4",
-      "shortName": "Solar Pro 4",
-      "intelligenceIndex": 26.5600314812231,
-      "cost": 0.7113065897513132,
-      "creator": {
-        "name": "Upstage",
-        "color": "#7c59f5"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "b25ac058-1e33-4c31-bbc9-a20c3ad0717a",
       "slug": "gpt-6-1-sol",
       "name": "GPT-6.1 Sol (Max)",
@@ -1733,7 +1719,7 @@
       "name": "Ling 3.1 Flash",
       "shortName": "Ling 3.1 Flash",
       "intelligenceIndex": 41.0906200397391,
-      "cost": 0.9996439559293879,
+      "cost": 1.0017657227856889,
       "creator": {
         "name": "InclusionAI",
         "color": "#4fb5ff"
