@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-22T14:54:37.899Z",
-  "modelCount": 190,
+  "updatedAt": "2026-10-22T19:47:20.030Z",
+  "modelCount": 189,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -2255,20 +2255,6 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "f9739750-6d42-450f-ba1e-2f76c869b4fe",
-      "slug": "quasar-438b",
-      "name": "Quasar 438B (Max, Based on GLM-5.2)",
-      "shortName": "Quasar 438B (max)",
-      "intelligenceIndex": 26.7372536607816,
-      "cost": 2.024611832657714,
-      "creator": {
-        "name": "Multiverse Computing",
-        "color": "#f11338"
       },
       "isReasoning": true,
       "deprecated": false
