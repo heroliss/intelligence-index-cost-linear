@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-23T19:49:36.737Z",
+  "updatedAt": "2026-10-23T23:26:44.173Z",
   "modelCount": 190,
   "models": [
     {
@@ -1266,20 +1266,6 @@
       "deprecated": false
     },
     {
-      "id": "dbe7c625-3100-4463-b479-a228c41f75dd",
-      "slug": "deepseek-v4-1-flash",
-      "name": "DeepSeek V4.1 Flash (Max)",
-      "shortName": "DeepSeek V4.1 Flash (max)",
-      "intelligenceIndex": 39.456167472527,
-      "cost": 0.4002537117542633,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "ba242e40-83b7-4cd3-a0e0-b56237984914",
       "slug": "gpt-5-4-mini",
       "name": "GPT-5.4 mini (Xhigh)",
@@ -1359,6 +1345,20 @@
       "creator": {
         "name": "Alibaba",
         "color": "#ff7018"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "dbe7c625-3100-4463-b479-a228c41f75dd",
+      "slug": "deepseek-v4-1-flash",
+      "name": "DeepSeek V4.1 Flash (Max)",
+      "shortName": "DeepSeek V4.1 Flash (max)",
+      "intelligenceIndex": 39.456167472527,
+      "cost": 0.48023810410688067,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
       },
       "isReasoning": true,
       "deprecated": false
