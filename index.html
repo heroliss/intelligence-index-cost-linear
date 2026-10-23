@@ -1,18 +1,90 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Intelligence Index vs. Cost per Intelligence Index Task</title>
+  <meta name="color-scheme" content="dark light">
+  <script>
+    // Resolve the explicit preference before the page paints; a fresh visit is always dark.
+    (()=>{try{document.documentElement.dataset.theme=localStorage.getItem('intelligence-cost-theme')==='light'?'light':'dark'}catch{}})();
+  </script>
   <style>
-    :root{color-scheme:light;--ink:#111;--muted:#777;--grid:#e8e8e8;--frame:#666;--green:rgba(144,238,144,.28);--gray:rgba(235,235,235,.42)}
-    *{box-sizing:border-box}html,body{margin:0;min-height:100%;overflow:hidden;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:#fff}
-    .wrap{width:100%;height:100vh;min-height:0;padding:18px 22px 24px;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden}h1{font:500 24px Georgia,serif;margin:0 0 4px}.sub{font-size:12px;color:var(--muted);margin-bottom:8px}.key,.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;margin:7px 0}.key{gap:16px;color:#555}.sw{width:18px;height:11px;display:inline-block;background:var(--green);border:1px solid #777;margin-right:5px;vertical-align:-1px}.legend span{display:inline-flex;align-items:center;gap:5px;cursor:pointer}.legend i{width:9px;height:9px;border-radius:50%;display:inline-block}.legend span.active{font-weight:700;text-decoration:underline}.controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:5px 0 7px}.controls button{border:1px solid #bbb;background:#fff;border-radius:5px;padding:4px 9px;cursor:pointer}.controls button:hover{background:#f1f1f1}.label-control{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}.label-control input{width:76px;margin:0 2px}.label-control output{min-width:26px;text-align:right;font-variant-numeric:tabular-nums}.chart{width:100%;height:auto;flex:1;min-height:0;overflow:hidden;cursor:grab}.chart.dragging{cursor:grabbing}.chart,.chart svg{user-select:none;outline:none;touch-action:none}svg{width:100%;height:100%;display:block}.axis text{font-family:Inter,system-ui,sans-serif;font-size:10px;fill:#555}.axis line{stroke:var(--frame);stroke-width:1}.grid line{stroke:var(--grid);stroke-width:1}.point{stroke:#fff;stroke-width:1;cursor:pointer}.point:hover{stroke-width:1}.label{font-family:Inter,system-ui,sans-serif;paint-order:stroke;stroke:#fff;stroke-width:1.1;stroke-linejoin:round;pointer-events:none}.tip{position:fixed;z-index:5;pointer-events:none;display:none;background:#111;color:#fff;border-radius:7px;padding:8px 10px;font-size:12px;line-height:1.45;box-shadow:0 5px 16px #0003;max-width:320px}.status{font-size:11px;color:#777;margin-top:3px}.status a{color:inherit}.labels-hidden .label-layer{display:none}.labels-hidden .connector-layer{display:none}@media(max-width:700px){.wrap{padding:14px 10px}.chart{height:auto;flex:1;min-height:0}}
+    :root{
+      color-scheme:dark;
+      --canvas:#0b1220;--chart:#0d1726;--surface:#172438;--surface-hover:#22354d;
+      --ink:#e7edf6;--muted:#a9b9ce;--secondary:#bac8da;--border:#667e9e;
+      --grid:#25374c;--frame:#7890af;--quadrant-attractive:#14322f;--quadrant-secondary:#172234;
+      --pareto:#a9bbd2;--point-edge:#0d1726;--label-halo:#0d1726;
+      --tip-bg:#233750;--tip-ink:#e7edf6;--tip-shadow:rgba(0,0,0,.3);
+      --accent:#7dc8ff;--selection:#254d73;--selection-ink:#f3f7fc;
+    }
+    :root[data-theme="light"]{
+      color-scheme:light;
+      --canvas:#fff;--chart:#fff;--surface:#fff;--surface-hover:#f1f4f8;
+      --ink:#111;--muted:#626873;--secondary:#555;--border:#89929f;
+      --grid:#e8e8e8;--frame:#666;--quadrant-attractive:#e0fadd;--quadrant-secondary:#f7f7f7;
+      --pareto:#777;--point-edge:#fff;--label-halo:#fff;
+      --tip-bg:#172231;--tip-ink:#fff;--tip-shadow:rgba(0,0,0,.18);
+      --accent:#1864b3;--selection:#d4e9ff;--selection-ink:#142236;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;overflow:hidden;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--canvas)}
+    ::selection{color:var(--selection-ink);background:var(--selection)}
+    button,input,a{accent-color:var(--accent)}
+    button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+    button{font:inherit;color:inherit}
+    .wrap{width:100%;height:100vh;min-height:0;padding:18px 22px 24px;display:flex;flex-direction:column;overflow:hidden}
+    .topline{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+    h1{font:500 24px Georgia,serif;margin:0 0 4px}
+    .theme-toggle,.controls button{border:1px solid var(--border);background:var(--surface);border-radius:5px;padding:4px 9px;cursor:pointer}
+    .theme-toggle:hover,.controls button:hover{background:var(--surface-hover)}
+    .theme-toggle{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;font-size:12px;white-space:nowrap;min-height:30px}
+    .theme-toggle svg{width:15px;height:15px;flex:none}
+    .theme-icon-light{display:none}:root[data-theme="light"] .theme-icon-light{display:block}:root[data-theme="light"] .theme-icon-dark{display:none}
+    .sub{font-size:12px;color:var(--muted);margin-bottom:8px}
+    .key,.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;margin:7px 0}
+    .key{gap:16px;color:var(--secondary)}
+    .sw{width:18px;height:11px;display:inline-block;background:var(--quadrant-attractive);border:1px solid var(--frame);margin-right:5px;vertical-align:-1px}
+    .legend{gap:3px 11px}
+    .legend button{display:inline-flex;align-items:center;gap:5px;cursor:pointer;border:0;border-radius:3px;background:transparent;padding:3px 0;font-size:12px}
+    .legend button:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+    .legend i{width:9px;height:9px;border-radius:50%;display:inline-block}
+    .legend button.active{font-weight:700;text-decoration:underline;text-underline-offset:3px}
+    .controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:5px 0 7px}
+    .controls button{color:var(--ink)}
+    .label-control{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+    .label-control input{width:76px;margin:0 2px}
+    .label-control output{min-width:26px;text-align:right;font-variant-numeric:tabular-nums}
+    .chart{width:100%;height:auto;flex:1;min-height:0;overflow:hidden;cursor:grab;background:var(--chart)}
+    .chart.dragging{cursor:grabbing}
+    .chart,.chart svg{user-select:none;outline:none;touch-action:none}
+    svg{width:100%;height:100%;display:block}
+    .axis text{font-family:Inter,system-ui,sans-serif;font-size:10px;fill:var(--secondary)}
+    .axis line{stroke:var(--frame);stroke-width:1}
+    .grid line{stroke:var(--grid);stroke-width:1}
+    .quadrant-attractive{fill:var(--quadrant-attractive)}.quadrant-secondary{fill:var(--quadrant-secondary)}
+    .pareto{stroke:var(--pareto);stroke-width:1.5;stroke-dasharray:0.1 6;stroke-linecap:round;opacity:.9}
+    .point{stroke:var(--point-edge);stroke-width:1;cursor:pointer}
+    .point:hover{stroke-width:1}
+    .label{font-family:Inter,system-ui,sans-serif;paint-order:stroke;stroke:var(--label-halo);stroke-width:1.1;stroke-linejoin:round;pointer-events:none}
+    .label-highlight{stroke-width:2.4;font-weight:700}
+    .tip{position:fixed;z-index:5;pointer-events:none;display:none;background:var(--tip-bg);color:var(--tip-ink);border-radius:7px;padding:8px 10px;font-size:12px;line-height:1.45;box-shadow:0 5px 16px var(--tip-shadow);max-width:320px}
+    .status{font-size:11px;color:var(--muted);margin-top:3px}.status a{color:inherit;text-underline-offset:2px}
+    .labels-hidden .label-layer,.labels-hidden .connector-layer{display:none}
+    @media(max-width:700px){.wrap{padding:14px 10px}.topline{gap:10px}h1{font-size:20px}.chart{height:auto;flex:1;min-height:0}}
   </style>
 </head>
 <body>
 <main class="wrap">
-  <h1>Intelligence Index vs. Cost per Intelligence Index Task</h1>
+  <div class="topline">
+    <h1>Intelligence Index vs. Cost per Intelligence Index Task</h1>
+    <button id="theme" class="theme-toggle" type="button" aria-label="深色主题" aria-pressed="true" title="切换为浅色主题">
+      <svg class="theme-icon-dark" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></svg>
+      <svg class="theme-icon-light" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>
+      <span id="themeLabel">深色</span>
+    </button>
+  </div>
   <div class="sub">Artificial Analysis Intelligence Index · Weighted average cost (USD) per Intelligence Index task · 横坐标为线性尺度</div>
   <div class="key"><span><i class="sw"></i>Most attractive quadrant</span><span>···· Pareto line</span></div>
   <div id="legend" class="legend"></div>
@@ -30,9 +102,43 @@
 const NS='http://www.w3.org/2000/svg',svg=document.querySelector('#svg'),host=document.querySelector('#chart'),tip=document.querySelector('#tip'),statusEl=document.querySelector('#status');
 const plot={left:65,right:1123,top:5,bottom:331,xMax:50,yMax:60,xQuadrant:.6,yQuadrant:30};
 const originX=plot.left,originY=plot.bottom;let sx=11.2,sy=1,panX=0,panY=0,drag=null,focus=null,company=null,labelFontSize=4,labelDistance=2,items=[],labelMeta=[],activeHover=null;
-function clearHover(){if(!activeHover)return;const h=activeHover;h.p.setAttribute('r','3');h.line.classList.remove('connector-highlight');h.line.setAttribute('stroke',h.c);h.line.setAttribute('stroke-opacity','.65');h.line.setAttribute('stroke-width','.7');h.t.classList.remove('label-highlight');h.t.setAttribute('fill',h.c);h.t.setAttribute('stroke','white');h.t.setAttribute('stroke-width','1.1');h.t.setAttribute('paint-order','stroke');h.t.setAttribute('font-size',String(labelFontSize));tip.style.display='none';activeHover=null}
+function clearHover(){if(!activeHover)return;const h=activeHover;h.p.setAttribute('r','3');h.line.classList.remove('connector-highlight');h.line.setAttribute('stroke',displayColor(h.c));h.line.setAttribute('stroke-opacity','.65');h.line.setAttribute('stroke-width','.7');h.t.classList.remove('label-highlight');h.t.setAttribute('fill',displayColor(h.c));h.t.setAttribute('paint-order','stroke');h.t.setAttribute('font-size',String(labelFontSize));tip.style.display='none';activeHover=null}
 const el=(tag,attrs={})=>{const n=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);return n};const text=(value,attrs={})=>{const n=el('text',attrs);n.textContent=value;return n};
 const mapX=v=>originX+(v-originX)*sx+panX,mapY=v=>originY+(v-originY)*sy+panY,hex=c=>{const m=(c||'').match(/#(?:[0-9a-f]{3}){1,2}/i);return m?m[0].toLowerCase():(c||'').toLowerCase()};
+// Keep source/category colors intact; only brighten their display value on dark surfaces.
+// The same mapping is used for points, text, connectors, hover and legend swatches.
+const darkColorCache=new Map();
+function displayColor(source){
+  const color=hex(source)||'#777777';
+  if(document.documentElement.dataset.theme==='light')return color;
+  if(darkColorCache.has(color))return darkColorCache.get(color);
+  let value=color.slice(1);if(value.length===3)value=value.split('').map(c=>c+c).join('');
+  if(!/^[0-9a-f]{6}$/i.test(value))return '#b8c7db';
+  const rgb=[0,2,4].map(i=>parseInt(value.slice(i,i+2),16));
+  const luminance=channels=>channels.map(v=>{const c=v/255;return c<=.04045?c/12.92:((c+.055)/1.055)**2.4}).reduce((sum,c,i)=>sum+c*[.2126,.7152,.0722][i],0);
+  // Use the lightest plot surface (the attractive quadrant), not only the canvas.
+  const background=luminance([20,50,47]);let adjusted=rgb;
+  for(let step=0;step<=100;step++){
+    adjusted=rgb.map(c=>Math.round(c+(255-c)*step/100));
+    if((luminance(adjusted)+.05)/(background+.05)>=4.5)break;
+  }
+  const result='#'+adjusted.map(c=>c.toString(16).padStart(2,'0')).join('');
+  darkColorCache.set(color,result);return result;
+}
+function applyTheme(theme){
+  clearHover();document.documentElement.dataset.theme=theme;
+  const dark=theme==='dark',button=document.querySelector('#theme');
+  button.setAttribute('aria-pressed',String(dark));button.title=dark?'切换为浅色主题':'切换为深色主题';
+  document.querySelector('#themeLabel').textContent=dark?'深色':'浅色';
+  for(const item of items)item.el.setAttribute('fill',displayColor(item.color));
+  document.querySelectorAll('#legend button').forEach(button=>{button.querySelector('i').style.background=displayColor(button.dataset.color)});
+  if(items.length)layoutLabels();
+}
+applyTheme(document.documentElement.dataset.theme);
+document.querySelector('#theme').addEventListener('click',()=>{
+  const theme=document.documentElement.dataset.theme==='dark'?'light':'dark';applyTheme(theme);
+  try{localStorage.setItem('intelligence-cost-theme',theme)}catch{}
+});
 function bounded(a,b,lo,hi,size){const span=b-a;if(span<=size)return{min:lo-a,max:hi-b};return{min:hi-b,max:lo-a}}function clampPan(){const bx=bounded(originX+(Math.min(...items.map(i=>i.x))-originX)*sx,originX+(Math.max(...items.map(i=>i.x))-originX)*sx,plot.left,plot.right-90,plot.right-plot.left),by=bounded(originY+(Math.min(...items.map(i=>i.y))-originY)*sy,originY+(Math.max(...items.map(i=>i.y))-originY)*sy,plot.top,plot.bottom,plot.bottom-plot.top);panX=Math.max(bx.min,Math.min(bx.max,panX));const yMin=Math.max(by.min,-12);panY=Math.max(yMin,Math.min(by.max,panY))}
 function setRect(r,x1,y1,x2,y2){const l=Math.max(plot.left,Math.min(plot.right,Math.min(x1,x2))),rr=Math.max(plot.left,Math.min(plot.right,Math.max(x1,x2))),t=Math.max(plot.top,Math.min(plot.bottom,Math.min(y1,y2))),b=Math.max(plot.top,Math.min(plot.bottom,Math.max(y1,y2)));r.setAttribute('x',l);r.setAttribute('y',t);r.setAttribute('width',Math.max(0,rr-l));r.setAttribute('height',Math.max(0,b-t))}
 function overlap(a,b){return Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x))*Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y))}
@@ -60,9 +166,9 @@ function updateAxis(){
   const xTitle=axis.querySelector('.x-title');xTitle.setAttribute('x',(plot.left+plot.right)/2);xTitle.setAttribute('y',plot.bottom+38);
   axis.querySelector('.y-title').setAttribute('transform',`translate(${plot.left-46} ${(plot.top+plot.bottom)/2}) rotate(-90)`);
 }
-function layoutLabels(){const placed=[],nodeBoxes=items.map(i=>({x:+i.el.getAttribute('cx'),y:+i.el.getAttribute('cy'),it:i})),rect=svg.getBoundingClientRect(),screenYOverX=(rect.height/384)/(rect.width/1128),dirs=Array.from({length:16},(_,i)=>i*Math.PI/8),radii=[2,labelDistance*.45,labelDistance*.7,labelDistance].filter((v,i,a)=>v>=2&&v<=labelDistance&&a.indexOf(v)===i);for(const m of labelMeta.slice().sort((a,b)=>a.item.y-b.item.y)){const n=m.item,x=+n.el.getAttribute('cx'),y=+n.el.getAttribute('cy'),insideNode=x>=plot.left&&x<=plot.right&&y>=plot.top&&y<=plot.bottom;if(!insideNode){m.text.style.visibility='hidden';m.line.style.visibility='hidden';continue}const w=Math.max(10,Math.min(220,n.name.length*labelFontSize*.54+2)),h=labelFontSize*1.25*screenYOverX;let best=null,bestScore=Infinity;for(const radius of radii)for(const angle of dirs){const dx=Math.cos(angle),dy=Math.sin(angle),px=dx>0?x+radius:dx<0?x-radius-w:x-w/2,py=dy>0?y+radius:dy<0?y-radius-h:y-h/2;if(px<plot.left+1||px+w>plot.right-1||py<plot.top+1||py+h>plot.bottom-1)continue;const c={x:px,y:py,w,h,d:radius};let score=c.d*.12;for(const p of placed)score+=overlap(c,p)*3;for(const q of nodeBoxes)if(q.it!==n&&overlap(c,{x:q.x-4,y:q.y-4,w:8,h:8})>0)score+=45;if(score<bestScore){bestScore=score;best=c}}if(!best){m.text.style.visibility='hidden';m.line.style.visibility='hidden';continue}m.text.style.visibility='visible';m.line.style.visibility='visible';placed.push(best);const ex=Math.max(best.x,Math.min(best.x+best.w,x)),ey=Math.max(best.y,Math.min(best.y+best.h,y));m.line.setAttribute('x1',x);m.line.setAttribute('y1',y);m.line.setAttribute('x2',ex);m.line.setAttribute('y2',ey);m.text.setAttribute('x',best.x);m.text.setAttribute('y',best.y);m.text.setAttribute('font-size',labelFontSize);m.text.setAttribute('fill',n.color||'#222');m.text.setAttribute('stroke','white');m.text.setAttribute('stroke-width','1.1');m.text.setAttribute('paint-order','stroke');m.line.setAttribute('stroke',n.color||'#777');m.line.setAttribute('stroke-opacity','.65')}}
-function update(){clampPan();for(const i of items){i.el.setAttribute('cx',mapX(i.x));i.el.setAttribute('cy',mapY(i.y))}const q=svg.querySelectorAll('.quadrant');setRect(q[0],mapX(plot.left),mapY(plot.top),mapX(originX+plot.xQuadrant/plot.xMax*(plot.right-plot.left)),mapY(originY-plot.yQuadrant/plot.yMax*(plot.bottom-plot.top)));setRect(q[1],mapX(originX+plot.xQuadrant/plot.xMax*(plot.right-plot.left)),mapY(originY-plot.yQuadrant/plot.yMax*(plot.bottom-plot.top)),mapX(plot.right),mapY(plot.bottom));const path=svg.querySelector('.pareto');if(path){const d=items.filter(i=>i.cost>0).sort((a,b)=>a.cost-b.cost).reduce((out,i)=>{if(!out.length||i.intelligenceIndex>out[out.length-1].intelligenceIndex)out.push(i);return out},[]);path.setAttribute('stroke','#777');path.setAttribute('stroke-width','1.5');path.setAttribute('stroke-dasharray','0.1 6');path.setAttribute('opacity','.9');path.setAttribute('d',d.map((i,n)=>`${n?'L':'M'} ${mapX(i.x)} ${mapY(i.y)}`).join(' '))}updateAxis();layoutLabels()}
-function render(data){makeAxis();const content=el('g',{id:'plot-content','clip-path':'url(#plot-clip)'}),quad=el('g',{class:'quadrant-layer','pointer-events':'none'}),q1=el('rect',{class:'quadrant',fill:'#90ee90','fill-opacity':'.28'}),q2=el('rect',{class:'quadrant',fill:'#ebebeb','fill-opacity':'.42'});quad.append(q1,q2);content.append(quad);content.append(el('path',{class:'pareto',fill:'none',stroke:'rgba(0,0,0,.7)','stroke-width':'2.5','stroke-dasharray':'0.1 6','stroke-linecap':'round','pointer-events':'none'}));const connector=el('g',{class:'connector-layer',stroke:'rgba(0,0,0,.24)','stroke-width':'.7','pointer-events':'none'}),label=el('g',{class:'label-layer'}),points=el('g',{class:'points'});content.append(connector,points,label);svg.appendChild(content);const byCompany=new Map();for(const d of data){const x=originX+d.cost/plot.xMax*(plot.right-originX),y=originY-d.intelligenceIndex/plot.yMax*(originY-plot.top),c=hex(d.creator.color);const p=el('circle',{class:'point','data-id':d.id,cx:x,cy:y,r:3,fill:c,'pointer-events':'all'});points.append(p);const line=el('line',{stroke:c,'stroke-opacity':'.65'}),t=text(d.shortName,{class:'label',fill:c,stroke:'white','stroke-width':'1.1','paint-order':'stroke'});connector.append(line);label.append(t);const item={...d,x,y,el:p,name:d.shortName||d.name,color:c,line,text:t};items.push(item);labelMeta.push({item,line,text:t});byCompany.set(d.creator.name,(byCompany.get(d.creator.name)||{name:d.creator.name,color:c,count:0}));byCompany.get(d.creator.name).count++;p.addEventListener('mouseenter',()=>{clearHover();p.setAttribute('r','6');activeHover={p,line,t,c};line.classList.add('connector-highlight');line.setAttribute('stroke-width','2.5');line.setAttribute('stroke',c);t.classList.add('label-highlight');t.setAttribute('fill',c);t.setAttribute('stroke',c);t.setAttribute('font-size',String(Math.max(7,labelFontSize*1.8)));tip.innerHTML=`<b>${d.name}</b><br>Cost per task: $${d.cost.toFixed(3)}<br>Intelligence Index: ${d.intelligenceIndex.toFixed(1)}<br><small>Click to highlight</small>`;tip.style.display='block'});p.addEventListener('mousemove',e=>{tip.style.left=e.clientX+14+'px';tip.style.top=e.clientY+14+'px'});p.addEventListener('mouseleave',()=>{if(activeHover&&activeHover.p===p)clearHover()});p.addEventListener('pointerleave',()=>{if(activeHover&&activeHover.p===p)clearHover()});p.addEventListener('click',()=>{focus=focus===item?null:item;refresh()})}const legend=document.querySelector('#legend');[...byCompany.values()].sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name)).forEach(c=>{const s=document.createElement('span');s.dataset.color=c.color;s.innerHTML=`<i style="background:${c.color}"></i>${c.name}`;s.addEventListener('click',()=>{company=company===c.color?null:c.color;document.querySelectorAll('#legend span').forEach(x=>x.classList.toggle('active',!!company&&x.dataset.color===company));refresh()});legend.append(s)});update()}
+function layoutLabels(){const placed=[],nodeBoxes=items.map(i=>({x:+i.el.getAttribute('cx'),y:+i.el.getAttribute('cy'),it:i})),rect=svg.getBoundingClientRect(),screenYOverX=(rect.height/384)/(rect.width/1128),dirs=Array.from({length:16},(_,i)=>i*Math.PI/8),radii=[2,labelDistance*.45,labelDistance*.7,labelDistance].filter((v,i,a)=>v>=2&&v<=labelDistance&&a.indexOf(v)===i);for(const m of labelMeta.slice().sort((a,b)=>a.item.y-b.item.y)){const n=m.item,x=+n.el.getAttribute('cx'),y=+n.el.getAttribute('cy'),insideNode=x>=plot.left&&x<=plot.right&&y>=plot.top&&y<=plot.bottom;if(!insideNode){m.text.style.visibility='hidden';m.line.style.visibility='hidden';continue}const w=Math.max(10,Math.min(220,n.name.length*labelFontSize*.54+2)),h=labelFontSize*1.25*screenYOverX;let best=null,bestScore=Infinity;for(const radius of radii)for(const angle of dirs){const dx=Math.cos(angle),dy=Math.sin(angle),px=dx>0?x+radius:dx<0?x-radius-w:x-w/2,py=dy>0?y+radius:dy<0?y-radius-h:y-h/2;if(px<plot.left+1||px+w>plot.right-1||py<plot.top+1||py+h>plot.bottom-1)continue;const c={x:px,y:py,w,h,d:radius};let score=c.d*.12;for(const p of placed)score+=overlap(c,p)*3;for(const q of nodeBoxes)if(q.it!==n&&overlap(c,{x:q.x-4,y:q.y-4,w:8,h:8})>0)score+=45;if(score<bestScore){bestScore=score;best=c}}if(!best){m.text.style.visibility='hidden';m.line.style.visibility='hidden';continue}m.text.style.visibility='visible';m.line.style.visibility='visible';placed.push(best);const ex=Math.max(best.x,Math.min(best.x+best.w,x)),ey=Math.max(best.y,Math.min(best.y+best.h,y));m.line.setAttribute('x1',x);m.line.setAttribute('y1',y);m.line.setAttribute('x2',ex);m.line.setAttribute('y2',ey);m.text.setAttribute('x',best.x);m.text.setAttribute('y',best.y);m.text.setAttribute('font-size',labelFontSize);m.text.setAttribute('fill',displayColor(n.color));m.text.setAttribute('paint-order','stroke');m.line.setAttribute('stroke',displayColor(n.color));m.line.setAttribute('stroke-opacity','.65')}}
+function update(){clampPan();for(const i of items){i.el.setAttribute('cx',mapX(i.x));i.el.setAttribute('cy',mapY(i.y))}const q=svg.querySelectorAll('.quadrant');setRect(q[0],mapX(plot.left),mapY(plot.top),mapX(originX+plot.xQuadrant/plot.xMax*(plot.right-plot.left)),mapY(originY-plot.yQuadrant/plot.yMax*(plot.bottom-plot.top)));setRect(q[1],mapX(originX+plot.xQuadrant/plot.xMax*(plot.right-plot.left)),mapY(originY-plot.yQuadrant/plot.yMax*(plot.bottom-plot.top)),mapX(plot.right),mapY(plot.bottom));const path=svg.querySelector('.pareto');if(path){const d=items.filter(i=>i.cost>0).sort((a,b)=>a.cost-b.cost).reduce((out,i)=>{if(!out.length||i.intelligenceIndex>out[out.length-1].intelligenceIndex)out.push(i);return out},[]);path.setAttribute('d',d.map((i,n)=>`${n?'L':'M'} ${mapX(i.x)} ${mapY(i.y)}`).join(' '))}updateAxis();layoutLabels()}
+function render(data){makeAxis();const content=el('g',{id:'plot-content','clip-path':'url(#plot-clip)'}),quad=el('g',{class:'quadrant-layer','pointer-events':'none'}),q1=el('rect',{class:'quadrant quadrant-attractive'}),q2=el('rect',{class:'quadrant quadrant-secondary'});quad.append(q1,q2);content.append(quad);content.append(el('path',{class:'pareto',fill:'none','pointer-events':'none'}));const connector=el('g',{class:'connector-layer','stroke-width':'.7','pointer-events':'none'}),label=el('g',{class:'label-layer'}),points=el('g',{class:'points'});content.append(connector,points,label);svg.appendChild(content);const byCompany=new Map();for(const d of data){const x=originX+d.cost/plot.xMax*(plot.right-originX),y=originY-d.intelligenceIndex/plot.yMax*(originY-plot.top),c=hex(d.creator.color);const p=el('circle',{class:'point','data-id':d.id,cx:x,cy:y,r:3,fill:displayColor(c),'pointer-events':'all'});points.append(p);const line=el('line',{stroke:displayColor(c),'stroke-opacity':'.65'}),t=text(d.shortName,{class:'label',fill:displayColor(c)});connector.append(line);label.append(t);const item={...d,x,y,el:p,name:d.shortName||d.name,color:c,line,text:t};items.push(item);labelMeta.push({item,line,text:t});byCompany.set(d.creator.name,(byCompany.get(d.creator.name)||{name:d.creator.name,color:c,count:0}));byCompany.get(d.creator.name).count++;p.addEventListener('mouseenter',()=>{clearHover();p.setAttribute('r','6');activeHover={p,line,t,c};line.classList.add('connector-highlight');line.setAttribute('stroke-width','2.5');line.setAttribute('stroke',displayColor(c));t.classList.add('label-highlight');t.setAttribute('fill',displayColor(c));t.setAttribute('font-size',String(Math.max(7,labelFontSize*1.8)));tip.innerHTML=`<b>${d.name}</b><br>Cost per task: $${d.cost.toFixed(3)}<br>Intelligence Index: ${d.intelligenceIndex.toFixed(1)}<br><small>Click to highlight</small>`;tip.style.display='block'});p.addEventListener('mousemove',e=>{tip.style.left=e.clientX+14+'px';tip.style.top=e.clientY+14+'px'});p.addEventListener('mouseleave',()=>{if(activeHover&&activeHover.p===p)clearHover()});p.addEventListener('pointerleave',()=>{if(activeHover&&activeHover.p===p)clearHover()});p.addEventListener('click',()=>{focus=focus===item?null:item;refresh()})}const legend=document.querySelector('#legend');[...byCompany.values()].sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name)).forEach(c=>{const s=document.createElement('button');s.type='button';s.dataset.color=c.color;s.setAttribute('aria-pressed','false');const swatch=document.createElement('i');swatch.style.background=displayColor(c.color);swatch.setAttribute('aria-hidden','true');s.append(swatch,document.createTextNode(c.name));s.addEventListener('click',()=>{company=company===c.color?null:c.color;document.querySelectorAll('#legend button').forEach(x=>{const active=!!company&&x.dataset.color===company;x.classList.toggle('active',active);x.setAttribute('aria-pressed',String(active))});refresh()});legend.append(s)});update()}
 function refresh(){for(const i of items){const on=!company||i.color===company;i.el.setAttribute('opacity',on&&(!focus||focus===i)?1:.14)}for(const i of items)i.text.style.opacity=!company||i.color===company?'1':'.12'}
 function zoom(axis,f){if(axis==='x')sx=Math.max(.1,Math.min(20,sx*f));else sy=Math.max(.1,Math.min(20,sy*f));update()}function resetView(){sx=11.2;sy=1;panX=panY=0;update()}
 host.addEventListener('wheel',e=>{e.preventDefault();const d=Math.max(-240,Math.min(240,e.deltaY));zoom(e.shiftKey?'y':'x',Math.exp(-d*.001))},{passive:false});host.addEventListener('pointerdown',e=>{if(e.target.closest('.axis'))return;e.preventDefault();drag={x:e.clientX,y:e.clientY,panX,panY};host.classList.add('dragging')});host.addEventListener('pointermove',e=>{if(activeHover&&e.target!==activeHover.p)clearHover();if(!drag)return;const r=svg.getBoundingClientRect();panX=drag.panX+(e.clientX-drag.x)/r.width*1128;panY=drag.panY+(e.clientY-drag.y)/r.height*384;update()});host.addEventListener('pointerup',()=>{drag=null;host.classList.remove('dragging')});host.addEventListener('pointercancel',()=>{drag=null;host.classList.remove('dragging')});svg.addEventListener('dblclick',resetView);document.querySelector('#reset').addEventListener('click',resetView);document.querySelector('#xminus').addEventListener('click',()=>zoom('x',.92));document.querySelector('#xplus').addEventListener('click',()=>zoom('x',1.08));document.querySelector('#yminus').addEventListener('click',()=>zoom('y',.92));document.querySelector('#yplus').addEventListener('click',()=>zoom('y',1.08));document.querySelector('#labels').addEventListener('click',e=>{host.classList.toggle('labels-hidden');e.currentTarget.textContent=host.classList.contains('labels-hidden')?'显示标签':'隐藏标签'});function settings(){labelFontSize=+document.querySelector('#labelSize').value;labelDistance=+document.querySelector('#labelDistance').value;document.querySelector('#labelSizeValue').textContent=labelFontSize;document.querySelector('#labelDistanceValue').textContent=labelDistance;update()}document.querySelector('#labelSize').addEventListener('input',settings);document.querySelector('#labelDistance').addEventListener('input',settings);
