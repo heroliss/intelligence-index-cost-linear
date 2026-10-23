@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-23T00:25:44.561Z",
+  "updatedAt": "2026-10-23T09:09:15.916Z",
   "modelCount": 189,
   "models": [
     {
@@ -1621,7 +1621,7 @@
       "name": "Muse Spark Open (Xhigh)",
       "shortName": "Muse Spark Open (xhigh)",
       "intelligenceIndex": 38.8666662997805,
-      "cost": 0.8435187802958677,
+      "cost": 0.8441853713458678,
       "creator": {
         "name": "Meta",
         "color": "#0089f4"
@@ -1859,7 +1859,7 @@
       "name": "Mistral Large 4 Preview",
       "shortName": "Mistral Large 4 Preview",
       "intelligenceIndex": 38.3770408917494,
-      "cost": 1.1341017484612892,
+      "cost": 1.1344391582388638,
       "creator": {
         "name": "Mistral",
         "color": "#f32e02"
@@ -2517,7 +2517,7 @@
       "name": "Muse Wonder (Max)",
       "shortName": "Muse Wonder (max)",
       "intelligenceIndex": 52.393894697293,
-      "cost": 4.515677444063016,
+      "cost": 4.540034681803926,
       "creator": {
         "name": "Meta",
         "color": "#0089f4"
