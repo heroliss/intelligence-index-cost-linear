@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-23T14:42:21.621Z",
-  "modelCount": 189,
+  "updatedAt": "2026-10-23T19:49:36.737Z",
+  "modelCount": 190,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -188,20 +188,6 @@
       "deprecated": false
     },
     {
-      "id": "22d09131-343b-4adf-8760-533e20a2155f",
-      "slug": "mimo-v2-5-0424",
-      "name": "MiMo-V2.5",
-      "shortName": "MiMo-V2.5",
-      "intelligenceIndex": 21.8248678794953,
-      "cost": 0.019069773544356065,
-      "creator": {
-        "name": "Xiaomi",
-        "color": "#ff6900"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "713fae11-c75c-4f10-ae2c-8e4074cd58af",
       "slug": "ministral-3-14b",
       "name": "Ministral 3 14B",
@@ -314,6 +300,20 @@
       "deprecated": false
     },
     {
+      "id": "22d09131-343b-4adf-8760-533e20a2155f",
+      "slug": "mimo-v2-5-0424",
+      "name": "MiMo-V2.5",
+      "shortName": "MiMo-V2.5",
+      "intelligenceIndex": 21.8248678794953,
+      "cost": 0.03798098899738771,
+      "creator": {
+        "name": "Xiaomi",
+        "color": "#ff6900"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "922c69c7-9037-43c6-8bcf-a1c555e7f3eb",
       "slug": "llama-4-maverick",
       "name": "Llama 4 Maverick",
@@ -407,20 +407,6 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "00f1248e-78e3-4230-8dc8-5e13ba8645e2",
-      "slug": "mimo-v2-5-pro",
-      "name": "MiMo-V2.5-Pro (Reasoning)",
-      "shortName": "MiMo-V2.5-Pro",
-      "intelligenceIndex": 25.9868888896511,
-      "cost": 0.054072740415336835,
-      "creator": {
-        "name": "Xiaomi",
-        "color": "#ff6900"
       },
       "isReasoning": true,
       "deprecated": false
@@ -740,6 +726,20 @@
       "shortName": "MiMo-V2.6-Pro",
       "intelligenceIndex": 46.3242065310383,
       "cost": 0.13322318937213493,
+      "creator": {
+        "name": "Xiaomi",
+        "color": "#ff6900"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "00f1248e-78e3-4230-8dc8-5e13ba8645e2",
+      "slug": "mimo-v2-5-pro",
+      "name": "MiMo-V2.5-Pro (Reasoning)",
+      "shortName": "MiMo-V2.5-Pro",
+      "intelligenceIndex": 25.9868888896511,
+      "cost": 0.13967150869386885,
       "creator": {
         "name": "Xiaomi",
         "color": "#ff6900"
@@ -1728,20 +1728,6 @@
       "deprecated": false
     },
     {
-      "id": "a6043b9b-628a-4a76-a021-2834e0627d05",
-      "slug": "ling-3-1-flash",
-      "name": "Ling 3.1 Flash",
-      "shortName": "Ling 3.1 Flash",
-      "intelligenceIndex": 41.0906200397391,
-      "cost": 1.0017657227856889,
-      "creator": {
-        "name": "InclusionAI",
-        "color": "#4fb5ff"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "b01dee41-c62b-48ed-8d16-984adc405e5c",
       "slug": "qwen3-8-27b",
       "name": "Qwen3.8 27B (Xhigh)",
@@ -1751,6 +1737,20 @@
       "creator": {
         "name": "Alibaba",
         "color": "#ff7018"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "a6043b9b-628a-4a76-a021-2834e0627d05",
+      "slug": "ling-3-1-flash",
+      "name": "Ling 3.1 Flash",
+      "shortName": "Ling 3.1 Flash",
+      "intelligenceIndex": 41.0906200397391,
+      "cost": 1.010607821950605,
+      "creator": {
+        "name": "InclusionAI",
+        "color": "#4fb5ff"
       },
       "isReasoning": true,
       "deprecated": false
@@ -2255,6 +2255,20 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "665c67ca-09eb-48f0-a7a3-0096e1d5de51",
+      "slug": "kimi-k3-1-pro",
+      "name": "Kimi K3.1 Pro",
+      "shortName": "Kimi K3.1 Pro",
+      "intelligenceIndex": 55.0869210959395,
+      "cost": 2.1145052918767275,
+      "creator": {
+        "name": "Kimi",
+        "color": "#047AFE"
       },
       "isReasoning": true,
       "deprecated": false
