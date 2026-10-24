@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-24T00:19:28.991Z",
+  "updatedAt": "2026-10-24T08:42:03.277Z",
   "modelCount": 190,
   "models": [
     {
@@ -90,6 +90,20 @@
       "deprecated": false
     },
     {
+      "id": "36f73aaf-d38a-4b56-a2b3-d04d17186910",
+      "slug": "gpt-oss-20b",
+      "name": "gpt-oss-20b (High)",
+      "shortName": "gpt-oss-20b (high)",
+      "intelligenceIndex": 8.9675171856126,
+      "cost": 0.01055611917474499,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "9741f3c2-cbb1-4a3f-99ee-7bd7384d9038",
       "slug": "ministral-3-8b",
       "name": "Ministral 3 8B",
@@ -115,20 +129,6 @@
         "color": "#1f1f1f"
       },
       "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "36f73aaf-d38a-4b56-a2b3-d04d17186910",
-      "slug": "gpt-oss-20b",
-      "name": "gpt-oss-20b (High)",
-      "shortName": "gpt-oss-20b (high)",
-      "intelligenceIndex": 8.9675171856126,
-      "cost": 0.01372825635290159,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
       "deprecated": false
     },
     {
