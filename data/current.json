@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-27T09:39:29.888Z",
+  "updatedAt": "2026-10-27T15:45:51.178Z",
   "modelCount": 201,
   "models": [
     {
@@ -2195,7 +2195,7 @@
       "name": "Ling 3.1 Flash 1019",
       "shortName": "Ling 3.1 Flash 1019",
       "intelligenceIndex": 43.8973584978265,
-      "cost": 1.4886425967752979,
+      "cost": 1.4887147314556197,
       "creator": {
         "name": "InclusionAI",
         "color": "#4fb5ff"
