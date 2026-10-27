@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-27T01:13:40.617Z",
-  "modelCount": 202,
+  "updatedAt": "2026-10-27T09:39:29.888Z",
+  "modelCount": 201,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -491,20 +491,6 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "1071dea1-43e7-4fe9-b936-3034bb622b2e",
-      "slug": "granite-4-2-30b",
-      "name": "Granite 4.2 30B",
-      "shortName": "Granite 4.2 30B",
-      "intelligenceIndex": 12.68315341158,
-      "cost": 0.0716641484962871,
-      "creator": {
-        "name": "IBM",
-        "color": "#0f62fe"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1812,6 +1798,20 @@
       "deprecated": false
     },
     {
+      "id": "04ee6719-0327-463b-a1a1-70a6a78254f9",
+      "slug": "muse-spark-1-2",
+      "name": "Muse Spark 1.2 (Xhigh)",
+      "shortName": "Muse Spark 1.2 (xhigh)",
+      "intelligenceIndex": 39.5758607970943,
+      "cost": 0.8120046377201664,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "a3f8100d-e38f-408b-b0fa-0085dae18dc1",
       "slug": "gpt-6-astra-low",
       "name": "GPT-6 Astra (Low)",
@@ -1994,6 +1994,20 @@
       "deprecated": false
     },
     {
+      "id": "d61493e2-43ff-460c-9054-eaf6ba317360",
+      "slug": "muse-spark-1-1",
+      "name": "Muse Spark 1.1 (Xhigh)",
+      "shortName": "Muse Spark 1.1 (xhigh)",
+      "intelligenceIndex": 33.7298425919846,
+      "cost": 1.126108365319869,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "26614164-6840-4e17-a65a-2deb2fe7e87b",
       "slug": "grok-4-6-medium",
       "name": "Grok 4.6 (Medium)",
@@ -2087,20 +2101,6 @@
       "creator": {
         "name": "Z AI",
         "color": "#1c7ff8"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "04ee6719-0327-463b-a1a1-70a6a78254f9",
-      "slug": "muse-spark-1-2",
-      "name": "Muse Spark 1.2 (Xhigh)",
-      "shortName": "Muse Spark 1.2 (xhigh)",
-      "intelligenceIndex": 39.5758607970943,
-      "cost": 1.2897745472312931,
-      "creator": {
-        "name": "Meta",
-        "color": "#0089f4"
       },
       "isReasoning": true,
       "deprecated": false
@@ -2269,20 +2269,6 @@
       "creator": {
         "name": "NVIDIA",
         "color": "#76b900"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "d61493e2-43ff-460c-9054-eaf6ba317360",
-      "slug": "muse-spark-1-1",
-      "name": "Muse Spark 1.1 (Xhigh)",
-      "shortName": "Muse Spark 1.1 (xhigh)",
-      "intelligenceIndex": 33.7298425919846,
-      "cost": 1.6860885913646464,
-      "creator": {
-        "name": "Meta",
-        "color": "#0089f4"
       },
       "isReasoning": true,
       "deprecated": false
