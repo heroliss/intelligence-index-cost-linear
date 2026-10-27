@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-26T16:34:42.922Z",
-  "modelCount": 194,
+  "updatedAt": "2026-10-27T01:13:40.617Z",
+  "modelCount": 202,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -412,6 +412,20 @@
       "deprecated": false
     },
     {
+      "id": "c955b262-a17f-4f1a-b097-6860b866295b",
+      "slug": "gpt-6-1-terra-low",
+      "name": "GPT-6.1 Terra (Low)",
+      "shortName": "GPT-6.1 Terra (low)",
+      "intelligenceIndex": 36.2133370409149,
+      "cost": 0.05464052865181712,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "583f98fb-c4b8-4df3-8d40-60ac0ed69882",
       "slug": "muse-glimmer",
       "name": "Muse Glimmer (High)",
@@ -510,20 +524,6 @@
       "deprecated": false
     },
     {
-      "id": "29976311-665a-4b2f-ac72-557c33e0758e",
-      "slug": "nemotron-3-5-lightning",
-      "name": "Nemotron 3.5 Lightning",
-      "shortName": "Nemotron 3.5 Lightning",
-      "intelligenceIndex": 12.8572306217144,
-      "cost": 0.07929090391686336,
-      "creator": {
-        "name": "NVIDIA",
-        "color": "#76b900"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "20829974-af06-497e-9f42-77fb958d43b9",
       "slug": "claude-haiku-5-5-high",
       "name": "Claude Haiku 5.5 (High)",
@@ -566,6 +566,20 @@
       "deprecated": false
     },
     {
+      "id": "29976311-665a-4b2f-ac72-557c33e0758e",
+      "slug": "nemotron-3-5-lightning",
+      "name": "Nemotron 3.5 Lightning",
+      "shortName": "Nemotron 3.5 Lightning",
+      "intelligenceIndex": 12.8572306217144,
+      "cost": 0.08619504404641677,
+      "creator": {
+        "name": "NVIDIA",
+        "color": "#76b900"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "016d330a-2141-4afa-b2fc-62b314423dc1",
       "slug": "mercury-2",
       "name": "Mercury 2",
@@ -589,6 +603,20 @@
       "creator": {
         "name": "Thinking Machines",
         "color": "#676767"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+      "slug": "gpt-6-1-terra-medium",
+      "name": "GPT-6.1 Terra (Medium)",
+      "shortName": "GPT-6.1 Terra (medium)",
+      "intelligenceIndex": 41.318827405477,
+      "cost": 0.09525615537991598,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "isReasoning": true,
       "deprecated": false
@@ -636,6 +664,20 @@
       "deprecated": false
     },
     {
+      "id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+      "slug": "gpt-6-1-terra-non-reasoning",
+      "name": "GPT-6.1 Terra (Non-reasoning)",
+      "shortName": "GPT-6.1 Terra (non-reasoning)",
+      "intelligenceIndex": 33.4885115837089,
+      "cost": 0.106934869093765,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": false,
+      "deprecated": false
+    },
+    {
       "id": "f0083258-8646-45b8-8082-7aaf6c2ea82a",
       "slug": "gpt-oss-120b",
       "name": "gpt-oss-120b (High)",
@@ -678,20 +720,6 @@
       "deprecated": false
     },
     {
-      "id": "076f2674-bc4b-4925-be59-50832eb8c090",
-      "slug": "o3-mini-high",
-      "name": "o3-mini (High)",
-      "shortName": "o3-mini (high)",
-      "intelligenceIndex": 10.9643866525084,
-      "cost": 0.11548180241264007,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "b6d2e43d-3082-43f5-9318-0f4dbcb54163",
       "slug": "trinity-large-thinking",
       "name": "Trinity Large Thinking",
@@ -706,6 +734,20 @@
       "deprecated": false
     },
     {
+      "id": "076f2674-bc4b-4925-be59-50832eb8c090",
+      "slug": "o3-mini-high",
+      "name": "o3-mini (High)",
+      "shortName": "o3-mini (high)",
+      "intelligenceIndex": 10.9643866525084,
+      "cost": 0.12022007081230912,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "bf220674-68bd-43cc-a1b8-ce5ed4d2f18d",
       "slug": "deepseek-v4-pro-0424",
       "name": "DeepSeek V4 Pro 0424 (Max)",
@@ -715,6 +757,20 @@
       "creator": {
         "name": "DeepSeek",
         "color": "#2243e6"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "69468cce-7b5c-414a-b498-41df4c34df85",
+      "slug": "reflection-beam",
+      "name": "Beam 1.0",
+      "shortName": "Beam 1.0",
+      "intelligenceIndex": 30.3334426348039,
+      "cost": 0.12343674380556886,
+      "creator": {
+        "name": "Reflection",
+        "color": "#195428"
       },
       "isReasoning": true,
       "deprecated": false
@@ -790,6 +846,20 @@
       "deprecated": false
     },
     {
+      "id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+      "slug": "gpt-6-1-terra-high",
+      "name": "GPT-6.1 Terra (High)",
+      "shortName": "GPT-6.1 Terra (high)",
+      "intelligenceIndex": 43.8688591051329,
+      "cost": 0.13429759976989977,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "9b97a35e-6ac7-44d9-91c6-422fa678963e",
       "slug": "gpt-5-6-terra-non-reasoning",
       "name": "GPT-5.6 Terra (Non-reasoning)",
@@ -801,20 +871,6 @@
         "color": "#1f1f1f"
       },
       "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "69468cce-7b5c-414a-b498-41df4c34df85",
-      "slug": "reflection-beam",
-      "name": "Beam 1.0",
-      "shortName": "Beam 1.0",
-      "intelligenceIndex": 30.3334426348039,
-      "cost": 0.1410574460357331,
-      "creator": {
-        "name": "Reflection",
-        "color": "#195428"
-      },
-      "isReasoning": true,
       "deprecated": false
     },
     {
@@ -972,17 +1028,17 @@
       "deprecated": false
     },
     {
-      "id": "73c96f99-0de3-4668-a4bd-b106a0fe18f2",
-      "slug": "deepseek-v4-1-flash-non-reasoning",
-      "name": "DeepSeek V4.1 Flash (Non-reasoning)",
-      "shortName": "DeepSeek V4.1 Flash (non-reasoning)",
-      "intelligenceIndex": 24.6733593924318,
-      "cost": 0.19363211864004706,
+      "id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+      "slug": "gpt-6-1-terra-xhigh",
+      "name": "GPT-6.1 Terra (Xhigh)",
+      "shortName": "GPT-6.1 Terra (xhigh)",
+      "intelligenceIndex": 45.3640518262171,
+      "cost": 0.19368508229507728,
       "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
-      "isReasoning": false,
+      "isReasoning": true,
       "deprecated": false
     },
     {
@@ -1084,6 +1140,20 @@
       "deprecated": false
     },
     {
+      "id": "73c96f99-0de3-4668-a4bd-b106a0fe18f2",
+      "slug": "deepseek-v4-1-flash-non-reasoning",
+      "name": "DeepSeek V4.1 Flash (Non-reasoning)",
+      "shortName": "DeepSeek V4.1 Flash (non-reasoning)",
+      "intelligenceIndex": 24.6733593924318,
+      "cost": 0.23435435643534663,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": false,
+      "deprecated": false
+    },
+    {
       "id": "780a4a85-17ff-4175-a8dd-ebca4823e61b",
       "slug": "gpt-6-sol-medium",
       "name": "GPT-6 Sol (Medium)",
@@ -1182,6 +1252,20 @@
       "deprecated": false
     },
     {
+      "id": "dbe7c625-3100-4463-b479-a228c41f75dd",
+      "slug": "deepseek-v4-1-flash",
+      "name": "DeepSeek V4.1 Flash (Max)",
+      "shortName": "DeepSeek V4.1 Flash (max)",
+      "intelligenceIndex": 39.456167472527,
+      "cost": 0.31781327010002136,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "3b84fee3-b70a-41bc-819e-5fbdef9a0042",
       "slug": "gpt-6-1-sol-high",
       "name": "GPT-6.1 Sol (High)",
@@ -1191,20 +1275,6 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "dbe7c625-3100-4463-b479-a228c41f75dd",
-      "slug": "deepseek-v4-1-flash",
-      "name": "DeepSeek V4.1 Flash (Max)",
-      "shortName": "DeepSeek V4.1 Flash (max)",
-      "intelligenceIndex": 39.456167472527,
-      "cost": 0.3193573454838706,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1364,6 +1434,20 @@
       "deprecated": false
     },
     {
+      "id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+      "slug": "gpt-6-1-terra",
+      "name": "GPT-6.1 Terra (Max)",
+      "shortName": "GPT-6.1 Terra (max)",
+      "intelligenceIndex": 48.1061836463044,
+      "cost": 0.40345425699157816,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "dd059b25-d82a-4ead-82a4-4adceaaec48b",
       "slug": "mistral-medium-3-5",
       "name": "Mistral Medium 3.5",
@@ -1373,6 +1457,20 @@
       "creator": {
         "name": "Mistral",
         "color": "#f32e02"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "08242385-ee91-4de6-be7f-271a6d9780ce",
+      "slug": "apodex-1-1",
+      "name": "Apodex 1.1",
+      "shortName": "Apodex 1.1",
+      "intelligenceIndex": 26.4103686249117,
+      "cost": 0.4636458675701544,
+      "creator": {
+        "name": "Apodex",
+        "color": "#0FD9D2"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1733,7 +1831,7 @@
       "name": "Muse Spark Open (Xhigh)",
       "shortName": "Muse Spark Open (xhigh)",
       "intelligenceIndex": 38.8666662997805,
-      "cost": 0.8441853713458678,
+      "cost": 0.8443469747958676,
       "creator": {
         "name": "Meta",
         "color": "#0089f4"
@@ -1882,6 +1980,20 @@
       "deprecated": false
     },
     {
+      "id": "d5170215-69be-4129-849b-26d8d8825bfc",
+      "slug": "muse-spark-1-3-xhigh",
+      "name": "Muse Spark 1.3 (Xhigh)",
+      "shortName": "Muse Spark 1.3 (xhigh)",
+      "intelligenceIndex": 45.0732966922226,
+      "cost": 1.120050304379647,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "26614164-6840-4e17-a65a-2deb2fe7e87b",
       "slug": "grok-4-6-medium",
       "name": "Grok 4.6 (Medium)",
@@ -1986,6 +2098,20 @@
       "shortName": "Muse Spark 1.2 (xhigh)",
       "intelligenceIndex": 39.5758607970943,
       "cost": 1.2897745472312931,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "9999672c-b687-4026-9c15-5cef02ff53bb",
+      "slug": "muse-spark-1-3",
+      "name": "Muse Spark 1.3 (Max)",
+      "shortName": "Muse Spark 1.3 (max)",
+      "intelligenceIndex": 48.0923107719685,
+      "cost": 1.3146126309181798,
       "creator": {
         "name": "Meta",
         "color": "#0089f4"
@@ -2302,20 +2428,6 @@
       "deprecated": false
     },
     {
-      "id": "d5170215-69be-4129-849b-26d8d8825bfc",
-      "slug": "muse-spark-1-3-xhigh",
-      "name": "Muse Spark 1.3 (Xhigh)",
-      "shortName": "Muse Spark 1.3 (xhigh)",
-      "intelligenceIndex": 45.0732966922226,
-      "cost": 2.1531352056008526,
-      "creator": {
-        "name": "Meta",
-        "color": "#0089f4"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "8df710d3-9dae-4498-9b4e-9818238e6f31",
       "slug": "qwen3-8-2-4t-a95b",
       "name": "Qwen3.8 2.4T A95B",
@@ -2414,6 +2526,20 @@
       "deprecated": false
     },
     {
+      "id": "744fa3c1-42a7-4995-b138-fb6be11f463c",
+      "slug": "gemini-3-8-flash-medium",
+      "name": "Gemini 3.8 Flash (Medium)",
+      "shortName": "Gemini 3.8 Flash (medium)",
+      "intelligenceIndex": 39.7740187061926,
+      "cost": 2.5927362856321072,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "5e5b4ce7-bc54-47b2-b911-21b9cad8394c",
       "slug": "qwen3-8-max-0803",
       "name": "Qwen3.8 Max",
@@ -2498,6 +2624,20 @@
       "deprecated": false
     },
     {
+      "id": "ff2f3f3d-783f-4e27-8a39-47237501a313",
+      "slug": "muse-wonder",
+      "name": "Muse Wonder (Max)",
+      "shortName": "Muse Wonder (max)",
+      "intelligenceIndex": 52.393894697293,
+      "cost": 3.2670566965220496,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "df5bf99d-d228-4715-b41b-19ca86118777",
       "slug": "claude-opus-5-5-xhigh",
       "name": "Claude Opus 5.5 (Xhigh, Default Fallback)",
@@ -2535,20 +2675,6 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "9999672c-b687-4026-9c15-5cef02ff53bb",
-      "slug": "muse-spark-1-3",
-      "name": "Muse Spark 1.3 (Max)",
-      "shortName": "Muse Spark 1.3 (max)",
-      "intelligenceIndex": 48.0923107719685,
-      "cost": 3.6931921471373066,
-      "creator": {
-        "name": "Meta",
-        "color": "#0089f4"
       },
       "isReasoning": true,
       "deprecated": false
@@ -2689,20 +2815,6 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "ff2f3f3d-783f-4e27-8a39-47237501a313",
-      "slug": "muse-wonder",
-      "name": "Muse Wonder (Max)",
-      "shortName": "Muse Wonder (max)",
-      "intelligenceIndex": 52.393894697293,
-      "cost": 8.630257994031556,
-      "creator": {
-        "name": "Meta",
-        "color": "#0089f4"
       },
       "isReasoning": true,
       "deprecated": false
