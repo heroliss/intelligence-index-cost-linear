@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-27T20:28:29.698Z",
+  "updatedAt": "2026-10-28T01:00:35.798Z",
   "modelCount": 201,
   "models": [
     {
@@ -930,20 +930,6 @@
       "deprecated": false
     },
     {
-      "id": "fe4c0848-e284-4e52-a79d-cdc28392f1a9",
-      "slug": "deepseek-v4-flash",
-      "name": "DeepSeek V4 Flash 0731 (Max)",
-      "shortName": "DeepSeek V4 Flash 0731 (max)",
-      "intelligenceIndex": 34.3305129347816,
-      "cost": 0.15001635806082794,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "093b9df2-ebee-4309-943f-5a7e88360adf",
       "slug": "gemini-3-5-flash-lite",
       "name": "Gemini 3.5 Flash-Lite",
@@ -953,6 +939,20 @@
       "creator": {
         "name": "Google",
         "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "fe4c0848-e284-4e52-a79d-cdc28392f1a9",
+      "slug": "deepseek-v4-flash",
+      "name": "DeepSeek V4 Flash 0731 (Max)",
+      "shortName": "DeepSeek V4 Flash 0731 (max)",
+      "intelligenceIndex": 34.3305129347816,
+      "cost": 0.17747618083795008,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
       },
       "isReasoning": true,
       "deprecated": false
