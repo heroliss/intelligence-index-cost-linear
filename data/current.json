@@ -2,173 +2,19 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-28T01:00:35.798Z",
-  "modelCount": 201,
+  "updatedAt": "2026-10-28T10:23:39.494Z",
+  "modelCount": 72,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
       "slug": "gpt-6-luna-low",
       "name": "GPT-6 Luna (Low)",
       "shortName": "GPT-6 Luna (low)",
-      "intelligenceIndex": 21.5261980080866,
-      "cost": 0.004516607569410252,
+      "intelligenceIndex": 9.66610812336462,
+      "cost": 0.005115255188520391,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "0c64b008-20c3-408d-bd68-15136df8cd2c",
-      "slug": "granite-4-2-3b",
-      "name": "Granite 4.2 3B",
-      "shortName": "Granite 4.2 3B",
-      "intelligenceIndex": 9.05588232376756,
-      "cost": 0.005987243224456071,
-      "creator": {
-        "name": "IBM",
-        "color": "#0f62fe"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "66f4ce73-9a9b-4b49-9c6e-bedb9bfdc720",
-      "slug": "ministral-3-3b",
-      "name": "Ministral 3 3B",
-      "shortName": "Ministral 3 3B",
-      "intelligenceIndex": 4.83760020546443,
-      "cost": 0.007846860809830004,
-      "creator": {
-        "name": "Mistral",
-        "color": "#f32e02"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "d80eb0f1-f62e-4d31-99d2-7a925eb126b0",
-      "slug": "gemma-4-e4b",
-      "name": "Gemma 4 E4B (Reasoning)",
-      "shortName": "Gemma 4 E4B",
-      "intelligenceIndex": 8.90908441839731,
-      "cost": 0.008163276245907385,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "050c61cd-cddc-463a-a30a-a82aaa37be59",
-      "slug": "gpt-5-6-luna-low",
-      "name": "GPT-5.6 Luna (Low)",
-      "shortName": "GPT-5.6 Luna (low)",
-      "intelligenceIndex": 21.0124783424265,
-      "cost": 0.009827249754655997,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "dc64f856-3ded-497d-9527-d41d31267ed5",
-      "slug": "gpt-5-6-luna-non-reasoning",
-      "name": "GPT-5.6 Luna (Non-reasoning)",
-      "shortName": "GPT-5.6 Luna (non-reasoning)",
-      "intelligenceIndex": 15.5270002110259,
-      "cost": 0.010091821810180262,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "36f73aaf-d38a-4b56-a2b3-d04d17186910",
-      "slug": "gpt-oss-20b",
-      "name": "gpt-oss-20b (High)",
-      "shortName": "gpt-oss-20b (high)",
-      "intelligenceIndex": 8.9675171856126,
-      "cost": 0.01055611917474499,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "9741f3c2-cbb1-4a3f-99ee-7bd7384d9038",
-      "slug": "ministral-3-8b",
-      "name": "Ministral 3 8B",
-      "shortName": "Ministral 3 8B",
-      "intelligenceIndex": 5.47767370454416,
-      "cost": 0.011086416592507111,
-      "creator": {
-        "name": "Mistral",
-        "color": "#f32e02"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
-      "slug": "gpt-6-luna-non-reasoning",
-      "name": "GPT-6 Luna (Non-reasoning)",
-      "shortName": "GPT-6 Luna (non-reasoning)",
-      "intelligenceIndex": 18.4678465935701,
-      "cost": 0.011345057120527267,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "58b812bf-8498-46db-b834-f43ccc614b61",
-      "slug": "gpt-5-6-luna-medium",
-      "name": "GPT-5.6 Luna (Medium)",
-      "shortName": "GPT-5.6 Luna (medium)",
-      "intelligenceIndex": 25.0358741440784,
-      "cost": 0.015598049609820011,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "76dcf6ef-39ea-4be0-b693-b88da25b4caf",
-      "slug": "nvidia-nemotron-3-nano-30b-a3b-reasoning",
-      "name": "NVIDIA Nemotron 3 Nano 30B A3B (Reasoning)",
-      "shortName": "Nemotron 3 Nano",
-      "intelligenceIndex": 8.8961440122188,
-      "cost": 0.01675160944475661,
-      "creator": {
-        "name": "NVIDIA",
-        "color": "#76b900"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "3fd96175-4ef1-434c-8795-f873aec2abc1",
-      "slug": "mistral-small-4",
-      "name": "Mistral Small 4 (Reasoning)",
-      "shortName": "Mistral Small 4",
-      "intelligenceIndex": 11.2675794141469,
-      "cost": 0.017146575015817147,
-      "creator": {
-        "name": "Mistral",
-        "color": "#f32e02"
       },
       "isReasoning": true,
       "deprecated": false
@@ -178,67 +24,11 @@
       "slug": "gpt-6-luna-medium",
       "name": "GPT-6 Luna (Medium)",
       "shortName": "GPT-6 Luna (medium)",
-      "intelligenceIndex": 29.9251773515762,
-      "cost": 0.017476906067835942,
+      "intelligenceIndex": 18.3042156192416,
+      "cost": 0.042201836106537785,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "713fae11-c75c-4f10-ae2c-8e4074cd58af",
-      "slug": "ministral-3-14b",
-      "name": "Ministral 3 14B",
-      "shortName": "Ministral 3 14B",
-      "intelligenceIndex": 6.04436817215002,
-      "cost": 0.01943640228162961,
-      "creator": {
-        "name": "Mistral",
-        "color": "#f32e02"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "43fc5506-c5ed-4dee-9b85-962bf7ae3986",
-      "slug": "deepseek-v3",
-      "name": "DeepSeek V3 (Dec '24)",
-      "shortName": "DeepSeek V3 (Dec)",
-      "intelligenceIndex": 8.48686760841828,
-      "cost": 0.019751793975774472,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "75e1c197-f239-4361-a9d6-66dccfead236",
-      "slug": "deepseek-v3-0324",
-      "name": "DeepSeek V3 0324",
-      "shortName": "DeepSeek V3 0324",
-      "intelligenceIndex": 9.72000501684011,
-      "cost": 0.020503624306934965,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "adfae555-f489-4f3e-9064-c6b7fcdd0783",
-      "slug": "granite-4-2-8b",
-      "name": "Granite 4.2 8B",
-      "shortName": "Granite 4.2 8B",
-      "intelligenceIndex": 11.0812712267815,
-      "cost": 0.023596091491929188,
-      "creator": {
-        "name": "IBM",
-        "color": "#0f62fe"
       },
       "isReasoning": true,
       "deprecated": false
@@ -248,8 +38,8 @@
       "slug": "claude-haiku-5-5-low",
       "name": "Claude Haiku 5.5 (Low)",
       "shortName": "Claude Haiku 5.5 (low)",
-      "intelligenceIndex": 29.4523685891139,
-      "cost": 0.02445936101890973,
+      "intelligenceIndex": 18.6180055310996,
+      "cost": 0.043757686381988486,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -258,31 +48,31 @@
       "deprecated": false
     },
     {
-      "id": "24ac5b00-5f03-4c47-8e37-522d1195383e",
-      "slug": "mistral-small-3-1",
-      "name": "Mistral Small 3.1",
-      "shortName": "Mistral Small 3.1",
-      "intelligenceIndex": 7.11735622656558,
-      "cost": 0.02554707330972973,
+      "id": "c955b262-a17f-4f1a-b097-6860b866295b",
+      "slug": "gpt-6-1-terra-low",
+      "name": "GPT-6.1 Terra (Low)",
+      "shortName": "GPT-6.1 Terra (low)",
+      "intelligenceIndex": 29.2169280792131,
+      "cost": 0.07133756205169729,
       "creator": {
-        "name": "Mistral",
-        "color": "#f32e02"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
-      "isReasoning": false,
+      "isReasoning": true,
       "deprecated": false
     },
     {
-      "id": "e33dc369-ae81-40e0-8c4e-28b002d02197",
-      "slug": "ling-3-0-flash",
-      "name": "Ling 3.0 Flash",
-      "shortName": "Ling 3.0 Flash",
-      "intelligenceIndex": 20.1332521865481,
-      "cost": 0.027670391633841187,
+      "id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+      "slug": "gpt-6-luna-non-reasoning",
+      "name": "GPT-6 Luna (Non-reasoning)",
+      "shortName": "GPT-6 Luna (non-reasoning)",
+      "intelligenceIndex": 9.39244373619813,
+      "cost": 0.07141741932294249,
       "creator": {
-        "name": "InclusionAI",
-        "color": "#4fb5ff"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
-      "isReasoning": true,
+      "isReasoning": false,
       "deprecated": false
     },
     {
@@ -290,78 +80,8 @@
       "slug": "gpt-6-luna-high",
       "name": "GPT-6 Luna (High)",
       "shortName": "GPT-6 Luna (high)",
-      "intelligenceIndex": 32.9282054150837,
-      "cost": 0.02903157640372802,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "4928e950-7f37-4475-b0dc-c5bad781a321",
-      "slug": "mistral-large-3",
-      "name": "Mistral Large 3",
-      "shortName": "Mistral Large 3",
-      "intelligenceIndex": 9.26608812860467,
-      "cost": 0.031125992260624492,
-      "creator": {
-        "name": "Mistral",
-        "color": "#f32e02"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "922c69c7-9037-43c6-8bcf-a1c555e7f3eb",
-      "slug": "llama-4-maverick",
-      "name": "Llama 4 Maverick",
-      "shortName": "Llama 4 Maverick",
-      "intelligenceIndex": 9.29902687437199,
-      "cost": 0.038299797707028495,
-      "creator": {
-        "name": "Meta",
-        "color": "#0089f4"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "22d09131-343b-4adf-8760-533e20a2155f",
-      "slug": "mimo-v2-5-0424",
-      "name": "MiMo-V2.5",
-      "shortName": "MiMo-V2.5",
-      "intelligenceIndex": 21.8248678794953,
-      "cost": 0.04183243810280111,
-      "creator": {
-        "name": "Xiaomi",
-        "color": "#ff6900"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "19813eb2-460a-475c-af65-810bb8660fec",
-      "slug": "gpt-6-luna-xhigh",
-      "name": "GPT-6 Luna (Xhigh)",
-      "shortName": "GPT-6 Luna (xhigh)",
-      "intelligenceIndex": 34.5587320217785,
-      "cost": 0.042183547923951084,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "aa55297e-8fbf-4372-b4ab-9b068dc6396c",
-      "slug": "gpt-5-6-luna-high",
-      "name": "GPT-5.6 Luna (High)",
-      "shortName": "GPT-5.6 Luna (high)",
-      "intelligenceIndex": 32.1196453501091,
-      "cost": 0.043981552251920096,
+      "intelligenceIndex": 21.3790170864582,
+      "cost": 0.07294776473194697,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -374,8 +94,8 @@
       "slug": "claude-haiku-5-5-medium",
       "name": "Claude Haiku 5.5 (Medium)",
       "shortName": "Claude Haiku 5.5 (medium)",
-      "intelligenceIndex": 34.4646519474657,
-      "cost": 0.04703084793955566,
+      "intelligenceIndex": 24.5513254343023,
+      "cost": 0.0917645584066771,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -384,85 +104,15 @@
       "deprecated": false
     },
     {
-      "id": "8014c311-fa23-4a4b-8485-8a864db8a113",
-      "slug": "celeris-1",
-      "name": "Celeris-1",
-      "shortName": "Celeris-1",
-      "intelligenceIndex": 6.3469533538601,
-      "cost": 0.05015755586591194,
-      "creator": {
-        "name": "Celeris",
-        "color": "#ff8a75"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "29855680-7469-43eb-8b88-cd3fb1d99da3",
-      "slug": "gpt-5-mini",
-      "name": "GPT-5 mini (High)",
-      "shortName": "GPT-5 mini (high)",
-      "intelligenceIndex": 16.7730881042515,
-      "cost": 0.05349965791130692,
+      "id": "19813eb2-460a-475c-af65-810bb8660fec",
+      "slug": "gpt-6-luna-xhigh",
+      "name": "GPT-6 Luna (Xhigh)",
+      "shortName": "GPT-6 Luna (xhigh)",
+      "intelligenceIndex": 23.3008728089378,
+      "cost": 0.10409320921120957,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "c955b262-a17f-4f1a-b097-6860b866295b",
-      "slug": "gpt-6-1-terra-low",
-      "name": "GPT-6.1 Terra (Low)",
-      "shortName": "GPT-6.1 Terra (low)",
-      "intelligenceIndex": 36.2133370409149,
-      "cost": 0.05464052865181712,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "583f98fb-c4b8-4df3-8d40-60ac0ed69882",
-      "slug": "muse-glimmer",
-      "name": "Muse Glimmer (High)",
-      "shortName": "Muse Glimmer (high)",
-      "intelligenceIndex": 17.4754176089465,
-      "cost": 0.05755125039078422,
-      "creator": {
-        "name": "Meta",
-        "color": "#0089f4"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "b89c4faf-219e-4171-a1aa-e3bd2fd0a924",
-      "slug": "solar-pro-3",
-      "name": "Solar Pro 3",
-      "shortName": "Solar Pro 3",
-      "intelligenceIndex": 7.81551744502774,
-      "cost": 0.05826312291143208,
-      "creator": {
-        "name": "Upstage",
-        "color": "#7c59f5"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "598190f8-dc9c-4fea-a7ea-4b81c402ab18",
-      "slug": "gemini-3-1-flash-lite-preview",
-      "name": "Gemini 3.1 Flash-Lite",
-      "shortName": "Gemini 3.1 Flash-Lite",
-      "intelligenceIndex": 15.554288713025,
-      "cost": 0.06018072627659897,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": false
@@ -472,8 +122,8 @@
       "slug": "mimo-v2-6-flash",
       "name": "MiMo-V2.6-Flash",
       "shortName": "MiMo-V2.6-Flash",
-      "intelligenceIndex": 37.8843590141754,
-      "cost": 0.06237567475410205,
+      "intelligenceIndex": 26.7276981444568,
+      "cost": 0.12852987084014672,
       "creator": {
         "name": "Xiaomi",
         "color": "#ff6900"
@@ -486,25 +136,11 @@
       "slug": "gpt-6-luna",
       "name": "GPT-6 Luna (Max)",
       "shortName": "GPT-6 Luna (max)",
-      "intelligenceIndex": 38.1245186869738,
-      "cost": 0.06782295669812205,
+      "intelligenceIndex": 27.7552004938153,
+      "cost": 0.15195575732105837,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "b23e6c69-96e5-44c9-8f58-4b42e0c399d5",
-      "slug": "hy3",
-      "name": "Hy3",
-      "shortName": "Hy3",
-      "intelligenceIndex": 25.2972775731571,
-      "cost": 0.07241684976763095,
-      "creator": {
-        "name": "Tencent",
-        "color": "#5CB9FF"
       },
       "isReasoning": true,
       "deprecated": false
@@ -514,8 +150,8 @@
       "slug": "claude-haiku-5-5-high",
       "name": "Claude Haiku 5.5 (High)",
       "shortName": "Claude Haiku 5.5 (high)",
-      "intelligenceIndex": 37.8240211671094,
-      "cost": 0.07942671568737021,
+      "intelligenceIndex": 29.624315467743,
+      "cost": 0.15856031956679498,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -524,267 +160,15 @@
       "deprecated": false
     },
     {
-      "id": "f6ccbe1d-bd7e-484b-9795-18cc9f91552d",
-      "slug": "qwen3-235b-a22b-instruct-2507-reasoning",
-      "name": "Qwen3 235B A22B 2507 (Reasoning)",
-      "shortName": "Qwen3 235B A22B 2507",
-      "intelligenceIndex": 12.7108511527974,
-      "cost": 0.07976134628090205,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "87110ff0-1f79-41b4-9976-eda250597317",
-      "slug": "gpt-5-6-luna-xhigh",
-      "name": "GPT-5.6 Luna (Xhigh)",
-      "shortName": "GPT-5.6 Luna (xhigh)",
-      "intelligenceIndex": 34.555348822309,
-      "cost": 0.085342806135728,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "29976311-665a-4b2f-ac72-557c33e0758e",
-      "slug": "nemotron-3-5-lightning",
-      "name": "Nemotron 3.5 Lightning",
-      "shortName": "Nemotron 3.5 Lightning",
-      "intelligenceIndex": 12.8572306217144,
-      "cost": 0.08619504404641677,
-      "creator": {
-        "name": "NVIDIA",
-        "color": "#76b900"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "016d330a-2141-4afa-b2fc-62b314423dc1",
-      "slug": "mercury-2",
-      "name": "Mercury 2",
-      "shortName": "Mercury 2",
-      "intelligenceIndex": 10.7770340974661,
-      "cost": 0.08929555380072823,
-      "creator": {
-        "name": "Inception",
-        "color": "#021B30"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "7261504e-503c-4a66-a9d3-a3272cdf9ad6",
-      "slug": "inkling-small",
-      "name": "Inkling Small",
-      "shortName": "Inkling Small",
-      "intelligenceIndex": 25.6582584411942,
-      "cost": 0.0894649973284348,
-      "creator": {
-        "name": "Thinking Machines",
-        "color": "#676767"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "c441e158-a87d-4116-911b-93325e4b4f1c",
-      "slug": "gpt-6-1-terra-medium",
-      "name": "GPT-6.1 Terra (Medium)",
-      "shortName": "GPT-6.1 Terra (medium)",
-      "intelligenceIndex": 41.318827405477,
-      "cost": 0.09525615537991598,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "d8ddb241-b3e4-4c25-a6a3-72eb1b30c541",
-      "slug": "deepseek-v4-flash-0420",
-      "name": "DeepSeek V4 Flash 0420 (Max)",
-      "shortName": "DeepSeek V4 Flash (max)",
-      "intelligenceIndex": 24.1673138235549,
-      "cost": 0.09827784235182804,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "765c9f31-95ec-4f14-900a-80614c3b0777",
-      "slug": "mercury-2-5",
-      "name": "Mercury 2.5",
-      "shortName": "Mercury 2.5",
-      "intelligenceIndex": 12.3408453757638,
-      "cost": 0.09985371502418221,
-      "creator": {
-        "name": "Inception",
-        "color": "#021B30"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "4bbceacb-cf47-464b-b60f-e1d1fe016d67",
-      "slug": "minimax-m2-7",
-      "name": "MiniMax-M2.7",
-      "shortName": "MiniMax-M2.7",
-      "intelligenceIndex": 22.7578150287271,
-      "cost": 0.10639680374680355,
-      "creator": {
-        "name": "MiniMax",
-        "color": "#EB3568"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
-      "slug": "gpt-6-1-terra-non-reasoning",
-      "name": "GPT-6.1 Terra (Non-reasoning)",
-      "shortName": "GPT-6.1 Terra (non-reasoning)",
-      "intelligenceIndex": 33.4885115837089,
-      "cost": 0.106934869093765,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "f0083258-8646-45b8-8082-7aaf6c2ea82a",
-      "slug": "gpt-oss-120b",
-      "name": "gpt-oss-120b (High)",
-      "shortName": "gpt-oss-120b (high)",
-      "intelligenceIndex": 11.6028431512592,
-      "cost": 0.10755929276182966,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "43da3718-3d6e-40dd-901a-05664179ff7f",
-      "slug": "mistral-small-3-2",
-      "name": "Mistral Small 3.2",
-      "shortName": "Mistral Small 3.2",
-      "intelligenceIndex": 6.96351219722855,
-      "cost": 0.10915934152950205,
-      "creator": {
-        "name": "Mistral",
-        "color": "#f32e02"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "adf9a85e-abc3-4f28-937b-db6655cc5238",
-      "slug": "llama-4-scout",
-      "name": "Llama 4 Scout",
-      "shortName": "Llama 4 Scout",
-      "intelligenceIndex": 6.45126865234633,
-      "cost": 0.1121761076625774,
+      "id": "583f98fb-c4b8-4df3-8d40-60ac0ed69882",
+      "slug": "muse-glimmer",
+      "name": "Muse Glimmer (High)",
+      "shortName": "Muse Glimmer (high)",
+      "intelligenceIndex": 6.34128724913462,
+      "cost": 0.16096168039127723,
       "creator": {
         "name": "Meta",
         "color": "#0089f4"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "b6d2e43d-3082-43f5-9318-0f4dbcb54163",
-      "slug": "trinity-large-thinking",
-      "name": "Trinity Large Thinking",
-      "shortName": "Trinity Large Thinking",
-      "intelligenceIndex": 10.8242425924218,
-      "cost": 0.11883788334567012,
-      "creator": {
-        "name": "Arcee AI",
-        "color": "#008c8d"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "076f2674-bc4b-4925-be59-50832eb8c090",
-      "slug": "o3-mini-high",
-      "name": "o3-mini (High)",
-      "shortName": "o3-mini (high)",
-      "intelligenceIndex": 10.9643866525084,
-      "cost": 0.12022007081230912,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "bf220674-68bd-43cc-a1b8-ce5ed4d2f18d",
-      "slug": "deepseek-v4-pro-0424",
-      "name": "DeepSeek V4 Pro 0424 (Max)",
-      "shortName": "DeepSeek V4 Pro (max)",
-      "intelligenceIndex": 30.4496601315524,
-      "cost": 0.12152059767597723,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "69468cce-7b5c-414a-b498-41df4c34df85",
-      "slug": "reflection-beam",
-      "name": "Beam 1.0",
-      "shortName": "Beam 1.0",
-      "intelligenceIndex": 30.3334426348039,
-      "cost": 0.12343674380556886,
-      "creator": {
-        "name": "Reflection",
-        "color": "#195428"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "41b5bf5e-daf6-42d9-b8d1-60e340a3028d",
-      "slug": "claude-haiku-5-5-xhigh",
-      "name": "Claude Haiku 5.5 (Xhigh)",
-      "shortName": "Claude Haiku 5.5 (xhigh)",
-      "intelligenceIndex": 41.2489304677024,
-      "cost": 0.12378561092096102,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "89a2c945-1fab-4ee4-9f45-83a9f46cb221",
-      "slug": "deepseek-v4-flash-0420-high",
-      "name": "DeepSeek V4 Flash 0420 (High)",
-      "shortName": "DeepSeek V4 Flash (high)",
-      "intelligenceIndex": 24.3839569152521,
-      "cost": 0.12751852883398024,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
       },
       "isReasoning": true,
       "deprecated": false
@@ -794,8 +178,8 @@
       "slug": "gpt-6-1-sol-low",
       "name": "GPT-6.1 Sol (Low)",
       "shortName": "GPT-6.1 Sol (low)",
-      "intelligenceIndex": 42.0835618555848,
-      "cost": 0.13075190869859377,
+      "intelligenceIndex": 34.502924431456,
+      "cost": 0.16147357831822573,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -804,15 +188,57 @@
       "deprecated": false
     },
     {
-      "id": "01459872-433a-4ab2-8e99-7083162172eb",
-      "slug": "gpt-6-sol-low",
-      "name": "GPT-6 Sol (Low)",
-      "shortName": "GPT-6 Sol (low)",
-      "intelligenceIndex": 34.1548755585733,
-      "cost": 0.1327768361714764,
+      "id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+      "slug": "gpt-6-1-terra-medium",
+      "name": "GPT-6.1 Terra (Medium)",
+      "shortName": "GPT-6.1 Terra (medium)",
+      "intelligenceIndex": 38.1152076677975,
+      "cost": 0.16880458238389412,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "7261504e-503c-4a66-a9d3-a3272cdf9ad6",
+      "slug": "inkling-small",
+      "name": "Inkling Small",
+      "shortName": "Inkling Small",
+      "intelligenceIndex": 12.9101620926084,
+      "cost": 0.20316116043899832,
+      "creator": {
+        "name": "Thinking Machines",
+        "color": "#676767"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+      "slug": "gpt-6-1-terra-non-reasoning",
+      "name": "GPT-6.1 Terra (Non-reasoning)",
+      "shortName": "GPT-6.1 Terra (non-reasoning)",
+      "intelligenceIndex": 30.415898867357,
+      "cost": 0.22589585897456366,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": false,
+      "deprecated": false
+    },
+    {
+      "id": "41b5bf5e-daf6-42d9-b8d1-60e340a3028d",
+      "slug": "claude-haiku-5-5-xhigh",
+      "name": "Claude Haiku 5.5 (Xhigh)",
+      "shortName": "Claude Haiku 5.5 (xhigh)",
+      "intelligenceIndex": 34.3387759486628,
+      "cost": 0.24836110126596478,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
       },
       "isReasoning": true,
       "deprecated": false
@@ -822,8 +248,8 @@
       "slug": "mimo-v2-6-pro",
       "name": "MiMo-V2.6-Pro",
       "shortName": "MiMo-V2.6-Pro",
-      "intelligenceIndex": 46.3242065310383,
-      "cost": 0.13322318937213493,
+      "intelligenceIndex": 29.8897833093321,
+      "cost": 0.25718036275876155,
       "creator": {
         "name": "Xiaomi",
         "color": "#ff6900"
@@ -836,8 +262,8 @@
       "slug": "gpt-6-1-terra-high",
       "name": "GPT-6.1 Terra (High)",
       "shortName": "GPT-6.1 Terra (high)",
-      "intelligenceIndex": 43.8688591051329,
-      "cost": 0.13429759976989977,
+      "intelligenceIndex": 42.3344508712563,
+      "cost": 0.2592796466169722,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -846,225 +272,15 @@
       "deprecated": false
     },
     {
-      "id": "9b97a35e-6ac7-44d9-91c6-422fa678963e",
-      "slug": "gpt-5-6-terra-non-reasoning",
-      "name": "GPT-5.6 Terra (Non-reasoning)",
-      "shortName": "GPT-5.6 Terra (non-reasoning)",
-      "intelligenceIndex": 20.7797013584503,
-      "cost": 0.13972397093498629,
+      "id": "69468cce-7b5c-414a-b498-41df4c34df85",
+      "slug": "reflection-beam",
+      "name": "Beam 1.0",
+      "shortName": "Beam 1.0",
+      "intelligenceIndex": 17.7307282547205,
+      "cost": 0.28440671352465285,
       "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "cc4a20cd-09fe-4962-a430-119c815e85fa",
-      "slug": "gpt-5-6-terra-low",
-      "name": "GPT-5.6 Terra (Low)",
-      "shortName": "GPT-5.6 Terra (low)",
-      "intelligenceIndex": 27.496203401716,
-      "cost": 0.1444617614290821,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "90c2a9cf-ad7e-4332-9be2-2fd1309833e2",
-      "slug": "grok-4-3-non-reasoning",
-      "name": "Grok 4.3 (Non-reasoning)",
-      "shortName": "Grok 4.3 (non-reasoning)",
-      "intelligenceIndex": 13.9926809505055,
-      "cost": 0.14623281214647546,
-      "creator": {
-        "name": "SpaceXAI",
-        "color": "#736cd3"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "5c3bdc0d-abab-4526-8079-34de4089bb4a",
-      "slug": "longcat-2-0",
-      "name": "LongCat 2.0",
-      "shortName": "LongCat 2.0",
-      "intelligenceIndex": 19.1123256610623,
-      "cost": 0.14624850952440743,
-      "creator": {
-        "name": "LongCat",
-        "color": "#2adb65"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "f9739750-6d42-450f-ba1e-2f76c869b4fe",
-      "slug": "quasar-438b",
-      "name": "Quasar 438B (Max, Based on GLM-5.2)",
-      "shortName": "Quasar 438B (max)",
-      "intelligenceIndex": 26.7372536607816,
-      "cost": 0.14809740687785783,
-      "creator": {
-        "name": "Multiverse Computing",
-        "color": "#f11338"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "00f1248e-78e3-4230-8dc8-5e13ba8645e2",
-      "slug": "mimo-v2-5-pro",
-      "name": "MiMo-V2.5-Pro (Reasoning)",
-      "shortName": "MiMo-V2.5-Pro",
-      "intelligenceIndex": 25.9868888896511,
-      "cost": 0.14934443092891345,
-      "creator": {
-        "name": "Xiaomi",
-        "color": "#ff6900"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "093b9df2-ebee-4309-943f-5a7e88360adf",
-      "slug": "gemini-3-5-flash-lite",
-      "name": "Gemini 3.5 Flash-Lite",
-      "shortName": "Gemini 3.5 Flash-Lite",
-      "intelligenceIndex": 22.1685424839812,
-      "cost": 0.17276678538871407,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "fe4c0848-e284-4e52-a79d-cdc28392f1a9",
-      "slug": "deepseek-v4-flash",
-      "name": "DeepSeek V4 Flash 0731 (Max)",
-      "shortName": "DeepSeek V4 Flash 0731 (max)",
-      "intelligenceIndex": 34.3305129347816,
-      "cost": 0.17747618083795008,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "426d24c8-49ae-482a-b4a8-20f1c53f21c1",
-      "slug": "gpt-5-6-luna",
-      "name": "GPT-5.6 Luna (Max)",
-      "shortName": "GPT-5.6 Luna (max)",
-      "intelligenceIndex": 37.3244239690841,
-      "cost": 0.17829726152289094,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "d4fc3f33-f2b0-4da1-88ee-f1f82bd4de31",
-      "slug": "gpt-5-4-nano",
-      "name": "GPT-5.4 nano (Xhigh)",
-      "shortName": "GPT-5.4 nano (xhigh)",
-      "intelligenceIndex": 20.7197352504557,
-      "cost": 0.1830802502922872,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "26e0f83a-ca98-4f34-94ac-7c5e251ee410",
-      "slug": "gpt-5-6-terra-medium",
-      "name": "GPT-5.6 Terra (Medium)",
-      "shortName": "GPT-5.6 Terra (medium)",
-      "intelligenceIndex": 30.0938023419377,
-      "cost": 0.18337295992969213,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "e2c0623e-c855-4a61-bb66-be1f1ed43234",
-      "slug": "nemotron-3-5-super-vl",
-      "name": "Nemotron 3.5 Super VL",
-      "shortName": "Nemotron 3.5 Super VL",
-      "intelligenceIndex": 26.4910658661689,
-      "cost": 0.18506691562292996,
-      "creator": {
-        "name": "NVIDIA",
-        "color": "#76b900"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
-      "slug": "gpt-6-1-terra-xhigh",
-      "name": "GPT-6.1 Terra (Xhigh)",
-      "shortName": "GPT-6.1 Terra (xhigh)",
-      "intelligenceIndex": 45.3640518262171,
-      "cost": 0.19368508229507728,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "948892b5-db03-4118-a4a8-ccd51ed871ea",
-      "slug": "grok-4-3",
-      "name": "Grok 4.3 (High)",
-      "shortName": "Grok 4.3 (high)",
-      "intelligenceIndex": 24.8801191398002,
-      "cost": 0.20537871205068303,
-      "creator": {
-        "name": "SpaceXAI",
-        "color": "#736cd3"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "2d28a13a-096e-475a-beb8-26bbd1c7d51c",
-      "slug": "qwen3-5-9b",
-      "name": "Qwen3.5 9B (Reasoning)",
-      "shortName": "Qwen3.5 9B",
-      "intelligenceIndex": 11.1961650827156,
-      "cost": 0.21258346272934256,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "7d064a11-6e78-4030-b535-cdf940615041",
-      "slug": "claude-haiku-5-5",
-      "name": "Claude Haiku 5.5 (Max)",
-      "shortName": "Claude Haiku 5.5 (max)",
-      "intelligenceIndex": 43.3950199670746,
-      "cost": 0.21276971216992022,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Reflection",
+        "color": "#195428"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1074,8 +290,8 @@
       "slug": "gpt-6-1-sol-medium",
       "name": "GPT-6.1 Sol (Medium)",
       "shortName": "GPT-6.1 Sol (medium)",
-      "intelligenceIndex": 47.7833271274065,
-      "cost": 0.21370088267875537,
+      "intelligenceIndex": 46.1468797067114,
+      "cost": 0.3593898648025732,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -1084,15 +300,29 @@
       "deprecated": false
     },
     {
-      "id": "a87fce42-eea3-4e45-a96d-fe057814f371",
-      "slug": "qwen3-7-plus",
-      "name": "Qwen3.7 Plus",
-      "shortName": "Qwen3.7 Plus",
-      "intelligenceIndex": 25.1622215821984,
-      "cost": 0.21702592259078568,
+      "id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+      "slug": "gpt-6-1-terra-xhigh",
+      "name": "GPT-6.1 Terra (Xhigh)",
+      "shortName": "GPT-6.1 Terra (xhigh)",
+      "intelligenceIndex": 44.950051789066,
+      "cost": 0.40068900166662513,
       "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "7d064a11-6e78-4030-b535-cdf940615041",
+      "slug": "claude-haiku-5-5",
+      "name": "Claude Haiku 5.5 (Max)",
+      "shortName": "Claude Haiku 5.5 (max)",
+      "intelligenceIndex": 36.2345435880142,
+      "cost": 0.41100741536816304,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1102,207 +332,11 @@
       "slug": "minimax-m3-1-flash",
       "name": "MiniMax-M3.1-Flash",
       "shortName": "MiniMax-M3.1-Flash",
-      "intelligenceIndex": 42.7057475126235,
-      "cost": 0.2201135746720313,
+      "intelligenceIndex": 28.9095214290458,
+      "cost": 0.49097067348453205,
       "creator": {
         "name": "MiniMax",
         "color": "#EB3568"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "a6340098-d7ae-462d-b372-0a0a67fc44b4",
-      "slug": "claude-4-5-haiku-reasoning",
-      "name": "Claude 4.5 Haiku (Reasoning)",
-      "shortName": "Claude 4.5 Haiku",
-      "intelligenceIndex": 16.8822352291856,
-      "cost": 0.2301871264541686,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "73c96f99-0de3-4668-a4bd-b106a0fe18f2",
-      "slug": "deepseek-v4-1-flash-non-reasoning",
-      "name": "DeepSeek V4.1 Flash (Non-reasoning)",
-      "shortName": "DeepSeek V4.1 Flash (non-reasoning)",
-      "intelligenceIndex": 24.6733593924318,
-      "cost": 0.23435435643534663,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "780a4a85-17ff-4175-a8dd-ebca4823e61b",
-      "slug": "gpt-6-sol-medium",
-      "name": "GPT-6 Sol (Medium)",
-      "shortName": "GPT-6 Sol (medium)",
-      "intelligenceIndex": 39.8118971749522,
-      "cost": 0.24728577052042386,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "0904b596-8932-43bd-9b21-324f128e1723",
-      "slug": "gpt-5-6-sol-low",
-      "name": "GPT-5.6 Sol (Low)",
-      "shortName": "GPT-5.6 Sol (low)",
-      "intelligenceIndex": 33.4731387646002,
-      "cost": 0.2606419442090313,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "0e34f05c-387e-4968-be15-ccec4a55d8c1",
-      "slug": "deepseek-r1-0120",
-      "name": "DeepSeek R1 (Jan '25)",
-      "shortName": "DeepSeek R1 (Jan)",
-      "intelligenceIndex": 11.4109820044475,
-      "cost": 0.2617212405141733,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "f151fd0b-2139-40cf-a3ec-995e8cedc592",
-      "slug": "deepseek-v4-1-flash-1017",
-      "name": "DeepSeek V4.1 Flash 1017 (Max)",
-      "shortName": "DeepSeek V4.1 Flash 1017 (max)",
-      "intelligenceIndex": 45.0965048681912,
-      "cost": 0.2620484273114172,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
-      "slug": "glm-5-3-flash",
-      "name": "GLM-5.3-Flash",
-      "shortName": "GLM-5.3-Flash",
-      "intelligenceIndex": 41.807466113455,
-      "cost": 0.2835948232103717,
-      "creator": {
-        "name": "Z AI",
-        "color": "#1c7ff8"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "eb4ba465-3fcd-4065-9fe2-e8225e7b2c6c",
-      "slug": "ring-2-6-1t",
-      "name": "Ring-2.6-1T",
-      "shortName": "Ring-2.6-1T",
-      "intelligenceIndex": 16.6172363768618,
-      "cost": 0.2871573189066596,
-      "creator": {
-        "name": "InclusionAI",
-        "color": "#4fb5ff"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "27202e5f-c82d-4710-92e9-4317877d4883",
-      "slug": "gemini-2-5-pro",
-      "name": "Gemini 2.5 Pro",
-      "shortName": "Gemini 2.5 Pro",
-      "intelligenceIndex": 16.0778962941864,
-      "cost": 0.3142796349296365,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "dbe7c625-3100-4463-b479-a228c41f75dd",
-      "slug": "deepseek-v4-1-flash",
-      "name": "DeepSeek V4.1 Flash (Max)",
-      "shortName": "DeepSeek V4.1 Flash (max)",
-      "intelligenceIndex": 39.456167472527,
-      "cost": 0.31781327010002136,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "3b84fee3-b70a-41bc-819e-5fbdef9a0042",
-      "slug": "gpt-6-1-sol-high",
-      "name": "GPT-6.1 Sol (High)",
-      "shortName": "GPT-6.1 Sol (high)",
-      "intelligenceIndex": 50.2377777519769,
-      "cost": 0.31914442375664703,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "2236df45-0699-40d1-b5cc-69ee345d2257",
-      "slug": "qwen3-5-122b-a10b",
-      "name": "Qwen3.5 122B A10B (Reasoning)",
-      "shortName": "Qwen3.5 122B A10B",
-      "intelligenceIndex": 15.5694009312969,
-      "cost": 0.3247468637357143,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "d3e20e76-9e1a-45b6-b809-ad6aa37430cf",
-      "slug": "gpt-6-sol-non-reasoning",
-      "name": "GPT-6 Sol (Non-reasoning)",
-      "shortName": "GPT-6 Sol (non-reasoning)",
-      "intelligenceIndex": 28.5121413410513,
-      "cost": 0.33365590023828273,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "81972fba-1219-477e-bbfb-18c656a63ff7",
-      "slug": "gpt-5-6-terra-high",
-      "name": "GPT-5.6 Terra (High)",
-      "shortName": "GPT-5.6 Terra (high)",
-      "intelligenceIndex": 34.2376558067555,
-      "cost": 0.3378727947949101,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1312,8 +346,8 @@
       "slug": "claude-sonnet-5-5-low",
       "name": "Claude Sonnet 5.5 (Low, Default Fallback)",
       "shortName": "Claude Sonnet 5.5 (low with fallback)",
-      "intelligenceIndex": 35.8681594577587,
-      "cost": 0.3451610270666562,
+      "intelligenceIndex": 25.299704549789,
+      "cost": 0.5113424463897498,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -1322,26 +356,12 @@
       "deprecated": false
     },
     {
-      "id": "d4f5b250-be37-4801-85e6-32fda4179337",
-      "slug": "deepseek-v4-pro-non-reasoning",
-      "name": "DeepSeek V4 Pro 0813 (Non-reasoning)",
-      "shortName": "DeepSeek V4 Pro 0813 (non-reasoning)",
-      "intelligenceIndex": 20.3605101726847,
-      "cost": 0.35547065335335964,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "5b52def2-ac9b-4465-ad80-91ea8079e253",
-      "slug": "nvidia-nemotron-3-ultra-550b-a55b",
-      "name": "Nemotron 3 Ultra 550B A55B (Reasoning)",
-      "shortName": "Nemotron 3 Ultra",
-      "intelligenceIndex": 22.9279123422858,
-      "cost": 0.36664582536836055,
+      "id": "e2c0623e-c855-4a61-bb66-be1f1ed43234",
+      "slug": "nemotron-3-5-super-vl",
+      "name": "Nemotron 3.5 Super VL",
+      "shortName": "Nemotron 3.5 Super VL",
+      "intelligenceIndex": 13.6203422723141,
+      "cost": 0.5565160431921087,
       "creator": {
         "name": "NVIDIA",
         "color": "#76b900"
@@ -1350,12 +370,12 @@
       "deprecated": false
     },
     {
-      "id": "ba242e40-83b7-4cd3-a0e0-b56237984914",
-      "slug": "gpt-5-4-mini",
-      "name": "GPT-5.4 mini (Xhigh)",
-      "shortName": "GPT-5.4 mini (xhigh)",
-      "intelligenceIndex": 24.0682169231964,
-      "cost": 0.37095946484043546,
+      "id": "3b84fee3-b70a-41bc-819e-5fbdef9a0042",
+      "slug": "gpt-6-1-sol-high",
+      "name": "GPT-6.1 Sol (High)",
+      "shortName": "GPT-6.1 Sol (high)",
+      "intelligenceIndex": 50.2291231936536,
+      "cost": 0.5909853515780825,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -1364,43 +384,29 @@
       "deprecated": false
     },
     {
-      "id": "9ac3908c-9eb2-44db-8c01-3ec7da6fc2ae",
-      "slug": "qwen3-8-flash-next",
-      "name": "Qwen3.8-Flash-Next",
-      "shortName": "Qwen3.8-Flash-Next",
-      "intelligenceIndex": 39.8223021864741,
-      "cost": 0.3721760025302965,
+      "id": "f151fd0b-2139-40cf-a3ec-995e8cedc592",
+      "slug": "deepseek-v4-1-flash-1017",
+      "name": "DeepSeek V4.1 Flash 1017 (Max)",
+      "shortName": "DeepSeek V4.1 Flash 1017 (max)",
+      "intelligenceIndex": 32.4896393532027,
+      "cost": 0.60210514783598,
       "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
+        "name": "DeepSeek",
+        "color": "#2243e6"
       },
       "isReasoning": true,
       "deprecated": false
     },
     {
-      "id": "52eebe3e-6ede-4e46-92db-c5dea49fc410",
-      "slug": "gpt-6-sol-high",
-      "name": "GPT-6 Sol (High)",
-      "shortName": "GPT-6 Sol (high)",
-      "intelligenceIndex": 42.4004513642985,
-      "cost": 0.3728406839161857,
+      "id": "093b9df2-ebee-4309-943f-5a7e88360adf",
+      "slug": "gemini-3-5-flash-lite",
+      "name": "Gemini 3.5 Flash-Lite",
+      "shortName": "Gemini 3.5 Flash-Lite",
+      "intelligenceIndex": 11.6563462044212,
+      "cost": 0.6929018557975878,
       "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "c07e65e6-32fc-451e-938d-7477a1c3ffcc",
-      "slug": "grok-4-6-low",
-      "name": "Grok 4.6 (Low)",
-      "shortName": "Grok 4.6 (low)",
-      "intelligenceIndex": 35.1246953482174,
-      "cost": 0.37578773607022314,
-      "creator": {
-        "name": "SpaceXAI",
-        "color": "#736cd3"
+        "name": "Google",
+        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1410,95 +416,11 @@
       "slug": "gpt-6-1-sol-xhigh",
       "name": "GPT-6.1 Sol (Xhigh)",
       "shortName": "GPT-6.1 Sol (xhigh)",
-      "intelligenceIndex": 51.0377679093761,
-      "cost": 0.39286117158850653,
+      "intelligenceIndex": 52.308219253291,
+      "cost": 0.7639949356156494,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "b0c462cf-f2d0-4126-9434-28db9502219f",
-      "slug": "gpt-6-1-terra",
-      "name": "GPT-6.1 Terra (Max)",
-      "shortName": "GPT-6.1 Terra (max)",
-      "intelligenceIndex": 48.1061836463044,
-      "cost": 0.40345425699157816,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "dd059b25-d82a-4ead-82a4-4adceaaec48b",
-      "slug": "mistral-medium-3-5",
-      "name": "Mistral Medium 3.5",
-      "shortName": "Mistral Medium 3.5",
-      "intelligenceIndex": 14.1889227802691,
-      "cost": 0.428586485004667,
-      "creator": {
-        "name": "Mistral",
-        "color": "#f32e02"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "08242385-ee91-4de6-be7f-271a6d9780ce",
-      "slug": "apodex-1-1",
-      "name": "Apodex 1.1",
-      "shortName": "Apodex 1.1",
-      "intelligenceIndex": 26.4103686249117,
-      "cost": 0.4636458675701544,
-      "creator": {
-        "name": "Apodex",
-        "color": "#0FD9D2"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "fc92f822-04b7-420d-9c07-a21af5e9aac7",
-      "slug": "qwen3-coder-next",
-      "name": "Qwen3 Coder Next",
-      "shortName": "Qwen3 Coder Next",
-      "intelligenceIndex": 9.23682203219174,
-      "cost": 0.471652494286785,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "0e66bae9-41f1-42fc-9276-ce8cb6f72919",
-      "slug": "qwen3-5-397b-a17b",
-      "name": "Qwen3.5 397B A17B (Reasoning)",
-      "shortName": "Qwen3.5 397B A17B",
-      "intelligenceIndex": 18.4204249294815,
-      "cost": 0.47457695829894075,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "8665ca00-c687-44c7-875c-22618cb31c4f",
-      "slug": "qwen3-6-35b-a3b",
-      "name": "Qwen3.6 35B A3B (Reasoning)",
-      "shortName": "Qwen3.6 35B A3B",
-      "intelligenceIndex": 18.2289900189843,
-      "cost": 0.4750534562511306,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1508,8 +430,8 @@
       "slug": "claude-sonnet-5-5-medium",
       "name": "Claude Sonnet 5.5 (Medium, Default Fallback)",
       "shortName": "Claude Sonnet 5.5 (medium with fallback)",
-      "intelligenceIndex": 40.838652287929,
-      "cost": 0.48326378260543096,
+      "intelligenceIndex": 30.3195522148431,
+      "cost": 0.7806560352024481,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -1518,12 +440,40 @@
       "deprecated": false
     },
     {
-      "id": "6f174934-5b7d-4333-86cb-f5ebf4a862e3",
-      "slug": "gpt-5-6-sol-medium",
-      "name": "GPT-5.6 Sol (Medium)",
-      "shortName": "GPT-5.6 Sol (medium)",
-      "intelligenceIndex": 39.2363585889147,
-      "cost": 0.5049926304382959,
+      "id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+      "slug": "gpt-6-1-terra",
+      "name": "GPT-6.1 Terra (Max)",
+      "shortName": "GPT-6.1 Terra (max)",
+      "intelligenceIndex": 50.9765188577015,
+      "cost": 0.961108031081634,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "4416ca93-fde6-4b7b-abbc-3a6be109cc3d",
+      "slug": "claude-opus-5-5-low",
+      "name": "Claude Opus 5.5 (Low, Default Fallback)",
+      "shortName": "Claude Opus 5.5 (low with fallback)",
+      "intelligenceIndex": 34.502785007759,
+      "cost": 0.9755293224458845,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "b25ac058-1e33-4c31-bbc9-a20c3ad0717a",
+      "slug": "gpt-6-1-sol",
+      "name": "GPT-6.1 Sol (Max)",
+      "shortName": "GPT-6.1 Sol (max)",
+      "intelligenceIndex": 54.5087338138148,
+      "cost": 1.2720632679446995,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -1536,109 +486,11 @@
       "slug": "minimax-m3",
       "name": "MiniMax-M3",
       "shortName": "MiniMax-M3",
-      "intelligenceIndex": 29.2202932236316,
-      "cost": 0.5076126905781733,
+      "intelligenceIndex": 18.7289083859255,
+      "cost": 1.2850974407373852,
       "creator": {
         "name": "MiniMax",
         "color": "#EB3568"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "142b93bf-09c4-42dc-9c3a-50b1a222cbd4",
-      "slug": "claude-sonnet-5-low",
-      "name": "Claude Sonnet 5 (Low)",
-      "shortName": "Claude Sonnet 5 (low)",
-      "intelligenceIndex": 24.2638393579597,
-      "cost": 0.5087545600633299,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "62ea3198-9866-4d9f-8406-a79ee78c7164",
-      "slug": "solar-mini4",
-      "name": "Solar Mini 4",
-      "shortName": "Solar Mini 4",
-      "intelligenceIndex": 24.0522018844171,
-      "cost": 0.5143623455278281,
-      "creator": {
-        "name": "Upstage",
-        "color": "#7c59f5"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "da2642fe-9f73-4788-b5af-24edcd55b37e",
-      "slug": "gpt-6-sol-xhigh",
-      "name": "GPT-6 Sol (Xhigh)",
-      "shortName": "GPT-6 Sol (xhigh)",
-      "intelligenceIndex": 44.2448955516407,
-      "cost": 0.5208098524368193,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "8d0cb231-7303-452c-9923-a9620b948475",
-      "slug": "kimi-k2-7-code",
-      "name": "Kimi K2.7 Code",
-      "shortName": "Kimi K2.7 Code",
-      "intelligenceIndex": 25.8121062401836,
-      "cost": 0.541190247118529,
-      "creator": {
-        "name": "Kimi",
-        "color": "#047AFE"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "4416ca93-fde6-4b7b-abbc-3a6be109cc3d",
-      "slug": "claude-opus-5-5-low",
-      "name": "Claude Opus 5.5 (Low, Default Fallback)",
-      "shortName": "Claude Opus 5.5 (low with fallback)",
-      "intelligenceIndex": 42.3077781466168,
-      "cost": 0.551180473909146,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "90e078f2-051b-4c63-8919-76618971cb3f",
-      "slug": "claude-4-5-sonnet-thinking",
-      "name": "Claude 4.5 Sonnet (Reasoning)",
-      "shortName": "Claude 4.5 Sonnet",
-      "intelligenceIndex": 20.6661943537112,
-      "cost": 0.5565810659988739,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "c4169d75-9d24-4794-a9c3-69e1fe364de5",
-      "slug": "gpt-5-5-instant-06-26",
-      "name": "GPT-5.5 Instant (June 2026)",
-      "shortName": "GPT-5.5 Instant (June 2026)",
-      "intelligenceIndex": 26.0135173401368,
-      "cost": 0.5689254773732861,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1648,165 +500,11 @@
       "slug": "inkling",
       "name": "Inkling (Xhigh)",
       "shortName": "Inkling (xhigh)",
-      "intelligenceIndex": 24.9847810999384,
-      "cost": 0.5953266050210657,
+      "intelligenceIndex": 12.4781698715401,
+      "cost": 1.3519575079737436,
       "creator": {
         "name": "Thinking Machines",
         "color": "#676767"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "8c29d66d-bf98-4ea3-8572-5409353ecc66",
-      "slug": "qwen3-6-27b",
-      "name": "Qwen3.6 27B (Reasoning)",
-      "shortName": "Qwen3.6 27B",
-      "intelligenceIndex": 21.4279902240782,
-      "cost": 0.621236893699357,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "9e30696f-16fa-4b4f-ba53-161895a85fed",
-      "slug": "gpt-5-6-terra-xhigh",
-      "name": "GPT-5.6 Terra (Xhigh)",
-      "shortName": "GPT-5.6 Terra (xhigh)",
-      "intelligenceIndex": 37.9513370742927,
-      "cost": 0.6317911346924275,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "83173329-c09a-41f1-a028-a282a5f908d7",
-      "slug": "deepseek-v4-pro",
-      "name": "DeepSeek V4 Pro 0813 (Max)",
-      "shortName": "DeepSeek V4 Pro 0813 (max)",
-      "intelligenceIndex": 35.9967791278402,
-      "cost": 0.6740219040435134,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "0de67206-4d36-4d10-b8f6-cf37fa747a03",
-      "slug": "kimi-k2-6",
-      "name": "Kimi K2.6 (Reasoning)",
-      "shortName": "Kimi K2.6",
-      "intelligenceIndex": 26.9791999742844,
-      "cost": 0.7063448454479002,
-      "creator": {
-        "name": "Kimi",
-        "color": "#047AFE"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "15c4cbd7-b9aa-42c8-9ce5-5abbde0e6963",
-      "slug": "solar-pro4",
-      "name": "Solar Pro 4",
-      "shortName": "Solar Pro 4",
-      "intelligenceIndex": 26.5600314812231,
-      "cost": 0.7113065897513132,
-      "creator": {
-        "name": "Upstage",
-        "color": "#7c59f5"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "b25ac058-1e33-4c31-bbc9-a20c3ad0717a",
-      "slug": "gpt-6-1-sol",
-      "name": "GPT-6.1 Sol (Max)",
-      "shortName": "GPT-6.1 Sol (max)",
-      "intelligenceIndex": 51.8332597011541,
-      "cost": 0.7241670655535033,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "5aa1c578-af76-4b91-8699-cdd43582b3af",
-      "slug": "glm-5-1",
-      "name": "GLM-5.1 (Reasoning)",
-      "shortName": "GLM-5.1",
-      "intelligenceIndex": 26.0585912980095,
-      "cost": 0.7487462174871509,
-      "creator": {
-        "name": "Z AI",
-        "color": "#1c7ff8"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "794f69b5-cede-482b-b1cc-d769478497cd",
-      "slug": "grok-4-5",
-      "name": "Grok 4.5 (High)",
-      "shortName": "Grok 4.5 (high)",
-      "intelligenceIndex": 38.8121153240657,
-      "cost": 0.7602874784215686,
-      "creator": {
-        "name": "SpaceXAI",
-        "color": "#736cd3"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "6b79f899-e3c0-45f6-923c-243faccdb2fc",
-      "slug": "gpt-5-5-medium",
-      "name": "GPT-5.5 (Medium)",
-      "shortName": "GPT-5.5 (medium)",
-      "intelligenceIndex": 33.8043604432432,
-      "cost": 0.7656593186435521,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "8afc250d-b538-45a2-812a-4605f4ffd87e",
-      "slug": "gpt-5-6-sol-high",
-      "name": "GPT-5.6 Sol (High)",
-      "shortName": "GPT-5.6 Sol (high)",
-      "intelligenceIndex": 42.3461010420519,
-      "cost": 0.807982690134498,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "04ee6719-0327-463b-a1a1-70a6a78254f9",
-      "slug": "muse-spark-1-2",
-      "name": "Muse Spark 1.2 (Xhigh)",
-      "shortName": "Muse Spark 1.2 (xhigh)",
-      "intelligenceIndex": 39.5758607970943,
-      "cost": 0.8120046377201664,
-      "creator": {
-        "name": "Meta",
-        "color": "#0089f4"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1816,25 +514,11 @@
       "slug": "gpt-6-astra-low",
       "name": "GPT-6 Astra (Low)",
       "shortName": "GPT-6 Astra (low)",
-      "intelligenceIndex": 45.7819243120341,
-      "cost": 0.8175139285656057,
+      "intelligenceIndex": 43.0349823228524,
+      "cost": 1.4237229635663595,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "3661c8fb-caf7-4118-aa18-65b84fea8e44",
-      "slug": "muse-spark-open",
-      "name": "Muse Spark Open (Xhigh)",
-      "shortName": "Muse Spark Open (xhigh)",
-      "intelligenceIndex": 38.8666662997805,
-      "cost": 0.8443469747958676,
-      "creator": {
-        "name": "Meta",
-        "color": "#0089f4"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1844,8 +528,8 @@
       "slug": "glm-5-3-low",
       "name": "GLM-5.3 (Low)",
       "shortName": "GLM-5.3 (low)",
-      "intelligenceIndex": 34.2990078159643,
-      "cost": 0.8522174973386498,
+      "intelligenceIndex": 23.0579373025379,
+      "cost": 1.5749301149593384,
       "creator": {
         "name": "Z AI",
         "color": "#1c7ff8"
@@ -1858,8 +542,8 @@
       "slug": "claude-sonnet-5-5-high",
       "name": "Claude Sonnet 5.5 (High, Default Fallback)",
       "shortName": "Claude Sonnet 5.5 (high with fallback)",
-      "intelligenceIndex": 46.7533528066958,
-      "cost": 0.8844498581005511,
+      "intelligenceIndex": 41.115109087048,
+      "cost": 1.6361294399784785,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -1868,43 +552,43 @@
       "deprecated": false
     },
     {
-      "id": "69534bed-2ffd-4235-832b-e20a810333ab",
-      "slug": "qwen3-7-max",
-      "name": "Qwen3.7 Max",
-      "shortName": "Qwen3.7 Max",
-      "intelligenceIndex": 29.4571634255623,
-      "cost": 0.9317915407904072,
+      "id": "83173329-c09a-41f1-a028-a282a5f908d7",
+      "slug": "deepseek-v4-pro",
+      "name": "DeepSeek V4 Pro 0813 (Max)",
+      "shortName": "DeepSeek V4 Pro 0813 (max)",
+      "intelligenceIndex": 23.0632981493003,
+      "cost": 1.7691338076407441,
       "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
+        "name": "DeepSeek",
+        "color": "#2243e6"
       },
       "isReasoning": true,
       "deprecated": false
     },
     {
-      "id": "effcd151-7c31-4437-af3d-e88daeae9385",
-      "slug": "claude-sonnet-5-medium",
-      "name": "Claude Sonnet 5 (Medium)",
-      "shortName": "Claude Sonnet 5 (medium)",
-      "intelligenceIndex": 28.0531468379456,
-      "cost": 0.9991061406688175,
+      "id": "3661c8fb-caf7-4118-aa18-65b84fea8e44",
+      "slug": "muse-spark-open",
+      "name": "Muse Spark Open (Xhigh)",
+      "shortName": "Muse Spark Open (xhigh)",
+      "intelligenceIndex": 24.6815868992913,
+      "cost": 2.0176680435839316,
       "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Meta",
+        "color": "#0089f4"
       },
       "isReasoning": true,
       "deprecated": false
     },
     {
-      "id": "a6043b9b-628a-4a76-a021-2834e0627d05",
-      "slug": "ling-3-1-flash",
-      "name": "Ling 3.1 Flash",
-      "shortName": "Ling 3.1 Flash",
-      "intelligenceIndex": 41.0906200397391,
-      "cost": 1.010607821950605,
+      "id": "5b52def2-ac9b-4465-ad80-91ea8079e253",
+      "slug": "nvidia-nemotron-3-ultra-550b-a55b",
+      "name": "Nemotron 3 Ultra 550B A55B (Reasoning)",
+      "shortName": "Nemotron 3 Ultra",
+      "intelligenceIndex": 11.7592726308177,
+      "cost": 2.2257365504312134,
       "creator": {
-        "name": "InclusionAI",
-        "color": "#4fb5ff"
+        "name": "NVIDIA",
+        "color": "#76b900"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1914,193 +598,11 @@
       "slug": "step-5",
       "name": "Step 5 Preview",
       "shortName": "Step 5 Preview",
-      "intelligenceIndex": 43.7343049141614,
-      "cost": 1.0264068637684054,
+      "intelligenceIndex": 28.5283090216016,
+      "cost": 2.3452525606205166,
       "creator": {
         "name": "StepFun",
         "color": "#00F5E7"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "208c16f0-8c5b-4524-ac8a-ac74c02e80a9",
-      "slug": "grok-4-7-low",
-      "name": "Grok 4.7 (Low)",
-      "shortName": "Grok 4.7 (low)",
-      "intelligenceIndex": 42.2166560223448,
-      "cost": 1.0293858045557056,
-      "creator": {
-        "name": "SpaceXAI",
-        "color": "#736cd3"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "7707a46f-895f-4247-b7a8-ddab87c9a11d",
-      "slug": "deepseek-v4-flash-vision",
-      "name": "DeepSeek V4 Flash Vision (Max)",
-      "shortName": "DeepSeek V4 Flash Vision (max)",
-      "intelligenceIndex": 34.8390628035969,
-      "cost": 1.037910627432751,
-      "creator": {
-        "name": "DeepSeek",
-        "color": "#2243e6"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "c50ea08c-88c0-4eb7-85b8-27f2bbf6d527",
-      "slug": "gpt-6-sol",
-      "name": "GPT-6 Sol (Max)",
-      "shortName": "GPT-6 Sol (max)",
-      "intelligenceIndex": 47.6305176437724,
-      "cost": 1.0446616686054255,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "20928ba9-3a3f-415f-9519-b84ff64ecf34",
-      "slug": "claude-opus-5-low",
-      "name": "Claude Opus 5 (Low)",
-      "shortName": "Claude Opus 5 (low)",
-      "intelligenceIndex": 39.3543357992936,
-      "cost": 1.098302324514437,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "d5170215-69be-4129-849b-26d8d8825bfc",
-      "slug": "muse-spark-1-3-xhigh",
-      "name": "Muse Spark 1.3 (Xhigh)",
-      "shortName": "Muse Spark 1.3 (xhigh)",
-      "intelligenceIndex": 45.0732966922226,
-      "cost": 1.120050304379647,
-      "creator": {
-        "name": "Meta",
-        "color": "#0089f4"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "d61493e2-43ff-460c-9054-eaf6ba317360",
-      "slug": "muse-spark-1-1",
-      "name": "Muse Spark 1.1 (Xhigh)",
-      "shortName": "Muse Spark 1.1 (xhigh)",
-      "intelligenceIndex": 33.7298425919846,
-      "cost": 1.126108365319869,
-      "creator": {
-        "name": "Meta",
-        "color": "#0089f4"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "26614164-6840-4e17-a65a-2deb2fe7e87b",
-      "slug": "grok-4-6-medium",
-      "name": "Grok 4.6 (Medium)",
-      "shortName": "Grok 4.6 (medium)",
-      "intelligenceIndex": 42.836322654063,
-      "cost": 1.14381661681713,
-      "creator": {
-        "name": "SpaceXAI",
-        "color": "#736cd3"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "512d17ef-13d2-4f65-bf9b-154b0dec7e8d",
-      "slug": "kimi-k3-low",
-      "name": "Kimi K3 (Low)",
-      "shortName": "Kimi K3 (low)",
-      "intelligenceIndex": 30.0666987529068,
-      "cost": 1.1463056165227514,
-      "creator": {
-        "name": "Kimi",
-        "color": "#047AFE"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "b01dee41-c62b-48ed-8d16-984adc405e5c",
-      "slug": "qwen3-8-27b",
-      "name": "Qwen3.8 27B (Xhigh)",
-      "shortName": "Qwen3.8 27B (xhigh)",
-      "intelligenceIndex": 33.6762858057476,
-      "cost": 1.1464166475511701,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "7e30585f-fad7-40df-a8cb-03c1d96df38a",
-      "slug": "qwen3-8-27b-low",
-      "name": "Qwen3.8 27B (Low)",
-      "shortName": "Qwen3.8 27B (low)",
-      "intelligenceIndex": 26.2047978189896,
-      "cost": 1.1701806423701933,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "d998db47-9b67-4727-a2bb-2e1261020ac0",
-      "slug": "gpt-5-6-sol-xhigh",
-      "name": "GPT-5.6 Sol (Xhigh)",
-      "shortName": "GPT-5.6 Sol (xhigh)",
-      "intelligenceIndex": 44.008876369169,
-      "cost": 1.1843629381907275,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "6657d7de-a2a9-40bc-a32f-86e80ad63698",
-      "slug": "qwen3-8-27b-medium",
-      "name": "Qwen3.8 27B (Medium)",
-      "shortName": "Qwen3.8 27B (medium)",
-      "intelligenceIndex": 27.5508228231586,
-      "cost": 1.2709110247964923,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "f7a4ea75-e548-4069-80d4-9be8bc7c009b",
-      "slug": "glm-5-2",
-      "name": "GLM-5.2 (Max)",
-      "shortName": "GLM-5.2 (max)",
-      "intelligenceIndex": 33.7054572377545,
-      "cost": 1.2831481587756326,
-      "creator": {
-        "name": "Z AI",
-        "color": "#1c7ff8"
       },
       "isReasoning": true,
       "deprecated": false
@@ -2110,8 +612,8 @@
       "slug": "muse-spark-1-3",
       "name": "Muse Spark 1.3 (Max)",
       "shortName": "Muse Spark 1.3 (max)",
-      "intelligenceIndex": 48.0923107719685,
-      "cost": 1.3146126309181798,
+      "intelligenceIndex": 36.4172039139368,
+      "cost": 2.3857813858107244,
       "creator": {
         "name": "Meta",
         "color": "#0089f4"
@@ -2124,8 +626,8 @@
       "slug": "claude-opus-5-5-medium",
       "name": "Claude Opus 5.5 (Medium, Default Fallback)",
       "shortName": "Claude Opus 5.5 (medium with fallback)",
-      "intelligenceIndex": 51.2434931792768,
-      "cost": 1.3360093438976588,
+      "intelligenceIndex": 48.0581024960691,
+      "cost": 2.4510894376611723,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -2134,12 +636,12 @@
       "deprecated": false
     },
     {
-      "id": "bcf8db0a-3bb6-4d82-9516-0f57370c85a6",
-      "slug": "gpt-5-6-terra",
-      "name": "GPT-5.6 Terra (Max)",
-      "shortName": "GPT-5.6 Terra (max)",
-      "intelligenceIndex": 42.0829248239494,
-      "cost": 1.3987235612691513,
+      "id": "e97a4ef5-e817-480e-9595-12f81dc4974f",
+      "slug": "gpt-6-astra-medium",
+      "name": "GPT-6 Astra (Medium)",
+      "shortName": "GPT-6 Astra (medium)",
+      "intelligenceIndex": 51.4548393864113,
+      "cost": 2.732438933013427,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -2148,40 +650,12 @@
       "deprecated": false
     },
     {
-      "id": "b13c1257-d746-4027-8fc8-4892dc14701c",
-      "slug": "gpt-5-5-high",
-      "name": "GPT-5.5 (High)",
-      "shortName": "GPT-5.5 (high)",
-      "intelligenceIndex": 36.9793737887731,
-      "cost": 1.399697863322349,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "bbd93ebe-80da-4594-bb19-61e69d0331df",
-      "slug": "gemini-3-1-pro-preview",
-      "name": "Gemini 3.1 Pro Preview",
-      "shortName": "Gemini 3.1 Pro Preview",
-      "intelligenceIndex": 29.7185656132261,
-      "cost": 1.43539119912861,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "c8adc5cf-fd5a-407b-af51-dc3bede3e49c",
-      "slug": "grok-4-6",
-      "name": "Grok 4.6 (High)",
-      "shortName": "Grok 4.6 (high)",
-      "intelligenceIndex": 44.3113073012592,
-      "cost": 1.4848449196688633,
+      "id": "208c16f0-8c5b-4524-ac8a-ac74c02e80a9",
+      "slug": "grok-4-7-low",
+      "name": "Grok 4.7 (Low)",
+      "shortName": "Grok 4.7 (low)",
+      "intelligenceIndex": 30.882077602567,
+      "cost": 2.9222013011913153,
       "creator": {
         "name": "SpaceXAI",
         "color": "#736cd3"
@@ -2194,81 +668,11 @@
       "slug": "ling-3-1-flash-1019",
       "name": "Ling 3.1 Flash 1019",
       "shortName": "Ling 3.1 Flash 1019",
-      "intelligenceIndex": 43.8973584978265,
-      "cost": 1.4887147314556197,
+      "intelligenceIndex": 29.470119369837,
+      "cost": 3.185131106992232,
       "creator": {
         "name": "InclusionAI",
         "color": "#4fb5ff"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "e97a4ef5-e817-480e-9595-12f81dc4974f",
-      "slug": "gpt-6-astra-medium",
-      "name": "GPT-6 Astra (Medium)",
-      "shortName": "GPT-6 Astra (medium)",
-      "intelligenceIndex": 49.5704363034369,
-      "cost": 1.5406493220021167,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "78332c88-fe60-42c8-af9d-3617e44cf1f5",
-      "slug": "gemini-3-6-flash",
-      "name": "Gemini 3.6 Flash (High)",
-      "shortName": "Gemini 3.6 Flash (high)",
-      "intelligenceIndex": 33.9785928920714,
-      "cost": 1.600530533263267,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "34fc646a-0174-470e-9e62-d8df452210b3",
-      "slug": "mistral-large-4",
-      "name": "Mistral Large 4 Preview",
-      "shortName": "Mistral Large 4 Preview",
-      "intelligenceIndex": 38.3770408917494,
-      "cost": 1.6058687878005768,
-      "creator": {
-        "name": "Mistral",
-        "color": "#f32e02"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "d366dfa1-d940-4788-aa73-d298c45699b3",
-      "slug": "gemini-4-argon",
-      "name": "Gemini 4 Argon (High)",
-      "shortName": "Gemini 4 Argon (high)",
-      "intelligenceIndex": 52.5605655745982,
-      "cost": 1.6200041773385696,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "63872e9c-3377-4a6b-b477-7bba244c38e9",
-      "slug": "nvidia-nemotron-3-super-120b-a12b",
-      "name": "Nemotron 3 Super 120B A12B (Reasoning)",
-      "shortName": "Nemotron 3 Super",
-      "intelligenceIndex": 12.8287575290979,
-      "cost": 1.6390663672616101,
-      "creator": {
-        "name": "NVIDIA",
-        "color": "#76b900"
       },
       "isReasoning": true,
       "deprecated": false
@@ -2278,39 +682,11 @@
       "slug": "gpt-6-astra-high",
       "name": "GPT-6 Astra (High)",
       "shortName": "GPT-6 Astra (high)",
-      "intelligenceIndex": 50.9191471636152,
-      "cost": 1.7252530861048456,
+      "intelligenceIndex": 54.849838322506,
+      "cost": 3.2385719685518306,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "d6f43d0a-e8c4-447c-9ff7-5cf0a9d59aa3",
-      "slug": "grok-4-6-xhigh",
-      "name": "Grok 4.6 (Xhigh)",
-      "shortName": "Grok 4.6 (xhigh)",
-      "intelligenceIndex": 44.199810436996,
-      "cost": 1.7523145158282367,
-      "creator": {
-        "name": "SpaceXAI",
-        "color": "#736cd3"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "ba0224cf-0351-4f56-8508-b3f1a740ae4a",
-      "slug": "claude-sonnet-5-high",
-      "name": "Claude Sonnet 5 (High)",
-      "shortName": "Claude Sonnet 5 (high)",
-      "intelligenceIndex": 31.6623246664651,
-      "cost": 1.7924692244111728,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
       },
       "isReasoning": true,
       "deprecated": false
@@ -2320,8 +696,8 @@
       "slug": "claude-opus-5-5-high",
       "name": "Claude Opus 5.5 (High, Default Fallback)",
       "shortName": "Claude Opus 5.5 (high with fallback)",
-      "intelligenceIndex": 53.5831959822067,
-      "cost": 1.822504718771704,
+      "intelligenceIndex": 51.6859958227294,
+      "cost": 3.4646622820973185,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -2330,68 +706,26 @@
       "deprecated": false
     },
     {
-      "id": "d93edfe8-bf35-49ad-b56e-b18116142a1c",
-      "slug": "gpt-5-6-sol",
-      "name": "GPT-5.6 Sol (Max)",
-      "shortName": "GPT-5.6 Sol (max)",
-      "intelligenceIndex": 46.9727068915036,
-      "cost": 1.98845538085375,
+      "id": "b01dee41-c62b-48ed-8d16-984adc405e5c",
+      "slug": "qwen3-8-27b",
+      "name": "Qwen3.8 27B (Xhigh)",
+      "shortName": "Qwen3.8 27B (xhigh)",
+      "intelligenceIndex": 20.1068756031705,
+      "cost": 3.5295494751410654,
       "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Alibaba",
+        "color": "#ff7018"
       },
       "isReasoning": true,
       "deprecated": false
     },
     {
-      "id": "f7d2fc3e-1f7b-405f-818c-07952a4af78f",
-      "slug": "kimi-k3",
-      "name": "Kimi K3 (Max)",
-      "shortName": "Kimi K3 (max)",
-      "intelligenceIndex": 43.5938229518782,
-      "cost": 2.0001323004425493,
-      "creator": {
-        "name": "Kimi",
-        "color": "#047AFE"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "cd684ea4-b475-4269-b001-d469d06d8a7a",
-      "slug": "glm-5-3",
-      "name": "GLM-5.3 (Max)",
-      "shortName": "GLM-5.3 (max)",
-      "intelligenceIndex": 44.777392385614,
-      "cost": 2.0056375150449584,
-      "creator": {
-        "name": "Z AI",
-        "color": "#1c7ff8"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "975aeaef-50bd-4a65-9c73-f1015adcd4d4",
-      "slug": "claude-sonnet-5-5-xhigh",
-      "name": "Claude Sonnet 5.5 (Xhigh, Default Fallback)",
-      "shortName": "Claude Sonnet 5.5 (xhigh with fallback)",
-      "intelligenceIndex": 51.8955544183089,
-      "cost": 2.0120345801545785,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "1f054429-397e-4fdb-9e71-67bc92c1735e",
-      "slug": "gpt-5-5",
-      "name": "GPT-5.5 (Xhigh)",
-      "shortName": "GPT-5.5 (xhigh)",
-      "intelligenceIndex": 38.3556437590607,
-      "cost": 2.099721447099808,
+      "id": "1f541ef3-913f-4eb2-9d07-0e93c7a9a5e3",
+      "slug": "gpt-6-astra-xhigh",
+      "name": "GPT-6 Astra (Xhigh)",
+      "shortName": "GPT-6 Astra (xhigh)",
+      "intelligenceIndex": 55.2557468569681,
+      "cost": 3.6589264906126227,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -2404,8 +738,8 @@
       "slug": "kimi-k3-1-pro",
       "name": "Kimi K3.1 Pro",
       "shortName": "Kimi K3.1 Pro",
-      "intelligenceIndex": 55.0869210959395,
-      "cost": 2.1145052918767275,
+      "intelligenceIndex": 46.0026236744189,
+      "cost": 3.6812002895742055,
       "creator": {
         "name": "Kimi",
         "color": "#047AFE"
@@ -2414,57 +748,29 @@
       "deprecated": false
     },
     {
-      "id": "8df710d3-9dae-4498-9b4e-9818238e6f31",
-      "slug": "qwen3-8-2-4t-a95b",
-      "name": "Qwen3.8 2.4T A95B",
-      "shortName": "Qwen3.8 2.4T A95B",
-      "intelligenceIndex": 39.9461723105325,
-      "cost": 2.1551619442434675,
+      "id": "d366dfa1-d940-4788-aa73-d298c45699b3",
+      "slug": "gemini-4-argon",
+      "name": "Gemini 4 Argon (High)",
+      "shortName": "Gemini 4 Argon (high)",
+      "intelligenceIndex": 50.4121935905389,
+      "cost": 3.8413356862577754,
       "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
+        "name": "Google",
+        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": false
     },
     {
-      "id": "ff51be8f-e362-4a7e-9043-687ba15de207",
-      "slug": "claude-opus-5-medium",
-      "name": "Claude Opus 5 (Medium)",
-      "shortName": "Claude Opus 5 (medium)",
-      "intelligenceIndex": 44.8253265420613,
-      "cost": 2.1894793086538695,
+      "id": "975aeaef-50bd-4a65-9c73-f1015adcd4d4",
+      "slug": "claude-sonnet-5-5-xhigh",
+      "name": "Claude Sonnet 5.5 (Xhigh, Default Fallback)",
+      "shortName": "Claude Sonnet 5.5 (xhigh with fallback)",
+      "intelligenceIndex": 49.5740327787242,
+      "cost": 4.091984916321919,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "1f541ef3-913f-4eb2-9d07-0e93c7a9a5e3",
-      "slug": "gpt-6-astra-xhigh",
-      "name": "GPT-6 Astra (Xhigh)",
-      "shortName": "GPT-6 Astra (xhigh)",
-      "intelligenceIndex": 52.3863277108782,
-      "cost": 2.308795912269076,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "272f5f03-aea9-4675-a244-2b753b618cdf",
-      "slug": "grok-4-7-high",
-      "name": "Grok 4.7 (High)",
-      "shortName": "Grok 4.7 (high)",
-      "intelligenceIndex": 46.3321770885625,
-      "cost": 2.3637779550927633,
-      "creator": {
-        "name": "SpaceXAI",
-        "color": "#736cd3"
       },
       "isReasoning": true,
       "deprecated": false
@@ -2474,8 +780,8 @@
       "slug": "claude-fable-5-1-low",
       "name": "Claude Fable 5.1 (Low, Default Fallback)",
       "shortName": "Claude Fable 5.1 (low with fallback)",
-      "intelligenceIndex": 46.8163422014862,
-      "cost": 2.371025320183763,
+      "intelligenceIndex": 38.483648810734,
+      "cost": 4.486736376258894,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -2484,85 +790,29 @@
       "deprecated": false
     },
     {
-      "id": "df8d14e0-3997-4e4d-b4ad-9c047acc9c69",
-      "slug": "claude-sonnet-4-6-adaptive",
-      "name": "Claude Sonnet 4.6 (Max)",
-      "shortName": "Claude Sonnet 4.6 (max)",
-      "intelligenceIndex": 30.0575611117644,
-      "cost": 2.4858655963942224,
+      "id": "cd684ea4-b475-4269-b001-d469d06d8a7a",
+      "slug": "glm-5-3",
+      "name": "GLM-5.3 (Max)",
+      "shortName": "GLM-5.3 (max)",
+      "intelligenceIndex": 31.653381843882,
+      "cost": 5.009264601719954,
       "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Z AI",
+        "color": "#1c7ff8"
       },
       "isReasoning": true,
       "deprecated": false
     },
     {
-      "id": "353c92f3-2148-4c2d-9231-aa7e1322a1fd",
-      "slug": "qwen3-8-27b-non-reasoning",
-      "name": "Qwen3.8 27B (Non-reasoning)",
-      "shortName": "Qwen3.8 27B (non-reasoning)",
-      "intelligenceIndex": 20.1502427055595,
-      "cost": 2.487757391889078,
+      "id": "34fc646a-0174-470e-9e62-d8df452210b3",
+      "slug": "mistral-large-4",
+      "name": "Mistral Large 4 Preview",
+      "shortName": "Mistral Large 4 Preview",
+      "intelligenceIndex": 25.286451488165,
+      "cost": 5.53703213691669,
       "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": false,
-      "deprecated": false
-    },
-    {
-      "id": "744fa3c1-42a7-4995-b138-fb6be11f463c",
-      "slug": "gemini-3-8-flash-medium",
-      "name": "Gemini 3.8 Flash (Medium)",
-      "shortName": "Gemini 3.8 Flash (medium)",
-      "intelligenceIndex": 39.7740187061926,
-      "cost": 2.5927362856321072,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "5e5b4ce7-bc54-47b2-b911-21b9cad8394c",
-      "slug": "qwen3-8-max-0803",
-      "name": "Qwen3.8 Max",
-      "shortName": "Qwen3.8 Max",
-      "intelligenceIndex": 40.1528623585941,
-      "cost": 2.6699848505343478,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "99f376bf-cbcb-4124-bf3e-6b0a4e6e9bea",
-      "slug": "claude-sonnet-5-xhigh",
-      "name": "Claude Sonnet 5 (Xhigh)",
-      "shortName": "Claude Sonnet 5 (xhigh)",
-      "intelligenceIndex": 34.384211557212,
-      "cost": 2.8720437784323134,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "0097ebf5-124f-42f6-9463-33b00e711f03",
-      "slug": "gemini-3-5-flash",
-      "name": "Gemini 3.5 Flash (High)",
-      "shortName": "Gemini 3.5 Flash (high)",
-      "intelligenceIndex": 32.5983283695905,
-      "cost": 2.9783008313310466,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
+        "name": "Mistral",
+        "color": "#f32e02"
       },
       "isReasoning": true,
       "deprecated": false
@@ -2572,8 +822,8 @@
       "slug": "claude-fable-5-1-medium",
       "name": "Claude Fable 5.1 (Medium, Default Fallback)",
       "shortName": "Claude Fable 5.1 (medium with fallback)",
-      "intelligenceIndex": 48.9206162609523,
-      "cost": 2.982597436096585,
+      "intelligenceIndex": 42.971597828284,
+      "cost": 5.58053808023747,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -2582,12 +832,26 @@
       "deprecated": false
     },
     {
-      "id": "59627802-1546-422c-9a65-65b61c022d36",
-      "slug": "grok-4-7",
-      "name": "Grok 4.7 (Xhigh)",
-      "shortName": "Grok 4.7 (xhigh)",
-      "intelligenceIndex": 46.4465506302286,
-      "cost": 3.236738638452325,
+      "id": "df5bf99d-d228-4715-b41b-19ca86118777",
+      "slug": "claude-opus-5-5-xhigh",
+      "name": "Claude Opus 5.5 (Xhigh, Default Fallback)",
+      "shortName": "Claude Opus 5.5 (xhigh with fallback)",
+      "intelligenceIndex": 56.9947060170507,
+      "cost": 6.047194490848774,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "272f5f03-aea9-4675-a244-2b753b618cdf",
+      "slug": "grok-4-7-high",
+      "name": "Grok 4.7 (High)",
+      "shortName": "Grok 4.7 (high)",
+      "intelligenceIndex": 35.0122962959703,
+      "cost": 6.18359556537658,
       "creator": {
         "name": "SpaceXAI",
         "color": "#736cd3"
@@ -2600,11 +864,25 @@
       "slug": "gpt-6-astra",
       "name": "GPT-6 Astra (Max)",
       "shortName": "GPT-6 Astra (max)",
-      "intelligenceIndex": 52.673669395513,
-      "cost": 3.2575003134834164,
+      "intelligenceIndex": 56.8538559596797,
+      "cost": 6.244666943602518,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "744fa3c1-42a7-4995-b138-fb6be11f463c",
+      "slug": "gemini-3-8-flash-medium",
+      "name": "Gemini 3.8 Flash (Medium)",
+      "shortName": "Gemini 3.8 Flash (medium)",
+      "intelligenceIndex": 29.978569475636,
+      "cost": 6.258586089480771,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": false
@@ -2614,8 +892,8 @@
       "slug": "muse-wonder",
       "name": "Muse Wonder (Max)",
       "shortName": "Muse Wonder (max)",
-      "intelligenceIndex": 52.393894697293,
-      "cost": 3.2670566965220496,
+      "intelligenceIndex": 43.3248225998431,
+      "cost": 6.9520364786062245,
       "creator": {
         "name": "Meta",
         "color": "#0089f4"
@@ -2624,12 +902,26 @@
       "deprecated": false
     },
     {
-      "id": "df5bf99d-d228-4715-b41b-19ca86118777",
-      "slug": "claude-opus-5-5-xhigh",
-      "name": "Claude Opus 5.5 (Xhigh, Default Fallback)",
-      "shortName": "Claude Opus 5.5 (xhigh with fallback)",
-      "intelligenceIndex": 55.9873505840139,
-      "cost": 3.459110175822289,
+      "id": "59627802-1546-422c-9a65-65b61c022d36",
+      "slug": "grok-4-7",
+      "name": "Grok 4.7 (Xhigh)",
+      "shortName": "Grok 4.7 (xhigh)",
+      "intelligenceIndex": 34.3350117067196,
+      "cost": 7.511769586408455,
+      "creator": {
+        "name": "SpaceXAI",
+        "color": "#736cd3"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "9d7d72cd-d95d-45a0-b109-4ad292c9aabd",
+      "slug": "claude-fable-5-1-high",
+      "name": "Claude Fable 5.1 (High, Default Fallback)",
+      "shortName": "Claude Fable 5.1 (high with fallback)",
+      "intelligenceIndex": 47.024988245604,
+      "cost": 7.560794697580411,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -2642,8 +934,8 @@
       "slug": "gemini-3-8-flash",
       "name": "Gemini 3.8 Flash (High)",
       "shortName": "Gemini 3.8 Flash (high)",
-      "intelligenceIndex": 40.9262321765904,
-      "cost": 3.48501233510653,
+      "intelligenceIndex": 30.5468119957291,
+      "cost": 7.766006178152514,
       "creator": {
         "name": "Google",
         "color": "#34A853"
@@ -2652,68 +944,12 @@
       "deprecated": false
     },
     {
-      "id": "712be54a-77ae-41b2-9a58-21181479d6ee",
-      "slug": "claude-opus-5-high",
-      "name": "Claude Opus 5 (High)",
-      "shortName": "Claude Opus 5 (high)",
-      "intelligenceIndex": 48.1219182595908,
-      "cost": 3.6132670078004714,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "9d7d72cd-d95d-45a0-b109-4ad292c9aabd",
-      "slug": "claude-fable-5-1-high",
-      "name": "Claude Fable 5.1 (High, Default Fallback)",
-      "shortName": "Claude Fable 5.1 (high with fallback)",
-      "intelligenceIndex": 51.1515708852237,
-      "cost": 3.912526554325558,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "992b7b84-5069-4c6a-9295-834252553d50",
-      "slug": "claude-opus-4-8",
-      "name": "Claude Opus 4.8 (Max)",
-      "shortName": "Claude Opus 4.8 (max)",
-      "intelligenceIndex": 41.7899103794639,
-      "cost": 4.080976976477826,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "1305c921-7aaa-4d6d-99b5-99b3acf15e19",
-      "slug": "claude-opus-5-xhigh",
-      "name": "Claude Opus 5 (Xhigh)",
-      "shortName": "Claude Opus 5 (xhigh)",
-      "intelligenceIndex": 49.6773552926939,
-      "cost": 4.877843772646787,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "23c86e4a-c769-43c0-a056-79e3cd15834f",
-      "slug": "claude-sonnet-5",
-      "name": "Claude Sonnet 5 (Max)",
-      "shortName": "Claude Sonnet 5 (max)",
-      "intelligenceIndex": 38.1638712882576,
-      "cost": 5.091163584815694,
+      "id": "b171d979-5ec1-45de-b8b9-db1ee65e77ec",
+      "slug": "claude-sonnet-5-5",
+      "name": "Claude Sonnet 5.5 (Max, Default Fallback)",
+      "shortName": "Claude Sonnet 5.5 (max with fallback)",
+      "intelligenceIndex": 54.24133407109,
+      "cost": 10.020621343395753,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -2726,8 +962,8 @@
       "slug": "qwen3-8-max",
       "name": "Qwen3.8 Max (0902)",
       "shortName": "Qwen3.8 Max (0902)",
-      "intelligenceIndex": 45.4152084980521,
-      "cost": 5.408509428374016,
+      "intelligenceIndex": 33.5545627367888,
+      "cost": 10.023891571541945,
       "creator": {
         "name": "Alibaba",
         "color": "#ff7018"
@@ -2736,26 +972,12 @@
       "deprecated": false
     },
     {
-      "id": "b171d979-5ec1-45de-b8b9-db1ee65e77ec",
-      "slug": "claude-sonnet-5-5",
-      "name": "Claude Sonnet 5.5 (Max, Default Fallback)",
-      "shortName": "Claude Sonnet 5.5 (max with fallback)",
-      "intelligenceIndex": 56.0001286580794,
-      "cost": 5.4608525948098325,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "b8fc61f7-5e9a-49e6-8547-6ac56db24627",
-      "slug": "claude-opus-5",
-      "name": "Claude Opus 5 (Max)",
-      "shortName": "Claude Opus 5 (max)",
-      "intelligenceIndex": 50.7771115797629,
-      "cost": 5.858396237036018,
+      "id": "2f3c4dc9-a450-4303-8697-0237257cf08f",
+      "slug": "claude-opus-5-5",
+      "name": "Claude Opus 5.5 (Max, Default Fallback)",
+      "shortName": "Claude Opus 5.5 (max with fallback)",
+      "intelligenceIndex": 58.4060336078904,
+      "cost": 10.036409719512749,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -2768,22 +990,8 @@
       "slug": "claude-fable-5-1-xhigh",
       "name": "Claude Fable 5.1 (Xhigh, Default Fallback)",
       "shortName": "Claude Fable 5.1 (xhigh with fallback)",
-      "intelligenceIndex": 53.2032587538944,
-      "cost": 5.978304247388257,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "2f3c4dc9-a450-4303-8697-0237257cf08f",
-      "slug": "claude-opus-5-5",
-      "name": "Claude Opus 5.5 (Max, Default Fallback)",
-      "shortName": "Claude Opus 5.5 (max with fallback)",
-      "intelligenceIndex": 57.6223698102963,
-      "cost": 5.982012019521066,
+      "intelligenceIndex": 49.6716384248632,
+      "cost": 10.88545763790596,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -2796,22 +1004,8 @@
       "slug": "claude-fable-5-1",
       "name": "Claude Fable 5.1 (Max, Default Fallback)",
       "shortName": "Claude Fable 5.1 (max with fallback)",
-      "intelligenceIndex": 53.3549259623252,
-      "cost": 7.629706364004841,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "cd55210d-358e-4df1-ba9c-9acb5f186cc9",
-      "slug": "claude-fable-5",
-      "name": "Claude Fable 5 (Max, Opus 4.8 Fallback)",
-      "shortName": "Claude Fable 5 (with fallback)",
-      "intelligenceIndex": 49.6258202733378,
-      "cost": 8.745961651687406,
+      "intelligenceIndex": 49.0102124158081,
+      "cost": 13.03926860806298,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
