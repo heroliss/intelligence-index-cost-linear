@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-28T10:23:39.494Z",
-  "modelCount": 72,
+  "updatedAt": "2026-10-28T20:49:43.292Z",
+  "modelCount": 73,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -669,7 +669,7 @@
       "name": "Ling 3.1 Flash 1019",
       "shortName": "Ling 3.1 Flash 1019",
       "intelligenceIndex": 29.470119369837,
-      "cost": 3.185131106992232,
+      "cost": 3.185145018337793,
       "creator": {
         "name": "InclusionAI",
         "color": "#4fb5ff"
@@ -743,20 +743,6 @@
       "creator": {
         "name": "Kimi",
         "color": "#047AFE"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "d366dfa1-d940-4788-aa73-d298c45699b3",
-      "slug": "gemini-4-argon",
-      "name": "Gemini 4 Argon (High)",
-      "shortName": "Gemini 4 Argon (high)",
-      "intelligenceIndex": 50.4121935905389,
-      "cost": 3.8413356862577754,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": false
@@ -925,6 +911,34 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "d366dfa1-d940-4788-aa73-d298c45699b3",
+      "slug": "gemini-4-argon",
+      "name": "Gemini 4 Argon (High)",
+      "shortName": "Gemini 4 Argon (high)",
+      "intelligenceIndex": 50.4121935905389,
+      "cost": 7.682671372515551,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "909ed0ba-bcc5-4f38-8162-08a4e187a772",
+      "slug": "gemini-4-carbon",
+      "name": "Gemini 4 Carbon (High)",
+      "shortName": "Gemini 4 Carbon (high)",
+      "intelligenceIndex": 59.425738829526,
+      "cost": 7.755545745286556,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": false
