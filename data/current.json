@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-29T01:36:36.566Z",
+  "updatedAt": "2026-10-29T10:44:01.894Z",
   "modelCount": 73,
   "models": [
     {
@@ -767,7 +767,7 @@
       "name": "Claude Fable 5.1 (Low, Default Fallback)",
       "shortName": "Claude Fable 5.1 (low with fallback)",
       "intelligenceIndex": 38.483648810734,
-      "cost": 4.486736376258894,
+      "cost": 4.471135894646431,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -791,7 +791,7 @@
     },
     {
       "id": "34fc646a-0174-470e-9e62-d8df452210b3",
-      "slug": "mistral-large-4",
+      "slug": "mistral-large-4-preview",
       "name": "Mistral Large 4 Preview",
       "shortName": "Mistral Large 4 Preview",
       "intelligenceIndex": 25.286451488165,
@@ -809,7 +809,7 @@
       "name": "Claude Fable 5.1 (Medium, Default Fallback)",
       "shortName": "Claude Fable 5.1 (medium with fallback)",
       "intelligenceIndex": 42.971597828284,
-      "cost": 5.58053808023747,
+      "cost": 5.564264690221474,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -907,7 +907,7 @@
       "name": "Claude Fable 5.1 (High, Default Fallback)",
       "shortName": "Claude Fable 5.1 (high with fallback)",
       "intelligenceIndex": 47.024988245604,
-      "cost": 7.560794697580411,
+      "cost": 7.539956160226559,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -1005,7 +1005,7 @@
       "name": "Claude Fable 5.1 (Xhigh, Default Fallback)",
       "shortName": "Claude Fable 5.1 (xhigh with fallback)",
       "intelligenceIndex": 49.6716384248632,
-      "cost": 10.88545763790596,
+      "cost": 10.847474706140272,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -1019,7 +1019,7 @@
       "name": "Claude Fable 5.1 (Max, Default Fallback)",
       "shortName": "Claude Fable 5.1 (max with fallback)",
       "intelligenceIndex": 49.0102124158081,
-      "cost": 13.03926860806298,
+      "cost": 12.993997201178466,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
