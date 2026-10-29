@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-29T10:44:01.894Z",
-  "modelCount": 73,
+  "updatedAt": "2026-10-29T20:55:02.328Z",
+  "modelCount": 75,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -510,6 +510,20 @@
       "deprecated": false
     },
     {
+      "id": "27b24366-fd1a-44b7-8011-e24d7501318d",
+      "slug": "mistral-large-4-medium",
+      "name": "Mistral Large 4 (Medium)",
+      "shortName": "Mistral Large 4 (medium)",
+      "intelligenceIndex": 23.0777321742266,
+      "cost": 1.4119376739255958,
+      "creator": {
+        "name": "Mistral",
+        "color": "#f32e02"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "a3f8100d-e38f-408b-b0fa-0085dae18dc1",
       "slug": "gpt-6-astra-low",
       "name": "GPT-6 Astra (Low)",
@@ -575,6 +589,20 @@
       "creator": {
         "name": "Meta",
         "color": "#0089f4"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "ea5019ae-b0b7-49a5-80b3-0e584807af0f",
+      "slug": "mistral-large-4",
+      "name": "Mistral Large 4 (High)",
+      "shortName": "Mistral Large 4 (high)",
+      "intelligenceIndex": 26.0249946754784,
+      "cost": 2.061496607384404,
+      "creator": {
+        "name": "Mistral",
+        "color": "#f32e02"
       },
       "isReasoning": true,
       "deprecated": false
