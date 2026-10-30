@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-29T20:55:02.328Z",
-  "modelCount": 75,
+  "updatedAt": "2026-10-30T01:37:20.706Z",
+  "modelCount": 81,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -15,6 +15,20 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "3fd96175-4ef1-434c-8795-f873aec2abc1",
+      "slug": "mistral-small-4",
+      "name": "Mistral Small 4 (Reasoning)",
+      "shortName": "Mistral Small 4",
+      "intelligenceIndex": 4.29716249600478,
+      "cost": 0.03990856296103761,
+      "creator": {
+        "name": "Mistral",
+        "color": "#f32e02"
       },
       "isReasoning": true,
       "deprecated": false
@@ -286,6 +300,20 @@
       "deprecated": false
     },
     {
+      "id": "29976311-665a-4b2f-ac72-557c33e0758e",
+      "slug": "nemotron-3-5-lightning",
+      "name": "Nemotron 3.5 Lightning",
+      "shortName": "Nemotron 3.5 Lightning",
+      "intelligenceIndex": 5.5346663903388,
+      "cost": 0.28980699398265014,
+      "creator": {
+        "name": "NVIDIA",
+        "color": "#76b900"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "a2e51d62-ea4e-4f15-8be0-be9dc1fb489d",
       "slug": "gpt-6-1-sol-medium",
       "name": "GPT-6.1 Sol (Medium)",
@@ -365,6 +393,20 @@
       "creator": {
         "name": "NVIDIA",
         "color": "#76b900"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+      "slug": "glm-5-3-flash",
+      "name": "GLM-5.3-Flash",
+      "shortName": "GLM-5.3-Flash",
+      "intelligenceIndex": 27.753889160883,
+      "cost": 0.5833103440014082,
+      "creator": {
+        "name": "Z AI",
+        "color": "#1c7ff8"
       },
       "isReasoning": true,
       "deprecated": false
@@ -580,6 +622,20 @@
       "deprecated": false
     },
     {
+      "id": "7e30585f-fad7-40df-a8cb-03c1d96df38a",
+      "slug": "qwen3-8-27b-low",
+      "name": "Qwen3.8 27B (Low)",
+      "shortName": "Qwen3.8 27B (low)",
+      "intelligenceIndex": 15.6850612405479,
+      "cost": 1.9059046111258202,
+      "creator": {
+        "name": "Alibaba",
+        "color": "#ff7018"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "3661c8fb-caf7-4118-aa18-65b84fea8e44",
       "slug": "muse-spark-open",
       "name": "Muse Spark Open (Xhigh)",
@@ -608,6 +664,20 @@
       "deprecated": false
     },
     {
+      "id": "6657d7de-a2a9-40bc-a32f-86e80ad63698",
+      "slug": "qwen3-8-27b-medium",
+      "name": "Qwen3.8 27B (Medium)",
+      "shortName": "Qwen3.8 27B (medium)",
+      "intelligenceIndex": 17.4831648632067,
+      "cost": 2.1600047179927624,
+      "creator": {
+        "name": "Alibaba",
+        "color": "#ff7018"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "5b52def2-ac9b-4465-ad80-91ea8079e253",
       "slug": "nvidia-nemotron-3-ultra-550b-a55b",
       "name": "Nemotron 3 Ultra 550B A55B (Reasoning)",
@@ -631,6 +701,20 @@
       "creator": {
         "name": "StepFun",
         "color": "#00F5E7"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "512d17ef-13d2-4f65-bf9b-154b0dec7e8d",
+      "slug": "kimi-k3-low",
+      "name": "Kimi K3 (Low)",
+      "shortName": "Kimi K3 (low)",
+      "intelligenceIndex": 17.4191985300887,
+      "cost": 2.368773852349091,
+      "creator": {
+        "name": "Kimi",
+        "color": "#047AFE"
       },
       "isReasoning": true,
       "deprecated": false
@@ -790,6 +874,20 @@
       "deprecated": false
     },
     {
+      "id": "34fc646a-0174-470e-9e62-d8df452210b3",
+      "slug": "mistral-large-4-preview",
+      "name": "Mistral Large 4 Preview",
+      "shortName": "Mistral Large 4 Preview",
+      "intelligenceIndex": 25.286451488165,
+      "cost": 4.208903290646695,
+      "creator": {
+        "name": "Mistral",
+        "color": "#f32e02"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "05776db7-f5c0-40f7-b824-079160f8cfa8",
       "slug": "claude-fable-5-1-low",
       "name": "Claude Fable 5.1 (Low, Default Fallback)",
@@ -813,20 +911,6 @@
       "creator": {
         "name": "Z AI",
         "color": "#1c7ff8"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "34fc646a-0174-470e-9e62-d8df452210b3",
-      "slug": "mistral-large-4-preview",
-      "name": "Mistral Large 4 Preview",
-      "shortName": "Mistral Large 4 Preview",
-      "intelligenceIndex": 25.286451488165,
-      "cost": 5.53703213691669,
-      "creator": {
-        "name": "Mistral",
-        "color": "#f32e02"
       },
       "isReasoning": true,
       "deprecated": false
