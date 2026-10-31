@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-10-30T20:29:27.665Z",
+  "updatedAt": "2026-10-31T01:26:31.320Z",
   "modelCount": 82,
   "models": [
     {
@@ -389,7 +389,7 @@
       "name": "Nemotron 3.5 Super VL",
       "shortName": "Nemotron 3.5 Super VL",
       "intelligenceIndex": 13.6203422723141,
-      "cost": 0.5565160431921087,
+      "cost": 0.5382257339551116,
       "creator": {
         "name": "NVIDIA",
         "color": "#76b900"
