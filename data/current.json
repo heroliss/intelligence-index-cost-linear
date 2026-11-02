@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-01T20:16:24.965Z",
-  "modelCount": 82,
+  "updatedAt": "2026-11-02T01:19:15.965Z",
+  "modelCount": 83,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -353,6 +353,20 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "5720fd2f-873a-4765-8640-a153b38bd64d",
+      "slug": "deepseek-v4-1-flash-1017-non-reasoning",
+      "name": "DeepSeek V4.1 Flash 1017 (Non-reasoning)",
+      "shortName": "DeepSeek V4.1 Flash 1017 (non-reasoning)",
+      "intelligenceIndex": 18.5131594039446,
+      "cost": 0.4254202455035728,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": false,
       "deprecated": false
     },
     {
