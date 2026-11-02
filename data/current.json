@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-02T01:19:15.965Z",
-  "modelCount": 83,
+  "updatedAt": "2026-11-02T12:02:40.176Z",
+  "modelCount": 84,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -1006,6 +1006,20 @@
       "shortName": "Gemini 3.8 Flash (medium)",
       "intelligenceIndex": 29.978569475636,
       "cost": 6.258586089480771,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "0d3eaafd-54ed-4f78-bdd7-05a2db883986",
+      "slug": "gemini-4-carbon-medium",
+      "name": "Gemini 4 Carbon (Medium)",
+      "shortName": "Gemini 4 Carbon (medium)",
+      "intelligenceIndex": 57.7087824022788,
+      "cost": 6.585776867225546,
       "creator": {
         "name": "Google",
         "color": "#34A853"
