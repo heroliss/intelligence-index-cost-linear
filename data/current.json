@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-02T12:02:40.176Z",
-  "modelCount": 84,
+  "updatedAt": "2026-11-02T23:20:24.891Z",
+  "modelCount": 85,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -29,6 +29,20 @@
       "creator": {
         "name": "Mistral",
         "color": "#f32e02"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "adfae555-f489-4f3e-9064-c6b7fcdd0783",
+      "slug": "granite-4-2-8b",
+      "name": "Granite 4.2 8B",
+      "shortName": "Granite 4.2 8B",
+      "intelligenceIndex": 5.09826495217051,
+      "cost": 0.0404628507686443,
+      "creator": {
+        "name": "IBM",
+        "color": "#0f62fe"
       },
       "isReasoning": true,
       "deprecated": false
