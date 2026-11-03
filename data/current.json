@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-02T23:20:24.891Z",
+  "updatedAt": "2026-11-03T11:40:26.604Z",
   "modelCount": 85,
   "models": [
     {
@@ -1056,20 +1056,6 @@
       "deprecated": false
     },
     {
-      "id": "59627802-1546-422c-9a65-65b61c022d36",
-      "slug": "grok-4-7",
-      "name": "Grok 4.7 (Xhigh)",
-      "shortName": "Grok 4.7 (xhigh)",
-      "intelligenceIndex": 34.3350117067196,
-      "cost": 7.511769586408455,
-      "creator": {
-        "name": "SpaceXAI",
-        "color": "#736cd3"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "9d7d72cd-d95d-45a0-b109-4ad292c9aabd",
       "slug": "claude-fable-5-1-high",
       "name": "Claude Fable 5.1 (High, Default Fallback)",
@@ -1121,6 +1107,20 @@
       "creator": {
         "name": "Google",
         "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "59627802-1546-422c-9a65-65b61c022d36",
+      "slug": "grok-4-7",
+      "name": "Grok 4.7 (Xhigh)",
+      "shortName": "Grok 4.7 (xhigh)",
+      "intelligenceIndex": 35.3350117067196,
+      "cost": 7.771539401587139,
+      "creator": {
+        "name": "SpaceXAI",
+        "color": "#736cd3"
       },
       "isReasoning": true,
       "deprecated": false
