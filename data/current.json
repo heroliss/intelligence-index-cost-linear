@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-04T11:53:55.561Z",
-  "modelCount": 90,
+  "updatedAt": "2026-11-04T21:44:01.596Z",
+  "modelCount": 95,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -342,6 +342,20 @@
       "deprecated": false
     },
     {
+      "id": "426d24c8-49ae-482a-b4a8-20f1c53f21c1",
+      "slug": "gpt-5-6-luna",
+      "name": "GPT-5.6 Luna (Max)",
+      "shortName": "GPT-5.6 Luna (max)",
+      "intelligenceIndex": 23.7902433286348,
+      "cost": 0.3312633263840317,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "a2e51d62-ea4e-4f15-8be0-be9dc1fb489d",
       "slug": "gpt-6-1-sol-medium",
       "name": "GPT-6.1 Sol (Medium)",
@@ -432,6 +446,20 @@
       "shortName": "Claude Sonnet 5.5 (low with fallback)",
       "intelligenceIndex": 25.649704549789,
       "cost": 0.5113424463897498,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "a6340098-d7ae-462d-b372-0a0a67fc44b4",
+      "slug": "claude-4-5-haiku-reasoning",
+      "name": "Claude 4.5 Haiku (Reasoning)",
+      "shortName": "Claude 4.5 Haiku",
+      "intelligenceIndex": 7.43033851624488,
+      "cost": 0.5317769104171033,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
@@ -561,6 +589,34 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "d4f5b250-be37-4801-85e6-32fda4179337",
+      "slug": "deepseek-v4-pro-non-reasoning",
+      "name": "DeepSeek V4 Pro 0813 (Non-reasoning)",
+      "shortName": "DeepSeek V4 Pro 0813 (non-reasoning)",
+      "intelligenceIndex": 12.5675939779921,
+      "cost": 0.9769879356486032,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": false,
+      "deprecated": false
+    },
+    {
+      "id": "dd059b25-d82a-4ead-82a4-4adceaaec48b",
+      "slug": "mistral-medium-3-5",
+      "name": "Mistral Medium 3.5",
+      "shortName": "Mistral Medium 3.5",
+      "intelligenceIndex": 4.64508756526957,
+      "cost": 1.0390849688366068,
+      "creator": {
+        "name": "Mistral",
+        "color": "#f32e02"
       },
       "isReasoning": true,
       "deprecated": false
@@ -995,6 +1051,20 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "d6f43d0a-e8c4-447c-9ff7-5cf0a9d59aa3",
+      "slug": "grok-4-6-xhigh",
+      "name": "Grok 4.6 (Xhigh)",
+      "shortName": "Grok 4.6 (xhigh)",
+      "intelligenceIndex": 31.028795176621,
+      "cost": 4.678631982547866,
+      "creator": {
+        "name": "SpaceXAI",
+        "color": "#736cd3"
       },
       "isReasoning": true,
       "deprecated": false
