@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-04T01:56:35.576Z",
-  "modelCount": 89,
+  "updatedAt": "2026-11-04T11:53:55.561Z",
+  "modelCount": 90,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -225,6 +225,20 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "598190f8-dc9c-4fea-a7ea-4b81c402ab18",
+      "slug": "gemini-3-1-flash-lite-preview",
+      "name": "Gemini 3.1 Flash-Lite",
+      "shortName": "Gemini 3.1 Flash-Lite",
+      "intelligenceIndex": 6.15684082814488,
+      "cost": 0.19445134743611814,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": false
@@ -794,8 +808,8 @@
       "slug": "gpt-6-sol",
       "name": "GPT-6 Sol (Max)",
       "shortName": "GPT-6 Sol (max)",
-      "intelligenceIndex": 44.1055010304265,
-      "cost": 2.465690701611805,
+      "intelligenceIndex": 44.1555010304265,
+      "cost": 2.465800491412395,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
