@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-03T21:33:26.794Z",
-  "modelCount": 88,
+  "updatedAt": "2026-11-04T01:56:35.576Z",
+  "modelCount": 89,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -381,6 +381,20 @@
         "color": "#2243e6"
       },
       "isReasoning": false,
+      "deprecated": false
+    },
+    {
+      "id": "c3b66080-fdcb-48e4-8ade-6baf77921c7c",
+      "slug": "deepseek-v4-1-flash-1017-high",
+      "name": "DeepSeek V4.1 Flash 1017 (High)",
+      "shortName": "DeepSeek V4.1 Flash 1017 (high)",
+      "intelligenceIndex": 28.6437391540402,
+      "cost": 0.45619449806633267,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": true,
       "deprecated": false
     },
     {
@@ -906,8 +920,8 @@
       "slug": "gpt-5-6-terra",
       "name": "GPT-5.6 Terra (Max)",
       "shortName": "GPT-5.6 Terra (max)",
-      "intelligenceIndex": 32.1933563656461,
-      "cost": 3.734146984625977,
+      "intelligenceIndex": 32.3433563656461,
+      "cost": 3.734901899414753,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
