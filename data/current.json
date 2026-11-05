@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-05T11:56:02.304Z",
-  "modelCount": 96,
+  "updatedAt": "2026-11-05T21:47:41.974Z",
+  "modelCount": 97,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -608,6 +608,20 @@
       "deprecated": false
     },
     {
+      "id": "d274918e-ea82-4951-8b37-8ed9ab898dbc",
+      "slug": "tencent-hy4",
+      "name": "Tencent Hy4",
+      "shortName": "Tencent Hy4",
+      "intelligenceIndex": 34.5552385392508,
+      "cost": 1.0311060706397974,
+      "creator": {
+        "name": "Tencent",
+        "color": "#5CB9FF"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "dd059b25-d82a-4ead-82a4-4adceaaec48b",
       "slug": "mistral-medium-3-5",
       "name": "Mistral Medium 3.5",
@@ -669,7 +683,7 @@
       "name": "Mistral Large 4 (Medium)",
       "shortName": "Mistral Large 4 (medium)",
       "intelligenceIndex": 23.1277321742266,
-      "cost": 1.4119376739255958,
+      "cost": 1.4120973060945472,
       "creator": {
         "name": "Mistral",
         "color": "#f32e02"
@@ -767,7 +781,7 @@
       "name": "Mistral Large 4 (High)",
       "shortName": "Mistral Large 4 (high)",
       "intelligenceIndex": 26.1249946754784,
-      "cost": 2.061496607384404,
+      "cost": 2.0617306268126856,
       "creator": {
         "name": "Mistral",
         "color": "#f32e02"
