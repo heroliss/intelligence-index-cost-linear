@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-05T02:00:26.769Z",
-  "modelCount": 95,
+  "updatedAt": "2026-11-05T11:56:02.304Z",
+  "modelCount": 96,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -1314,6 +1314,20 @@
       "shortName": "Claude Fable 5.1 (xhigh)",
       "intelligenceIndex": 50.0216384248632,
       "cost": 10.847474706140272,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "b8fc61f7-5e9a-49e6-8547-6ac56db24627",
+      "slug": "claude-opus-5",
+      "name": "Claude Opus 5 (Max)",
+      "shortName": "Claude Opus 5 (max)",
+      "intelligenceIndex": 44.1646231569372,
+      "cost": 11.821495652976125,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
