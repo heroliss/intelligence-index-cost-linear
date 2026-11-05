@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-04T21:44:01.596Z",
+  "updatedAt": "2026-11-05T02:00:26.769Z",
   "modelCount": 95,
   "models": [
     {
@@ -443,7 +443,7 @@
       "id": "bbc2ffea-cf6b-43be-8c41-1769347e234d",
       "slug": "claude-sonnet-5-5-low",
       "name": "Claude Sonnet 5.5 (Low, Default Fallback)",
-      "shortName": "Claude Sonnet 5.5 (low with fallback)",
+      "shortName": "Claude Sonnet 5.5 (low)",
       "intelligenceIndex": 25.649704549789,
       "cost": 0.5113424463897498,
       "creator": {
@@ -555,7 +555,7 @@
       "id": "042e8a37-fcd0-40f4-8f41-99215fb68eda",
       "slug": "claude-sonnet-5-5-medium",
       "name": "Claude Sonnet 5.5 (Medium, Default Fallback)",
-      "shortName": "Claude Sonnet 5.5 (medium with fallback)",
+      "shortName": "Claude Sonnet 5.5 (medium)",
       "intelligenceIndex": 30.8195522148431,
       "cost": 0.7806560352024481,
       "creator": {
@@ -583,7 +583,7 @@
       "id": "4416ca93-fde6-4b7b-abbc-3a6be109cc3d",
       "slug": "claude-opus-5-5-low",
       "name": "Claude Opus 5.5 (Low, Default Fallback)",
-      "shortName": "Claude Opus 5.5 (low with fallback)",
+      "shortName": "Claude Opus 5.5 (low)",
       "intelligenceIndex": 34.752785007759,
       "cost": 0.9755293224458845,
       "creator": {
@@ -709,7 +709,7 @@
       "id": "268525e2-f873-4178-bc07-e6a0ee1f002d",
       "slug": "claude-sonnet-5-5-high",
       "name": "Claude Sonnet 5.5 (High, Default Fallback)",
-      "shortName": "Claude Sonnet 5.5 (high with fallback)",
+      "shortName": "Claude Sonnet 5.5 (high)",
       "intelligenceIndex": 41.515109087048,
       "cost": 1.6361294399784785,
       "creator": {
@@ -849,7 +849,7 @@
       "id": "ea9e0da6-169f-43c6-92f5-730a10d6ff8d",
       "slug": "claude-opus-5-5-medium",
       "name": "Claude Opus 5.5 (Medium, Default Fallback)",
-      "shortName": "Claude Opus 5.5 (medium with fallback)",
+      "shortName": "Claude Opus 5.5 (medium)",
       "intelligenceIndex": 48.2081024960691,
       "cost": 2.4510894376611723,
       "creator": {
@@ -933,7 +933,7 @@
       "id": "f314eade-2232-44bf-a3ab-9b326bc67de6",
       "slug": "claude-opus-5-5-high",
       "name": "Claude Opus 5.5 (High, Default Fallback)",
-      "shortName": "Claude Opus 5.5 (high with fallback)",
+      "shortName": "Claude Opus 5.5 (high)",
       "intelligenceIndex": 51.8359958227294,
       "cost": 3.4646622820973185,
       "creator": {
@@ -1017,7 +1017,7 @@
       "id": "975aeaef-50bd-4a65-9c73-f1015adcd4d4",
       "slug": "claude-sonnet-5-5-xhigh",
       "name": "Claude Sonnet 5.5 (Xhigh, Default Fallback)",
-      "shortName": "Claude Sonnet 5.5 (xhigh with fallback)",
+      "shortName": "Claude Sonnet 5.5 (xhigh)",
       "intelligenceIndex": 49.9240327787242,
       "cost": 4.091984916321919,
       "creator": {
@@ -1045,7 +1045,7 @@
       "id": "05776db7-f5c0-40f7-b824-079160f8cfa8",
       "slug": "claude-fable-5-1-low",
       "name": "Claude Fable 5.1 (Low, Default Fallback)",
-      "shortName": "Claude Fable 5.1 (low with fallback)",
+      "shortName": "Claude Fable 5.1 (low)",
       "intelligenceIndex": 38.683648810734,
       "cost": 4.471135894646431,
       "creator": {
@@ -1087,7 +1087,7 @@
       "id": "3b7de71c-e034-4591-8ca6-6b6be2fa471f",
       "slug": "claude-fable-5-1-medium",
       "name": "Claude Fable 5.1 (Medium, Default Fallback)",
-      "shortName": "Claude Fable 5.1 (medium with fallback)",
+      "shortName": "Claude Fable 5.1 (medium)",
       "intelligenceIndex": 43.171597828284,
       "cost": 5.564264690221474,
       "creator": {
@@ -1101,7 +1101,7 @@
       "id": "df5bf99d-d228-4715-b41b-19ca86118777",
       "slug": "claude-opus-5-5-xhigh",
       "name": "Claude Opus 5.5 (Xhigh, Default Fallback)",
-      "shortName": "Claude Opus 5.5 (xhigh with fallback)",
+      "shortName": "Claude Opus 5.5 (xhigh)",
       "intelligenceIndex": 57.4447060170507,
       "cost": 6.047194490848774,
       "creator": {
@@ -1199,26 +1199,12 @@
       "id": "9d7d72cd-d95d-45a0-b109-4ad292c9aabd",
       "slug": "claude-fable-5-1-high",
       "name": "Claude Fable 5.1 (High, Default Fallback)",
-      "shortName": "Claude Fable 5.1 (high with fallback)",
+      "shortName": "Claude Fable 5.1 (high)",
       "intelligenceIndex": 47.174988245604,
       "cost": 7.539956160226559,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "d366dfa1-d940-4788-aa73-d298c45699b3",
-      "slug": "gemini-4-argon",
-      "name": "Gemini 4 Argon (High)",
-      "shortName": "Gemini 4 Argon (high)",
-      "intelligenceIndex": 50.4121935905389,
-      "cost": 7.682671372515551,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1266,10 +1252,24 @@
       "deprecated": false
     },
     {
+      "id": "d366dfa1-d940-4788-aa73-d298c45699b3",
+      "slug": "gemini-4-argon",
+      "name": "Gemini 4 Argon (High)",
+      "shortName": "Gemini 4 Argon (high)",
+      "intelligenceIndex": 50.4121935905389,
+      "cost": 9.946608711550533,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "b171d979-5ec1-45de-b8b9-db1ee65e77ec",
       "slug": "claude-sonnet-5-5",
       "name": "Claude Sonnet 5.5 (Max, Default Fallback)",
-      "shortName": "Claude Sonnet 5.5 (max with fallback)",
+      "shortName": "Claude Sonnet 5.5 (max)",
       "intelligenceIndex": 54.54133407109,
       "cost": 10.020621343395753,
       "creator": {
@@ -1297,7 +1297,7 @@
       "id": "2f3c4dc9-a450-4303-8697-0237257cf08f",
       "slug": "claude-opus-5-5",
       "name": "Claude Opus 5.5 (Max, Default Fallback)",
-      "shortName": "Claude Opus 5.5 (max with fallback)",
+      "shortName": "Claude Opus 5.5 (max)",
       "intelligenceIndex": 59.1060336078904,
       "cost": 10.036409719512749,
       "creator": {
@@ -1311,7 +1311,7 @@
       "id": "9b166bf3-42db-4f63-8338-1c4a1244ffe8",
       "slug": "claude-fable-5-1-xhigh",
       "name": "Claude Fable 5.1 (Xhigh, Default Fallback)",
-      "shortName": "Claude Fable 5.1 (xhigh with fallback)",
+      "shortName": "Claude Fable 5.1 (xhigh)",
       "intelligenceIndex": 50.0216384248632,
       "cost": 10.847474706140272,
       "creator": {
@@ -1325,7 +1325,7 @@
       "id": "3e87c73e-a257-495e-9730-367a66229811",
       "slug": "claude-fable-5-1",
       "name": "Claude Fable 5.1 (Max, Default Fallback)",
-      "shortName": "Claude Fable 5.1 (max with fallback)",
+      "shortName": "Claude Fable 5.1 (max)",
       "intelligenceIndex": 49.1602124158081,
       "cost": 12.993997201178466,
       "creator": {
