@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-05T21:47:41.974Z",
-  "modelCount": 97,
+  "updatedAt": "2026-11-06T02:00:21.929Z",
+  "modelCount": 99,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -636,6 +636,20 @@
       "deprecated": false
     },
     {
+      "id": "e2ed7885-d46b-4da7-a873-f12f88af0081",
+      "slug": "inkling-2-small",
+      "name": "Inkling 2 Small",
+      "shortName": "Inkling 2 Small",
+      "intelligenceIndex": 30.6286781498958,
+      "cost": 1.1784281349617984,
+      "creator": {
+        "name": "Thinking Machines",
+        "color": "#676767"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "b25ac058-1e33-4c31-bbc9-a20c3ad0717a",
       "slug": "gpt-6-1-sol",
       "name": "GPT-6.1 Sol (Max)",
@@ -1065,6 +1079,20 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "38a98e3d-779b-49ec-b005-230a3a72088a",
+      "slug": "muse-wonder-high",
+      "name": "Muse Wonder (High)",
+      "shortName": "Muse Wonder (high)",
+      "intelligenceIndex": 40.5266079185604,
+      "cost": 4.560546278670271,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
       },
       "isReasoning": true,
       "deprecated": false
