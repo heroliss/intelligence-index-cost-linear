@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-06T21:19:47.318Z",
+  "updatedAt": "2026-11-07T01:40:41.744Z",
   "modelCount": 99,
   "models": [
     {
@@ -454,6 +454,20 @@
       "deprecated": false
     },
     {
+      "id": "e2c0623e-c855-4a61-bb66-be1f1ed43234",
+      "slug": "nemotron-3-5-super-vl",
+      "name": "Nemotron 3.5 Super VL",
+      "shortName": "Nemotron 3.5 Super VL",
+      "intelligenceIndex": 13.6203422723141,
+      "cost": 0.5196327287868884,
+      "creator": {
+        "name": "NVIDIA",
+        "color": "#76b900"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "a6340098-d7ae-462d-b372-0a0a67fc44b4",
       "slug": "claude-4-5-haiku-reasoning",
       "name": "Claude 4.5 Haiku (Reasoning)",
@@ -463,20 +477,6 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "e2c0623e-c855-4a61-bb66-be1f1ed43234",
-      "slug": "nemotron-3-5-super-vl",
-      "name": "Nemotron 3.5 Super VL",
-      "shortName": "Nemotron 3.5 Super VL",
-      "intelligenceIndex": 13.6203422723141,
-      "cost": 0.5382257339551116,
-      "creator": {
-        "name": "NVIDIA",
-        "color": "#76b900"
       },
       "isReasoning": true,
       "deprecated": false
