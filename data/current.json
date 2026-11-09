@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-09T01:28:44.484Z",
-  "modelCount": 99,
+  "updatedAt": "2026-11-09T12:35:32.026Z",
+  "modelCount": 100,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -477,6 +477,20 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "d4dd600d-0d8e-4d6e-ad18-0cb8f7d6c4d0",
+      "slug": "agnes-2-5-pro-theta",
+      "name": "Agnes 2.5 Pro Theta",
+      "shortName": "Agnes 2.5 Pro Theta",
+      "intelligenceIndex": 24.029012523359,
+      "cost": 0.5746675567739363,
+      "creator": {
+        "name": "Sapiens AI",
+        "color": "#1521a9"
       },
       "isReasoning": true,
       "deprecated": false
