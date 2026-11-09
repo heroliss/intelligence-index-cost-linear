@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-09T12:35:32.026Z",
-  "modelCount": 100,
+  "updatedAt": "2026-11-09T23:58:36.877Z",
+  "modelCount": 108,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -146,6 +146,20 @@
       "deprecated": false
     },
     {
+      "id": "7a64ffc4-36c3-4369-981e-73abdd6ff5e2",
+      "slug": "muse-ember-xhigh",
+      "name": "Muse Ember (Xhigh)",
+      "shortName": "Muse Ember (xhigh)",
+      "intelligenceIndex": 34.1149608609788,
+      "cost": 0.1162277983030469,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "127de816-57d3-4037-8484-480a613cd413",
       "slug": "mimo-v2-6-flash",
       "name": "MiMo-V2.6-Flash",
@@ -155,6 +169,20 @@
       "creator": {
         "name": "Xiaomi",
         "color": "#ff6900"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "dbf63365-127f-41ee-9e51-81173adb3502",
+      "slug": "muse-ember",
+      "name": "Muse Ember (Max)",
+      "shortName": "Muse Ember (max)",
+      "intelligenceIndex": 36.0212987864912,
+      "cost": 0.1359356168986363,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
       },
       "isReasoning": true,
       "deprecated": false
@@ -188,20 +216,6 @@
       "deprecated": false
     },
     {
-      "id": "583f98fb-c4b8-4df3-8d40-60ac0ed69882",
-      "slug": "muse-glimmer",
-      "name": "Muse Glimmer (High)",
-      "shortName": "Muse Glimmer (high)",
-      "intelligenceIndex": 6.34128724913462,
-      "cost": 0.16096168039127723,
-      "creator": {
-        "name": "Meta",
-        "color": "#0089f4"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "e76e0fe5-93ca-4272-9359-2eb1740467d1",
       "slug": "gpt-6-1-sol-low",
       "name": "GPT-6.1 Sol (Low)",
@@ -225,6 +239,20 @@
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "583f98fb-c4b8-4df3-8d40-60ac0ed69882",
+      "slug": "muse-glimmer",
+      "name": "Muse Glimmer (High)",
+      "shortName": "Muse Glimmer (high)",
+      "intelligenceIndex": 6.34128724913462,
+      "cost": 0.16950439773904172,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
       },
       "isReasoning": true,
       "deprecated": false
@@ -333,7 +361,7 @@
       "name": "Nemotron 3.5 Lightning",
       "shortName": "Nemotron 3.5 Lightning",
       "intelligenceIndex": 5.5346663903388,
-      "cost": 0.28980699398265014,
+      "cost": 0.31445225066768195,
       "creator": {
         "name": "NVIDIA",
         "color": "#76b900"
@@ -348,6 +376,20 @@
       "shortName": "GPT-5.6 Luna (max)",
       "intelligenceIndex": 23.7902433286348,
       "cost": 0.3312633263840317,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "f0083258-8646-45b8-8082-7aaf6c2ea82a",
+      "slug": "gpt-oss-120b",
+      "name": "gpt-oss-120b (High)",
+      "shortName": "gpt-oss-120b (high)",
+      "intelligenceIndex": 3.81981165137417,
+      "cost": 0.34534207651823257,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -944,6 +986,20 @@
       "deprecated": false
     },
     {
+      "id": "cfc7acb1-d903-4858-9b6c-6c7776caf8f9",
+      "slug": "claude-fable-5-2-low",
+      "name": "Claude Fable 5.2 (Low, Default Fallback)",
+      "shortName": "Claude Fable 5.2 (low)",
+      "intelligenceIndex": 53.9249388799182,
+      "cost": 3.097241904274546,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "539ed227-38f4-4bea-a015-117057c14b18",
       "slug": "ling-3-1-flash-1019",
       "name": "Ling 3.1 Flash 1019",
@@ -1053,6 +1109,20 @@
         "color": "#ff7018"
       },
       "isReasoning": false,
+      "deprecated": false
+    },
+    {
+      "id": "0c9b4e05-9259-42cc-b40e-d6acbbeaa7e8",
+      "slug": "claude-fable-5-2-medium",
+      "name": "Claude Fable 5.2 (Medium, Default Fallback)",
+      "shortName": "Claude Fable 5.2 (medium)",
+      "intelligenceIndex": 56.4083157101519,
+      "cost": 3.8026050641787634,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
       "deprecated": false
     },
     {
@@ -1308,6 +1378,20 @@
       "deprecated": false
     },
     {
+      "id": "fdc1913b-9497-45ef-83f7-17dae756f37e",
+      "slug": "claude-fable-5-2-high",
+      "name": "Claude Fable 5.2 (High, Default Fallback)",
+      "shortName": "Claude Fable 5.2 (high)",
+      "intelligenceIndex": 61.8218785440284,
+      "cost": 9.078414777860381,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "d366dfa1-d940-4788-aa73-d298c45699b3",
       "slug": "gemini-4-argon",
       "name": "Gemini 4 Argon (High)",
@@ -1398,6 +1482,34 @@
       "shortName": "Claude Fable 5.1 (max)",
       "intelligenceIndex": 49.1602124158081,
       "cost": 12.993997201178466,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "76942526-cc96-46b0-bc27-29561c53ed70",
+      "slug": "claude-fable-5-2-xhigh",
+      "name": "Claude Fable 5.2 (Xhigh, Default Fallback)",
+      "shortName": "Claude Fable 5.2 (xhigh)",
+      "intelligenceIndex": 62.2167392403357,
+      "cost": 14.828587632511116,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "593f2d23-247b-41c9-a679-cebd225f0a9a",
+      "slug": "claude-fable-5-2",
+      "name": "Claude Fable 5.2 (Max, Default Fallback)",
+      "shortName": "Claude Fable 5.2 (max)",
+      "intelligenceIndex": 64.563595756626,
+      "cost": 26.53855780398091,
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
