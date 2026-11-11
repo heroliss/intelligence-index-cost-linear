@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-11T11:42:50.063Z",
-  "modelCount": 109,
+  "updatedAt": "2026-11-11T22:30:21.533Z",
+  "modelCount": 111,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -524,6 +524,20 @@
       "deprecated": false
     },
     {
+      "id": "9ac3908c-9eb2-44db-8c01-3ec7da6fc2ae",
+      "slug": "qwen3-8-flash-next",
+      "name": "Qwen3.8-Flash-Next",
+      "shortName": "Qwen3.8-Flash-Next",
+      "intelligenceIndex": 28.5750026655353,
+      "cost": 0.5693810918846318,
+      "creator": {
+        "name": "Alibaba",
+        "color": "#ff7018"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "d4dd600d-0d8e-4d6e-ad18-0cb8f7d6c4d0",
       "slug": "agnes-2-5-pro-theta",
       "name": "Agnes 2.5 Pro Theta",
@@ -631,6 +645,20 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "15c4cbd7-b9aa-42c8-9ce5-5abbde0e6963",
+      "slug": "solar-pro4",
+      "name": "Solar Pro 4",
+      "shortName": "Solar Pro 4",
+      "intelligenceIndex": 14.1589437644357,
+      "cost": 0.9557366659448332,
+      "creator": {
+        "name": "Upstage",
+        "color": "#7c59f5"
       },
       "isReasoning": true,
       "deprecated": false
