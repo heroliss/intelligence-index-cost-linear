@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-12T12:16:07.340Z",
-  "modelCount": 111,
+  "updatedAt": "2026-11-12T22:05:47.557Z",
+  "modelCount": 115,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -356,6 +356,20 @@
       "deprecated": false
     },
     {
+      "id": "88c68c50-03c1-458a-9292-bd398c27adc5",
+      "slug": "gemini-4-hydrogen-low",
+      "name": "Gemini 4 Hydrogen (Low)",
+      "shortName": "Gemini 4 Hydrogen (low)",
+      "intelligenceIndex": 26.8936694361562,
+      "cost": 0.2922227000200506,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "29976311-665a-4b2f-ac72-557c33e0758e",
       "slug": "nemotron-3-5-lightning",
       "name": "Nemotron 3.5 Lightning",
@@ -650,6 +664,20 @@
       "deprecated": false
     },
     {
+      "id": "f0537484-af30-4a8a-bf34-368c552e5cfd",
+      "slug": "gemini-4-hydrogen-medium",
+      "name": "Gemini 4 Hydrogen (Medium)",
+      "shortName": "Gemini 4 Hydrogen (medium)",
+      "intelligenceIndex": 41.2329566992579,
+      "cost": 0.7979866055252406,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "15c4cbd7-b9aa-42c8-9ce5-5abbde0e6963",
       "slug": "solar-pro4",
       "name": "Solar Pro 4",
@@ -860,6 +888,20 @@
       "deprecated": false
     },
     {
+      "id": "dae0262d-26a4-44d1-925a-6f2731cbda6a",
+      "slug": "gemini-4-hydrogen-high",
+      "name": "Gemini 4 Hydrogen (High)",
+      "shortName": "Gemini 4 Hydrogen (high)",
+      "intelligenceIndex": 50.7870826951304,
+      "cost": 1.8733140062520008,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "7e30585f-fad7-40df-a8cb-03c1d96df38a",
       "slug": "qwen3-8-27b-low",
       "name": "Qwen3.8 27B (Low)",
@@ -1037,6 +1079,20 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "dad0e3b1-e3e7-477a-99f9-c14457a91114",
+      "slug": "gemini-4-hydrogen",
+      "name": "Gemini 4 Hydrogen (Xhigh)",
+      "shortName": "Gemini 4 Hydrogen (xhigh)",
+      "intelligenceIndex": 53.9192287317542,
+      "cost": 3.1601590757006157,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": false
