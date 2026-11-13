@@ -2,8 +2,8 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-13T11:54:48.224Z",
-  "modelCount": 115,
+  "updatedAt": "2026-11-13T21:49:39.305Z",
+  "modelCount": 117,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -678,6 +678,20 @@
       "deprecated": false
     },
     {
+      "id": "e94c7595-a320-4c88-8f07-d9fd50fc4595",
+      "slug": "deepseek-v4-pro-high",
+      "name": "DeepSeek V4 Pro 0813 (High)",
+      "shortName": "DeepSeek V4 Pro 0813 (high)",
+      "intelligenceIndex": 20.799409628237,
+      "cost": 0.8485312855493328,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "15c4cbd7-b9aa-42c8-9ce5-5abbde0e6963",
       "slug": "solar-pro4",
       "name": "Solar Pro 4",
@@ -1247,6 +1261,20 @@
       "creator": {
         "name": "Mistral",
         "color": "#f32e02"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "48e6f735-f2bc-418f-b99f-3dc5a0ddda77",
+      "slug": "gemini-4-argon-medium",
+      "name": "Gemini 4 Argon (Medium)",
+      "shortName": "Gemini 4 Argon (medium)",
+      "intelligenceIndex": 47.6040598289046,
+      "cost": 4.314621569087732,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": false
