@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-12T22:05:47.557Z",
+  "updatedAt": "2026-11-13T11:54:48.224Z",
   "modelCount": 115,
   "models": [
     {
@@ -1280,6 +1280,20 @@
       "deprecated": false
     },
     {
+      "id": "0d3eaafd-54ed-4f78-bdd7-05a2db883986",
+      "slug": "gemini-4-carbon-medium",
+      "name": "Gemini 4 Carbon (Medium)",
+      "shortName": "Gemini 4 Carbon (medium)",
+      "intelligenceIndex": 58.2587824022788,
+      "cost": 4.677653677420589,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "d6f43d0a-e8c4-447c-9ff7-5cf0a9d59aa3",
       "slug": "grok-4-6-xhigh",
       "name": "Grok 4.6 (Xhigh)",
@@ -1294,6 +1308,20 @@
       "deprecated": false
     },
     {
+      "id": "d366dfa1-d940-4788-aa73-d298c45699b3",
+      "slug": "gemini-4-argon",
+      "name": "Gemini 4 Argon (High)",
+      "shortName": "Gemini 4 Argon (high)",
+      "intelligenceIndex": 50.4121935905389,
+      "cost": 4.973304355775267,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "cd684ea4-b475-4269-b001-d469d06d8a7a",
       "slug": "glm-5-3",
       "name": "GLM-5.3 (Max)",
@@ -1303,6 +1331,34 @@
       "creator": {
         "name": "Z AI",
         "color": "#1c7ff8"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "b3866703-a9f7-4ea2-8f3f-b361c90aaf0e",
+      "slug": "gemini-4-carbon-low",
+      "name": "Gemini 4 Carbon (Low)",
+      "shortName": "Gemini 4 Carbon (low)",
+      "intelligenceIndex": 54.2206114502924,
+      "cost": 5.221404723668021,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "909ed0ba-bcc5-4f38-8162-08a4e187a772",
+      "slug": "gemini-4-carbon",
+      "name": "Gemini 4 Carbon (High)",
+      "shortName": "Gemini 4 Carbon (high)",
+      "intelligenceIndex": 60.025738829526,
+      "cost": 5.484780948230178,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1378,20 +1434,6 @@
       "deprecated": false
     },
     {
-      "id": "0d3eaafd-54ed-4f78-bdd7-05a2db883986",
-      "slug": "gemini-4-carbon-medium",
-      "name": "Gemini 4 Carbon (Medium)",
-      "shortName": "Gemini 4 Carbon (medium)",
-      "intelligenceIndex": 58.2587824022788,
-      "cost": 6.585776867225546,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "ff2f3f3d-783f-4e27-8a39-47237501a313",
       "slug": "muse-wonder",
       "name": "Muse Wonder (Max)",
@@ -1406,20 +1448,6 @@
       "deprecated": false
     },
     {
-      "id": "b3866703-a9f7-4ea2-8f3f-b361c90aaf0e",
-      "slug": "gemini-4-carbon-low",
-      "name": "Gemini 4 Carbon (Low)",
-      "shortName": "Gemini 4 Carbon (low)",
-      "intelligenceIndex": 54.2206114502924,
-      "cost": 7.186577262951972,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "9d7d72cd-d95d-45a0-b109-4ad292c9aabd",
       "slug": "claude-fable-5-1-high",
       "name": "Claude Fable 5.1 (High, Default Fallback)",
@@ -1429,20 +1457,6 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "909ed0ba-bcc5-4f38-8162-08a4e187a772",
-      "slug": "gemini-4-carbon",
-      "name": "Gemini 4 Carbon (High)",
-      "shortName": "Gemini 4 Carbon (high)",
-      "intelligenceIndex": 60.025738829526,
-      "cost": 7.755545745286556,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1485,20 +1499,6 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
-      "id": "d366dfa1-d940-4788-aa73-d298c45699b3",
-      "slug": "gemini-4-argon",
-      "name": "Gemini 4 Argon (High)",
-      "shortName": "Gemini 4 Argon (high)",
-      "intelligenceIndex": 50.4121935905389,
-      "cost": 9.946608711550533,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
       },
       "isReasoning": true,
       "deprecated": false
