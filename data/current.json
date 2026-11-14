@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-14T01:59:16.060Z",
+  "updatedAt": "2026-11-14T11:14:47.398Z",
   "modelCount": 117,
   "models": [
     {
@@ -249,7 +249,7 @@
       "name": "Muse Glimmer (High)",
       "shortName": "Muse Glimmer (high)",
       "intelligenceIndex": 6.34128724913462,
-      "cost": 0.16950439773904172,
+      "cost": 0.17820832971071474,
       "creator": {
         "name": "Meta",
         "color": "#0089f4"
@@ -510,20 +510,6 @@
       "deprecated": false
     },
     {
-      "id": "e2c0623e-c855-4a61-bb66-be1f1ed43234",
-      "slug": "nemotron-3-5-super-vl",
-      "name": "Nemotron 3.5 Super VL",
-      "shortName": "Nemotron 3.5 Super VL",
-      "intelligenceIndex": 13.6203422723141,
-      "cost": 0.5196327287868884,
-      "creator": {
-        "name": "NVIDIA",
-        "color": "#76b900"
-      },
-      "isReasoning": true,
-      "deprecated": false
-    },
-    {
       "id": "a6340098-d7ae-462d-b372-0a0a67fc44b4",
       "slug": "claude-4-5-haiku-reasoning",
       "name": "Claude 4.5 Haiku (Reasoning)",
@@ -533,6 +519,20 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "e2c0623e-c855-4a61-bb66-be1f1ed43234",
+      "slug": "nemotron-3-5-super-vl",
+      "name": "Nemotron 3.5 Super VL",
+      "shortName": "Nemotron 3.5 Super VL",
+      "intelligenceIndex": 13.6203422723141,
+      "cost": 0.5574566144919201,
+      "creator": {
+        "name": "NVIDIA",
+        "color": "#76b900"
       },
       "isReasoning": true,
       "deprecated": false
@@ -977,7 +977,7 @@
       "name": "Nemotron 3 Ultra 550B A55B (Reasoning)",
       "shortName": "Nemotron 3 Ultra",
       "intelligenceIndex": 11.7592726308177,
-      "cost": 2.2257365504312134,
+      "cost": 2.2102962660498227,
       "creator": {
         "name": "NVIDIA",
         "color": "#76b900"
