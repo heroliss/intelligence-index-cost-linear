@@ -2,7 +2,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-13T21:49:39.305Z",
+  "updatedAt": "2026-11-14T01:59:16.060Z",
   "modelCount": 117,
   "models": [
     {
@@ -1113,7 +1113,7 @@
     },
     {
       "id": "539ed227-38f4-4bea-a015-117057c14b18",
-      "slug": "ling-3-1-flash-1019",
+      "slug": "ling-3-1-flash",
       "name": "Ling 3.1 Flash 1019",
       "shortName": "Ling 3.1 Flash 1019",
       "intelligenceIndex": 29.570119369837,
