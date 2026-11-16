@@ -53,12 +53,15 @@ function makeState(key) {
   const rows = validRows(snapshot[config[key].key]);
   const bounds = dataBounds(rows);
   const defaultView = {...bounds, width:config[key].defaultX ? Math.min(bounds.width,config[key].defaultX) : bounds.width};
-  return {rows,bounds,defaultView,view:{...defaultView},company:null,search:'',frontierOnly:false,labels:true,labelSize:key==='models'?4:7,labelDistance:key==='models'?2:12,options:false,table:false,selected:null};
+  return {rows,bounds,defaultView,view:{...defaultView},company:null,search:'',frontierOnly:false,labels:true,labelSize:key==='models'?9:10,labelDistance:key==='models'?2:12,options:false,table:false,selected:null};
 }
 function filteredRows() {
   const query = state.search.trim().toLocaleLowerCase();
-  let rows = state.rows.filter(row => (!state.company || row.creator?.name === state.company) && (!query || [row.name,row.shortName,row.creator?.name,row.agentName,row.modelName].filter(Boolean).join(' ').toLocaleLowerCase().includes(query)));
-  if (state.frontierOnly) rows = paretoFrontier(rows);
+  let rows = state.rows.filter(row => !query || [row.name,row.shortName,row.creator?.name,row.agentName,row.modelName].filter(Boolean).join(' ').toLocaleLowerCase().includes(query));
+  if (state.frontierOnly) {
+    const frontier = new Set(paretoFrontier(state.rows).map(row=>row.id));
+    rows = rows.filter(row=>frontier.has(row.id));
+  }
   return rows;
 }
 function applyTheme() {
@@ -119,10 +122,10 @@ function renderLegend() {
   for (const creator of [...companies.values()].sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name))) {
     const button=html('button');button.type='button';
     button.setAttribute('aria-pressed',String(creator.name===state.company));
-    button.setAttribute('aria-label',`筛选 ${creator.name}，${creator.count} 项 / Filter ${creator.name}`);
+    button.setAttribute('aria-label',`聚焦 ${creator.name}，${creator.count} 项 / Focus ${creator.name}`);
     const dot=html('i');dot.style.setProperty('--color',color(creator.color));dot.setAttribute('aria-hidden','true');
     button.append(dot,document.createTextNode(creator.name),html('span',creator.count,'legend-count'));
-    button.addEventListener('click',()=>{state.company=state.company===creator.name?null:creator.name;state.selected=null;renderLegend();syncControls();buildPlot();});
+    button.addEventListener('click',()=>{state.company=state.company===creator.name?null:creator.name;state.selected=null;clearHover();renderLegend();syncControls();if(state.table)renderTable();scheduleDraw();});
     fragment.append(button);
   }
   $('#legend').replaceChildren(fragment);
@@ -130,13 +133,26 @@ function renderLegend() {
 function syncControls() {
   $('#search').value=state.search;
   $('#frontier').setAttribute('aria-pressed',String(state.frontierOnly));
+  bilingual($('#frontier'),state.frontierOnly?'✓ 仅看前沿':'仅看前沿',state.frontierOnly?'Frontier on':'Frontier only');
   $('#labels').setAttribute('aria-pressed',String(state.labels));
+  bilingual($('#labels'),state.labels?'✓ 标签已显示':'标签已隐藏',state.labels?'Labels on':'Labels off');
   $('#labelSize').value=state.labelSize;$('#labelSizeValue').value=state.labelSize;
   $('#labelDistance').value=state.labelDistance;$('#labelDistanceValue').value=state.labelDistance;
   $('#options').setAttribute('aria-expanded',String(state.options));$('#optionsPanel').hidden=!state.options;
+  $('#options').setAttribute('aria-pressed',String(state.options));
+  bilingual($('#options'),state.options?'收起选项':'图表选项',state.options?'Hide options':'Options');
+  $('#options').disabled=state.table;
+  $('#options').title=state.table?'返回图表后调整标签 / Return to the chart to adjust labels':'';
   $('#tableToggle').setAttribute('aria-expanded',String(state.table));
+  $('#tableToggle').setAttribute('aria-pressed',String(state.table));
+  bilingual($('#tableToggle'),state.table?'返回图表':'图形数据表',state.table?'Back to chart':'Visual table');
   $('#dataTable').hidden=!state.table;host.hidden=state.table;
-  $('#clearFilters').hidden=!(state.company||state.search||state.frontierOnly);
+  document.querySelector('.view-controls').hidden=state.table;
+  // Reserve this control's space so focusing a creator cannot resize the plot.
+  const hasFocus=!!(state.company||state.search||state.frontierOnly);
+  $('#clearFilters').hidden=false;
+  $('#clearFilters').style.visibility=hasFocus?'visible':'hidden';
+  $('#clearFilters').disabled=!hasFocus;
 }
 function renderStatus() {
   const cfg=config[activeKey], version=activeKey==='models'?snapshot.modelIndexVersion:snapshot.codingAgentIndexVersion;
@@ -181,12 +197,27 @@ function buildPlot() {
 }
 function renderTable(rows=filteredRows()) {
   const fragment=document.createDocumentFragment();
+  const maxCost=Math.max(...state.rows.map(row=>row.cost),.001);
+  $('#tableScale').textContent=`同列采用统一线性刻度：指数 0–100，成本 $0–${format(maxCost)} / Shared linear scales across all entries`;
   for (const row of [...rows].sort((a,b)=>b.intelligenceIndex-a.intelligenceIndex||a.cost-b.cost)) {
     const tr=html('tr');
-    tr.append(html('td',row.name),html('td',row.creator?.name||'Other'),html('td',format(row.intelligenceIndex,2)),html('td',money(row.cost)));fragment.append(tr);
+    tr.dataset.id=row.id;
+    tr.classList.toggle('is-muted',!!state.company&&row.creator?.name!==state.company);
+    const name=html('td',null,'table-name'),dot=html('i',null,'creator-dot');
+    dot.style.background=color(row.creator?.color);dot.setAttribute('aria-hidden','true');
+    name.append(dot,document.createTextNode(row.name));
+    tr.append(name,html('td',row.creator?.name||'Other'),comparisonCell(format(row.intelligenceIndex,2),row.intelligenceIndex/100,color(row.creator?.color)),comparisonCell(money(row.cost),row.cost/maxCost,color(row.creator?.color)));
+    fragment.append(tr);
   }
   if(!rows.length){const td=html('td','没有匹配结果 / No matching results');td.colSpan=4;const tr=html('tr');tr.append(td);fragment.append(tr);}
   $('#tableBody').replaceChildren(fragment);
+}
+function comparisonCell(value,ratio,displayColor) {
+  const cell=html('td'),comparison=html('div',null,'comparison'),track=html('span',null,'comparison-track'),bar=html('i');
+  track.setAttribute('aria-hidden','true');
+  bar.style.width=Math.max(0,Math.min(100,ratio*100))+'%';bar.style.background=displayColor;
+  track.append(bar);comparison.append(track,html('span',value,'comparison-value'));cell.append(comparison);
+  return cell;
 }
 function scheduleDraw() {if(!pendingFrame)pendingFrame=requestAnimationFrame(()=>{pendingFrame=0;draw();});}
 function draw() {
@@ -203,13 +234,14 @@ function draw() {
   const medianX=median(state.rows.map(d=>d.cost)),medianY=median(state.rows.map(d=>d.intelligenceIndex));
   const qx=Math.max(frame.left,Math.min(frame.right,x(medianX))),qy=Math.max(frame.top,Math.min(frame.bottom,y(medianY)));
   setAttrs(svg.querySelector('.quadrant'),{x:frame.left,y:frame.top,width:qx-frame.left,height:qy-frame.top});
-  const frontier=paretoFrontier(nodes.map(n=>n.row));
+  // Keep the same full-data reference frontier when a company or search is focused.
+  const frontier=paretoFrontier(state.rows);
   svg.querySelector('.pareto').setAttribute('d',frontier.map((row,i)=>`${i?'L':'M'}${x(row.cost)},${y(row.intelligenceIndex)}`).join(' '));
   for (const item of nodes) {
-    const visible=inView(item.row),selected=state.selected===item.row.id;
-    setAttrs(item.p,{cx:x(item.row.cost),cy:y(item.row.intelligenceIndex),r:selected?5:3.2,opacity:state.selected && !selected ? .18 : 1,tabindex:visible?0:-1,'aria-pressed':selected});
+    const visible=inView(item.row),selected=state.selected===item.row.id,on=!state.company||item.row.creator?.name===state.company;
+    setAttrs(item.p,{cx:x(item.row.cost),cy:y(item.row.intelligenceIndex),r:selected?5:3.2,opacity:on&&(!state.selected||selected)?1:.14,tabindex:visible?0:-1,'aria-pressed':selected});
     item.p.style.visibility=visible?'visible':'hidden';
-    item.label.style.opacity=item.line.style.opacity=state.selected&&!selected?'.18':'1';
+    item.label.style.opacity=on?'1':'.12';item.line.style.opacity=on?'.6':'.12';
   }
   drawAxes();layoutLabels();drawActive();updateSummary();
   host.dataset.chart=activeKey;host.dataset.xMin=state.view.x;host.dataset.xMax=state.view.x+state.view.width;host.dataset.yMin=state.view.y;host.dataset.yMax=state.view.y+state.view.height;
@@ -235,7 +267,7 @@ function drawAxes() {
 function overlap(a,b){return Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x))*Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y));}
 function layoutLabels() {
   const placed=[],visible=nodes.filter(item=>inView(item.row));
-  const frontier=new Set(paretoFrontier(nodes.map(n=>n.row)).map(row=>row.id));
+  const frontier=new Set(paretoFrontier(state.rows).map(row=>row.id));
   const radii=[2,state.labelDistance*.45,state.labelDistance*.7,state.labelDistance].filter((value,i,array)=>value>=2&&array.indexOf(value)===i);
   measure.font=`${state.labelSize}px Inter, "Segoe UI", "Microsoft YaHei", sans-serif`;
   for (const item of [...nodes].sort((a,b)=>Number(frontier.has(b.row.id))-Number(frontier.has(a.row.id))||b.row.intelligenceIndex-a.row.intelligenceIndex)) {
@@ -297,6 +329,8 @@ function updateSummary() {
   const rows=filteredRows(),shown=frame&&!state.table?rows.filter(inView).length:rows.length;
   const v=state.view;
   $('#viewStatus').textContent=state.table?`${rows.length} 项结果 / results`:`${shown} / ${rows.length} 项可见 · ${money(v.x)}–${money(v.x+v.width)} / visible · cost range`;
+  if(state.company)$('#viewStatus').append(document.createTextNode(` · 聚焦 / Focus：${state.company}`));
+  $('#viewStatus').title=$('#viewStatus').textContent;
   if(!rows.length){$('#loading').hidden=state.table;$('#loading').replaceChildren(document.createTextNode('没有匹配结果'),html('small','No matching results · Clear filters to restore'));}
   else $('#loading').hidden=true;
   const selected=state.rows.find(row=>row.id===state.selected);
@@ -313,7 +347,9 @@ $('#clearFilters').addEventListener('click',()=>{if(!state)return;state.company=
 $('#options').addEventListener('click',()=>{if(!state)return;state.options=!state.options;syncControls();scheduleDraw();});
 $('#labels').addEventListener('click',()=>{if(!state)return;state.labels=!state.labels;syncControls();scheduleDraw();});
 for(const [id,key]of [['labelSize','labelSize'],['labelDistance','labelDistance']])$('#'+id).addEventListener('input',()=>{if(!state)return;state[key]=+$('#'+id).value;$('#'+id+'Value').value=state[key];clearHover();scheduleDraw();});
-$('#tableToggle').addEventListener('click',()=>{if(!state)return;clearHover();state.table=!state.table;syncControls();if(state.table)renderTable();scheduleDraw();});
+function showTable(show) {if(!state)return;clearHover();state.table=show;if(show)state.options=false;syncControls();if(show)renderTable();scheduleDraw();}
+$('#tableToggle').addEventListener('click',()=>showTable(!state?.table));
+$('#backToChart').addEventListener('click',()=>{showTable(false);$('#tableToggle').focus({preventScroll:true});});
 host.addEventListener('wheel',event=>{if(!state||!frame)return;event.preventDefault();zoom(event.shiftKey?'y':'x',Math.exp(Math.max(-240,Math.min(240,event.deltaY))*.0015));},{passive:false});
 host.addEventListener('dblclick',event=>{if(state&&!event.target.closest('.point'))changeView({...state.defaultView});});
 host.addEventListener('pointerdown',event=>{
@@ -346,6 +382,9 @@ new ResizeObserver(()=>{clearHover();scheduleDraw();}).observe(host);
 function showLoadError(error) {
   host.hidden=false;$('#dataTable').hidden=true;
   $('#tableToggle').setAttribute('aria-expanded','false');
+  $('#tableToggle').setAttribute('aria-pressed','false');bilingual($('#tableToggle'),'图形数据表','Visual table');
+  $('#options').disabled=false;
+  document.querySelector('.view-controls').hidden=false;
   $('#legend').replaceChildren();$('#count').replaceChildren();$('#viewStatus').textContent='';$('#selection').textContent='';
   host.setAttribute('aria-busy','false');$('#loading').hidden=false;
   const button=html('button','重新加载 / Retry');button.type='button';button.addEventListener('click',loadData);
