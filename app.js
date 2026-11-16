@@ -316,6 +316,16 @@ function renderPinned() {
   if(!row)return;
   for(const [id,value]of [['pinnedName',row.name],['pinnedScore',format(row.intelligenceIndex,2)],['pinnedCost',money(row.cost)]])if($('#'+id).textContent!==value)$('#'+id).textContent=value;
   $('#pinnedOutside').hidden=!frame||inView(row);
+  if(frame) {
+    // Keep the information card on the opposite side of the selected point.
+    card.style.left='auto';card.style.right='8px';card.style.top='8px';card.style.bottom='auto';card.style.width='';
+    if(frame.width>=420) {
+      card.style.width=Math.min(270,frame.width*.43)+'px';
+      if(x(row.cost)>frame.left+frame.width/2){card.style.left=frame.left+8+'px';card.style.right='auto';}
+    } else if(y(row.intelligenceIndex)<frame.top+frame.height/2) {
+      card.style.top='auto';card.style.bottom=host.clientHeight-frame.bottom+8+'px';
+    }
+  }
 }
 function showHover(item,event) {
   if(!inView(item.row))return;
