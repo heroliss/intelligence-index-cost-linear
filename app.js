@@ -7,6 +7,10 @@ const config = {
   models: {key:'models', title:'模型智能指数与每任务成本', english:'Artificial Analysis Intelligence Index vs. Cost per Intelligence Index Task', axis:'模型智能指数', axisEnglish:'Intelligence Index', unit:'个模型', unitEnglish:'models', source:'https://artificialanalysis.ai/', defaultX:4.5},
   'coding-agents': {key:'codingAgents', title:'编程智能体指数与每任务成本', english:'Artificial Analysis Coding Agent Index vs. Cost per Task', axis:'编程智能体指数', axisEnglish:'Coding Agent Index', unit:'个变体', unitEnglish:'agent variants', source:'https://artificialanalysis.ai/agents/coding-agents', defaultX:20}
 };
+const DEFAULT_SETTINGS = {
+  models: {labels:true,labelSize:9,labelDistance:2},
+  'coding-agents': {labels:true,labelSize:10,labelDistance:12}
+};
 let snapshot, activeKey = location.hash === '#coding-agents' ? 'coding-agents' : 'models';
 const states = new Map();
 let state, nodes = [], frame, pendingFrame = 0, drag = null, hovered = null, suppressClick = false;
@@ -53,7 +57,7 @@ function makeState(key) {
   const rows = validRows(snapshot[config[key].key]);
   const bounds = dataBounds(rows);
   const defaultView = {...bounds, width:config[key].defaultX ? Math.min(bounds.width,config[key].defaultX) : bounds.width};
-  return {rows,bounds,defaultView,view:{...defaultView},company:null,search:'',frontierOnly:false,labels:true,labelSize:key==='models'?9:10,labelDistance:key==='models'?2:12,options:false,table:false,selected:null,sortKey:'intelligenceIndex',sortDirection:'desc'};
+  return {rows,bounds,defaultView,view:{...defaultView},company:null,search:'',frontierOnly:false,...DEFAULT_SETTINGS[key],options:false,table:false,selected:null,sortKey:'intelligenceIndex',sortDirection:'desc'};
 }
 function filteredRows() {
   const query = state.search.trim().toLocaleLowerCase();
@@ -138,6 +142,7 @@ function syncControls() {
   bilingual($('#labels'),state.labels?'✓ 标签已显示':'标签已隐藏',state.labels?'Labels on':'Labels off');
   $('#labelSize').value=state.labelSize;$('#labelSizeValue').value=state.labelSize;
   $('#labelDistance').value=state.labelDistance;$('#labelDistanceValue').value=state.labelDistance;
+  syncSettingsReset();
   $('#options').setAttribute('aria-expanded',String(state.options));$('#optionsPanel').hidden=!state.options;
   $('#options').setAttribute('aria-pressed',String(state.options));
   bilingual($('#options'),state.options?'收起选项':'图表选项',state.options?'Hide options':'Options');
@@ -154,6 +159,13 @@ function syncControls() {
   $('#clearFilters').hidden=false;
   $('#clearFilters').style.visibility=hasFocus?'visible':'hidden';
   $('#clearFilters').disabled=!hasFocus;
+}
+function syncSettingsReset() {
+  const defaults=DEFAULT_SETTINGS[activeKey];
+  const restored=Object.entries(defaults).every(([key,value])=>state[key]===value);
+  $('#resetSettings').disabled=restored;
+  bilingual($('#resetSettings'),restored?'已是默认':'恢复默认设置',restored?'Defaults':'Reset settings');
+  $('#resetSettings').title=`标签显示 · 字号 ${defaults.labelSize} · 距离 ${defaults.labelDistance} / Show labels · Size ${defaults.labelSize} · Distance ${defaults.labelDistance}`;
 }
 function renderStatus() {
   const cfg=config[activeKey], version=activeKey==='models'?snapshot.modelIndexVersion:snapshot.codingAgentIndexVersion;
@@ -175,10 +187,16 @@ function buildPlot() {
   clearHover();
   const rows=filteredRows();
   const defs=node('defs'),clip=node('clipPath',{id:'plot-clip'}),emphasisClip=node('clipPath',{id:'emphasis-clip'});clip.append(node('rect'));emphasisClip.append(node('rect'));defs.append(clip,emphasisClip);
+  // Share soft, static gradients by color; text and connectors never receive a blur filter.
+  for(const display of new Set(rows.map(row=>color(row.creator?.color)))) {
+    const gradient=node('radialGradient',{id:glowId(display),cx:'50%',cy:'50%',r:'50%'});
+    for(const [offset,opacity]of [['0%',.6],['35%',.38],['70%',.12],['100%',0]])gradient.append(node('stop',{offset,'stop-color':display,'stop-opacity':opacity}));
+    defs.append(gradient);
+  }
   const plot=node('g',{'clip-path':'url(#plot-clip)',class:'plot-content'});
   const quadrant=node('rect',{class:'quadrant'}),path=node('path',{class:'pareto'}),connectors=node('g',{class:'connector-layer'}),points=node('g',{class:'points'}),labels=node('g',{class:'label-layer'});
   const emphasis=node('g',{class:'emphasis-layer','clip-path':'url(#emphasis-clip)','aria-hidden':'true','pointer-events':'none'});
-  emphasis.append(node('g',{class:'company-layer'}),node('g',{class:'active-layer'}));
+  emphasis.append(node('g',{class:'glow-layer'}),node('g',{class:'company-layer'}),node('g',{class:'active-layer'}));
   plot.append(quadrant,path,connectors,points,labels);
   svg.replaceChildren(defs,node('g',{class:'grid'}),plot,node('g',{class:'axis'}),emphasis);
   nodes=rows.map(row=>{
@@ -302,7 +320,7 @@ function layoutLabels() {
   }
 }
 function drawActive() {
-  const layer=svg.querySelector('.active-layer'),companies=svg.querySelector('.company-layer');if(!layer||!companies||!frame)return;layer.replaceChildren();companies.replaceChildren();
+  const layer=svg.querySelector('.active-layer'),companies=svg.querySelector('.company-layer'),glows=svg.querySelector('.glow-layer');if(!layer||!companies||!glows||!frame)return;layer.replaceChildren();companies.replaceChildren();glows.replaceChildren();
   for(const item of nodes) {
     const selected=item.row.id===state.selected,active=selected||item===hovered;
     const focused=!!state.company&&item.row.creator?.name===state.company&&!state.selected;
@@ -322,10 +340,13 @@ function drawActive() {
   if(hovered&&hovered!==selected&&inView(hovered.row))layer.append(node('circle',{cx:x(hovered.row.cost),cy:y(hovered.row.intelligenceIndex),r:8,stroke:hovered.color,'stroke-width':1.5,fill:'none'}),emphasisCopy(hovered,6,'hovered'));
   renderPinned();
 }
+function glowId(display) {return 'point-glow-'+display.slice(1);}
 function emphasisCopy(item,radius,kind) {
   // Paint above every ordinary label without moving the keyboard/mouse target.
   // Hide that item's original visuals so only one name and marker is visible.
   const group=node('g',{class:`emphasis-item emphasis-${kind}`,'data-id':item.row.id});
+  // All halos sit below the sharp company/active layers, including neighboring labels.
+  svg.querySelector('.glow-layer').append(node('circle',{class:`emphasis-glow glow-${kind}`,'data-id':item.row.id,cx:x(item.row.cost),cy:y(item.row.intelligenceIndex),r:kind==='company'?11:12,fill:`url(#${glowId(item.color)})`}));
   const hasLabel=state.labels&&item.label.style.visibility==='visible';
   if(hasLabel){const line=item.line.cloneNode(false);line.setAttribute('class','emphasis-connector');line.style.opacity='1';group.append(line);}
   group.append(node('circle',{class:'emphasis-marker',cx:x(item.row.cost),cy:y(item.row.intelligenceIndex),r:radius,fill:item.color}));
@@ -408,7 +429,8 @@ $('#frontier').addEventListener('click',()=>{if(!state)return;state.frontierOnly
 $('#clearFilters').addEventListener('click',()=>{if(!state)return;state.company=null;state.search='';state.frontierOnly=false;state.selected=null;syncControls();renderLegend();buildPlot();});
 $('#options').addEventListener('click',()=>{if(!state)return;state.options=!state.options;syncControls();scheduleDraw();});
 $('#labels').addEventListener('click',()=>{if(!state)return;state.labels=!state.labels;syncControls();scheduleDraw();});
-for(const [id,key]of [['labelSize','labelSize'],['labelDistance','labelDistance']])$('#'+id).addEventListener('input',()=>{if(!state)return;state[key]=+$('#'+id).value;$('#'+id+'Value').value=state[key];clearHover();scheduleDraw();});
+for(const [id,key]of [['labelSize','labelSize'],['labelDistance','labelDistance']])$('#'+id).addEventListener('input',()=>{if(!state)return;state[key]=+$('#'+id).value;$('#'+id+'Value').value=state[key];syncSettingsReset();clearHover();scheduleDraw();});
+$('#resetSettings').addEventListener('click',()=>{if(!state)return;Object.assign(state,DEFAULT_SETTINGS[activeKey]);clearHover();syncControls();scheduleDraw();});
 function showTable(show) {if(!state)return;clearHover();state.table=show;if(show)state.options=false;syncControls();if(show)renderTable();scheduleDraw();}
 $('#tableToggle').addEventListener('click',()=>showTable(!state?.table));
 $('#backToChart').addEventListener('click',()=>{showTable(false);$('#tableToggle').focus({preventScroll:true});});
