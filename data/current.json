@@ -1,9 +1,12 @@
 {
+  "schemaVersion": 2,
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-16T01:36:12.260Z",
-  "modelCount": 117,
+  "updatedAt": "2026-11-16T04:48:21.363Z",
+  "updateIntervalHours": 2,
+  "modelIndexVersion": "5.0.1",
+  "modelCount": 118,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -1140,6 +1143,20 @@
       "deprecated": false
     },
     {
+      "id": "fef6625d-9097-45f6-95c0-bcaa06e3d8e1",
+      "slug": "qwen4-max",
+      "name": "Qwen4 Max",
+      "shortName": "Qwen4 Max",
+      "intelligenceIndex": 42.8914543287565,
+      "cost": 3.2681327300897323,
+      "creator": {
+        "name": "Alibaba",
+        "color": "#ff7018"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "f314eade-2232-44bf-a3ab-9b326bc67de6",
       "slug": "claude-opus-5-5-high",
       "name": "Claude Opus 5.5 (High, Default Fallback)",
@@ -1642,6 +1659,713 @@
       },
       "isReasoning": true,
       "deprecated": false
+    }
+  ],
+  "codingAgentSourceUrl": "https://artificialanalysis.ai/agents/coding-agents",
+  "codingAgentMethodologyUrl": "https://artificialanalysis.ai/methodology/coding-agents-benchmarking",
+  "codingAgentIndexVersion": "2.1",
+  "codingAgentCount": 28,
+  "codingAgentExcludedCount": 1,
+  "codingAgents": [
+    {
+      "id": "44059b1749b7773326c3ee04acbfaba2",
+      "slug": "codex",
+      "name": "Codex - GPT-6 Luna (Max)",
+      "shortName": "Codex - GPT-6 Luna (max)",
+      "codingAgentIndex": 25.893788421853,
+      "intelligenceIndex": 25.893788421853,
+      "cost": 0.19217143913196935,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentCreator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentName": "Codex",
+      "agentSlug": "codex",
+      "modelName": "GPT-6 Luna (Max)",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "ab4f6cb89f990484067eca06109875b3",
+      "slug": "muse-code",
+      "name": "Muse Code - Muse Ember (Max)",
+      "shortName": "Muse Code - Muse Ember (max)",
+      "codingAgentIndex": 39.6886187140219,
+      "intelligenceIndex": 39.6886187140219,
+      "cost": 0.21644309772897935,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
+      },
+      "agentCreator": {
+        "name": "Meta",
+        "color": "#0089f4"
+      },
+      "agentName": "Muse Code",
+      "agentSlug": "muse-code",
+      "modelName": "Muse Ember (Max)",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "e00a520b90336304cd56ead289bb59f2",
+      "slug": "mirror",
+      "name": "Mirror - Beam 1.0",
+      "shortName": "Mirror - Beam 1.0",
+      "codingAgentIndex": 15.4770250896058,
+      "intelligenceIndex": 15.4770250896058,
+      "cost": 0.30843081634837477,
+      "creator": {
+        "name": "Reflection",
+        "color": "#195428"
+      },
+      "agentCreator": {
+        "name": "Reflection",
+        "color": "#195428"
+      },
+      "agentName": "Mirror",
+      "agentSlug": "mirror",
+      "modelName": "Beam 1.0",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "4553886307abc03b6a785a5e0a54bcec",
+      "slug": "deepseek-harness",
+      "name": "DeepSeek Harness - DeepSeek V4.1 Flash 1017 (Max)",
+      "shortName": "DeepSeek Harness - DeepSeek V4.1 Flash 1017 (max)",
+      "codingAgentIndex": 36.8337115781471,
+      "intelligenceIndex": 36.8337115781471,
+      "cost": 0.320957200254155,
+      "creator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "agentCreator": {
+        "name": "DeepSeek",
+        "color": "#2243e6"
+      },
+      "agentName": "DeepSeek Harness",
+      "agentSlug": "deepseek-harness",
+      "modelName": "DeepSeek V4.1 Flash 1017 (Max)",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "da3088d1680debe97b7b536e6908c548",
+      "slug": "mistral-vibe",
+      "name": "Mistral Vibe - Mistral Large 4 (Medium)",
+      "shortName": "Mistral Vibe - Mistral Large 4 (medium)",
+      "codingAgentIndex": 29.6112186379928,
+      "intelligenceIndex": 29.6112186379928,
+      "cost": 1.02273104493918,
+      "creator": {
+        "name": "Mistral",
+        "color": "#f32e02"
+      },
+      "agentCreator": {
+        "name": "Mistral",
+        "color": "#f32e02"
+      },
+      "agentName": "Mistral Vibe",
+      "agentSlug": "mistral-vibe",
+      "modelName": "Mistral Large 4 (Medium)",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "ad1f505937d9446886b286573593bd42",
+      "slug": "mistral-vibe",
+      "name": "Mistral Vibe - Mistral Large 4 (High)",
+      "shortName": "Mistral Vibe - Mistral Large 4 (high)",
+      "codingAgentIndex": 40.5885380688606,
+      "intelligenceIndex": 40.5885380688606,
+      "cost": 1.34308297720647,
+      "creator": {
+        "name": "Mistral",
+        "color": "#f32e02"
+      },
+      "agentCreator": {
+        "name": "Mistral",
+        "color": "#f32e02"
+      },
+      "agentName": "Mistral Vibe",
+      "agentSlug": "mistral-vibe",
+      "modelName": "Mistral Large 4 (High)",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "5146f276cbceb4e9fdeb5834609f805b",
+      "slug": "codex",
+      "name": "Codex - GPT-6.1 Sol (Max)",
+      "shortName": "Codex - GPT-6.1 Sol (max)",
+      "codingAgentIndex": 52.159890300858,
+      "intelligenceIndex": 52.159890300858,
+      "cost": 1.5065869065928608,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentCreator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentName": "Codex",
+      "agentSlug": "codex",
+      "modelName": "GPT-6.1 Sol (Max)",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "1fece3eef716cd9668b972cced54606c",
+      "slug": "codex",
+      "name": "Codex - GPT-6.1 Terra (Max)",
+      "shortName": "Codex - GPT-6.1 Terra (max)",
+      "codingAgentIndex": 48.6481600955794,
+      "intelligenceIndex": 48.6481600955794,
+      "cost": 1.5308471982459535,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentCreator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentName": "Codex",
+      "agentSlug": "codex",
+      "modelName": "GPT-6.1 Terra (Max)",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "2b8b120200b4dc63bb579d5a53b52b70",
+      "slug": "claude-code",
+      "name": "Claude Code - Claude Haiku 5.5 (Max)",
+      "shortName": "Claude Code - Claude Haiku 5.5 (max)",
+      "codingAgentIndex": 29.5910380688606,
+      "intelligenceIndex": 29.5910380688606,
+      "cost": 2.25403965932735,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentCreator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentName": "Claude Code",
+      "agentSlug": "claude-code",
+      "modelName": "Claude Haiku 5.5 (Max)",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "09e56f8cd938c59b1a9a600141535ab0",
+      "slug": "claude-code",
+      "name": "Claude Code - Claude Fable 5.2 (Low, Default Fallback)",
+      "shortName": "Claude Code - Claude Fable 5.2 (low)",
+      "codingAgentIndex": 47.962684913652694,
+      "intelligenceIndex": 47.962684913652694,
+      "cost": 2.4949967536178352,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentCreator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentName": "Claude Code",
+      "agentSlug": "claude-code",
+      "modelName": "Claude Fable 5.2 (Low, Default Fallback)",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "b02d0ed1020688cc426aebb910ee1cd8",
+      "slug": "claude-code",
+      "name": "Claude Code - Claude Fable 5.2 (Medium, Default Fallback)",
+      "shortName": "Claude Code - Claude Fable 5.2 (medium)",
+      "codingAgentIndex": 53.04187058759639,
+      "intelligenceIndex": 53.04187058759639,
+      "cost": 2.89038509425835,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentCreator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentName": "Claude Code",
+      "agentSlug": "claude-code",
+      "modelName": "Claude Fable 5.2 (Medium, Default Fallback)",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "291529f5989be92da6395f4bb93da395",
+      "slug": "kimi-code-cli",
+      "name": "Kimi Code CLI - Kimi K3.1 Pro",
+      "shortName": "Kimi Code CLI - Kimi K3.1 Pro",
+      "codingAgentIndex": 48.638030574562805,
+      "intelligenceIndex": 48.638030574562805,
+      "cost": 2.9446441852492624,
+      "creator": {
+        "name": "Kimi",
+        "color": "#047AFE"
+      },
+      "agentCreator": {
+        "name": "Kimi",
+        "color": "#047AFE"
+      },
+      "agentName": "Kimi Code CLI",
+      "agentSlug": "kimi-code-cli",
+      "modelName": "Kimi K3.1 Pro",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "b4fbcf18275aad4049cd12448d37af9f",
+      "slug": "claude-code",
+      "name": "Claude Code - Step 5 Preview",
+      "shortName": "Claude Code - Step 5 Preview",
+      "codingAgentIndex": 35.7861713913327,
+      "intelligenceIndex": 35.7861713913327,
+      "cost": 3.5462938292167023,
+      "creator": {
+        "name": "StepFun",
+        "color": "#00F5E7"
+      },
+      "agentCreator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentName": "Claude Code",
+      "agentSlug": "claude-code",
+      "modelName": "Step 5 Preview",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "6e872dc3aa0bc90635d8ae831e28f074",
+      "slug": "claude-code",
+      "name": "Claude Code - Qwen3.8 Max",
+      "shortName": "Claude Code - Qwen3.8 Max",
+      "codingAgentIndex": 32.7277079939177,
+      "intelligenceIndex": 32.7277079939177,
+      "cost": 4.02533866949029,
+      "creator": {
+        "name": "Alibaba",
+        "color": "#ff7018"
+      },
+      "agentCreator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentName": "Claude Code",
+      "agentSlug": "claude-code",
+      "modelName": "Qwen3.8 Max",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "8180f45e6f53fc70033de79909aa3b6c",
+      "slug": "muse-code",
+      "name": "Muse Code - Muse Spark 1.3 (Max)",
+      "shortName": "Muse Code - Muse Spark 1.3 (max)",
+      "codingAgentIndex": 36.7706495058108,
+      "intelligenceIndex": 36.7706495058108,
+      "cost": 4.33726857901732,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
+      },
+      "agentCreator": {
+        "name": "Meta",
+        "color": "#0089f4"
+      },
+      "agentName": "Muse Code",
+      "agentSlug": "muse-code",
+      "modelName": "Muse Spark 1.3 (Max)",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "5188996d2a6dad5165cdeebb51f983fe",
+      "slug": "opencode",
+      "name": "Opencode - GLM-5.3 (Max)",
+      "shortName": "Opencode - GLM-5.3 (max)",
+      "codingAgentIndex": 40.117560280221596,
+      "intelligenceIndex": 40.117560280221596,
+      "cost": 5.409056202392271,
+      "creator": {
+        "name": "Z AI",
+        "color": "#1c7ff8"
+      },
+      "agentCreator": {
+        "name": "OpenCode",
+        "color": "#2D2828"
+      },
+      "agentName": "Opencode",
+      "agentSlug": "opencode",
+      "modelName": "GLM-5.3 (Max)",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "bdeb89e3a86551106e671c63fa1415bc",
+      "slug": "antigravity-cli",
+      "name": "Antigravity CLI - Gemini 4 Argon (High)",
+      "shortName": "Antigravity CLI - Gemini 4 Argon (high)",
+      "codingAgentIndex": 45.4992429673075,
+      "intelligenceIndex": 45.4992429673075,
+      "cost": 6.8350336973915535,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "agentCreator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "agentName": "Antigravity CLI",
+      "agentSlug": "antigravity-cli",
+      "modelName": "Gemini 4 Argon (High)",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "7814cb87040ea234c69eca79cd85486d",
+      "slug": "antigravity-cli",
+      "name": "Antigravity CLI - Gemini 4 Carbon (High)",
+      "shortName": "Antigravity CLI - Gemini 4 Carbon (high)",
+      "codingAgentIndex": 55.465927826653605,
+      "intelligenceIndex": 55.465927826653605,
+      "cost": 7.126967178108669,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "agentCreator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "agentName": "Antigravity CLI",
+      "agentSlug": "antigravity-cli",
+      "modelName": "Gemini 4 Carbon (High)",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "37d7db5622db33bcc5c6824d564246e7",
+      "slug": "claude-code",
+      "name": "Claude Code - Claude Fable 5.2 (High, Default Fallback)",
+      "shortName": "Claude Code - Claude Fable 5.2 (high)",
+      "codingAgentIndex": 58.2357078853046,
+      "intelligenceIndex": 58.2357078853046,
+      "cost": 7.506833848955203,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentCreator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentName": "Claude Code",
+      "agentSlug": "claude-code",
+      "modelName": "Claude Fable 5.2 (High, Default Fallback)",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "f83b8dc1b834e06b1dd1142e29bc77fc",
+      "slug": "muse-code",
+      "name": "Muse Code - Muse Wonder (Max)",
+      "shortName": "Muse Code - Muse Wonder (max)",
+      "codingAgentIndex": 44.475184642120105,
+      "intelligenceIndex": 44.475184642120105,
+      "cost": 7.591950058121872,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
+      },
+      "agentCreator": {
+        "name": "Meta",
+        "color": "#0089f4"
+      },
+      "agentName": "Muse Code",
+      "agentSlug": "muse-code",
+      "modelName": "Muse Wonder (Max)",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "97f24b3f300fe06034101d053f3a894b",
+      "slug": "codex",
+      "name": "Codex - GPT-6 Astra (Max)",
+      "shortName": "Codex - GPT-6 Astra (max)",
+      "codingAgentIndex": 53.0999198979038,
+      "intelligenceIndex": 53.0999198979038,
+      "cost": 7.625489243747186,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentCreator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentName": "Codex",
+      "agentSlug": "codex",
+      "modelName": "GPT-6 Astra (Max)",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "5dfda0c81da51afcbeb49869c14445b2",
+      "slug": "devin-fusion-cli",
+      "name": "Devin Fusion CLI - Claude Opus 5.5 Max + GPT-6 Luna High",
+      "shortName": "Devin Fusion CLI - Claude Opus 5.5 Max + GPT-6 Luna High",
+      "codingAgentIndex": 58.403088954056706,
+      "intelligenceIndex": 58.403088954056706,
+      "cost": 8.75258496053315,
+      "creator": {
+        "name": "Anthropic + OpenAI",
+        "color": "#64748b"
+      },
+      "agentCreator": {
+        "name": "Cognition",
+        "color": "#2200FF"
+      },
+      "agentName": "Devin Fusion CLI",
+      "agentSlug": "devin-fusion-cli",
+      "modelName": "Claude Opus 5.5 Max + GPT-6 Luna High",
+      "isReasoning": false,
+      "isDefault": true,
+      "isRouter": true,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "4d278d53a18fbdcb5138d11466ea0b1b",
+      "slug": "claude-code",
+      "name": "Claude Code - Claude Sonnet 5.5 (Max, Default Fallback)",
+      "shortName": "Claude Code - Claude Sonnet 5.5 (max)",
+      "codingAgentIndex": 56.3314945150429,
+      "intelligenceIndex": 56.3314945150429,
+      "cost": 11.39857189877927,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentCreator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentName": "Claude Code",
+      "agentSlug": "claude-code",
+      "modelName": "Claude Sonnet 5.5 (Max, Default Fallback)",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "98e53b1f02eee089dc8221078e300b3e",
+      "slug": "claude-code",
+      "name": "Claude Code - Claude Fable 5.1 (Max, Default Fallback)",
+      "shortName": "Claude Code - Claude Fable 5.1 (max)",
+      "codingAgentIndex": 52.489956554795306,
+      "intelligenceIndex": 52.489956554795306,
+      "cost": 11.704592829641319,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentCreator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentName": "Claude Code",
+      "agentSlug": "claude-code",
+      "modelName": "Claude Fable 5.1 (Max, Default Fallback)",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "e594775f1aa1026d8fa9385fa35f68b4",
+      "slug": "claude-code",
+      "name": "Claude Code - Claude Opus 5.5 (Max, Default Fallback)",
+      "shortName": "Claude Code - Claude Opus 5.5 (max)",
+      "codingAgentIndex": 58.158632290648406,
+      "intelligenceIndex": 58.158632290648406,
+      "cost": 12.613182516098568,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentCreator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentName": "Claude Code",
+      "agentSlug": "claude-code",
+      "modelName": "Claude Opus 5.5 (Max, Default Fallback)",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "7989f86ae8d744efb7608655672ab296",
+      "slug": "grok-build",
+      "name": "Grok Build - Grok 4.7 (Xhigh)",
+      "shortName": "Grok Build - Grok 4.7 (xhigh)",
+      "codingAgentIndex": 41.6396947974367,
+      "intelligenceIndex": 41.6396947974367,
+      "cost": 15.3499017442707,
+      "creator": {
+        "name": "SpaceXAI",
+        "color": "#736cd3"
+      },
+      "agentCreator": {
+        "name": "SpaceXAI",
+        "color": "#736cd3"
+      },
+      "agentName": "Grok Build",
+      "agentSlug": "grok-build",
+      "modelName": "Grok 4.7 (Xhigh)",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "9820ee072540fb8c51becfc2b1f274c8",
+      "slug": "claude-code",
+      "name": "Claude Code - Claude Fable 5.2 (Xhigh, Default Fallback)",
+      "shortName": "Claude Code - Claude Fable 5.2 (xhigh)",
+      "codingAgentIndex": 58.4719045291626,
+      "intelligenceIndex": 58.4719045291626,
+      "cost": 15.469299652229711,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentCreator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentName": "Claude Code",
+      "agentSlug": "claude-code",
+      "modelName": "Claude Fable 5.2 (Xhigh, Default Fallback)",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "78442b1eea1f0b696ab08b6d12ec9354",
+      "slug": "claude-code",
+      "name": "Claude Code - Claude Fable 5.2 (Max, Default Fallback)",
+      "shortName": "Claude Code - Claude Fable 5.2 (max)",
+      "codingAgentIndex": 55.7395478983382,
+      "intelligenceIndex": 55.7395478983382,
+      "cost": 44.22449825671103,
+      "creator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentCreator": {
+        "name": "Anthropic",
+        "color": "#cc785c"
+      },
+      "agentName": "Claude Code",
+      "agentSlug": "claude-code",
+      "modelName": "Claude Fable 5.2 (Max, Default Fallback)",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
     }
   ]
 }
