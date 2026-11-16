@@ -1,4 +1,4 @@
-import {ticks, paretoFrontier, dataBounds, clampView, validRows, sortRows, valuePerDollar, capabilityUtility, VALUE_WEIGHT} from './chart-math.mjs?v=20261116-11';
+import {ticks, paretoFrontier, dataBounds, clampView, validRows, sortRows, valuePerDollar, capabilityUtility, VALUE_WEIGHT} from './chart-math.mjs?v=20261116-12';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -60,7 +60,7 @@ function makeState(key) {
   const rows = validRows(snapshot[config[key].key]);
   const bounds = dataBounds(rows);
   const defaultView = {...bounds, width:config[key].defaultX ? Math.min(bounds.width,config[key].defaultX) : bounds.width};
-  return {rows,bounds,defaultView,view:{...defaultView},company:null,search:'',frontierOnly:false,...DEFAULT_SETTINGS[key],options:false,mode:'chart',selected:null,sortKey:'intelligenceIndex',sortDirection:'desc',valueWeight:VALUE_WEIGHT.default,curveProbe:50};
+  return {rows,bounds,defaultView,view:{...defaultView},company:null,search:'',frontierOnly:false,...DEFAULT_SETTINGS[key],mode:'chart',selected:null,sortKey:'intelligenceIndex',sortDirection:'desc',valueWeight:VALUE_WEIGHT.default,curveProbe:50};
 }
 function filteredRows() {
   const query = state.search.trim().toLocaleLowerCase();
@@ -147,11 +147,7 @@ function syncControls() {
   $('#labelDistance').value=state.labelDistance;$('#labelDistanceValue').value=state.labelDistance;
   syncSettingsReset();
   syncValueControls();
-  $('#options').setAttribute('aria-expanded',String(state.options));$('#optionsPanel').hidden=!state.options;
-  $('#options').setAttribute('aria-pressed',String(state.options));
-  bilingual($('#options'),state.options?'收起选项':'图表选项',state.options?'Hide options':'Options');
-  $('#options').disabled=state.mode!=='chart';
-  $('#options').title=state.mode!=='chart'?'选择散点图后调整标签 / Choose Scatter to adjust labels':'';
+  $('#optionsPanel').hidden=state.mode!=='chart';
   for(const button of document.querySelectorAll('[data-view]'))button.setAttribute('aria-pressed',String(button.dataset.view===state.mode));
   $('#dataTable').hidden=state.mode!=='table';host.hidden=state.mode!=='chart';
   $('#curvePanel').hidden=state.mode!=='curve';$('#valueSettings').hidden=state.mode==='chart';
@@ -187,9 +183,15 @@ $('#valueMore').addEventListener('click',()=>{if(mobileLayout.matches&&controlsO
 function syncResponsiveChrome() {
   if(mobileLayout.matches) {
     $('#controlPanel').prepend(document.querySelector('.topbar'));
+    $('#controlPanel').insertBefore(document.querySelector('.panel-heading'),document.querySelector('.reading-key'));
+    $('#controlPanel').append($('#optionsPanel'));
     $('#controlPanel').append(document.querySelector('footer'));
+    $('#valueMorePanel').prepend(document.querySelector('.value-actions'));
   } else {
     document.querySelector('.app').insertBefore(document.querySelector('.topbar'),document.querySelector('.tabs'));
+    document.querySelector('.workspace-bar').insertBefore(document.querySelector('.panel-heading'),$('#controlsToggle'));
+    document.querySelector('.toolbar').append($('#optionsPanel'));
+    document.querySelector('.value-controls').insertBefore(document.querySelector('.value-actions'),$('#valueMore'));
     $('#chart-panel').append(document.querySelector('footer'));
   }
 }
@@ -529,11 +531,10 @@ for(const [id,axis,factor]of [['xminus','x',1.18],['xplus','x',1/1.18],['yminus'
 $('#search').addEventListener('input',()=>{if(!state)return;state.search=$('#search').value;state.selected=null;syncControls();buildPlot();});
 $('#frontier').addEventListener('click',()=>{if(!state)return;state.frontierOnly=!state.frontierOnly;state.selected=null;syncControls();buildPlot();});
 $('#clearFilters').addEventListener('click',()=>{if(!state)return;state.company=null;state.search='';state.frontierOnly=false;state.selected=null;syncControls();renderLegend();buildPlot();});
-$('#options').addEventListener('click',()=>{if(!state)return;state.options=!state.options;syncControls();scheduleDraw();});
 $('#labels').addEventListener('click',()=>{if(!state)return;state.labels=!state.labels;syncControls();scheduleDraw();});
 for(const [id,key]of [['labelSize','labelSize'],['labelDistance','labelDistance']])$('#'+id).addEventListener('input',()=>{if(!state)return;state[key]=+$('#'+id).value;$('#'+id+'Value').value=state[key];syncSettingsReset();clearHover();scheduleDraw();});
 $('#resetSettings').addEventListener('click',()=>{if(!state)return;Object.assign(state,DEFAULT_SETTINGS[activeKey]);clearHover();syncControls();scheduleDraw();});
-function showView(mode) {if(!state||!['chart','table','curve'].includes(mode))return;endDrag();clearHover();state.mode=mode;if(mode!=='chart')state.options=false;valueDetailsOpen=false;syncControls();if(mode==='table')renderTable();scheduleDraw();}
+function showView(mode) {if(!state||!['chart','table','curve'].includes(mode))return;endDrag();clearHover();state.mode=mode;valueDetailsOpen=false;syncControls();if(mode==='table')renderTable();scheduleDraw();}
 for(const button of document.querySelectorAll('[data-view]'))button.addEventListener('click',()=>showView(button.dataset.view));
 let pendingValueFrame=0;
 function setValueWeight(value) {
@@ -599,7 +600,6 @@ new ResizeObserver(scheduleDraw).observe($('#curveHost'));
 function showLoadError(error) {
   host.hidden=false;$('#dataTable').hidden=true;$('#curvePanel').hidden=true;$('#valueSettings').hidden=true;
   for(const button of document.querySelectorAll('[data-view]'))button.setAttribute('aria-pressed',String(button.dataset.view==='chart'));
-  $('#options').disabled=false;
   $('#pinnedCard').hidden=true;
   document.querySelector('.view-controls').hidden=false;
   $('#legend').replaceChildren();$('#count').replaceChildren();$('#viewStatus').textContent='';$('#selection').textContent='';

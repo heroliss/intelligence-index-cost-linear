@@ -8,8 +8,8 @@
   <meta name="color-scheme" content="dark light">
   <meta name="darkreader-lock">
   <script>try{document.documentElement.dataset.theme=localStorage.getItem('intelligence-cost-theme')==='light'?'light':'dark'}catch{}document.documentElement.dataset.compact=matchMedia('(max-width:700px), (max-height:480px)').matches?'true':'false';</script>
-  <link rel="stylesheet" href="styles.css?v=20261116-11">
-  <script type="module" src="app.js?v=20261116-11"></script>
+  <link rel="stylesheet" href="styles.css?v=20261116-12">
+  <script type="module" src="app.js?v=20261116-12"></script>
 </head>
 <body>
 <main class="app">
@@ -36,7 +36,7 @@
     <div id="legend" class="legend" role="group" aria-label="聚焦厂商，其他条目淡化 / Focus a creator; other entries remain dimmed"></div>
     <div class="toolbar">
       <div class="view-controls"><button id="reset" type="button">重置视图<small>Reset</small></button><button id="fit" type="button">显示全部<small>Fit all</small></button><div class="axis-controls" role="group" aria-label="横轴缩放 / X zoom"><button id="xminus" type="button" aria-label="缩小横轴 / Zoom X out">X −</button><button id="xplus" type="button" aria-label="放大横轴 / Zoom X in">X +</button></div><div class="axis-controls" role="group" aria-label="纵轴缩放 / Y zoom"><button id="yminus" type="button" aria-label="缩小纵轴 / Zoom Y out">Y −</button><button id="yplus" type="button" aria-label="放大纵轴 / Zoom Y in">Y +</button></div></div>
-      <div class="filter-controls"><label class="search"><span class="sr-only">查找名称 / Search names</span><input id="search" type="search" placeholder="查找名称 / Search" autocomplete="off"></label><button id="frontier" type="button" aria-pressed="false">仅看前沿<small>Frontier only</small></button><button id="clearFilters" type="button" hidden>清除聚焦<small>Clear focus</small></button><button id="options" type="button" aria-expanded="false" aria-pressed="false" aria-controls="optionsPanel">图表选项<small>Options</small></button></div>
+      <div class="filter-controls"><label class="search"><span class="sr-only">查找名称 / Search names</span><input id="search" type="search" placeholder="查找名称 / Search" autocomplete="off"></label><button id="frontier" type="button" aria-pressed="false">仅看前沿<small>Frontier only</small></button><button id="clearFilters" type="button" hidden>清除聚焦<small>Clear focus</small></button></div>
     </div>
     <div id="interactionHelp" class="interaction-help" aria-label="图表操作提示 / Chart controls">
       <span><b>鼠标 <small>Mouse</small></b> 滚轮缩放 X · <kbd>Shift</kbd>＋滚轮缩放 Y · 拖动平移 · 单击锁定<small class="help-english">Wheel: zoom · Drag: pan · Click: pin</small></span>
