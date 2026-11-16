@@ -1,4 +1,4 @@
-import {ticks, paretoFrontier, dataBounds, clampView, validRows, sortRows} from './chart-math.mjs?v=20261116-4';
+import {ticks, paretoFrontier, dataBounds, clampView, validRows, sortRows} from './chart-math.mjs?v=20261116-6';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -174,11 +174,13 @@ function inView(row) {const xx=x(row.cost),yy=y(row.intelligenceIndex);return xx
 function buildPlot() {
   clearHover();
   const rows=filteredRows();
-  const defs=node('defs'),clip=node('clipPath',{id:'plot-clip'});clip.append(node('rect'));defs.append(clip);
+  const defs=node('defs'),clip=node('clipPath',{id:'plot-clip'}),emphasisClip=node('clipPath',{id:'emphasis-clip'});clip.append(node('rect'));emphasisClip.append(node('rect'));defs.append(clip,emphasisClip);
   const plot=node('g',{'clip-path':'url(#plot-clip)',class:'plot-content'});
-  const quadrant=node('rect',{class:'quadrant'}),path=node('path',{class:'pareto'}),connectors=node('g',{class:'connector-layer'}),points=node('g',{class:'points'}),labels=node('g',{class:'label-layer'}),active=node('g',{class:'active-layer','pointer-events':'none'});
-  plot.append(quadrant,path,connectors,points,labels,active);
-  svg.replaceChildren(defs,node('g',{class:'grid'}),plot,node('g',{class:'axis'}));
+  const quadrant=node('rect',{class:'quadrant'}),path=node('path',{class:'pareto'}),connectors=node('g',{class:'connector-layer'}),points=node('g',{class:'points'}),labels=node('g',{class:'label-layer'});
+  const emphasis=node('g',{class:'emphasis-layer','clip-path':'url(#emphasis-clip)','aria-hidden':'true','pointer-events':'none'});
+  emphasis.append(node('g',{class:'company-layer'}),node('g',{class:'active-layer'}));
+  plot.append(quadrant,path,connectors,points,labels);
+  svg.replaceChildren(defs,node('g',{class:'grid'}),plot,node('g',{class:'axis'}),emphasis);
   nodes=rows.map(row=>{
     const display=color(row.creator?.color),p=node('circle',{class:'point','data-id':row.id,r:4.3,fill:display,tabindex:0,role:'button','aria-label':`${row.name}，${config[activeKey].axis} ${format(row.intelligenceIndex,2)}，每任务 ${money(row.cost)} / Index ${format(row.intelligenceIndex,2)}, cost per task ${money(row.cost)}`});
     const label=node('text',{class:'label',fill:display,'font-size':state.labelSize},row.shortName||row.name),line=node('line',{class:'connector',stroke:display});
@@ -233,7 +235,8 @@ function draw() {
   svg.setAttribute('viewBox',`0 0 ${width} ${height}`);
   state.view=clampView(state.view,state.bounds);
   const clip=svg.querySelector('#plot-clip rect');
-  setAttrs(clip,{x:frame.left-4,y:frame.top-4,width:frame.width+8,height:frame.height+8});
+  setAttrs(clip,{x:frame.left-5,y:frame.top-5,width:frame.width+10,height:frame.height+10});
+  setAttrs(svg.querySelector('#emphasis-clip rect'),{x:frame.left-12,y:Math.max(0,frame.top-12),width:frame.width+24,height:frame.height+24});
   const medianX=median(state.rows.map(d=>d.cost)),medianY=median(state.rows.map(d=>d.intelligenceIndex));
   const qx=Math.max(frame.left,Math.min(frame.right,x(medianX))),qy=Math.max(frame.top,Math.min(frame.bottom,y(medianY)));
   setAttrs(svg.querySelector('.quadrant'),{x:frame.left,y:frame.top,width:qx-frame.left,height:qy-frame.top});
@@ -256,7 +259,13 @@ function drawAxes() {
     const xx=x(value);grid.append(node('line',{x1:xx,x2:xx,y1:frame.top,y2:frame.bottom}));
     axis.append(node('text',{class:'x-tick',x:xx,y:frame.bottom+16,'text-anchor':'middle'},'$'+format(value,6)));
   }
-  for (const value of ticks(v.y,v.y+v.height,Math.max(3,Math.floor(frame.height/55)))) {
+  const yTicks=ticks(v.y,v.y+v.height,Math.max(3,Math.floor(frame.height/55)));
+  const upper=v.y+v.height;
+  if(v.y===state.bounds.y&&v.height===state.bounds.height&&!yTicks.includes(upper)) {
+    if(yTicks.length&&(upper-yTicks.at(-1))/v.height*frame.height<18)yTicks.pop();
+    yTicks.push(upper);
+  }
+  for (const value of yTicks) {
     const yy=y(value);grid.append(node('line',{x1:frame.left,x2:frame.right,y1:yy,y2:yy}));
     axis.append(node('text',{class:'y-tick',x:frame.left-10,y:yy+3,'text-anchor':'end'},format(value,3)));
   }
@@ -293,22 +302,35 @@ function layoutLabels() {
   }
 }
 function drawActive() {
-  const layer=svg.querySelector('.active-layer');if(!layer||!frame)return;layer.replaceChildren();
+  const layer=svg.querySelector('.active-layer'),companies=svg.querySelector('.company-layer');if(!layer||!companies||!frame)return;layer.replaceChildren();companies.replaceChildren();
   for(const item of nodes) {
     const selected=item.row.id===state.selected,active=selected||item===hovered;
+    const focused=!!state.company&&item.row.creator?.name===state.company&&!state.selected;
+    const emphasized=active||focused;
     const muted=!active&&((state.company&&item.row.creator?.name!==state.company)||(state.selected&&!selected));
-    setAttrs(item.p,{r:active?5.5:4.3,opacity:muted ? .55 : 1,'aria-pressed':selected});
+    setAttrs(item.p,{r:active?6:focused?5:4.3,opacity:emphasized ? 0 : muted ? .34 : 1,'aria-pressed':selected});
     item.p.classList.toggle('is-active',active);
     item.label.classList.toggle('is-active',active);item.line.classList.toggle('is-active',active);
-    item.label.style.opacity=muted?'.85':'1';item.line.style.opacity=active?'1':muted?'.34':'.6';
+    item.label.style.opacity=emphasized?'0':muted?'.6':'1';item.line.style.opacity=emphasized?'0':muted?'.2':'.6';
+    if(focused&&!active&&inView(item.row))companies.append(emphasisCopy(item,5,'company'));
   }
   const selected=nodes.find(item=>item.row.id===state.selected);
   if(selected&&inView(selected.row)) {
     const xx=x(selected.row.cost),yy=y(selected.row.intelligenceIndex);
-    layer.append(node('path',{class:'pin-guides',d:`M${frame.left} ${yy}H${xx}V${frame.bottom}`,stroke:selected.color,fill:'none'}),node('circle',{class:'pin-ring',cx:xx,cy:yy,r:10,stroke:selected.color,fill:'none'}));
+    layer.append(node('path',{class:'pin-guides',d:`M${frame.left} ${yy}H${xx}V${frame.bottom}`,stroke:selected.color,fill:'none'}),node('circle',{class:'pin-ring',cx:xx,cy:yy,r:10,stroke:selected.color,fill:'none'}),emphasisCopy(selected,6,'pinned'));
   }
-  if(hovered&&hovered!==selected&&inView(hovered.row))layer.append(node('circle',{cx:x(hovered.row.cost),cy:y(hovered.row.intelligenceIndex),r:8,stroke:hovered.color,'stroke-width':1.5,fill:'none'}));
+  if(hovered&&hovered!==selected&&inView(hovered.row))layer.append(node('circle',{cx:x(hovered.row.cost),cy:y(hovered.row.intelligenceIndex),r:8,stroke:hovered.color,'stroke-width':1.5,fill:'none'}),emphasisCopy(hovered,6,'hovered'));
   renderPinned();
+}
+function emphasisCopy(item,radius,kind) {
+  // Paint above every ordinary label without moving the keyboard/mouse target.
+  // Hide that item's original visuals so only one name and marker is visible.
+  const group=node('g',{class:`emphasis-item emphasis-${kind}`,'data-id':item.row.id});
+  const hasLabel=state.labels&&item.label.style.visibility==='visible';
+  if(hasLabel){const line=item.line.cloneNode(false);line.setAttribute('class','emphasis-connector');line.style.opacity='1';group.append(line);}
+  group.append(node('circle',{class:'emphasis-marker',cx:x(item.row.cost),cy:y(item.row.intelligenceIndex),r:radius,fill:item.color}));
+  if(hasLabel){const label=item.label.cloneNode(true);label.setAttribute('class','label emphasis-label');label.style.opacity='1';group.append(label);}
+  return group;
 }
 function renderPinned() {
   const row=state?.rows.find(row=>row.id===state.selected),card=$('#pinnedCard');

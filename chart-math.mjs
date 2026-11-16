@@ -24,7 +24,7 @@ export function dataBounds(rows) {
   const maxX = Math.max(1, ...rows.map(d => d.cost)), maxY = Math.max(1, ...rows.map(d => d.intelligenceIndex));
   const minY = Math.min(0, ...rows.map(d => d.intelligenceIndex));
   const y = minY < 0 ? Math.floor(minY / 5) * 5 - 2 : 0;
-  return {x: 0, y, width: maxX * 1.08, height: Math.ceil((maxY + 3) / 5) * 5 - y};
+  return {x: 0, y, width: maxX * 1.08, height: Math.ceil(maxY / 5) * 5 - y};
 }
 export function clampView(view, bounds) {
   const width = Math.max(bounds.width / 300, Math.min(bounds.width * 1.15, view.width));

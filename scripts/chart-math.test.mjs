@@ -10,10 +10,29 @@ test('full data bounds include current high scores above the old 60-point ceilin
   const bounds = dataBounds(rows);
   assert.equal(bounds.x, 0);
   assert.equal(bounds.y, 0);
+  assert.equal(bounds.y + bounds.height, 65);
   for (const item of rows) {
     assert.ok(item.cost < bounds.x + bounds.width);
     assert.ok(item.intelligenceIndex < bounds.y + bounds.height);
   }
+});
+
+test('coding-agent view ends near its highest point instead of adding another band', () => {
+  const bounds = dataBounds([row('lower', 0.2, 25), row('highest', 44.2, 58.4719)]);
+  assert.equal(bounds.y + bounds.height, 60);
+});
+
+test('a highest score exactly on 65 remains included on the upper boundary', () => {
+  const highest = row('highest', 2, 65), bounds = dataBounds([row('lower', 1, 20), highest]);
+  assert.equal(bounds.y + bounds.height, 65);
+  assert.ok(highest.intelligenceIndex <= bounds.y + bounds.height);
+  assert.deepEqual(clampView(bounds, bounds), bounds);
+});
+
+test('a score just beyond 65 automatically expands the upper boundary to 70', () => {
+  const bounds = dataBounds([row('highest', 2, 65.01)]);
+  assert.equal(bounds.y + bounds.height, 70);
+  assert.ok(65.01 < bounds.y + bounds.height);
 });
 
 test('cost bounds remain in linear USD units across different cost ranges', () => {
@@ -111,6 +130,10 @@ test('both shipped datasets pass validation and fit inside their full-data view'
   for (const [name, rows] of [['models', snapshot.models], ['codingAgents', snapshot.codingAgents]]) {
     validRows(rows);
     const bounds = dataBounds(rows);
+    const highest = Math.max(...rows.map(item => item.intelligenceIndex));
+    const top = bounds.y + bounds.height;
+    assert.equal(top % 5, 0, `${name}: upper boundary should be a readable multiple of five`);
+    assert.ok(top >= highest && top - highest < 5, `${name}: excess top range should remain below five points`);
     for (const item of rows) {
       assert.ok(item.cost >= bounds.x && item.cost <= bounds.x + bounds.width, `${name}: ${item.name} cost outside bounds`);
       assert.ok(item.intelligenceIndex >= bounds.y && item.intelligenceIndex <= bounds.y + bounds.height, `${name}: ${item.name} score outside bounds`);
