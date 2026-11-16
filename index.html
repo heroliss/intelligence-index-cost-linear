@@ -6,9 +6,10 @@
   <title>智能水平与任务成本 · Intelligence vs. Cost</title>
   <meta name="description" content="用线性成本坐标比较 Artificial Analysis 模型与编程智能体，支持独立缩放、筛选和帕累托前沿。">
   <meta name="color-scheme" content="dark light">
+  <meta name="darkreader-lock">
   <script>try{document.documentElement.dataset.theme=localStorage.getItem('intelligence-cost-theme')==='light'?'light':'dark'}catch{}</script>
-  <link rel="stylesheet" href="styles.css?v=20261116-3">
-  <script type="module" src="app.js?v=20261116-3"></script>
+  <link rel="stylesheet" href="styles.css?v=20261116-4">
+  <script type="module" src="app.js?v=20261116-4"></script>
 </head>
 <body>
 <main class="app">
@@ -28,16 +29,26 @@
       <div class="view-controls"><button id="reset" type="button">重置视图<small>Reset</small></button><button id="fit" type="button">显示全部<small>Fit all</small></button><div class="axis-controls" role="group" aria-label="横轴缩放 / X zoom"><button id="xminus" type="button" aria-label="缩小横轴 / Zoom X out">X −</button><button id="xplus" type="button" aria-label="放大横轴 / Zoom X in">X +</button></div><div class="axis-controls" role="group" aria-label="纵轴缩放 / Y zoom"><button id="yminus" type="button" aria-label="缩小纵轴 / Zoom Y out">Y −</button><button id="yplus" type="button" aria-label="放大纵轴 / Zoom Y in">Y +</button></div></div>
       <div class="filter-controls"><label class="search"><span class="sr-only">查找名称 / Search names</span><input id="search" type="search" placeholder="查找名称 / Search" autocomplete="off"></label><button id="frontier" type="button" aria-pressed="false">仅看前沿<small>Frontier only</small></button><button id="clearFilters" type="button" hidden>清除聚焦<small>Clear focus</small></button><button id="options" type="button" aria-expanded="false" aria-pressed="false" aria-controls="optionsPanel">图表选项<small>Options</small></button><button id="tableToggle" type="button" aria-expanded="false" aria-pressed="false" aria-controls="dataTable">图形数据表<small>Visual table</small></button></div>
     </div>
+    <div id="interactionHelp" class="interaction-help" aria-label="图表操作提示 / Chart controls">
+      <span><b>鼠标 <small>Mouse</small></b> 滚轮缩放 X · <kbd>Shift</kbd>＋滚轮缩放 Y · 拖动平移 · 单击锁定<small class="help-english">Wheel: zoom · Drag: pan · Click: pin</small></span>
+      <span><b>键盘 <small>Keyboard</small></b> 点击图区后 <kbd>← ↑ ↓ →</kbd> 平移 · <kbd>＋ −</kbd> 缩放 · <kbd>Home</kbd> 重置 · <kbd>Esc</kbd> 取消锁定</span>
+    </div>
     <div id="optionsPanel" class="options-panel" hidden>
       <button id="labels" type="button" aria-pressed="true">✓ 标签已显示<small>Labels on</small></button>
       <label>字号<small>Size</small><input id="labelSize" type="range" min="2.5" max="16" step="0.25" value="9"><output id="labelSizeValue">9</output></label>
       <label>距离<small>Distance</small><input id="labelDistance" type="range" min="2" max="80" step="1" value="2"><output id="labelDistanceValue">2</output></label>
-      <span class="interaction-note">滚轮缩放横轴 · Shift＋滚轮缩放纵轴 · 拖动平移 · 方向键平移 · 双击重置<small>Wheel: X zoom · Shift + wheel: Y zoom · Drag / arrows: pan · Double click: reset</small></span>
     </div>
-    <div id="chart" class="chart" tabindex="0" aria-label="交互图表：方向键平移，加减键缩放，Home 重置；也可使用数据表 / Interactive chart: arrows pan, plus or minus zoom, Home resets" aria-busy="true"><svg id="svg" role="group" aria-labelledby="chartTitle chartSubtitle"></svg><div id="loading" class="loading" role="status">正在加载数据…<small>Loading benchmark data…</small></div></div>
+    <div id="chart" class="chart" tabindex="0" aria-label="交互图表：方向键平移，加减键缩放，Home 重置；也可使用数据表 / Interactive chart: arrows pan, plus or minus zoom, Home resets" aria-describedby="interactionHelp" aria-busy="true"><svg id="svg" role="group" aria-labelledby="chartTitle chartSubtitle"></svg><div id="loading" class="loading" role="status">正在加载数据…<small>Loading benchmark data…</small></div>
+      <aside id="pinnedCard" class="pinned-card" hidden aria-label="锁定节点详情 / Pinned point details" aria-live="polite"><div class="pin-heading"><span>已锁定<small>Pinned</small></span><button id="unpin" type="button">取消锁定<small>Unpin · Esc</small></button></div><strong id="pinnedName"></strong><div class="pin-values"><span>指数<small>Index</small><b id="pinnedScore"></b></span><span>每任务成本<small>Cost / task</small><b id="pinnedCost"></b></span></div><small id="pinnedOutside" hidden>节点在当前视图外 / Outside current view</small></aside>
+    </div>
     <div id="dataTable" class="data-table" hidden>
-      <div class="table-heading"><div><h3>图形数据表<small>Visual data table</small></h3><p>指数越长越高，成本越短越省<small>Higher index · Lower cost</small></p><p id="tableScale"></p></div><button id="backToChart" type="button">返回图表<small>Back to chart</small></button></div>
-      <div class="table-scroll"><table><caption id="tableCaption" class="sr-only">基准数据与线性比较条 / Benchmark data with linear comparison bars</caption><thead><tr><th scope="col">名称<small>Name</small></th><th scope="col">厂商<small>Creator</small></th><th scope="col">指数 ↑<small>Index · 0–100</small></th><th scope="col">每任务成本 ↓<small>Cost / task · USD</small></th></tr></thead><tbody id="tableBody"></tbody></table></div>
+      <div class="table-heading"><div><h3>图形数据表<small>Visual data table</small></h3><p>点击表头排序 · 指数越长越高，成本越短越省<small>Click headers to sort · Higher index · Lower cost</small></p><p id="tableScale"></p></div><button id="backToChart" type="button">返回图表<small>Back to chart</small></button></div>
+      <div class="table-scroll"><table><caption id="tableCaption" class="sr-only">基准数据与线性比较条 / Benchmark data with linear comparison bars</caption><thead><tr>
+        <th scope="col" aria-sort="none"><button type="button" class="sort-button" data-sort="name"><span>名称 <i class="sort-arrow" aria-hidden="true">↕</i></span><small>Name</small></button></th>
+        <th scope="col" aria-sort="none"><button type="button" class="sort-button" data-sort="creator"><span>厂商 <i class="sort-arrow" aria-hidden="true">↕</i></span><small>Creator</small></button></th>
+        <th scope="col" aria-sort="descending"><button type="button" class="sort-button" data-sort="intelligenceIndex"><span>指数 <i class="sort-arrow" aria-hidden="true">↓</i></span><small>Index · 0–100</small></button></th>
+        <th scope="col" aria-sort="none"><button type="button" class="sort-button" data-sort="cost"><span>每任务成本 <i class="sort-arrow" aria-hidden="true">↕</i></span><small>Cost / task · USD</small></button></th>
+      </tr></thead><tbody id="tableBody"></tbody></table></div>
     </div>
     <div class="chart-summary"><span id="viewStatus" role="status" aria-live="polite"></span><span id="selection"></span></div>
     <footer><div id="status" role="status">数据来源：Artificial Analysis<small>Data source</small></div><div id="costNote">成本为每个基准任务的平均 API 费用<small>Average API cost per benchmark task</small></div></footer>

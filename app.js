@@ -1,4 +1,4 @@
-import {ticks, paretoFrontier, dataBounds, clampView, validRows} from './chart-math.mjs';
+import {ticks, paretoFrontier, dataBounds, clampView, validRows, sortRows} from './chart-math.mjs?v=20261116-4';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -9,7 +9,7 @@ const config = {
 };
 let snapshot, activeKey = location.hash === '#coding-agents' ? 'coding-agents' : 'models';
 const states = new Map();
-let state, nodes = [], frame, pendingFrame = 0, drag = null, hovered = null;
+let state, nodes = [], frame, pendingFrame = 0, drag = null, hovered = null, suppressClick = false;
 let loadController, loadGeneration = 0;
 const measure = document.createElement('canvas').getContext('2d');
 const colorCache = new Map();
@@ -53,7 +53,7 @@ function makeState(key) {
   const rows = validRows(snapshot[config[key].key]);
   const bounds = dataBounds(rows);
   const defaultView = {...bounds, width:config[key].defaultX ? Math.min(bounds.width,config[key].defaultX) : bounds.width};
-  return {rows,bounds,defaultView,view:{...defaultView},company:null,search:'',frontierOnly:false,labels:true,labelSize:key==='models'?9:10,labelDistance:key==='models'?2:12,options:false,table:false,selected:null};
+  return {rows,bounds,defaultView,view:{...defaultView},company:null,search:'',frontierOnly:false,labels:true,labelSize:key==='models'?9:10,labelDistance:key==='models'?2:12,options:false,table:false,selected:null,sortKey:'intelligenceIndex',sortDirection:'desc'};
 }
 function filteredRows() {
   const query = state.search.trim().toLocaleLowerCase();
@@ -147,6 +147,7 @@ function syncControls() {
   $('#tableToggle').setAttribute('aria-pressed',String(state.table));
   bilingual($('#tableToggle'),state.table?'返回图表':'图形数据表',state.table?'Back to chart':'Visual table');
   $('#dataTable').hidden=!state.table;host.hidden=state.table;
+  $('#interactionHelp').hidden=state.table;
   document.querySelector('.view-controls').hidden=state.table;
   // Reserve this control's space so focusing a creator cannot resize the plot.
   const hasFocus=!!(state.company||state.search||state.frontierOnly);
@@ -179,16 +180,12 @@ function buildPlot() {
   plot.append(quadrant,path,connectors,points,labels,active);
   svg.replaceChildren(defs,node('g',{class:'grid'}),plot,node('g',{class:'axis'}));
   nodes=rows.map(row=>{
-    const display=color(row.creator?.color),p=node('circle',{class:'point','data-id':row.id,r:3.2,fill:display,tabindex:0,role:'button','aria-label':`${row.name}，${config[activeKey].axis} ${format(row.intelligenceIndex,2)}，每任务 ${money(row.cost)} / Index ${format(row.intelligenceIndex,2)}, cost per task ${money(row.cost)}`});
+    const display=color(row.creator?.color),p=node('circle',{class:'point','data-id':row.id,r:4.3,fill:display,tabindex:0,role:'button','aria-label':`${row.name}，${config[activeKey].axis} ${format(row.intelligenceIndex,2)}，每任务 ${money(row.cost)} / Index ${format(row.intelligenceIndex,2)}, cost per task ${money(row.cost)}`});
     const label=node('text',{class:'label',fill:display,'font-size':state.labelSize},row.shortName||row.name),line=node('line',{class:'connector',stroke:display});
     points.append(p);labels.append(label);connectors.append(line);
     const item={row,p,label,line,color:display};
-    p.addEventListener('pointerenter',event=>{if(!drag)showHover(item,event);});
-    p.addEventListener('pointermove',event=>{if(!drag&&hovered===item)positionTip(event.clientX,event.clientY);});
-    p.addEventListener('pointerleave',()=>{if(hovered===item&&document.activeElement!==p)clearHover();});
     p.addEventListener('focus',()=>showHover(item));p.addEventListener('blur',clearHover);
-    p.addEventListener('click',()=>{if(drag?.moved)return;state.selected=state.selected===row.id?null:row.id;draw();});
-    p.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();state.selected=state.selected===row.id?null:row.id;draw();}if(event.key==='Escape'){state.selected=null;p.blur();host.focus();draw();}});
+    p.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();togglePin(item);}if(event.key==='Escape'){clearPin();p.blur();host.focus();}});
     return item;
   });
   if(state.selected&&!rows.some(row=>row.id===state.selected))state.selected=null;
@@ -199,7 +196,7 @@ function renderTable(rows=filteredRows()) {
   const fragment=document.createDocumentFragment();
   const maxCost=Math.max(...state.rows.map(row=>row.cost),.001);
   $('#tableScale').textContent=`同列采用统一线性刻度：指数 0–100，成本 $0–${format(maxCost)} / Shared linear scales across all entries`;
-  for (const row of [...rows].sort((a,b)=>b.intelligenceIndex-a.intelligenceIndex||a.cost-b.cost)) {
+  for (const row of sortRows(rows,state.sortKey,state.sortDirection)) {
     const tr=html('tr');
     tr.dataset.id=row.id;
     tr.classList.toggle('is-muted',!!state.company&&row.creator?.name!==state.company);
@@ -211,12 +208,18 @@ function renderTable(rows=filteredRows()) {
   }
   if(!rows.length){const td=html('td','没有匹配结果 / No matching results');td.colSpan=4;const tr=html('tr');tr.append(td);fragment.append(tr);}
   $('#tableBody').replaceChildren(fragment);
+  for(const button of document.querySelectorAll('.sort-button')) {
+    const selected=button.dataset.sort===state.sortKey;
+    button.closest('th').setAttribute('aria-sort',selected?(state.sortDirection==='asc'?'ascending':'descending'):'none');
+    button.querySelector('.sort-arrow').textContent=selected?(state.sortDirection==='asc'?'↑':'↓'):'↕';
+    button.title=selected?`当前${state.sortDirection==='asc'?'升序':'降序'}，点击反向排序 / Click to reverse sort`:'点击排序 / Click to sort';
+  }
 }
 function comparisonCell(value,ratio,displayColor) {
   const cell=html('td'),comparison=html('div',null,'comparison'),track=html('span',null,'comparison-track'),bar=html('i');
   track.setAttribute('aria-hidden','true');
   bar.style.width=Math.max(0,Math.min(100,ratio*100))+'%';bar.style.background=displayColor;
-  track.append(bar);comparison.append(track,html('span',value,'comparison-value'));cell.append(comparison);
+  track.append(bar);comparison.append(html('span',value,'comparison-value'),track);cell.append(comparison);
   return cell;
 }
 function scheduleDraw() {if(!pendingFrame)pendingFrame=requestAnimationFrame(()=>{pendingFrame=0;draw();});}
@@ -238,10 +241,9 @@ function draw() {
   const frontier=paretoFrontier(state.rows);
   svg.querySelector('.pareto').setAttribute('d',frontier.map((row,i)=>`${i?'L':'M'}${x(row.cost)},${y(row.intelligenceIndex)}`).join(' '));
   for (const item of nodes) {
-    const visible=inView(item.row),selected=state.selected===item.row.id,on=!state.company||item.row.creator?.name===state.company;
-    setAttrs(item.p,{cx:x(item.row.cost),cy:y(item.row.intelligenceIndex),r:selected?5:3.2,opacity:on&&(!state.selected||selected)?1:.14,tabindex:visible?0:-1,'aria-pressed':selected});
+    const visible=inView(item.row);
+    setAttrs(item.p,{cx:x(item.row.cost),cy:y(item.row.intelligenceIndex),tabindex:visible?0:-1});
     item.p.style.visibility=visible?'visible':'hidden';
-    item.label.style.opacity=on?'1':'.12';item.line.style.opacity=on?'.6':'.12';
   }
   drawAxes();layoutLabels();drawActive();updateSummary();
   host.dataset.chart=activeKey;host.dataset.xMin=state.view.x;host.dataset.xMax=state.view.x+state.view.width;host.dataset.yMin=state.view.y;host.dataset.yMax=state.view.y+state.view.height;
@@ -292,27 +294,40 @@ function layoutLabels() {
 }
 function drawActive() {
   const layer=svg.querySelector('.active-layer');if(!layer||!frame)return;layer.replaceChildren();
-  const item=hovered||nodes.find(n=>n.row.id===state.selected);
-  if(!item||!inView(item.row))return;
-  const xx=x(item.row.cost),yy=y(item.row.intelligenceIndex),size=Math.max(10,state.labelSize*1.8);
-  measure.font=`600 ${size}px Inter, "Segoe UI", sans-serif`;
-  const labelWidth=Math.min(frame.width-12,measure.measureText(item.row.shortName||item.row.name).width+2);
-  const lx=Math.max(frame.left+5,Math.min(frame.right-labelWidth-5,xx+9)),ly=Math.max(frame.top+size+3,Math.min(frame.bottom-5,yy-10));
-  const label=node('text',{class:'label is-active',x:lx,y:ly,fill:item.color,'font-size':size},item.row.shortName||item.row.name);
-  if(measure.measureText(label.textContent).width>labelWidth){label.setAttribute('textLength',labelWidth);label.setAttribute('lengthAdjust','spacingAndGlyphs');}
-  layer.append(node('line',{class:'connector is-active',x1:xx,y1:yy,x2:lx,y2:ly-2,stroke:item.color}),node('circle',{cx:xx,cy:yy,r:6,fill:item.color,stroke:'var(--halo)','stroke-width':1.5}),label);
+  for(const item of nodes) {
+    const selected=item.row.id===state.selected,active=selected||item===hovered;
+    const muted=!active&&((state.company&&item.row.creator?.name!==state.company)||(state.selected&&!selected));
+    setAttrs(item.p,{r:active?5.5:4.3,opacity:muted ? .55 : 1,'aria-pressed':selected});
+    item.p.classList.toggle('is-active',active);
+    item.label.classList.toggle('is-active',active);item.line.classList.toggle('is-active',active);
+    item.label.style.opacity=muted?'.85':'1';item.line.style.opacity=active?'1':muted?'.34':'.6';
+  }
+  const selected=nodes.find(item=>item.row.id===state.selected);
+  if(selected&&inView(selected.row)) {
+    const xx=x(selected.row.cost),yy=y(selected.row.intelligenceIndex);
+    layer.append(node('path',{class:'pin-guides',d:`M${frame.left} ${yy}H${xx}V${frame.bottom}`,stroke:selected.color,fill:'none'}),node('circle',{class:'pin-ring',cx:xx,cy:yy,r:10,stroke:selected.color,fill:'none'}));
+  }
+  if(hovered&&hovered!==selected&&inView(hovered.row))layer.append(node('circle',{cx:x(hovered.row.cost),cy:y(hovered.row.intelligenceIndex),r:8,stroke:hovered.color,'stroke-width':1.5,fill:'none'}));
+  renderPinned();
+}
+function renderPinned() {
+  const row=state?.rows.find(row=>row.id===state.selected),card=$('#pinnedCard');
+  card.hidden=!row||state.table;
+  if(!row)return;
+  for(const [id,value]of [['pinnedName',row.name],['pinnedScore',format(row.intelligenceIndex,2)],['pinnedCost',money(row.cost)]])if($('#'+id).textContent!==value)$('#'+id).textContent=value;
+  $('#pinnedOutside').hidden=!frame||inView(row);
 }
 function showHover(item,event) {
   if(!inView(item.row))return;
-  clearHover();hovered=item;item.p.setAttribute('r','6');item.p.classList.add('is-active');drawActive();
+  hovered=item;drawActive();
   const row=item.row;tip.replaceChildren(html('strong',row.name));
   if(row.agentName)tip.append(html('small',`${row.agentName}${row.modelName?' · '+row.modelName:''}`));
   for(const [label,value]of [[`${config[activeKey].axis} / Index`,format(row.intelligenceIndex,2)],['每任务成本 / Cost per task',money(row.cost)]]) {
     const line=html('div',null,'tip-value');line.append(html('span',label),html('b',value));tip.append(line);
   }
   if(row.isRouter)tip.append(html('small','路由变体 / Router variant'));
-  tip.append(html('small','点击锁定高亮 · 再次点击取消 / Click to pin or unpin'));
-  tip.hidden=false;
+  tip.append(html('small','单击保留数值卡，移开鼠标也可查看 / Click to keep details visible'));
+  tip.hidden=state.selected===row.id;
   const box=item.p.getBoundingClientRect();positionTip(event?.clientX??box.x+box.width/2,event?.clientY??box.y);
 }
 function positionTip(px,py) {
@@ -321,10 +336,25 @@ function positionTip(px,py) {
   tip.style.top=Math.max(8,Math.min(innerHeight-box.height-8,py+14))+'px';
 }
 function clearHover() {
-  if(hovered){hovered.p.setAttribute('r',state?.selected===hovered.row.id?'5':'3.2');hovered.p.classList.remove('is-active');hovered=null;}
+  hovered=null;
   tip.hidden=true;
   if(state)drawActive();
 }
+// Pick the nearest point within 12 CSS pixels; overlapping hit areas cannot mask a closer node.
+function nearestItem(event) {
+  if(!state||state.table||!frame||event.target.closest('.pinned-card'))return null;
+  const rect=host.getBoundingClientRect(),px=event.clientX-rect.left,py=event.clientY-rect.top;
+  let closest=null,best=12*12;
+  for(const item of nodes) {
+    if(!inView(item.row))continue;
+    const distance=(x(item.row.cost)-px)**2+(y(item.row.intelligenceIndex)-py)**2;
+    if(distance<best){closest=item;best=distance;}
+  }
+  return closest;
+}
+function togglePin(item) {state.selected=state.selected===item.row.id?null:item.row.id;tip.hidden=true;draw();}
+function clearPin() {if(!state)return;state.selected=null;clearHover();scheduleDraw();}
+$('#unpin').addEventListener('click',clearPin);
 function updateSummary() {
   const rows=filteredRows(),shown=frame&&!state.table?rows.filter(inView).length:rows.length;
   const v=state.view;
@@ -350,22 +380,34 @@ for(const [id,key]of [['labelSize','labelSize'],['labelDistance','labelDistance'
 function showTable(show) {if(!state)return;clearHover();state.table=show;if(show)state.options=false;syncControls();if(show)renderTable();scheduleDraw();}
 $('#tableToggle').addEventListener('click',()=>showTable(!state?.table));
 $('#backToChart').addEventListener('click',()=>{showTable(false);$('#tableToggle').focus({preventScroll:true});});
+for(const button of document.querySelectorAll('.sort-button'))button.addEventListener('click',()=>{
+  if(!state)return;
+  const key=button.dataset.sort;
+  state.sortDirection=state.sortKey===key?(state.sortDirection==='asc'?'desc':'asc'):(key==='intelligenceIndex'?'desc':'asc');
+  state.sortKey=key;renderTable();$('.table-scroll').scrollTop=0;
+});
 host.addEventListener('wheel',event=>{if(!state||!frame)return;event.preventDefault();zoom(event.shiftKey?'y':'x',Math.exp(Math.max(-240,Math.min(240,event.deltaY))*.0015));},{passive:false});
-host.addEventListener('dblclick',event=>{if(state&&!event.target.closest('.point'))changeView({...state.defaultView});});
+host.addEventListener('dblclick',event=>{if(state&&!event.target.closest('.pinned-card')&&!nearestItem(event))changeView({...state.defaultView});});
+host.addEventListener('click',event=>{if(suppressClick){suppressClick=false;return;}if(!state||event.target.closest('.pinned-card'))return;const item=nearestItem(event);if(item){host.focus({preventScroll:true});togglePin(item);}});
 host.addEventListener('pointerdown',event=>{
-  if(!state||!frame||event.isPrimary===false||event.button!==0||event.target.closest('.point')||event.target.closest('.axis'))return;
+  if(!state||!frame||event.isPrimary===false||event.button!==0)return;
+  suppressClick=false;
+  if(event.target.closest('.pinned-card')||event.target.closest('.axis'))return;
   clearHover();host.focus({preventScroll:true});
+  host.classList.remove('over-point');
   drag={id:event.pointerId,startX:event.clientX,startY:event.clientY,view:{...state.view},moved:false};
   host.setPointerCapture(event.pointerId);host.classList.add('dragging');
 });
 host.addEventListener('pointermove',event=>{
-  if(!drag||drag.id!==event.pointerId)return;
-  const dx=event.clientX-drag.startX,dy=event.clientY-drag.startY;drag.moved=Math.abs(dx)+Math.abs(dy)>3;
+  if(!drag){const item=nearestItem(event);host.classList.toggle('over-point',!!item);if(item!==hovered){if(item)showHover(item,event);else clearHover();}else if(item&&!tip.hidden)positionTip(event.clientX,event.clientY);return;}
+  if(drag.id!==event.pointerId)return;
+  const dx=event.clientX-drag.startX,dy=event.clientY-drag.startY;drag.moved ||= Math.abs(dx)+Math.abs(dy)>3;
+  if(!drag.moved)return;
   changeView({...drag.view,x:drag.view.x-dx/frame.width*drag.view.width,y:drag.view.y+dy/frame.height*drag.view.height});
 });
-function endDrag() {if(drag&&host.hasPointerCapture(drag.id))host.releasePointerCapture(drag.id);drag=null;host.classList.remove('dragging');}
+function endDrag() {if(drag?.moved)suppressClick=true;if(drag&&host.hasPointerCapture(drag.id))host.releasePointerCapture(drag.id);drag=null;host.classList.remove('dragging');}
 for(const event of ['pointerup','pointercancel','lostpointercapture'])host.addEventListener(event,endDrag);
-host.addEventListener('pointerleave',()=>{if(!drag)clearHover();});
+host.addEventListener('pointerleave',()=>{host.classList.remove('over-point');if(!drag)clearHover();});
 host.addEventListener('keydown',event=>{
   if(!state||event.target!==host)return;
   const v={...state.view},delta=.08;
@@ -374,9 +416,10 @@ host.addEventListener('keydown',event=>{
   else if(event.key==='+'||event.key==='='){event.preventDefault();zoom(event.shiftKey?'y':'x',1/1.18);return;}
   else if(event.key==='-'){event.preventDefault();zoom(event.shiftKey?'y':'x',1.18);return;}
   else if(event.key==='Home'){event.preventDefault();changeView({...state.defaultView});return;}
-  else if(event.key==='Escape'){state.selected=null;clearHover();scheduleDraw();return;}else return;
+  else if(event.key==='Escape'){clearPin();return;}else return;
   event.preventDefault();changeView(v);
 });
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&state?.selected)clearPin();});
 addEventListener('blur',()=>{endDrag();clearHover();});
 new ResizeObserver(()=>{clearHover();scheduleDraw();}).observe(host);
 function showLoadError(error) {
@@ -384,6 +427,7 @@ function showLoadError(error) {
   $('#tableToggle').setAttribute('aria-expanded','false');
   $('#tableToggle').setAttribute('aria-pressed','false');bilingual($('#tableToggle'),'图形数据表','Visual table');
   $('#options').disabled=false;
+  $('#pinnedCard').hidden=true;
   document.querySelector('.view-controls').hidden=false;
   $('#legend').replaceChildren();$('#count').replaceChildren();$('#viewStatus').textContent='';$('#selection').textContent='';
   host.setAttribute('aria-busy','false');$('#loading').hidden=false;

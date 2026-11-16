@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {dataBounds, clampView, paretoFrontier, ticks, validRows} from '../chart-math.mjs';
+import {dataBounds, clampView, paretoFrontier, ticks, validRows, sortRows} from '../chart-math.mjs';
 
 const row = (id, cost, intelligenceIndex) => ({id, name: id, cost, intelligenceIndex});
 
@@ -115,5 +115,73 @@ test('both shipped datasets pass validation and fit inside their full-data view'
       assert.ok(item.cost >= bounds.x && item.cost <= bounds.x + bounds.width, `${name}: ${item.name} cost outside bounds`);
       assert.ok(item.intelligenceIndex >= bounds.y && item.intelligenceIndex <= bounds.y + bounds.height, `${name}: ${item.name} score outside bounds`);
     }
+  }
+});
+
+test('table cost and index sorts compare actual numbers in both directions', () => {
+  const rows = [row('ten', 10, 9), row('two', 2, 100), row('fraction', 0.1, 10), row('zero', 0, 0)];
+  assert.deepEqual(sortRows(rows, 'cost').map(d => d.cost), [0, 0.1, 2, 10]);
+  assert.deepEqual(sortRows(rows, 'cost', 'desc').map(d => d.cost), [10, 2, 0.1, 0]);
+  assert.deepEqual(sortRows(rows, 'intelligenceIndex').map(d => d.intelligenceIndex), [0, 9, 10, 100]);
+  assert.deepEqual(sortRows(rows, 'intelligenceIndex', 'desc').map(d => d.intelligenceIndex), [100, 10, 9, 0]);
+});
+
+test('table names sort naturally across numeric suffixes and ignore letter case', () => {
+  const rows = [row('Model 10', 1, 1), row('model 2', 1, 1), row('MODEL 1', 1, 1)];
+  assert.deepEqual(sortRows(rows, 'name').map(d => d.name), ['MODEL 1', 'model 2', 'Model 10']);
+  assert.deepEqual(sortRows(rows, 'name', 'desc').map(d => d.name), ['Model 10', 'model 2', 'MODEL 1']);
+  assert.deepEqual(sortRows([row('模型10', 1, 1), row('模型2', 1, 1)], 'name').map(d => d.name), ['模型2', '模型10']);
+});
+
+test('creator sorting uses creator names and groups absent names under Other', () => {
+  const rows = [
+    {...row('missing', 1, 1)},
+    {...row('ten', 1, 1), creator: {name: 'Company 10'}},
+    {...row('two', 1, 1), creator: {name: 'Company 2'}},
+    {...row('first', 1, 1), creator: {name: 'Anthropic'}},
+  ];
+  assert.deepEqual(sortRows(rows, 'creator').map(d => d.id), ['first', 'two', 'ten', 'missing']);
+  assert.deepEqual(sortRows(rows, 'creator', 'desc').map(d => d.id), ['missing', 'ten', 'two', 'first']);
+});
+
+test('table ties use ascending natural name then id regardless of sort direction', () => {
+  const rows = [
+    {...row('b', 2, 40), name: 'Model 2'},
+    {...row('c', 2, 40), name: 'Model 10'},
+    {...row('a', 2, 40), name: 'Model 2'},
+  ];
+  for (const direction of ['asc', 'desc']) {
+    assert.deepEqual(sortRows(rows, 'cost', direction).map(d => d.id), ['a', 'b', 'c']);
+    assert.deepEqual(sortRows(rows, 'intelligenceIndex', direction).map(d => d.id), ['a', 'b', 'c']);
+  }
+});
+
+test('sorting copies the row order without mutating records or their source array', () => {
+  const rows = Object.freeze([Object.freeze(row('two', 2, 20)), Object.freeze(row('one', 1, 10))]);
+  const before = structuredClone(rows), sorted = sortRows(rows, 'cost');
+  assert.notEqual(sorted, rows);
+  assert.equal(sorted[0], rows[1]);
+  assert.equal(sorted[1], rows[0]);
+  assert.deepEqual(rows, before);
+  assert.deepEqual(sortRows([], 'name'), []);
+});
+
+test('sorting rejects unsupported columns and directions', () => {
+  for (const key of ['score', 'constructor', '__proto__', '', null]) assert.throws(() => sortRows([], key), RangeError);
+  for (const direction of ['ascending', 'DESC', '', null]) assert.throws(() => sortRows([], 'cost', direction), RangeError);
+});
+
+test('both actual snapshots sort monotonically while preserving every original row', async () => {
+  const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
+  for (const rows of [snapshot.models, snapshot.codingAgents]) {
+    const before = structuredClone(rows), ids = rows.map(d => d.id).sort();
+    for (const key of ['cost', 'intelligenceIndex']) for (const direction of ['asc', 'desc']) {
+      const sorted = sortRows(rows, key, direction);
+      assert.deepEqual(sorted.map(d => d.id).sort(), ids);
+      for (let i = 1; i < sorted.length; i++) {
+        assert.ok(direction === 'asc' ? sorted[i - 1][key] <= sorted[i][key] : sorted[i - 1][key] >= sorted[i][key]);
+      }
+    }
+    assert.deepEqual(rows, before);
   }
 });
