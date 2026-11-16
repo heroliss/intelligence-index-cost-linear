@@ -8,8 +8,8 @@
   <meta name="color-scheme" content="dark light">
   <meta name="darkreader-lock">
   <script>try{document.documentElement.dataset.theme=localStorage.getItem('intelligence-cost-theme')==='light'?'light':'dark'}catch{}</script>
-  <link rel="stylesheet" href="styles.css?v=20261116-7">
-  <script type="module" src="app.js?v=20261116-7"></script>
+  <link rel="stylesheet" href="styles.css?v=20261116-8">
+  <script type="module" src="app.js?v=20261116-8"></script>
 </head>
 <body>
 <main class="app">
@@ -43,12 +43,13 @@
       <aside id="pinnedCard" class="pinned-card" hidden aria-label="锁定节点详情 / Pinned point details" aria-live="polite"><div class="pin-heading"><span>已锁定<small>Pinned</small></span><button id="unpin" type="button">取消锁定<small>Unpin · Esc</small></button></div><strong id="pinnedName"></strong><div class="pin-values"><span>指数<small>Index</small><b id="pinnedScore"></b></span><span>每任务成本<small>Cost / task</small><b id="pinnedCost"></b></span></div><small id="pinnedOutside" hidden>节点在当前视图外 / Outside current view</small></aside>
     </div>
     <div id="dataTable" class="data-table" hidden>
-      <div class="table-heading"><div><h3>图形数据表<small>Visual data table</small></h3><p>点击表头排序 · 指数越长越高，成本越短越省<small>Click headers to sort · Higher index · Lower cost</small></p><p id="tableScale"></p></div><button id="backToChart" type="button">返回图表<small>Back to chart</small></button></div>
+      <div class="table-heading"><div><h3>图形数据表<small>Visual data table</small></h3><p id="valueDefinition">点击表头排序 · 性价比＝指数÷每任务成本，高性价比不等于高能力<small>Click headers to sort · Value = Index / cost · Higher value ≠ higher capability</small></p><p id="tableScale"></p></div><button id="backToChart" type="button">返回图表<small>Back to chart</small></button></div>
       <div class="table-scroll"><table><caption id="tableCaption" class="sr-only">基准数据与线性比较条 / Benchmark data with linear comparison bars</caption><thead><tr>
         <th scope="col" aria-sort="none"><button type="button" class="sort-button" data-sort="name"><span>名称 <i class="sort-arrow" aria-hidden="true">↕</i></span><small>Name</small></button></th>
         <th scope="col" aria-sort="none"><button type="button" class="sort-button" data-sort="creator"><span>厂商 <i class="sort-arrow" aria-hidden="true">↕</i></span><small>Creator</small></button></th>
         <th scope="col" aria-sort="descending"><button type="button" class="sort-button" data-sort="intelligenceIndex"><span>指数 <i class="sort-arrow" aria-hidden="true">↓</i></span><small>Index · 0–100</small></button></th>
         <th scope="col" aria-sort="none"><button type="button" class="sort-button" data-sort="cost"><span>每任务成本 <i class="sort-arrow" aria-hidden="true">↕</i></span><small>Cost / task · USD</small></button></th>
+        <th scope="col" aria-sort="none"><button type="button" class="sort-button" data-sort="valuePerDollar" aria-describedby="valueDefinition"><span>性价比 <i class="sort-arrow" aria-hidden="true">↕</i></span><small>Index / USD</small></button></th>
       </tr></thead><tbody id="tableBody"></tbody></table></div>
     </div>
     <div class="chart-summary"><span id="viewStatus" role="status" aria-live="polite"></span><span id="selection"></span></div>

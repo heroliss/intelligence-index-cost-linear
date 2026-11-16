@@ -1,4 +1,4 @@
-import {ticks, paretoFrontier, dataBounds, clampView, validRows, sortRows} from './chart-math.mjs?v=20261116-6';
+import {ticks, paretoFrontier, dataBounds, clampView, validRows, sortRows, valuePerDollar} from './chart-math.mjs?v=20261116-8';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -52,6 +52,7 @@ function color(source) {
 }
 function format(value, digits=3) { return value.toLocaleString('en-US',{maximumFractionDigits:digits}); }
 function money(value) { return '$'+format(value, value>0&&value<.001?6:3); }
+function valueLabel(value) {return value===null?'—':value>0&&(value<.001||value>=1e6)?value.toExponential(2):format(value,value>0&&value<.01?6:2);}
 function median(values) { const sorted=[...values].sort((a,b)=>a-b), middle=Math.floor(sorted.length/2);return sorted.length%2?sorted[middle]:(sorted[middle-1]+sorted[middle])/2; }
 function makeState(key) {
   const rows = validRows(snapshot[config[key].key]);
@@ -215,7 +216,9 @@ function buildPlot() {
 function renderTable(rows=filteredRows()) {
   const fragment=document.createDocumentFragment();
   const maxCost=Math.max(...state.rows.map(row=>row.cost),.001);
-  $('#tableScale').textContent=`同列采用统一线性刻度：指数 0–100，成本 $0–${format(maxCost)} / Shared linear scales across all entries`;
+  const values=state.rows.map(valuePerDollar).filter(value=>value!==null),maxValue=values.length?Math.max(...values):null;
+  const valueRange=maxValue===null?'暂无':`0–${valueLabel(maxValue)}`;
+  $('#tableScale').textContent=`同列采用统一线性刻度：指数 0–100，成本 $0–${format(maxCost)}，性价比 ${valueRange} / Shared linear scales · Compare within this benchmark`;
   for (const row of sortRows(rows,state.sortKey,state.sortDirection)) {
     const tr=html('tr');
     tr.dataset.id=row.id;
@@ -223,10 +226,14 @@ function renderTable(rows=filteredRows()) {
     const name=html('td',null,'table-name'),dot=html('i',null,'creator-dot');
     dot.style.background=color(row.creator?.color);dot.setAttribute('aria-hidden','true');
     name.append(dot,document.createTextNode(row.name));
-    tr.append(name,html('td',row.creator?.name||'Other'),comparisonCell(format(row.intelligenceIndex,2),row.intelligenceIndex/100,color(row.creator?.color)),comparisonCell(money(row.cost),row.cost/maxCost,color(row.creator?.color)));
+    const value=valuePerDollar(row),valueCell=comparisonCell(valueLabel(value),value!==null&&maxValue>0?value/maxValue:0,color(row.creator?.color));
+    valueCell.className='value-column';
+    valueCell.title=value===null?'没有可比较的性价比 / No comparable value':`${row.intelligenceIndex.toPrecision(10)} ÷ $${row.cost.toPrecision(10)} ≈ ${value.toPrecision(10)} 指数点/美元（按原始值计算） / Based on unrounded values`;
+    if(value===null)valueCell.querySelector('.comparison-track').hidden=true;
+    tr.append(name,html('td',row.creator?.name||'Other'),comparisonCell(format(row.intelligenceIndex,2),row.intelligenceIndex/100,color(row.creator?.color)),comparisonCell(money(row.cost),row.cost/maxCost,color(row.creator?.color)),valueCell);
     fragment.append(tr);
   }
-  if(!rows.length){const td=html('td','没有匹配结果 / No matching results');td.colSpan=4;const tr=html('tr');tr.append(td);fragment.append(tr);}
+  if(!rows.length){const td=html('td','没有匹配结果 / No matching results');td.colSpan=5;const tr=html('tr');tr.append(td);fragment.append(tr);}
   $('#tableBody').replaceChildren(fragment);
   for(const button of document.querySelectorAll('.sort-button')) {
     const selected=button.dataset.sort===state.sortKey;
@@ -437,7 +444,7 @@ $('#backToChart').addEventListener('click',()=>{showTable(false);$('#tableToggle
 for(const button of document.querySelectorAll('.sort-button'))button.addEventListener('click',()=>{
   if(!state)return;
   const key=button.dataset.sort;
-  state.sortDirection=state.sortKey===key?(state.sortDirection==='asc'?'desc':'asc'):(key==='intelligenceIndex'?'desc':'asc');
+  state.sortDirection=state.sortKey===key?(state.sortDirection==='asc'?'desc':'asc'):(['intelligenceIndex','valuePerDollar'].includes(key)?'desc':'asc');
   state.sortKey=key;renderTable();$('.table-scroll').scrollTop=0;
 });
 host.addEventListener('wheel',event=>{if(!state||!frame)return;event.preventDefault();zoom(event.shiftKey?'y':'x',Math.exp(Math.max(-240,Math.min(240,event.deltaY))*.0015));},{passive:false});

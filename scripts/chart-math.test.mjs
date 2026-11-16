@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {dataBounds, clampView, paretoFrontier, ticks, validRows, sortRows} from '../chart-math.mjs';
+import {dataBounds, clampView, paretoFrontier, ticks, validRows, sortRows, valuePerDollar} from '../chart-math.mjs';
 
 const row = (id, cost, intelligenceIndex) => ({id, name: id, cost, intelligenceIndex});
 
@@ -149,6 +149,37 @@ test('table cost and index sorts compare actual numbers in both directions', () 
   assert.deepEqual(sortRows(rows, 'intelligenceIndex', 'desc').map(d => d.intelligenceIndex), [100, 10, 9, 0]);
 });
 
+test('value per dollar uses index divided by actual per-task cost, including zero scores', () => {
+  assert.equal(valuePerDollar(row('fractional-price', 0.5, 53.5)), 107);
+  assert.equal(valuePerDollar(row('ordinary', 2, 40)), 20);
+  assert.equal(valuePerDollar(row('zero-score', 0.5, 0)), 0);
+  assert.ok(Math.abs(valuePerDollar(row('very-small-cost', 1e-300, 1)) / 1e300 - 1) < 1e-14);
+});
+
+test('value per dollar rejects invalid or absent inputs and finite-input overflow', () => {
+  for (const invalid of [null, undefined, {}, {cost: 1}, {intelligenceIndex: 20},
+    row('zero-cost', 0, 20), row('negative-cost', -1, 20), row('nan-cost', NaN, 20),
+    row('infinite-cost', Infinity, 20), row('negative-score', 1, -1),
+    row('nan-score', 1, NaN), row('infinite-score', 1, Infinity),
+    row('string-cost', '1', 20), row('string-score', 1, '20'),
+    row('overflow', Number.MIN_VALUE, 1)]) {
+    assert.equal(valuePerDollar(invalid), null);
+  }
+});
+
+test('value sorting keeps full precision when displayed rounded values would tie', () => {
+  const rows = [row('A lower', 1, 100.0001), row('Z higher', 1, 100.0002)];
+  assert.equal(valuePerDollar(rows[0]).toFixed(2), valuePerDollar(rows[1]).toFixed(2));
+  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc').map(d => d.id), ['Z higher', 'A lower']);
+  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'asc').map(d => d.id), ['A lower', 'Z higher']);
+});
+
+test('missing value ratios stay last in either direction and zero remains a valid ratio', () => {
+  const rows = [row('invalid 10', 0, 100), row('ten', 2, 20), row('zero', 1, 0), row('invalid 2', 1, NaN)];
+  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'asc').map(d => d.id), ['zero', 'ten', 'invalid 2', 'invalid 10']);
+  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc').map(d => d.id), ['ten', 'zero', 'invalid 2', 'invalid 10']);
+});
+
 test('table names sort naturally across numeric suffixes and ignore letter case', () => {
   const rows = [row('Model 10', 1, 1), row('model 2', 1, 1), row('MODEL 1', 1, 1)];
   assert.deepEqual(sortRows(rows, 'name').map(d => d.name), ['MODEL 1', 'model 2', 'Model 10']);
@@ -176,15 +207,19 @@ test('table ties use ascending natural name then id regardless of sort direction
   for (const direction of ['asc', 'desc']) {
     assert.deepEqual(sortRows(rows, 'cost', direction).map(d => d.id), ['a', 'b', 'c']);
     assert.deepEqual(sortRows(rows, 'intelligenceIndex', direction).map(d => d.id), ['a', 'b', 'c']);
+    assert.deepEqual(sortRows(rows, 'valuePerDollar', direction).map(d => d.id), ['a', 'b', 'c']);
   }
 });
 
 test('sorting copies the row order without mutating records or their source array', () => {
   const rows = Object.freeze([Object.freeze(row('two', 2, 20)), Object.freeze(row('one', 1, 10))]);
-  const before = structuredClone(rows), sorted = sortRows(rows, 'cost');
-  assert.notEqual(sorted, rows);
-  assert.equal(sorted[0], rows[1]);
-  assert.equal(sorted[1], rows[0]);
+  const before = structuredClone(rows);
+  for (const key of ['cost', 'valuePerDollar']) {
+    const sorted = sortRows(rows, key);
+    assert.notEqual(sorted, rows);
+    assert.equal(sorted[0], rows[1]);
+    assert.equal(sorted[1], rows[0]);
+  }
   assert.deepEqual(rows, before);
   assert.deepEqual(sortRows([], 'name'), []);
 });
@@ -198,11 +233,14 @@ test('both actual snapshots sort monotonically while preserving every original r
   const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
   for (const rows of [snapshot.models, snapshot.codingAgents]) {
     const before = structuredClone(rows), ids = rows.map(d => d.id).sort();
-    for (const key of ['cost', 'intelligenceIndex']) for (const direction of ['asc', 'desc']) {
+    for (const key of ['cost', 'intelligenceIndex', 'valuePerDollar']) for (const direction of ['asc', 'desc']) {
       const sorted = sortRows(rows, key, direction);
       assert.deepEqual(sorted.map(d => d.id).sort(), ids);
       for (let i = 1; i < sorted.length; i++) {
-        assert.ok(direction === 'asc' ? sorted[i - 1][key] <= sorted[i][key] : sorted[i - 1][key] >= sorted[i][key]);
+        const previous = key === 'valuePerDollar' ? valuePerDollar(sorted[i - 1]) : sorted[i - 1][key];
+        const current = key === 'valuePerDollar' ? valuePerDollar(sorted[i]) : sorted[i][key];
+        assert.ok(Number.isFinite(previous) && Number.isFinite(current));
+        assert.ok(direction === 'asc' ? previous <= current : previous >= current);
       }
     }
     assert.deepEqual(rows, before);

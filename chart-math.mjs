@@ -43,14 +43,29 @@ export function validRows(rows) {
 
 const tableCollator = new Intl.Collator('zh-CN', {numeric: true, sensitivity: 'base'});
 
+export function valuePerDollar(row) {
+  const score = row?.intelligenceIndex, cost = row?.cost;
+  if (!Number.isFinite(score) || score < 0 || !Number.isFinite(cost) || cost <= 0) return null;
+  const value = score / cost;
+  return Number.isFinite(value) ? (value === 0 ? 0 : value) : null;
+}
+
 export function sortRows(rows, key, direction = 'asc') {
-  if (!['name', 'creator', 'intelligenceIndex', 'cost'].includes(key)) throw new RangeError(`Unknown table sort key: ${key}`);
+  if (!['name', 'creator', 'intelligenceIndex', 'cost', 'valuePerDollar'].includes(key)) throw new RangeError(`Unknown table sort key: ${key}`);
   if (direction !== 'asc' && direction !== 'desc') throw new RangeError(`Unknown table sort direction: ${direction}`);
   const sign = direction === 'asc' ? 1 : -1;
   return [...rows].sort((a, b) => {
-    const primary = key === 'cost' || key === 'intelligenceIndex'
-      ? a[key] - b[key]
-      : tableCollator.compare(key === 'creator' ? a.creator?.name || 'Other' : a.name, key === 'creator' ? b.creator?.name || 'Other' : b.name);
+    let primary;
+    if (key === 'valuePerDollar') {
+      const aValue = valuePerDollar(a), bValue = valuePerDollar(b);
+      // A missing ratio is not an infinite bargain; keep it last in either direction.
+      if ((aValue === null) !== (bValue === null)) return aValue === null ? 1 : -1;
+      primary = aValue === null ? 0 : aValue - bValue;
+    } else {
+      primary = key === 'cost' || key === 'intelligenceIndex'
+        ? a[key] - b[key]
+        : tableCollator.compare(key === 'creator' ? a.creator?.name || 'Other' : a.name, key === 'creator' ? b.creator?.name || 'Other' : b.name);
+    }
     const byName = tableCollator.compare(a.name, b.name);
     const aId = String(a.id), bId = String(b.id);
     // Tie ordering stays ascending when the primary direction is reversed.

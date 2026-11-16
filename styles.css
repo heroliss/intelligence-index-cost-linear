@@ -34,3 +34,6 @@ button:active:not(:disabled){background:var(--active-bg)}button:disabled{opacity
 /* A small color halo lives behind sharp markers and text; no animated or blur filters. */
 .emphasis-glow{opacity:.75}.glow-hovered,.glow-pinned{opacity:.95}:root[data-theme=light] .emphasis-glow{opacity:.45}:root[data-theme=light] .glow-hovered,:root[data-theme=light] .glow-pinned{opacity:.65}
 #resetSettings{min-width:104px}#resetSettings:not(:disabled){border-color:var(--accent);color:var(--accent)}@media(max-width:700px){#resetSettings{min-width:86px;font-size:10px;padding:4px 7px}}
+/* Five-column visual table: preserve value-before-bar alignment and a shared linear scale. */
+.data-table th:nth-child(1){width:30%}.data-table th:nth-child(2){width:13%}.data-table th:nth-child(3),.data-table th:nth-child(4),.data-table th:nth-child(5){width:19%}.data-table .comparison{grid-template-columns:9ch minmax(20px,1fr)}
+@media(max-width:700px){.data-table th:nth-child(1){width:31%}.data-table th:nth-child(3),.data-table th:nth-child(4),.data-table th:nth-child(5){width:23%}.data-table .comparison{grid-template-columns:minmax(0,1fr)}}
