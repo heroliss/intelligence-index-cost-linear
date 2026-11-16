@@ -7,9 +7,9 @@
   <meta name="description" content="用线性成本坐标比较 Artificial Analysis 模型与编程智能体，支持独立缩放、筛选和帕累托前沿。">
   <meta name="color-scheme" content="dark light">
   <meta name="darkreader-lock">
-  <script>try{document.documentElement.dataset.theme=localStorage.getItem('intelligence-cost-theme')==='light'?'light':'dark'}catch{}</script>
-  <link rel="stylesheet" href="styles.css?v=20261116-10">
-  <script type="module" src="app.js?v=20261116-10"></script>
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('intelligence-cost-theme')==='light'?'light':'dark'}catch{}document.documentElement.dataset.compact=matchMedia('(max-width:700px), (max-height:480px)').matches?'true':'false';</script>
+  <link rel="stylesheet" href="styles.css?v=20261116-11">
+  <script type="module" src="app.js?v=20261116-11"></script>
 </head>
 <body>
 <main class="app">
@@ -22,12 +22,21 @@
     <button id="tab-coding-agents" type="button" role="tab" aria-selected="false" aria-controls="chart-panel" tabindex="-1" data-chart="coding-agents">编程智能体<small>Coding Agent Index</small></button>
   </nav>
   <section id="chart-panel" class="panel" role="tabpanel" aria-labelledby="tab-models">
+    <div class="workspace-bar">
+      <div class="view-switch" role="group" aria-label="选择视图 / Choose view">
+        <button id="chartView" type="button" data-view="chart" aria-pressed="true">散点图<small>Scatter</small></button>
+        <button id="tableToggle" type="button" data-view="table" aria-pressed="false" aria-controls="dataTable">数据表<small>Visual table</small></button>
+        <button id="curveView" type="button" data-view="curve" aria-pressed="false" aria-controls="curvePanel">权重曲线<small>Utility curve</small></button>
+      </div>
+      <button id="controlsToggle" type="button" aria-controls="controlPanel" aria-expanded="true">收起面板<small>Hide controls</small></button>
+    </div>
+    <div id="controlPanel" class="control-panel">
     <div class="panel-heading"><div><h2 id="chartTitle">模型智能指数与每任务成本</h2><p id="chartSubtitle" class="english-title">Artificial Analysis Intelligence Index vs. Cost per Intelligence Index Task</p></div><span id="count" class="count"></span></div>
     <div class="reading-key"><span class="linear-key">线性横轴<small>Linear cost axis</small></span><span><i class="swatch" aria-hidden="true"></i>高能力 · 低成本<small>Higher capability · lower cost</small></span><span><i class="line-swatch" aria-hidden="true"></i>帕累托前沿<small>Pareto frontier</small></span><span class="key-note">越靠左上越理想<small>Upper left is better</small></span></div>
     <div id="legend" class="legend" role="group" aria-label="聚焦厂商，其他条目淡化 / Focus a creator; other entries remain dimmed"></div>
     <div class="toolbar">
       <div class="view-controls"><button id="reset" type="button">重置视图<small>Reset</small></button><button id="fit" type="button">显示全部<small>Fit all</small></button><div class="axis-controls" role="group" aria-label="横轴缩放 / X zoom"><button id="xminus" type="button" aria-label="缩小横轴 / Zoom X out">X −</button><button id="xplus" type="button" aria-label="放大横轴 / Zoom X in">X +</button></div><div class="axis-controls" role="group" aria-label="纵轴缩放 / Y zoom"><button id="yminus" type="button" aria-label="缩小纵轴 / Zoom Y out">Y −</button><button id="yplus" type="button" aria-label="放大纵轴 / Zoom Y in">Y +</button></div></div>
-      <div class="filter-controls"><label class="search"><span class="sr-only">查找名称 / Search names</span><input id="search" type="search" placeholder="查找名称 / Search" autocomplete="off"></label><button id="frontier" type="button" aria-pressed="false">仅看前沿<small>Frontier only</small></button><button id="clearFilters" type="button" hidden>清除聚焦<small>Clear focus</small></button><button id="options" type="button" aria-expanded="false" aria-pressed="false" aria-controls="optionsPanel">图表选项<small>Options</small></button><button id="tableToggle" type="button" aria-expanded="false" aria-pressed="false" aria-controls="dataTable">图形数据表<small>Visual table</small></button></div>
+      <div class="filter-controls"><label class="search"><span class="sr-only">查找名称 / Search names</span><input id="search" type="search" placeholder="查找名称 / Search" autocomplete="off"></label><button id="frontier" type="button" aria-pressed="false">仅看前沿<small>Frontier only</small></button><button id="clearFilters" type="button" hidden>清除聚焦<small>Clear focus</small></button><button id="options" type="button" aria-expanded="false" aria-pressed="false" aria-controls="optionsPanel">图表选项<small>Options</small></button></div>
     </div>
     <div id="interactionHelp" class="interaction-help" aria-label="图表操作提示 / Chart controls">
       <span><b>鼠标 <small>Mouse</small></b> 滚轮缩放 X · <kbd>Shift</kbd>＋滚轮缩放 Y · 拖动平移 · 单击锁定<small class="help-english">Wheel: zoom · Drag: pan · Click: pin</small></span>
@@ -39,21 +48,24 @@
       <label>距离<small>Distance</small><input id="labelDistance" type="range" min="2" max="80" step="1" value="2"><output id="labelDistanceValue">2</output></label>
       <button id="resetSettings" type="button" disabled>已是默认<small>Defaults</small></button>
     </div>
+    </div>
+    <div id="valueSettings" class="value-settings" role="group" aria-label="自定义性价比 / Customize value" hidden>
+      <div class="value-controls">
+        <label for="valueWeight">智能权重 α<small>Capability weight</small></label>
+        <input id="valueWeight" type="range" min="1" max="10" step="0.1" value="3" aria-describedby="valueHint valueFormula">
+        <div class="weight-reading"><input id="valueWeightValue" type="number" min="1" max="10" step="0.1" value="3" aria-label="输入智能权重 α / Enter capability weight"><small id="valueWeightState">默认 / Default</small></div>
+        <button id="valueMore" type="button" aria-expanded="false" aria-controls="valueMorePanel">公式与设置<small>Details</small></button>
+      </div>
+      <div id="valueMorePanel" class="value-more-panel" hidden>
+        <div class="value-actions"><button id="linearValue" type="button" aria-pressed="false">线性<small>α = 1</small></button><button id="resetValueWeight" type="button" disabled>已是默认<small>Default α = 3</small></button></div>
+        <div class="value-explanation"><p id="valueFormula"></p><p id="valueEffect"></p><p id="valueHint">α 是个人偏好，不代表真实任务收益；仅同榜单、同参数比较。<small>Preference, not measured task utility · Compare within one benchmark and weight</small></p></div><p id="tableScale"></p>
+      </div>
+    </div>
     <div id="chart" class="chart" tabindex="0" aria-label="交互图表：方向键平移，加减键缩放，Home 重置；也可使用数据表 / Interactive chart: arrows pan, plus or minus zoom, Home resets" aria-describedby="interactionHelp" aria-busy="true"><svg id="svg" role="group" aria-labelledby="chartTitle chartSubtitle"></svg><div id="loading" class="loading" role="status">正在加载数据…<small>Loading benchmark data…</small></div>
       <aside id="pinnedCard" class="pinned-card" hidden aria-label="锁定节点详情 / Pinned point details" aria-live="polite"><div class="pin-heading"><span>已锁定<small>Pinned</small></span><button id="unpin" type="button">取消锁定<small>Unpin · Esc</small></button></div><strong id="pinnedName"></strong><div class="pin-values"><span>指数<small>Index</small><b id="pinnedScore"></b></span><span>每任务成本<small>Cost / task</small><b id="pinnedCost"></b></span></div><small id="pinnedOutside" hidden>节点在当前视图外 / Outside current view</small></aside>
     </div>
     <div id="dataTable" class="data-table" hidden>
-      <div class="table-heading"><div><h3>图形数据表<small>Visual data table</small></h3><p id="valueDefinition">点击表头排序 · 自定义性价比，非官方 · 同榜单、同参数比较<small>Sort by headers · Custom, not official · Compare within one benchmark and weight</small></p></div><button id="backToChart" type="button">返回图表<small>Back to chart</small></button></div>
-      <div class="value-settings" role="group" aria-label="自定义性价比 / Customize value">
-        <div class="value-controls">
-          <label for="valueWeight">智能权重 α<small>Capability weight</small></label>
-          <input id="valueWeight" type="range" min="1" max="4" step="0.1" value="3" aria-describedby="valueHint valueEffect valueFormula">
-          <div class="weight-reading"><output id="valueWeightValue" for="valueWeight">3.0</output><small id="valueWeightState">默认 / Default</small></div>
-          <div class="value-actions"><button id="linearValue" type="button" aria-pressed="false">线性<small>α = 1</small></button><button id="resetValueWeight" type="button" disabled>已是默认<small>Default α = 3</small></button></div>
-        </div>
-        <div class="value-explanation"><p id="valueFormula"></p><details class="weight-details"><summary>权重说明 · α 越大越重视能力<small>Weight guide</small></summary><p id="valueEffect"></p><p id="valueHint">1 为原线性公式，3 为默认；权重代表个人偏好。<small>1 = linear · 3 = default · Weight reflects your preference</small></p></details></div>
-      </div>
-      <p id="tableScale"></p>
+      <div class="table-heading"><div><h3>图形数据表<small>Visual data table</small></h3><p id="valueDefinition">点击表头排序 · 自定义性价比，非官方<small>Sort by headers · Custom value, not official</small></p></div></div>
       <div class="table-scroll"><table><caption id="tableCaption" class="sr-only">基准数据与线性比较条 / Benchmark data with linear comparison bars</caption><thead><tr>
         <th scope="col" aria-sort="none"><button type="button" class="sort-button" data-sort="name"><span>名称 <i class="sort-arrow" aria-hidden="true">↕</i></span><small>Name</small></button></th>
         <th scope="col" aria-sort="none"><button type="button" class="sort-button" data-sort="creator"><span>厂商 <i class="sort-arrow" aria-hidden="true">↕</i></span><small>Creator</small></button></th>
@@ -61,6 +73,12 @@
         <th scope="col" aria-sort="none"><button type="button" class="sort-button" data-sort="cost"><span>每任务成本 <i class="sort-arrow" aria-hidden="true">↕</i></span><small>Cost / task · USD</small></button></th>
         <th scope="col" aria-sort="none"><button type="button" class="sort-button" data-sort="valuePerDollar" aria-describedby="valueDefinition valueFormula"><span>性价比 <i class="sort-arrow" aria-hidden="true">↕</i></span><small id="valueUnit">Weighted / USD</small></button></th>
       </tr></thead><tbody id="tableBody"></tbody></table></div>
+    </div>
+    <div id="curvePanel" class="curve-panel" hidden>
+      <div class="curve-heading"><h3>能力效用曲线<small>Capability utility</small></h3><div class="curve-key"><span class="curve-current">当前 α <b id="curveAlpha">3.0</b><small>Current</small></span><span class="curve-linear">线性 α＝1<small>Linear reference</small></span></div></div>
+      <div id="curveHost" class="curve-host" tabindex="0" role="group" aria-label="能力效用曲线，点击查看；左右键调整查看点 / Utility curve, tap to inspect or use left and right arrows" aria-describedby="curveNote curveReadout"><svg id="curveSvg" role="img" aria-label="指数与加权效用的关系，两个坐标轴均为线性 / Index versus weighted utility, both axes linear"></svg></div>
+      <p id="curveReadout" class="curve-readout"></p>
+      <p id="curveNote" class="curve-note">固定每任务成本 $1；曲线展示自定义能力项，不是实测收益。<small>Cost fixed at $1 per task · Preference curve, not measured utility</small></p>
     </div>
     <div class="chart-summary"><span id="viewStatus" role="status" aria-live="polite"></span><span id="selection"></span></div>
     <footer><div id="status" role="status">数据来源：Artificial Analysis<small>Data source</small></div><div id="costNote">成本为每个基准任务的平均 API 费用<small>Average API cost per benchmark task</small></div></footer>

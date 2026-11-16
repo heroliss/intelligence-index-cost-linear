@@ -1,4 +1,4 @@
-import {ticks, paretoFrontier, dataBounds, clampView, validRows, sortRows, valuePerDollar, VALUE_WEIGHT} from './chart-math.mjs?v=20261116-10';
+import {ticks, paretoFrontier, dataBounds, clampView, validRows, sortRows, valuePerDollar, capabilityUtility, VALUE_WEIGHT} from './chart-math.mjs?v=20261116-11';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -17,6 +17,8 @@ let state, nodes = [], frame, pendingFrame = 0, drag = null, hovered = null, sup
 let loadController, loadGeneration = 0;
 const measure = document.createElement('canvas').getContext('2d');
 const colorCache = new Map();
+const mobileLayout=matchMedia('(max-width:700px), (max-height:480px)');
+let controlsOpen=!mobileLayout.matches,controlsTouched=false,valueDetailsOpen=false,curveFrame;
 const node = (tag, attrs = {}, content) => {
   const element = document.createElementNS(NS, tag);
   for (const [key,value] of Object.entries(attrs)) element.setAttribute(key, String(value));
@@ -58,7 +60,7 @@ function makeState(key) {
   const rows = validRows(snapshot[config[key].key]);
   const bounds = dataBounds(rows);
   const defaultView = {...bounds, width:config[key].defaultX ? Math.min(bounds.width,config[key].defaultX) : bounds.width};
-  return {rows,bounds,defaultView,view:{...defaultView},company:null,search:'',frontierOnly:false,...DEFAULT_SETTINGS[key],options:false,table:false,selected:null,sortKey:'intelligenceIndex',sortDirection:'desc',valueWeight:VALUE_WEIGHT.default};
+  return {rows,bounds,defaultView,view:{...defaultView},company:null,search:'',frontierOnly:false,...DEFAULT_SETTINGS[key],options:false,mode:'chart',selected:null,sortKey:'intelligenceIndex',sortDirection:'desc',valueWeight:VALUE_WEIGHT.default,curveProbe:50};
 }
 function filteredRows() {
   const query = state.search.trim().toLocaleLowerCase();
@@ -130,7 +132,7 @@ function renderLegend() {
     button.setAttribute('aria-label',`聚焦 ${creator.name}，${creator.count} 项 / Focus ${creator.name}`);
     const dot=html('i');dot.style.setProperty('--color',color(creator.color));dot.setAttribute('aria-hidden','true');
     button.append(dot,document.createTextNode(creator.name),html('span',creator.count,'legend-count'));
-    button.addEventListener('click',()=>{state.company=state.company===creator.name?null:creator.name;state.selected=null;clearHover();renderLegend();syncControls();if(state.table)renderTable();scheduleDraw();});
+    button.addEventListener('click',()=>{state.company=state.company===creator.name?null:creator.name;state.selected=null;clearHover();renderLegend();syncControls();if(state.mode==='table')renderTable();scheduleDraw();});
     fragment.append(button);
   }
   $('#legend').replaceChildren(fragment);
@@ -148,20 +150,52 @@ function syncControls() {
   $('#options').setAttribute('aria-expanded',String(state.options));$('#optionsPanel').hidden=!state.options;
   $('#options').setAttribute('aria-pressed',String(state.options));
   bilingual($('#options'),state.options?'收起选项':'图表选项',state.options?'Hide options':'Options');
-  $('#options').disabled=state.table;
-  $('#options').title=state.table?'返回图表后调整标签 / Return to the chart to adjust labels':'';
-  $('#tableToggle').setAttribute('aria-expanded',String(state.table));
-  $('#tableToggle').setAttribute('aria-pressed',String(state.table));
-  bilingual($('#tableToggle'),state.table?'返回图表':'图形数据表',state.table?'Back to chart':'Visual table');
-  $('#dataTable').hidden=!state.table;host.hidden=state.table;
-  $('#interactionHelp').hidden=state.table;
-  document.querySelector('.view-controls').hidden=state.table;
+  $('#options').disabled=state.mode!=='chart';
+  $('#options').title=state.mode!=='chart'?'选择散点图后调整标签 / Choose Scatter to adjust labels':'';
+  for(const button of document.querySelectorAll('[data-view]'))button.setAttribute('aria-pressed',String(button.dataset.view===state.mode));
+  $('#dataTable').hidden=state.mode!=='table';host.hidden=state.mode!=='chart';
+  $('#curvePanel').hidden=state.mode!=='curve';$('#valueSettings').hidden=state.mode==='chart';
+  $('#interactionHelp').hidden=state.mode!=='chart';
+  document.querySelector('.view-controls').hidden=state.mode!=='chart';
+  $('#legend').hidden=state.mode==='curve';document.querySelector('.filter-controls').hidden=state.mode==='curve';
+  document.querySelector('.toolbar').hidden=state.mode==='curve';
+  document.querySelector('.reading-key').hidden=state.mode!=='chart';
   // Reserve this control's space so focusing a creator cannot resize the plot.
   const hasFocus=!!(state.company||state.search||state.frontierOnly);
   $('#clearFilters').hidden=false;
   $('#clearFilters').style.visibility=hasFocus?'visible':'hidden';
   $('#clearFilters').disabled=!hasFocus;
+  syncPanelControls();
 }
+function syncPanelControls() {
+  document.documentElement.dataset.compact=String(!controlsOpen);
+  $('#controlPanel').hidden=!controlsOpen;
+  const filters=state&&state.mode!=='curve'?Number(!!state.company)+Number(!!state.search)+Number(state.frontierOnly):0;
+  $('#controlsToggle').setAttribute('aria-expanded',String(controlsOpen));
+  bilingual($('#controlsToggle'),controlsOpen?'收起面板':`展开面板${filters?' · '+filters:''}`,controlsOpen?'Hide controls':'Show controls');
+  $('#valueMore').setAttribute('aria-expanded',String(valueDetailsOpen));
+  bilingual($('#valueMore'),valueDetailsOpen?'收起设置':'公式与设置',valueDetailsOpen?'Hide details':'Details');
+  $('#valueMorePanel').hidden=!valueDetailsOpen;
+}
+function setControlsOpen(open) {
+  controlsOpen=open;clearHover();
+  if(!open&&$('#controlPanel').contains(document.activeElement))$('#controlsToggle').focus({preventScroll:true});
+  syncPanelControls();scheduleDraw();
+}
+$('#controlsToggle').addEventListener('click',()=>{controlsTouched=true;valueDetailsOpen=false;setControlsOpen(!controlsOpen);});
+$('#valueMore').addEventListener('click',()=>{if(mobileLayout.matches&&controlsOpen)setControlsOpen(false);valueDetailsOpen=!valueDetailsOpen;syncPanelControls();scheduleDraw();});
+function syncResponsiveChrome() {
+  if(mobileLayout.matches) {
+    $('#controlPanel').prepend(document.querySelector('.topbar'));
+    $('#controlPanel').append(document.querySelector('footer'));
+  } else {
+    document.querySelector('.app').insertBefore(document.querySelector('.topbar'),document.querySelector('.tabs'));
+    $('#chart-panel').append(document.querySelector('footer'));
+  }
+}
+mobileLayout.addEventListener('change',()=>{syncResponsiveChrome();if(!controlsTouched)setControlsOpen(!mobileLayout.matches);else scheduleDraw();});
+syncResponsiveChrome();
+syncPanelControls();
 function syncSettingsReset() {
   const defaults=DEFAULT_SETTINGS[activeKey];
   const restored=Object.entries(defaults).every(([key,value])=>state[key]===value);
@@ -175,12 +209,14 @@ function syncValueControls() {
   slider.min=VALUE_WEIGHT.min;slider.max=VALUE_WEIGHT.max;slider.step=VALUE_WEIGHT.step;slider.value=weight;
   slider.setAttribute('aria-valuetext',`${weight.toFixed(1)}，${linear?'线性':restored?'默认非线性':'自定义非线性'} / ${linear?'Linear':restored?'Default nonlinear':'Custom nonlinear'}`);
   $('#valueWeightValue').value=weight.toFixed(1);
+  $('#valueWeightValue').min=VALUE_WEIGHT.min;$('#valueWeightValue').max=VALUE_WEIGHT.max;$('#valueWeightValue').step=VALUE_WEIGHT.step;
   $('#valueWeightState').textContent=linear?'线性 / Linear':restored?'默认 / Default':'自定义 / Custom';
   $('#linearValue').setAttribute('aria-pressed',String(linear));
   $('#resetValueWeight').disabled=restored;
   bilingual($('#resetValueWeight'),restored?'已是默认':'恢复默认',restored?'Default α = 3':'Reset α = 3');
   $('#valueFormula').replaceChildren(document.createTextNode(linear?'性价比 = 指数 ÷ 每任务成本':'性价比 = 100 × (指数 / 100)'),...(linear?[]:[html('sup',weight.toFixed(1)),document.createTextNode(' ÷ 每任务成本')]),html('small',linear?'Value = Index / cost':'Value = 100 × (Index / 100)^α / cost'));
-  bilingual($('#valueEffect'),`指数翻倍 → 能力项 ×${format(2**weight,2)}；成本翻倍 → 性价比 ÷2`,`Double index → utility ×${format(2**weight,2)}; double cost → value ÷2`);
+  bilingual($('#valueEffect'),`指数 40→50：效用 ×${format(1.25**weight,2)}；成本翻倍：性价比 ÷2`,`Index 40→50: utility ×${format(1.25**weight,2)} · Double cost: value ÷2`);
+  $('#curveAlpha').textContent=weight.toFixed(1);
   $('#valueUnit').textContent=linear?'Index / USD':'Weighted / USD';
 }
 function renderStatus() {
@@ -225,7 +261,7 @@ function buildPlot() {
     return item;
   });
   if(state.selected&&!rows.some(row=>row.id===state.selected))state.selected=null;
-  if(state.table)renderTable(rows);
+  if(state.mode==='table')renderTable(rows);
   scheduleDraw();
 }
 function renderTable(rows=filteredRows()) {
@@ -264,10 +300,50 @@ function comparisonCell(value,ratio,displayColor) {
   track.append(bar);comparison.append(html('span',value,'comparison-value'),track);cell.append(comparison);
   return cell;
 }
+function drawCurve() {
+  const container=$('#curveHost'),chart=$('#curveSvg'),rect=container.getBoundingClientRect();
+  if(rect.width<100||rect.height<100)return;
+  const width=rect.width,height=rect.height,left=52,right=width-18,top=32,bottom=height-49;
+  const xx=score=>left+score/100*(right-left),yy=utility=>bottom-utility/100*(bottom-top);
+  curveFrame={left,right,width:rect.width};
+  chart.setAttribute('viewBox',`0 0 ${width} ${height}`);
+  const grid=node('g',{class:'curve-grid'}),axis=node('g',{class:'curve-axis'});
+  for(const value of [0,25,50,75,100]) {
+    grid.append(node('line',{x1:xx(value),x2:xx(value),y1:top,y2:bottom}));
+    axis.append(node('text',{x:xx(value),y:bottom+19,'text-anchor':'middle'},value));
+  }
+  for(const value of [0,20,40,60,80,100]) {
+    grid.append(node('line',{x1:left,x2:right,y1:yy(value),y2:yy(value)}));
+    axis.append(node('text',{x:left-9,y:yy(value)+4,'text-anchor':'end'},value));
+  }
+  axis.append(node('text',{x:left,y:16},'能力效用 / Utility'),node('text',{x:(left+right)/2,y:height-9,'text-anchor':'middle'},'指数 / Index'));
+  const path=Array.from({length:201},(_,i)=>{const score=i/2;return `${i?'L':'M'}${xx(score)},${yy(capabilityUtility(score,state.valueWeight))}`;}).join(' ');
+  const curve=node('path',{class:'utility-line',d:path});
+  const area=node('path',{class:'utility-area',d:`${path}L${right} ${bottom}H${left}Z`});
+  const reference=node('path',{class:'utility-reference',d:`M${left} ${bottom}L${right} ${top}`});
+  const score=state.curveProbe,utility=capabilityUtility(score,state.valueWeight),px=xx(score),py=yy(utility);
+  const probe=node('g',{class:'curve-probe'});
+  probe.append(node('path',{d:`M${left} ${py}H${px}V${bottom}`,fill:'none'}),node('circle',{cx:px,cy:py,r:5}));
+  chart.replaceChildren(grid,area,reference,curve,probe,axis);
+  bilingual($('#curveReadout'),`指数 ${format(score,0)} → 能力效用 ${valueLabel(utility)}`,`Index ${format(score,0)} → utility ${valueLabel(utility)} · Tap the curve · ← → keys`);
+}
+function setCurveProbe(value) {
+  if(!state||state.mode!=='curve')return;
+  state.curveProbe=Math.max(0,Math.min(100,Math.round(value)));scheduleDraw();
+}
+function probeFromPointer(event) {
+  if(!curveFrame)return;
+  const rect=$('#curveHost').getBoundingClientRect();
+  setCurveProbe((event.clientX-rect.left-curveFrame.left)/(curveFrame.right-curveFrame.left)*100);
+}
+$('#curveHost').addEventListener('pointerdown',event=>{if(event.button!==0||event.isPrimary===false)return;$('#curveHost').focus({preventScroll:true});$('#curveHost').setPointerCapture(event.pointerId);probeFromPointer(event);});
+$('#curveHost').addEventListener('pointermove',event=>{if($('#curveHost').hasPointerCapture(event.pointerId))probeFromPointer(event);});
+$('#curveHost').addEventListener('pointerup',event=>{if($('#curveHost').hasPointerCapture(event.pointerId))$('#curveHost').releasePointerCapture(event.pointerId);});
+$('#curveHost').addEventListener('keydown',event=>{if(!state||!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();setCurveProbe(event.key==='Home'?0:event.key==='End'?100:state.curveProbe+(event.key==='ArrowLeft'?-1:1)*(event.shiftKey?10:1));});
 function scheduleDraw() {if(!pendingFrame)pendingFrame=requestAnimationFrame(()=>{pendingFrame=0;draw();});}
 function draw() {
   if(!state)return;
-  if(state.table){updateSummary();return;}
+  if(state.mode!=='chart'){if(state.mode==='curve')drawCurve();updateSummary();return;}
   const rect=host.getBoundingClientRect();if(rect.width<20||rect.height<20)return;
   const width=rect.width,height=rect.height;
   frame={left:width<500?55:66,top:14,right:width-16,bottom:height-53};frame.width=frame.right-frame.left;frame.height=frame.bottom-frame.top;
@@ -377,7 +453,7 @@ function emphasisCopy(item,radius,kind) {
 }
 function renderPinned() {
   const row=state?.rows.find(row=>row.id===state.selected),card=$('#pinnedCard');
-  card.hidden=!row||state.table;
+  card.hidden=!row||state.mode!=='chart';
   if(!row)return;
   for(const [id,value]of [['pinnedName',row.name],['pinnedScore',format(row.intelligenceIndex,2)],['pinnedCost',money(row.cost)]])if($('#'+id).textContent!==value)$('#'+id).textContent=value;
   $('#pinnedOutside').hidden=!frame||inView(row);
@@ -417,7 +493,7 @@ function clearHover() {
 }
 // Pick the nearest point within 12 CSS pixels; overlapping hit areas cannot mask a closer node.
 function nearestItem(event) {
-  if(!state||state.table||!frame||event.target.closest('.pinned-card'))return null;
+  if(!state||state.mode!=='chart'||!frame||event.target.closest('.pinned-card'))return null;
   const rect=host.getBoundingClientRect(),px=event.clientX-rect.left,py=event.clientY-rect.top;
   let closest=null,best=12*12;
   for(const item of nodes) {
@@ -431,15 +507,19 @@ function togglePin(item) {state.selected=state.selected===item.row.id?null:item.
 function clearPin() {if(!state)return;state.selected=null;clearHover();scheduleDraw();}
 $('#unpin').addEventListener('click',clearPin);
 function updateSummary() {
-  const rows=filteredRows(),shown=frame&&!state.table?rows.filter(inView).length:rows.length;
+  const rows=filteredRows(),shown=frame&&state.mode==='chart'?rows.filter(inView).length:rows.length;
   const v=state.view;
-  $('#viewStatus').textContent=state.table?`${rows.length} 项结果 / results`:`${shown} / ${rows.length} 项可见 · ${money(v.x)}–${money(v.x+v.width)} / visible · cost range`;
-  if(state.company)$('#viewStatus').append(document.createTextNode(` · 聚焦 / Focus：${state.company}`));
+  $('#viewStatus').textContent=state.mode==='curve'?`α ${state.valueWeight.toFixed(1)} · 40→50 分：效用 ×${format(1.25**state.valueWeight,2)} / utility ratio`:state.mode==='table'?`${rows.length} 项结果 / results`:`${shown} / ${rows.length} 项可见 · ${money(v.x)}–${money(v.x+v.width)} / visible · cost range`;
+  if(state.mode!=='curve') {
+    if(state.company)$('#viewStatus').append(document.createTextNode(` · 聚焦 / Focus：${state.company}`));
+    if(state.search)$('#viewStatus').append(document.createTextNode(` · 搜索 / Search：${state.search}`));
+    if(state.frontierOnly)$('#viewStatus').append(document.createTextNode(' · 仅前沿 / Frontier only'));
+  }
   $('#viewStatus').title=$('#viewStatus').textContent;
-  if(!rows.length){$('#loading').hidden=state.table;$('#loading').replaceChildren(document.createTextNode('没有匹配结果'),html('small','No matching results · Clear filters to restore'));}
+  if(!rows.length){$('#loading').hidden=state.mode!=='chart';$('#loading').replaceChildren(document.createTextNode('没有匹配结果'),html('small','No matching results · Clear filters to restore'));}
   else $('#loading').hidden=true;
   const selected=state.rows.find(row=>row.id===state.selected);
-  $('#selection').textContent=selected?`已选 / Pinned：${selected.name}`:'';
+  $('#selection').textContent=selected&&state.mode!=='curve'?`已选 / Pinned：${selected.name}`:'';
 }
 function changeView(view) {if(!state)return;clearHover();state.view=clampView(view,state.bounds);scheduleDraw();}
 function zoom(axis,factor) {if(!state)return;const v={...state.view};if(axis==='x')v.width*=factor;else v.height*=factor;changeView(v);}
@@ -453,17 +533,24 @@ $('#options').addEventListener('click',()=>{if(!state)return;state.options=!stat
 $('#labels').addEventListener('click',()=>{if(!state)return;state.labels=!state.labels;syncControls();scheduleDraw();});
 for(const [id,key]of [['labelSize','labelSize'],['labelDistance','labelDistance']])$('#'+id).addEventListener('input',()=>{if(!state)return;state[key]=+$('#'+id).value;$('#'+id+'Value').value=state[key];syncSettingsReset();clearHover();scheduleDraw();});
 $('#resetSettings').addEventListener('click',()=>{if(!state)return;Object.assign(state,DEFAULT_SETTINGS[activeKey]);clearHover();syncControls();scheduleDraw();});
-function showTable(show) {if(!state)return;clearHover();state.table=show;if(show)state.options=false;syncControls();if(show)renderTable();scheduleDraw();}
-$('#tableToggle').addEventListener('click',()=>showTable(!state?.table));
-$('#backToChart').addEventListener('click',()=>{showTable(false);$('#tableToggle').focus({preventScroll:true});});
+function showView(mode) {if(!state||!['chart','table','curve'].includes(mode))return;endDrag();clearHover();state.mode=mode;if(mode!=='chart')state.options=false;valueDetailsOpen=false;syncControls();if(mode==='table')renderTable();scheduleDraw();}
+for(const button of document.querySelectorAll('[data-view]'))button.addEventListener('click',()=>showView(button.dataset.view));
 let pendingValueFrame=0;
 function setValueWeight(value) {
   if(!state||!Number.isFinite(value)||value<VALUE_WEIGHT.min||value>VALUE_WEIGHT.max)return;
   state.valueWeight=Math.round(value*10)/10;syncValueControls();
   // Rebuild only the visible table once per animation frame while dragging.
-  if(!pendingValueFrame)pendingValueFrame=requestAnimationFrame(()=>{pendingValueFrame=0;if(state?.table)renderTable();});
+  if(!pendingValueFrame)pendingValueFrame=requestAnimationFrame(()=>{pendingValueFrame=0;if(state?.mode==='table')renderTable();if(state?.mode==='curve')drawCurve();if(state)updateSummary();});
 }
 $('#valueWeight').addEventListener('input',()=>setValueWeight(Number($('#valueWeight').value)));
+function commitValueWeight() {
+  const value=$('#valueWeightValue').valueAsNumber;
+  if(Number.isFinite(value))setValueWeight(Math.max(VALUE_WEIGHT.min,Math.min(VALUE_WEIGHT.max,value)));
+  if(state)syncValueControls();
+}
+$('#valueWeightValue').addEventListener('change',commitValueWeight);
+$('#valueWeightValue').addEventListener('blur',commitValueWeight);
+$('#valueWeightValue').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();commitValueWeight();}});
 $('#linearValue').addEventListener('click',()=>setValueWeight(1));
 $('#resetValueWeight').addEventListener('click',()=>setValueWeight(VALUE_WEIGHT.default));
 for(const button of document.querySelectorAll('.sort-button'))button.addEventListener('click',()=>{
@@ -505,13 +592,13 @@ host.addEventListener('keydown',event=>{
   else if(event.key==='Escape'){clearPin();return;}else return;
   event.preventDefault();changeView(v);
 });
-document.addEventListener('keydown',event=>{if(event.key==='Escape'&&state?.selected)clearPin();});
+document.addEventListener('keydown',event=>{if(event.key!=='Escape')return;if(valueDetailsOpen){valueDetailsOpen=false;syncPanelControls();$('#valueMore').focus({preventScroll:true});}else if(mobileLayout.matches&&controlsOpen){setControlsOpen(false);$('#controlsToggle').focus({preventScroll:true});}else if(state?.selected)clearPin();});
 addEventListener('blur',()=>{endDrag();clearHover();});
 new ResizeObserver(()=>{clearHover();scheduleDraw();}).observe(host);
+new ResizeObserver(scheduleDraw).observe($('#curveHost'));
 function showLoadError(error) {
-  host.hidden=false;$('#dataTable').hidden=true;
-  $('#tableToggle').setAttribute('aria-expanded','false');
-  $('#tableToggle').setAttribute('aria-pressed','false');bilingual($('#tableToggle'),'图形数据表','Visual table');
+  host.hidden=false;$('#dataTable').hidden=true;$('#curvePanel').hidden=true;$('#valueSettings').hidden=true;
+  for(const button of document.querySelectorAll('[data-view]'))button.setAttribute('aria-pressed',String(button.dataset.view==='chart'));
   $('#options').disabled=false;
   $('#pinnedCard').hidden=true;
   document.querySelector('.view-controls').hidden=false;

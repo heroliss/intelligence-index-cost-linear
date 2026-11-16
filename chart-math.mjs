@@ -43,10 +43,18 @@ export function validRows(rows) {
 
 const tableCollator = new Intl.Collator('zh-CN', {numeric: true, sensitivity: 'base'});
 
-export const VALUE_WEIGHT = Object.freeze({min: 1, max: 4, step: 0.1, default: 3, reference: 100});
+export const VALUE_WEIGHT = Object.freeze({min: 1, max: 10, step: 0.1, default: 3, reference: 100});
 
 function validateValueWeight(weight) {
-  if (!Number.isFinite(weight) || weight < VALUE_WEIGHT.min || weight > VALUE_WEIGHT.max) throw new RangeError('Value weight must be a finite number between 1 and 4');
+  if (!Number.isFinite(weight) || weight < VALUE_WEIGHT.min || weight > VALUE_WEIGHT.max) throw new RangeError(`Value weight must be a finite number between ${VALUE_WEIGHT.min} and ${VALUE_WEIGHT.max}`);
+}
+
+export function capabilityUtility(score, weight = VALUE_WEIGHT.default) {
+  validateValueWeight(weight);
+  if (!Number.isFinite(score) || score < 0) return null;
+  if (score === 0) return 0;
+  const utility = VALUE_WEIGHT.reference * (score / VALUE_WEIGHT.reference) ** weight;
+  return Number.isFinite(utility) ? utility : null;
 }
 
 export function valuePerDollar(row, weight = VALUE_WEIGHT.default) {
