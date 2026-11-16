@@ -43,21 +43,31 @@ export function validRows(rows) {
 
 const tableCollator = new Intl.Collator('zh-CN', {numeric: true, sensitivity: 'base'});
 
-export function valuePerDollar(row) {
+export const VALUE_WEIGHT = Object.freeze({min: 1, max: 4, step: 0.1, default: 3, reference: 100});
+
+function validateValueWeight(weight) {
+  if (!Number.isFinite(weight) || weight < VALUE_WEIGHT.min || weight > VALUE_WEIGHT.max) throw new RangeError('Value weight must be a finite number between 1 and 4');
+}
+
+export function valuePerDollar(row, weight = VALUE_WEIGHT.default) {
+  validateValueWeight(weight);
   const score = row?.intelligenceIndex, cost = row?.cost;
   if (!Number.isFinite(score) || score < 0 || !Number.isFinite(cost) || cost <= 0) return null;
-  const value = score / cost;
+  if (score === 0) return 0;
+  // Preserve the original ratio exactly at weight 1, including floating-point rounding.
+  const value = weight === 1 ? score / cost : (score / cost) * (score / VALUE_WEIGHT.reference) ** (weight - 1);
   return Number.isFinite(value) ? (value === 0 ? 0 : value) : null;
 }
 
-export function sortRows(rows, key, direction = 'asc') {
+export function sortRows(rows, key, direction = 'asc', weight = VALUE_WEIGHT.default) {
+  validateValueWeight(weight);
   if (!['name', 'creator', 'intelligenceIndex', 'cost', 'valuePerDollar'].includes(key)) throw new RangeError(`Unknown table sort key: ${key}`);
   if (direction !== 'asc' && direction !== 'desc') throw new RangeError(`Unknown table sort direction: ${direction}`);
   const sign = direction === 'asc' ? 1 : -1;
   return [...rows].sort((a, b) => {
     let primary;
     if (key === 'valuePerDollar') {
-      const aValue = valuePerDollar(a), bValue = valuePerDollar(b);
+      const aValue = valuePerDollar(a, weight), bValue = valuePerDollar(b, weight);
       // A missing ratio is not an infinite bargain; keep it last in either direction.
       if ((aValue === null) !== (bValue === null)) return aValue === null ? 1 : -1;
       primary = aValue === null ? 0 : aValue - bValue;

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {dataBounds, clampView, paretoFrontier, ticks, validRows, sortRows, valuePerDollar} from '../chart-math.mjs';
+import {dataBounds, clampView, paretoFrontier, ticks, validRows, sortRows, valuePerDollar, VALUE_WEIGHT} from '../chart-math.mjs';
 
 const row = (id, cost, intelligenceIndex) => ({id, name: id, cost, intelligenceIndex});
 
@@ -149,11 +149,57 @@ test('table cost and index sorts compare actual numbers in both directions', () 
   assert.deepEqual(sortRows(rows, 'intelligenceIndex', 'desc').map(d => d.intelligenceIndex), [100, 10, 9, 0]);
 });
 
-test('value per dollar uses index divided by actual per-task cost, including zero scores', () => {
-  assert.equal(valuePerDollar(row('fractional-price', 0.5, 53.5)), 107);
-  assert.equal(valuePerDollar(row('ordinary', 2, 40)), 20);
-  assert.equal(valuePerDollar(row('zero-score', 0.5, 0)), 0);
-  assert.ok(Math.abs(valuePerDollar(row('very-small-cost', 1e-300, 1)) / 1e300 - 1) < 1e-14);
+test('weight 1 exactly preserves the original index divided by actual per-task cost', () => {
+  assert.equal(valuePerDollar(row('fractional-price', 0.5, 53.5), 1), 107);
+  assert.equal(valuePerDollar(row('ordinary', 2, 40), 1), 20);
+  assert.equal(valuePerDollar(row('zero-score', 0.5, 0), 1), 0);
+  assert.ok(Math.abs(valuePerDollar(row('very-small-cost', 1e-300, 1), 1) / 1e300 - 1) < 1e-14);
+  for (const [score, cost] of [[64.563595756626, 26.53855780398091], [9.66610812336462, 0.005115255188520391], [1e-200, 1e100]]) {
+    assert.equal(valuePerDollar(row('exact', cost, score), 1), score / cost);
+  }
+});
+
+test('weight configuration is frozen and defaults to cubic capability preference', () => {
+  assert.deepEqual(VALUE_WEIGHT, {min: 1, max: 4, step: 0.1, default: 3, reference: 100});
+  assert.ok(Object.isFrozen(VALUE_WEIGHT));
+  assert.throws(() => { VALUE_WEIGHT.default = 1; }, TypeError);
+  assert.equal(valuePerDollar(row('default', 2, 50)), 6.25);
+});
+
+test('weighted value follows the normalized formula across integer and fractional preferences', () => {
+  for (const weight of [1, 1.1, 1.5, 2, 2.7, 3, 4]) {
+    for (const [score, cost] of [[25, 0.5], [50, 2], [100, 3], [125, 4]]) {
+      const actual = valuePerDollar(row('formula', cost, score), weight);
+      const expected = 100 * (score / 100) ** weight / cost;
+      assert.ok(Math.abs(actual - expected) <= Math.abs(expected) * 1e-14, `score=${score}, cost=${cost}, weight=${weight}`);
+      assert.equal(valuePerDollar(row('zero-score', cost, 0), weight), 0);
+      assert.equal(Object.is(valuePerDollar(row('negative-zero-score', cost, -0), weight), -0), false);
+    }
+    assert.equal(valuePerDollar(row('reference', 2, 100), weight), 50);
+    const low = valuePerDollar(row('low', 1, 25), weight), high = valuePerDollar(row('high', 1, 50), weight);
+    assert.ok(Math.abs(high / low - 2 ** weight) < 1e-12);
+  }
+});
+
+test('invalid weights throw for values and all sorts, including empty or single-row input', () => {
+  for (const weight of [NaN, Infinity, -Infinity, 0, 0.999, 4.001, -1, null, '3', {}, true, 3n, Symbol('weight')]) {
+    assert.throws(() => valuePerDollar(row('valid', 1, 50), weight), RangeError);
+    assert.throws(() => valuePerDollar(null, weight), RangeError);
+    assert.throws(() => sortRows([], 'valuePerDollar', 'asc', weight), RangeError);
+    assert.throws(() => sortRows([], 'name', 'asc', weight), RangeError);
+    assert.throws(() => sortRows([row('single', 1, 50)], 'cost', 'desc', weight), RangeError);
+  }
+});
+
+test('stronger capability preference changes the value ranking without changing costs or scores', () => {
+  const rows = Object.freeze([Object.freeze(row('cheap-low', 0.1, 20)), Object.freeze(row('capable', 1, 50))]);
+  const before = structuredClone(rows);
+  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', 1).map(d => d.id), ['cheap-low', 'capable']);
+  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', 2).map(d => d.id), ['cheap-low', 'capable']);
+  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', 3).map(d => d.id), ['capable', 'cheap-low']);
+  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', 4).map(d => d.id), ['capable', 'cheap-low']);
+  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc'), sortRows(rows, 'valuePerDollar', 'desc', 3));
+  assert.deepEqual(rows, before);
 });
 
 test('value per dollar rejects invalid or absent inputs and finite-input overflow', () => {
@@ -163,21 +209,26 @@ test('value per dollar rejects invalid or absent inputs and finite-input overflo
     row('nan-score', 1, NaN), row('infinite-score', 1, Infinity),
     row('string-cost', '1', 20), row('string-score', 1, '20'),
     row('overflow', Number.MIN_VALUE, 1)]) {
-    assert.equal(valuePerDollar(invalid), null);
+    for (const weight of [1, 1.5, 2, 3, 4]) assert.equal(valuePerDollar(invalid, weight), null);
   }
+  assert.equal(valuePerDollar(row('weighted-overflow', 1, Number.MAX_VALUE), 4), null);
 });
 
 test('value sorting keeps full precision when displayed rounded values would tie', () => {
   const rows = [row('A lower', 1, 100.0001), row('Z higher', 1, 100.0002)];
-  assert.equal(valuePerDollar(rows[0]).toFixed(2), valuePerDollar(rows[1]).toFixed(2));
-  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc').map(d => d.id), ['Z higher', 'A lower']);
-  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'asc').map(d => d.id), ['A lower', 'Z higher']);
+  for (const weight of [1, 1.5, 2, 3, 4]) {
+    assert.equal(valuePerDollar(rows[0], weight).toFixed(2), valuePerDollar(rows[1], weight).toFixed(2));
+    assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', weight).map(d => d.id), ['Z higher', 'A lower']);
+    assert.deepEqual(sortRows(rows, 'valuePerDollar', 'asc', weight).map(d => d.id), ['A lower', 'Z higher']);
+  }
 });
 
 test('missing value ratios stay last in either direction and zero remains a valid ratio', () => {
   const rows = [row('invalid 10', 0, 100), row('ten', 2, 20), row('zero', 1, 0), row('invalid 2', 1, NaN)];
-  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'asc').map(d => d.id), ['zero', 'ten', 'invalid 2', 'invalid 10']);
-  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc').map(d => d.id), ['ten', 'zero', 'invalid 2', 'invalid 10']);
+  for (const weight of [1, 1.5, 2, 3, 4]) {
+    assert.deepEqual(sortRows(rows, 'valuePerDollar', 'asc', weight).map(d => d.id), ['zero', 'ten', 'invalid 2', 'invalid 10']);
+    assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', weight).map(d => d.id), ['ten', 'zero', 'invalid 2', 'invalid 10']);
+  }
 });
 
 test('table names sort naturally across numeric suffixes and ignore letter case', () => {
@@ -229,16 +280,17 @@ test('sorting rejects unsupported columns and directions', () => {
   for (const direction of ['ascending', 'DESC', '', null]) assert.throws(() => sortRows([], 'cost', direction), RangeError);
 });
 
-test('both actual snapshots sort monotonically while preserving every original row', async () => {
+test('both actual snapshots sort monotonically across the full weight range without mutation', async () => {
   const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
   for (const rows of [snapshot.models, snapshot.codingAgents]) {
     const before = structuredClone(rows), ids = rows.map(d => d.id).sort();
-    for (const key of ['cost', 'intelligenceIndex', 'valuePerDollar']) for (const direction of ['asc', 'desc']) {
-      const sorted = sortRows(rows, key, direction);
+    const weights = Array.from({length: 31}, (_, i) => Number((1 + i * 0.1).toFixed(1)));
+    for (const weight of weights) for (const key of ['cost', 'intelligenceIndex', 'valuePerDollar']) for (const direction of ['asc', 'desc']) {
+      const sorted = sortRows(rows, key, direction, weight);
       assert.deepEqual(sorted.map(d => d.id).sort(), ids);
       for (let i = 1; i < sorted.length; i++) {
-        const previous = key === 'valuePerDollar' ? valuePerDollar(sorted[i - 1]) : sorted[i - 1][key];
-        const current = key === 'valuePerDollar' ? valuePerDollar(sorted[i]) : sorted[i][key];
+        const previous = key === 'valuePerDollar' ? valuePerDollar(sorted[i - 1], weight) : sorted[i - 1][key];
+        const current = key === 'valuePerDollar' ? valuePerDollar(sorted[i], weight) : sorted[i][key];
         assert.ok(Number.isFinite(previous) && Number.isFinite(current));
         assert.ok(direction === 'asc' ? previous <= current : previous >= current);
       }

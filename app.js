@@ -1,4 +1,4 @@
-import {ticks, paretoFrontier, dataBounds, clampView, validRows, sortRows, valuePerDollar} from './chart-math.mjs?v=20261116-8';
+import {ticks, paretoFrontier, dataBounds, clampView, validRows, sortRows, valuePerDollar, VALUE_WEIGHT} from './chart-math.mjs?v=20261116-10';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -58,7 +58,7 @@ function makeState(key) {
   const rows = validRows(snapshot[config[key].key]);
   const bounds = dataBounds(rows);
   const defaultView = {...bounds, width:config[key].defaultX ? Math.min(bounds.width,config[key].defaultX) : bounds.width};
-  return {rows,bounds,defaultView,view:{...defaultView},company:null,search:'',frontierOnly:false,...DEFAULT_SETTINGS[key],options:false,table:false,selected:null,sortKey:'intelligenceIndex',sortDirection:'desc'};
+  return {rows,bounds,defaultView,view:{...defaultView},company:null,search:'',frontierOnly:false,...DEFAULT_SETTINGS[key],options:false,table:false,selected:null,sortKey:'intelligenceIndex',sortDirection:'desc',valueWeight:VALUE_WEIGHT.default};
 }
 function filteredRows() {
   const query = state.search.trim().toLocaleLowerCase();
@@ -144,6 +144,7 @@ function syncControls() {
   $('#labelSize').value=state.labelSize;$('#labelSizeValue').value=state.labelSize;
   $('#labelDistance').value=state.labelDistance;$('#labelDistanceValue').value=state.labelDistance;
   syncSettingsReset();
+  syncValueControls();
   $('#options').setAttribute('aria-expanded',String(state.options));$('#optionsPanel').hidden=!state.options;
   $('#options').setAttribute('aria-pressed',String(state.options));
   bilingual($('#options'),state.options?'收起选项':'图表选项',state.options?'Hide options':'Options');
@@ -167,6 +168,20 @@ function syncSettingsReset() {
   $('#resetSettings').disabled=restored;
   bilingual($('#resetSettings'),restored?'已是默认':'恢复默认设置',restored?'Defaults':'Reset settings');
   $('#resetSettings').title=`标签显示 · 字号 ${defaults.labelSize} · 距离 ${defaults.labelDistance} / Show labels · Size ${defaults.labelSize} · Distance ${defaults.labelDistance}`;
+}
+function syncValueControls() {
+  const weight=state.valueWeight,linear=weight===1,restored=weight===VALUE_WEIGHT.default;
+  const slider=$('#valueWeight');
+  slider.min=VALUE_WEIGHT.min;slider.max=VALUE_WEIGHT.max;slider.step=VALUE_WEIGHT.step;slider.value=weight;
+  slider.setAttribute('aria-valuetext',`${weight.toFixed(1)}，${linear?'线性':restored?'默认非线性':'自定义非线性'} / ${linear?'Linear':restored?'Default nonlinear':'Custom nonlinear'}`);
+  $('#valueWeightValue').value=weight.toFixed(1);
+  $('#valueWeightState').textContent=linear?'线性 / Linear':restored?'默认 / Default':'自定义 / Custom';
+  $('#linearValue').setAttribute('aria-pressed',String(linear));
+  $('#resetValueWeight').disabled=restored;
+  bilingual($('#resetValueWeight'),restored?'已是默认':'恢复默认',restored?'Default α = 3':'Reset α = 3');
+  $('#valueFormula').replaceChildren(document.createTextNode(linear?'性价比 = 指数 ÷ 每任务成本':'性价比 = 100 × (指数 / 100)'),...(linear?[]:[html('sup',weight.toFixed(1)),document.createTextNode(' ÷ 每任务成本')]),html('small',linear?'Value = Index / cost':'Value = 100 × (Index / 100)^α / cost'));
+  bilingual($('#valueEffect'),`指数翻倍 → 能力项 ×${format(2**weight,2)}；成本翻倍 → 性价比 ÷2`,`Double index → utility ×${format(2**weight,2)}; double cost → value ÷2`);
+  $('#valueUnit').textContent=linear?'Index / USD':'Weighted / USD';
 }
 function renderStatus() {
   const cfg=config[activeKey], version=activeKey==='models'?snapshot.modelIndexVersion:snapshot.codingAgentIndexVersion;
@@ -216,19 +231,19 @@ function buildPlot() {
 function renderTable(rows=filteredRows()) {
   const fragment=document.createDocumentFragment();
   const maxCost=Math.max(...state.rows.map(row=>row.cost),.001);
-  const values=state.rows.map(valuePerDollar).filter(value=>value!==null),maxValue=values.length?Math.max(...values):null;
+  const values=state.rows.map(row=>valuePerDollar(row,state.valueWeight)).filter(value=>value!==null),maxValue=values.length?Math.max(...values):null;
   const valueRange=maxValue===null?'暂无':`0–${valueLabel(maxValue)}`;
-  $('#tableScale').textContent=`同列采用统一线性刻度：指数 0–100，成本 $0–${format(maxCost)}，性价比 ${valueRange} / Shared linear scales · Compare within this benchmark`;
-  for (const row of sortRows(rows,state.sortKey,state.sortDirection)) {
+  $('#tableScale').textContent=`统一线性条：指数 0–100 · 成本 $0–${format(maxCost)} · 性价比 ${valueRange} / Shared linear bars · Full benchmark`;
+  for (const row of sortRows(rows,state.sortKey,state.sortDirection,state.valueWeight)) {
     const tr=html('tr');
     tr.dataset.id=row.id;
     tr.classList.toggle('is-muted',!!state.company&&row.creator?.name!==state.company);
     const name=html('td',null,'table-name'),dot=html('i',null,'creator-dot');
     dot.style.background=color(row.creator?.color);dot.setAttribute('aria-hidden','true');
     name.append(dot,document.createTextNode(row.name));
-    const value=valuePerDollar(row),valueCell=comparisonCell(valueLabel(value),value!==null&&maxValue>0?value/maxValue:0,color(row.creator?.color));
+    const value=valuePerDollar(row,state.valueWeight),valueCell=comparisonCell(valueLabel(value),value!==null&&maxValue>0?value/maxValue:0,color(row.creator?.color));
     valueCell.className='value-column';
-    valueCell.title=value===null?'没有可比较的性价比 / No comparable value':`${row.intelligenceIndex.toPrecision(10)} ÷ $${row.cost.toPrecision(10)} ≈ ${value.toPrecision(10)} 指数点/美元（按原始值计算） / Based on unrounded values`;
+    valueCell.title=value===null?'没有可比较的性价比 / No comparable value':`100 × (${row.intelligenceIndex.toPrecision(10)} / 100)^${state.valueWeight.toFixed(1)} ÷ $${row.cost.toPrecision(10)} ≈ ${value.toPrecision(10)} 加权指数/美元（按原始值计算） / Weighted index per USD · Unrounded inputs`;
     if(value===null)valueCell.querySelector('.comparison-track').hidden=true;
     tr.append(name,html('td',row.creator?.name||'Other'),comparisonCell(format(row.intelligenceIndex,2),row.intelligenceIndex/100,color(row.creator?.color)),comparisonCell(money(row.cost),row.cost/maxCost,color(row.creator?.color)),valueCell);
     fragment.append(tr);
@@ -441,6 +456,16 @@ $('#resetSettings').addEventListener('click',()=>{if(!state)return;Object.assign
 function showTable(show) {if(!state)return;clearHover();state.table=show;if(show)state.options=false;syncControls();if(show)renderTable();scheduleDraw();}
 $('#tableToggle').addEventListener('click',()=>showTable(!state?.table));
 $('#backToChart').addEventListener('click',()=>{showTable(false);$('#tableToggle').focus({preventScroll:true});});
+let pendingValueFrame=0;
+function setValueWeight(value) {
+  if(!state||!Number.isFinite(value)||value<VALUE_WEIGHT.min||value>VALUE_WEIGHT.max)return;
+  state.valueWeight=Math.round(value*10)/10;syncValueControls();
+  // Rebuild only the visible table once per animation frame while dragging.
+  if(!pendingValueFrame)pendingValueFrame=requestAnimationFrame(()=>{pendingValueFrame=0;if(state?.table)renderTable();});
+}
+$('#valueWeight').addEventListener('input',()=>setValueWeight(Number($('#valueWeight').value)));
+$('#linearValue').addEventListener('click',()=>setValueWeight(1));
+$('#resetValueWeight').addEventListener('click',()=>setValueWeight(VALUE_WEIGHT.default));
 for(const button of document.querySelectorAll('.sort-button'))button.addEventListener('click',()=>{
   if(!state)return;
   const key=button.dataset.sort;
