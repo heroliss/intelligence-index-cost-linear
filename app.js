@@ -53,7 +53,7 @@ function makeState(key) {
   const rows = validRows(snapshot[config[key].key]);
   const bounds = dataBounds(rows);
   const defaultView = {...bounds, width:config[key].defaultX ? Math.min(bounds.width,config[key].defaultX) : bounds.width};
-  return {rows,bounds,defaultView,view:{...defaultView},company:null,search:'',frontierOnly:false,labels:true,labelSize:4,labelDistance:2,options:false,table:false,selected:null};
+  return {rows,bounds,defaultView,view:{...defaultView},company:null,search:'',frontierOnly:false,labels:true,labelSize:key==='models'?4:7,labelDistance:key==='models'?2:12,options:false,table:false,selected:null};
 }
 function filteredRows() {
   const query = state.search.trim().toLocaleLowerCase();
