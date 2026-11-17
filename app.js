@@ -12,7 +12,7 @@ import {
   VALUE_WEIGHT,
   MIN_SCORE,
   VALUE_PRESETS
-} from './chart-math.mjs?v=20261118-1';
+} from './chart-math.mjs?v=20261118-2';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');

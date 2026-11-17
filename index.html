@@ -19,8 +19,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261118-1">
-  <script type="module" src="app.js?v=20261118-1"></script>
+  <link rel="stylesheet" href="styles.css?v=20261118-2">
+  <script type="module" src="app.js?v=20261118-2"></script>
 </head>
 <body>
 <main class="app">
@@ -138,9 +138,9 @@
       <div class="value-controls">
         <div class="slider-cluster">
           <label for="valueWeight" id="weightLabel" class="control-label">智能权重 α</label>
-          <input id="valueWeight" type="range" min="0" max="15" step="0.1" value="3" aria-describedby="valueHint valueFormula">
+          <input id="valueWeight" type="range" min="0" max="25" step="0.1" value="3" aria-describedby="valueHint valueFormula">
           <div class="weight-reading">
-            <input id="valueWeightValue" type="number" min="0" max="15" step="0.1" value="3.0" aria-label="输入智能权重 α">
+            <input id="valueWeightValue" type="number" min="0" max="25" step="0.1" value="3.0" aria-label="输入智能权重 α">
           </div>
         </div>
 

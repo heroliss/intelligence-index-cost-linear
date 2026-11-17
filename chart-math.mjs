@@ -84,7 +84,7 @@ const tableCollator = new Intl.Collator('zh-CN', {numeric: true, sensitivity: 'b
 // - weight > 1: compounds pass rate (s/50)^w with error-headroom compression ((105-50)/(105-s))^((w-1)^2/w).
 export const VALUE_WEIGHT = Object.freeze({
   min: 0,
-  max: 15,
+  max: 25,
   step: 0.1,
   default: 3,
   anchor: 50,
@@ -102,9 +102,9 @@ export const VALUE_PRESETS = Object.freeze([
   Object.freeze({value: 0, id: 'cost', zh: '纯成本', en: 'Cost only'}),
   Object.freeze({value: 1, id: 'linear', zh: '线性', en: 'Linear'}),
   Object.freeze({value: 3, id: 'balanced', zh: '均衡', en: 'Balanced'}),
-  Object.freeze({value: 5.5, id: 'mainstream', zh: '主力', en: 'Mainstream'}),
-  Object.freeze({value: 8.5, id: 'flagship', zh: '旗舰', en: 'Flagship'}),
-  Object.freeze({value: 12, id: 'sota', zh: '极限', en: 'SOTA'})
+  Object.freeze({value: 6, id: 'mainstream', zh: '主力', en: 'Mainstream'}),
+  Object.freeze({value: 10, id: 'flagship', zh: '旗舰', en: 'Flagship'}),
+  Object.freeze({value: 22, id: 'sota', zh: '极限', en: 'SOTA'})
 ]);
 
 function validateValueWeight(weight) {

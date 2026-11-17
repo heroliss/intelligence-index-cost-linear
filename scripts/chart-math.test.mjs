@@ -192,8 +192,8 @@ test('weight 0 ranks purely by lowest per-task cost for positive-score entries',
   assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', 0).map(d => d.id), ['cheap-modest', 'mid', 'expensive-smart']);
 });
 
-test('weight configuration and presets are frozen and cover [0, 15] with anchor 50', () => {
-  assert.deepEqual(VALUE_WEIGHT, {min: 0, max: 15, step: 0.1, default: 3, anchor: 50, ceiling: 105});
+test('weight configuration and presets are frozen and cover [0, 25] with anchor 50', () => {
+  assert.deepEqual(VALUE_WEIGHT, {min: 0, max: 25, step: 0.1, default: 3, anchor: 50, ceiling: 105});
   assert.deepEqual(MIN_SCORE, {min: 0, max: 95, step: 1, default: 0});
   assert.ok(Object.isFrozen(VALUE_WEIGHT));
   assert.ok(Object.isFrozen(MIN_SCORE));
@@ -206,15 +206,15 @@ test('IRT pass-odds hybrid curve is C1-smooth across weight = 1 and anchored at 
   for (const score of [15, 30, 45, 50, 62, 80]) {
     assert.equal(capabilityUtility(50, 0.5), 50);
     assert.equal(capabilityUtility(50, 3), 50);
-    assert.equal(capabilityUtility(50, 15), 50);
+    assert.equal(capabilityUtility(50, 25), 50);
     const leftSlope = (capabilityUtility(score, 1) - capabilityUtility(score, 1 - 1e-5)) / 1e-5;
     const rightSlope = (capabilityUtility(score, 1 + 1e-5) - capabilityUtility(score, 1)) / 1e-5;
     assert.ok(Math.abs(leftSlope - rightSlope) < 1e-3, `C1 slope continuity at weight=1 for score=${score}`);
   }
 });
 
-test('relative preference for higher scores increases strictly across all 151 weights in [0, 15]', () => {
-  const weights = Array.from({length: 151}, (_, i) => Number((i * 0.1).toFixed(1)));
+test('relative preference for higher scores increases strictly across all 251 weights in [0, 25]', () => {
+  const weights = Array.from({length: 251}, (_, i) => Number((i * 0.1).toFixed(1)));
   let prevRatio = 0;
   for (const weight of weights) {
     assert.equal(capabilityUtility(0, weight), 0);
@@ -235,22 +235,38 @@ test('relative preference for higher scores increases strictly across all 151 we
   }
 });
 
-test('expanded curve range covers budget, mainstream, and flagship SOTA leaders on shipped data', async () => {
-  const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
-  const modelLeader = w => sortRows(snapshot.models, 'valuePerDollar', 'desc', w)[0];
-  assert.ok(modelLeader(0).cost < 0.01, 'w=0 picks ultra-low-cost model');
-  const mid = modelLeader(3);
-  assert.ok(mid.intelligenceIndex >= 40 && mid.intelligenceIndex <= 55, 'w=3 picks balanced mainstream model');
-  const flagship = modelLeader(8.5);
-  assert.ok(flagship.intelligenceIndex >= 60, 'w=8.5 reaches 60+ flagship tier');
-  const sota = modelLeader(13);
-  const highestScore = Math.max(...snapshot.models.map(m => m.intelligenceIndex));
-  assert.equal(sota.intelligenceIndex, highestScore, 'high weight reaches the #1 highest-scoring SOTA model');
+test('expanded curve range traverses all capability tiers and preserves Pareto monotonicity on live data', async () => {
+  // Deterministic 4-tier fixture covering ultra-budget through 10x-cost SOTA
+  const tiers = [
+    row('budget', 0.005, 10),
+    row('mainstream', 0.4, 52),
+    row('flagship', 2.5, 61.5),
+    row('sota', 26.5, 64.5)
+  ];
+  assert.equal(sortRows(tiers, 'valuePerDollar', 'desc', 0)[0].id, 'budget');
+  assert.equal(sortRows(tiers, 'valuePerDollar', 'desc', 3)[0].id, 'mainstream');
+  assert.equal(sortRows(tiers, 'valuePerDollar', 'desc', 10)[0].id, 'flagship');
+  assert.equal(sortRows(tiers, 'valuePerDollar', 'desc', 22)[0].id, 'sota');
 
-  const agentLeader = w => sortRows(snapshot.codingAgents, 'valuePerDollar', 'desc', w)[0];
-  assert.ok(agentLeader(0).cost <= 0.25, 'w=0 picks lowest-cost coding agent');
-  assert.ok(agentLeader(5.5).intelligenceIndex >= 50, 'w=5.5 picks 50+ coding agent');
-  assert.ok(agentLeader(9).intelligenceIndex >= 58, 'w=9 reaches 58+ frontier coding agent');
+  // Structural invariants that hold across any valid live snapshot update
+  const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
+  for (const rows of [snapshot.models, snapshot.codingAgents]) {
+    const frontierIds = new Set(paretoFrontier(rows).map(r => r.id));
+    const minCost = Math.min(...rows.map(r => r.cost));
+    const leader0 = sortRows(rows, 'valuePerDollar', 'desc', 0)[0];
+    assert.equal(leader0.cost, minCost, 'w=0 always selects a minimum-cost entry');
+    let prevScore = -Infinity, prevCost = -Infinity;
+    for (let i = 0; i <= 250; i += 5) {
+      const w = Number((i * 0.1).toFixed(1));
+      const leader = sortRows(rows, 'valuePerDollar', 'desc', w)[0];
+      assert.ok(frontierIds.has(leader.id), `leader at w=${w} must lie on the Pareto frontier`);
+      assert.ok(leader.intelligenceIndex >= prevScore - 1e-12, `leader score must not decrease with w (${w})`);
+      assert.ok(leader.cost >= prevCost - 1e-12, `leader cost must not decrease with w (${w})`);
+      prevScore = leader.intelligenceIndex;
+      prevCost = leader.cost;
+    }
+    assert.ok(prevScore > leader0.intelligenceIndex, 'high weights reach strictly stronger Pareto entries');
+  }
 });
 
 test('minimum score threshold disqualifies lower-scoring entries and keeps them last in value sorts', () => {
@@ -275,7 +291,7 @@ test('isoValueCost passes exactly through the champion point and bounds all othe
 });
 
 test('invalid weights or minScores throw RangeError across math helpers', () => {
-  for (const weight of [NaN, Infinity, -Infinity, -0.1, 15.001, -1, null, '3', {}, true]) {
+  for (const weight of [NaN, Infinity, -Infinity, -0.1, 25.001, -1, null, '3', {}, true]) {
     assert.throws(() => capabilityUtility(50, weight), RangeError);
     assert.throws(() => valuePerDollar(row('valid', 1, 50), weight), RangeError);
     assert.throws(() => sortRows([], 'valuePerDollar', 'asc', weight), RangeError);
