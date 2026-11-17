@@ -3,10 +3,10 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-17T10:50:15.209Z",
+  "updatedAt": "2026-11-17T19:33:27.174Z",
   "updateIntervalHours": 2,
   "modelIndexVersion": "5.0.1",
-  "modelCount": 119,
+  "modelCount": 129,
   "models": [
     {
       "id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
@@ -275,6 +275,20 @@
       "deprecated": false
     },
     {
+      "id": "a77965fb-2117-4e2c-bd8b-80b5579a7e7e",
+      "slug": "gpt-6-2-sol-low",
+      "name": "GPT-6.2 Sol (Low)",
+      "shortName": "GPT-6.2 Sol (low)",
+      "intelligenceIndex": 40.552508943285,
+      "cost": 0.18358471526572703,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "598190f8-dc9c-4fea-a7ea-4b81c402ab18",
       "slug": "gemini-3-1-flash-lite-preview",
       "name": "Gemini 3.1 Flash-Lite",
@@ -457,6 +471,20 @@
       "deprecated": false
     },
     {
+      "id": "82b37079-56d9-4451-8a1a-22b0a921f4f8",
+      "slug": "gpt-6-2-sol-medium",
+      "name": "GPT-6.2 Sol (Medium)",
+      "shortName": "GPT-6.2 Sol (medium)",
+      "intelligenceIndex": 52.6777305876603,
+      "cost": 0.40605590960076604,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "7d064a11-6e78-4030-b535-cdf940615041",
       "slug": "claude-haiku-5-5",
       "name": "Claude Haiku 5.5 (Max)",
@@ -555,6 +583,20 @@
       "deprecated": false
     },
     {
+      "id": "cd85e412-c43f-4535-bf8e-5ba113d97ca3",
+      "slug": "gpt-6-2-sol-high",
+      "name": "GPT-6.2 Sol (High)",
+      "shortName": "GPT-6.2 Sol (high)",
+      "intelligenceIndex": 54.8898658241942,
+      "cost": 0.563644652221075,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "9ac3908c-9eb2-44db-8c01-3ec7da6fc2ae",
       "slug": "qwen3-8-flash-next",
       "name": "Qwen3.8-Flash-Next",
@@ -620,6 +662,34 @@
       "creator": {
         "name": "DeepSeek",
         "color": "#2243e6"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "27c326a6-ec9b-415f-a29e-b1f4927484dc",
+      "slug": "gpt-6-2-sol-xhigh",
+      "name": "GPT-6.2 Sol (Xhigh)",
+      "shortName": "GPT-6.2 Sol (xhigh)",
+      "intelligenceIndex": 55.7351067246438,
+      "cost": 0.6479676730055945,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "cc93ecfd-845e-455d-9642-6799d7133b7e",
+      "slug": "gpt-6-2-astra-low",
+      "name": "GPT-6.2 Astra (Low)",
+      "shortName": "GPT-6.2 Astra (low)",
+      "intelligenceIndex": 45.6504174923967,
+      "cost": 0.661705400010306,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "isReasoning": true,
       "deprecated": false
@@ -765,6 +835,20 @@
       "deprecated": false
     },
     {
+      "id": "a1a84b18-e8c9-48fb-8e04-6003bd9f6ff4",
+      "slug": "gpt-6-2-sol",
+      "name": "GPT-6.2 Sol (Max)",
+      "shortName": "GPT-6.2 Sol (max)",
+      "intelligenceIndex": 57.2576209885477,
+      "cost": 1.014379970300768,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "d274918e-ea82-4951-8b37-8ed9ab898dbc",
       "slug": "tencent-hy4",
       "name": "Tencent Hy4",
@@ -891,6 +975,20 @@
       "deprecated": false
     },
     {
+      "id": "8cec011f-c959-4726-8668-2ee2409a6bca",
+      "slug": "gpt-6-2-astra-medium",
+      "name": "GPT-6.2 Astra (Medium)",
+      "shortName": "GPT-6.2 Astra (medium)",
+      "intelligenceIndex": 56.9986252138657,
+      "cost": 1.6176877362867854,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
       "id": "268525e2-f873-4178-bc07-e6a0ee1f002d",
       "slug": "claude-sonnet-5-5-high",
       "name": "Claude Sonnet 5.5 (High, Default Fallback)",
@@ -970,6 +1068,20 @@
       "creator": {
         "name": "Mistral",
         "color": "#f32e02"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "fe959a7a-944c-4ba8-8e41-349712599b39",
+      "slug": "gpt-6-2-astra-high",
+      "name": "GPT-6.2 Astra (High)",
+      "shortName": "GPT-6.2 Astra (high)",
+      "intelligenceIndex": 60.0882280338247,
+      "cost": 2.073874957362806,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1065,6 +1177,20 @@
       "shortName": "GPT-6 Sol (max)",
       "intelligenceIndex": 44.1555010304265,
       "cost": 2.465800491412395,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "592572d5-f789-4106-abbc-fadf2206d10b",
+      "slug": "gpt-6-2-astra-xhigh",
+      "name": "GPT-6.2 Astra (Xhigh)",
+      "shortName": "GPT-6.2 Astra (xhigh)",
+      "intelligenceIndex": 61.5602325371388,
+      "cost": 2.5211433764120375,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -1264,6 +1390,20 @@
       "creator": {
         "name": "Anthropic",
         "color": "#cc785c"
+      },
+      "isReasoning": true,
+      "deprecated": false
+    },
+    {
+      "id": "75c1b0b8-9db3-4c7e-95be-d74e59defee4",
+      "slug": "gpt-6-2-astra",
+      "name": "GPT-6.2 Astra (Max)",
+      "shortName": "GPT-6.2 Astra (max)",
+      "intelligenceIndex": 62.1387990593969,
+      "cost": 3.9979061566801852,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "isReasoning": true,
       "deprecated": false
@@ -1694,8 +1834,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -1719,8 +1859,8 @@
         "color": "#0089f4"
       },
       "agentCreator": {
-        "name": "Meta",
-        "color": "#0089f4"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Muse Code",
       "agentSlug": "muse-code",
@@ -1794,8 +1934,8 @@
         "color": "#f32e02"
       },
       "agentCreator": {
-        "name": "Mistral",
-        "color": "#f32e02"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Mistral Vibe",
       "agentSlug": "mistral-vibe",
@@ -1844,8 +1984,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -1869,8 +2009,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -1894,8 +2034,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -1919,8 +2059,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -1944,8 +2084,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -1994,8 +2134,8 @@
         "color": "#00F5E7"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -2019,8 +2159,8 @@
         "color": "#ff7018"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -2044,8 +2184,8 @@
         "color": "#0089f4"
       },
       "agentCreator": {
-        "name": "Meta",
-        "color": "#0089f4"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Muse Code",
       "agentSlug": "muse-code",
@@ -2069,8 +2209,8 @@
         "color": "#34A853"
       },
       "agentCreator": {
-        "name": "Google",
-        "color": "#34A853"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Antigravity CLI",
       "agentSlug": "antigravity-cli",
@@ -2119,8 +2259,8 @@
         "color": "#34A853"
       },
       "agentCreator": {
-        "name": "Google",
-        "color": "#34A853"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Antigravity CLI",
       "agentSlug": "antigravity-cli",
@@ -2169,8 +2309,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -2194,8 +2334,8 @@
         "color": "#0089f4"
       },
       "agentCreator": {
-        "name": "Meta",
-        "color": "#0089f4"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Muse Code",
       "agentSlug": "muse-code",
@@ -2240,7 +2380,7 @@
       "intelligenceIndex": 58.403088954056706,
       "cost": 8.75258496053315,
       "creator": {
-        "name": "Anthropic + OpenAI",
+        "name": " + ",
         "color": "#64748b"
       },
       "agentCreator": {
@@ -2269,8 +2409,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -2294,8 +2434,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -2319,8 +2459,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -2394,8 +2534,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
