@@ -3,7 +3,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-17T19:33:27.174Z",
+  "updatedAt": "2026-11-17T19:59:32.465Z",
   "updateIntervalHours": 2,
   "modelIndexVersion": "5.0.1",
   "modelCount": 129,
@@ -1818,7 +1818,7 @@
   "codingAgentSourceUrl": "https://artificialanalysis.ai/agents/coding-agents",
   "codingAgentMethodologyUrl": "https://artificialanalysis.ai/methodology/coding-agents-benchmarking",
   "codingAgentIndexVersion": "2.1",
-  "codingAgentCount": 29,
+  "codingAgentCount": 39,
   "codingAgentExcludedCount": 1,
   "codingAgents": [
     {
@@ -1922,6 +1922,131 @@
       "benchmarkCount": 3
     },
     {
+      "id": "8178a0ab530e25e65f53d836ef248eae",
+      "slug": "codex",
+      "name": "Codex - GPT-6.2 Sol (Low)",
+      "shortName": "Codex - GPT-6.2 Sol (low)",
+      "codingAgentIndex": 37.1599956554795,
+      "intelligenceIndex": 37.1599956554795,
+      "cost": 0.32526370956583217,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentCreator": {
+        "name": "Other",
+        "color": "#777777"
+      },
+      "agentName": "Codex",
+      "agentSlug": "codex",
+      "modelName": "GPT-6.2 Sol (Low)",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "2827f8a25558cdb94dfada79c70b0d8c",
+      "slug": "codex",
+      "name": "Codex - GPT-6.2 Sol (Medium)",
+      "shortName": "Codex - GPT-6.2 Sol (medium)",
+      "codingAgentIndex": 45.3516511893125,
+      "intelligenceIndex": 45.3516511893125,
+      "cost": 0.5717863807280066,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentCreator": {
+        "name": "Other",
+        "color": "#777777"
+      },
+      "agentName": "Codex",
+      "agentSlug": "codex",
+      "modelName": "GPT-6.2 Sol (Medium)",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "e7d93c34f5c806bec7608750fc56e91a",
+      "slug": "codex",
+      "name": "Codex - GPT-6.2 Astra (Low)",
+      "shortName": "Codex - GPT-6.2 Astra (low)",
+      "codingAgentIndex": 35.578306180080396,
+      "intelligenceIndex": 35.578306180080396,
+      "cost": 0.7041831624949644,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentCreator": {
+        "name": "Other",
+        "color": "#777777"
+      },
+      "agentName": "Codex",
+      "agentSlug": "codex",
+      "modelName": "GPT-6.2 Astra (Low)",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "c4f606fc3bab9772d3e2ab6c95ebed5a",
+      "slug": "codex",
+      "name": "Codex - GPT-6.2 Sol (High)",
+      "shortName": "Codex - GPT-6.2 Sol (high)",
+      "codingAgentIndex": 47.455238405561,
+      "intelligenceIndex": 47.455238405561,
+      "cost": 0.7638440246776945,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentCreator": {
+        "name": "Other",
+        "color": "#777777"
+      },
+      "agentName": "Codex",
+      "agentSlug": "codex",
+      "modelName": "GPT-6.2 Sol (High)",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "2b66aa9f8afa482977259846d9b207ba",
+      "slug": "codex",
+      "name": "Codex - GPT-6.2 Sol (Xhigh)",
+      "shortName": "Codex - GPT-6.2 Sol (xhigh)",
+      "codingAgentIndex": 49.7854108287173,
+      "intelligenceIndex": 49.7854108287173,
+      "cost": 0.8980194131553201,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentCreator": {
+        "name": "Other",
+        "color": "#777777"
+      },
+      "agentName": "Codex",
+      "agentSlug": "codex",
+      "modelName": "GPT-6.2 Sol (Xhigh)",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
       "id": "da3088d1680debe97b7b536e6908c548",
       "slug": "mistral-vibe",
       "name": "Mistral Vibe - Mistral Large 4 (Medium)",
@@ -1940,6 +2065,56 @@
       "agentName": "Mistral Vibe",
       "agentSlug": "mistral-vibe",
       "modelName": "Mistral Large 4 (Medium)",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "eae5a29e0ed56a9c2aa5b6e82dd082e2",
+      "slug": "codex",
+      "name": "Codex - GPT-6.2 Astra (Medium)",
+      "shortName": "Codex - GPT-6.2 Astra (medium)",
+      "codingAgentIndex": 49.0562984685565,
+      "intelligenceIndex": 49.0562984685565,
+      "cost": 1.202238571568918,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentCreator": {
+        "name": "Other",
+        "color": "#777777"
+      },
+      "agentName": "Codex",
+      "agentSlug": "codex",
+      "modelName": "GPT-6.2 Astra (Medium)",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "eb55a750b7784b3f03c16efc3c39e1ff",
+      "slug": "codex",
+      "name": "Codex - GPT-6.2 Sol (Max)",
+      "shortName": "Codex - GPT-6.2 Sol (max)",
+      "codingAgentIndex": 48.6171442923862,
+      "intelligenceIndex": 48.6171442923862,
+      "cost": 1.2157296114476108,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentCreator": {
+        "name": "Other",
+        "color": "#777777"
+      },
+      "agentName": "Codex",
+      "agentSlug": "codex",
+      "modelName": "GPT-6.2 Sol (Max)",
       "isReasoning": true,
       "isDefault": false,
       "isRouter": false,
@@ -1991,7 +2166,7 @@
       "agentSlug": "codex",
       "modelName": "GPT-6.1 Sol (Max)",
       "isReasoning": true,
-      "isDefault": true,
+      "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
       "benchmarkCount": 3
@@ -2016,7 +2191,7 @@
       "agentSlug": "codex",
       "modelName": "GPT-6.1 Terra (Max)",
       "isReasoning": true,
-      "isDefault": true,
+      "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
       "benchmarkCount": 3
@@ -2040,6 +2215,31 @@
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
       "modelName": "Claude Haiku 5.5 (Max)",
+      "isReasoning": true,
+      "isDefault": false,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "f60010d6306ed860deef16152e949af3",
+      "slug": "codex",
+      "name": "Codex - GPT-6.2 Astra (High)",
+      "shortName": "Codex - GPT-6.2 Astra (high)",
+      "codingAgentIndex": 52.2778597806017,
+      "intelligenceIndex": 52.2778597806017,
+      "cost": 2.371803913771108,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentCreator": {
+        "name": "Other",
+        "color": "#777777"
+      },
+      "agentName": "Codex",
+      "agentSlug": "codex",
+      "modelName": "GPT-6.2 Astra (High)",
       "isReasoning": true,
       "isDefault": false,
       "isRouter": false,
@@ -2117,6 +2317,31 @@
       "modelName": "Kimi K3.1 Pro",
       "isReasoning": true,
       "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "d2d75a8abf0ca8d8888f99cff7bee543",
+      "slug": "codex",
+      "name": "Codex - GPT-6.2 Astra (Xhigh)",
+      "shortName": "Codex - GPT-6.2 Astra (xhigh)",
+      "codingAgentIndex": 53.121247963506,
+      "intelligenceIndex": 53.121247963506,
+      "cost": 3.1979110852488017,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentCreator": {
+        "name": "Other",
+        "color": "#777777"
+      },
+      "agentName": "Codex",
+      "agentSlug": "codex",
+      "modelName": "GPT-6.2 Astra (Xhigh)",
+      "isReasoning": true,
+      "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
       "benchmarkCount": 3
@@ -2215,6 +2440,31 @@
       "agentName": "Antigravity CLI",
       "agentSlug": "antigravity-cli",
       "modelName": "Gemini 4 Hydrogen (Xhigh)",
+      "isReasoning": true,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3
+    },
+    {
+      "id": "7853ef55ffc046be0c351cb5ba7d0290",
+      "slug": "codex",
+      "name": "Codex - GPT-6.2 Astra (Max)",
+      "shortName": "Codex - GPT-6.2 Astra (max)",
+      "codingAgentIndex": 53.470227815792306,
+      "intelligenceIndex": 53.470227815792306,
+      "cost": 5.116919949371592,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentCreator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "agentName": "Codex",
+      "agentSlug": "codex",
+      "modelName": "GPT-6.2 Astra (Max)",
       "isReasoning": true,
       "isDefault": true,
       "isRouter": false,
@@ -2359,14 +2609,14 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
       "modelName": "GPT-6 Astra (Max)",
       "isReasoning": true,
-      "isDefault": true,
+      "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
       "benchmarkCount": 3
