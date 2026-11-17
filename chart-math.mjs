@@ -107,6 +107,29 @@ export const VALUE_PRESETS = Object.freeze([
   Object.freeze({value: 22, id: 'sota', zh: '极限', en: 'SOTA'})
 ]);
 
+export const SUBSCRIPTION_TIERS = Object.freeze([
+  Object.freeze({price: 20, id: 'pro', zh: 'Pro $20', en: 'Pro $20'}),
+  Object.freeze({price: 100, id: 'max', zh: 'Max $100', en: 'Max $100'}),
+  Object.freeze({price: 200, id: 'ultra', zh: 'Ultra $200', en: 'Ultra $200'})
+]);
+
+export const MONTHLY_USAGE = Object.freeze({
+  minTasks: 1,
+  maxTasks: 1000,
+  defaultModelTasks: 60,
+  defaultAgentTasks: 30,
+  minFee: 5,
+  maxFee: 1000,
+  defaultFee: 20
+});
+
+export const TASK_VOLUME_PRESETS = Object.freeze([
+  Object.freeze({tasks: 15, zh: '轻度 15', en: 'Light 15'}),
+  Object.freeze({tasks: 60, zh: '日常 60', en: 'Daily 60'}),
+  Object.freeze({tasks: 180, zh: '高频 180', en: 'Heavy 180'}),
+  Object.freeze({tasks: 450, zh: '重度 450', en: 'Intense 450'})
+]);
+
 function validateValueWeight(weight) {
   if (typeof weight !== 'number' || !Number.isFinite(weight) || weight < VALUE_WEIGHT.min || weight > VALUE_WEIGHT.max) {
     throw new RangeError(`Value weight must be a finite number between ${VALUE_WEIGHT.min} and ${VALUE_WEIGHT.max}`);
@@ -163,6 +186,34 @@ export function isoValueCost(score, targetValue, weight = VALUE_WEIGHT.default) 
   if (utility === null) return null;
   const cost = utility / targetValue;
   return Number.isFinite(cost) ? cost : null;
+}
+
+export function breakEvenTasks(costPerTask, monthlyFee = MONTHLY_USAGE.defaultFee) {
+  if (typeof monthlyFee !== 'number' || !Number.isFinite(monthlyFee) || monthlyFee <= 0) {
+    throw new RangeError('Monthly subscription fee must be a positive finite number');
+  }
+  if (typeof costPerTask !== 'number' || !Number.isFinite(costPerTask) || costPerTask <= 0) return null;
+  const tasks = monthlyFee / costPerTask;
+  return Number.isFinite(tasks) ? tasks : null;
+}
+
+export function monthlyApiBill(costPerTask, monthlyTasks) {
+  if (typeof monthlyTasks !== 'number' || !Number.isFinite(monthlyTasks) || monthlyTasks < 0) {
+    throw new RangeError('Monthly task count must be a non-negative finite number');
+  }
+  if (typeof costPerTask !== 'number' || !Number.isFinite(costPerTask) || costPerTask < 0) return null;
+  const bill = costPerTask * monthlyTasks;
+  return Number.isFinite(bill) ? (bill === 0 ? 0 : bill) : null;
+}
+
+export function subscriptionVerdict(costPerTask, monthlyTasks, monthlyFee = MONTHLY_USAGE.defaultFee) {
+  const apiBill = monthlyApiBill(costPerTask, monthlyTasks);
+  const breakeven = breakEvenTasks(costPerTask, monthlyFee);
+  if (apiBill === null || breakeven === null) return null;
+  const delta = apiBill - monthlyFee;
+  const ratio = apiBill / monthlyFee;
+  const status = ratio < 0.95 ? 'api-cheaper' : ratio > 1.05 ? 'sub-cheaper' : 'near-breakeven';
+  return {apiBill, monthlyFee, breakeven, delta, ratio, status};
 }
 
 export function sortRows(rows, key, direction = 'asc', weight = VALUE_WEIGHT.default, minScore = MIN_SCORE.default) {

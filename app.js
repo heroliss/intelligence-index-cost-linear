@@ -9,10 +9,15 @@ import {
   valuePerDollar,
   capabilityUtility,
   isoValueCost,
+  breakEvenTasks,
+  subscriptionVerdict,
   VALUE_WEIGHT,
   MIN_SCORE,
-  VALUE_PRESETS
-} from './chart-math.mjs?v=20261118-2';
+  VALUE_PRESETS,
+  SUBSCRIPTION_TIERS,
+  MONTHLY_USAGE,
+  TASK_VOLUME_PRESETS
+} from './chart-math.mjs?v=20261118-4';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -195,23 +200,30 @@ function makeState(key, routeParams = null) {
   const bounds = dataBounds(rows);
   const maxFloor = Math.min(MIN_SCORE.max, Math.max(20, Math.floor(Math.max(...rows.map(d => d.intelligenceIndex)))));
   const defaultView = {...bounds, width: BENCHMARKS[key].defaultX ? Math.min(bounds.width, BENCHMARKS[key].defaultX) : bounds.width};
+  const defaultTasks = key === 'coding-agents' ? MONTHLY_USAGE.defaultAgentTasks : MONTHLY_USAGE.defaultModelTasks;
   const next = {
     rows,
     bounds,
     maxFloor,
+    defaultTasks,
     defaultView,
     view: {...defaultView},
     company: null,
     search: '',
     frontierOnly: false,
     isoCurve: false,
+    subLine: false,
     ...DEFAULT_SETTINGS[key],
     mode: 'chart',
     selected: null,
     sortKey: 'intelligenceIndex',
     sortDirection: 'desc',
+    subSortKey: 'intelligenceIndex',
+    subSortDirection: 'desc',
     valueWeight: VALUE_WEIGHT.default,
     minScore: MIN_SCORE.default,
+    monthlyTasks: defaultTasks,
+    subFee: MONTHLY_USAGE.defaultFee,
     curveProbe: 50,
     curveRealRange: true,
     curveLogY: false
@@ -222,7 +234,7 @@ function makeState(key, routeParams = null) {
 
 function applyRouteParams(target, params) {
   const view = params.get('view');
-  if (['chart', 'table', 'curve'].includes(view)) target.mode = view;
+  if (['chart', 'table', 'curve', 'sub'].includes(view)) target.mode = view;
   const w = Number(params.get('w'));
   if (params.has('w') && Number.isFinite(w) && w >= VALUE_WEIGHT.min && w <= VALUE_WEIGHT.max) {
     target.valueWeight = Math.round(w * 10) / 10;
@@ -231,12 +243,21 @@ function applyRouteParams(target, params) {
   if (params.has('min') && Number.isFinite(min) && min >= MIN_SCORE.min && min <= target.maxFloor) {
     target.minScore = Math.round(min);
   }
+  const fee = Number(params.get('fee'));
+  if (params.has('fee') && Number.isFinite(fee) && fee >= MONTHLY_USAGE.minFee && fee <= MONTHLY_USAGE.maxFee) {
+    target.subFee = Math.round(fee);
+  }
+  const tasks = Number(params.get('tasks'));
+  if (params.has('tasks') && Number.isFinite(tasks) && tasks >= MONTHLY_USAGE.minTasks && tasks <= MONTHLY_USAGE.maxTasks) {
+    target.monthlyTasks = Math.round(tasks);
+  }
   const focus = params.get('focus');
   if (focus && target.rows.some(r => (r.creator?.name || 'Other') === focus)) target.company = focus;
   const q = params.get('q');
   if (q) target.search = q;
   if (params.get('pf') === '1') target.frontierOnly = true;
   if (params.get('iso') === '1') target.isoCurve = true;
+  if (params.get('subline') === '1') target.subLine = true;
 }
 
 function syncUrlHash() {
@@ -245,10 +266,13 @@ function syncUrlHash() {
   if (state.mode !== 'chart') params.set('view', state.mode);
   if (state.valueWeight !== VALUE_WEIGHT.default) params.set('w', state.valueWeight.toFixed(1));
   if (state.minScore > 0) params.set('min', String(state.minScore));
+  if (state.subFee !== MONTHLY_USAGE.defaultFee) params.set('fee', String(state.subFee));
+  if (state.monthlyTasks !== state.defaultTasks) params.set('tasks', String(state.monthlyTasks));
   if (state.company) params.set('focus', state.company);
   if (state.search.trim()) params.set('q', state.search.trim());
   if (state.frontierOnly) params.set('pf', '1');
   if (state.isoCurve) params.set('iso', '1');
+  if (state.subLine) params.set('subline', '1');
   const query = params.toString();
   const nextHash = activeKey === 'models' && !query ? '' : `#${activeKey}${query ? '&' + query : ''}`;
   const current = location.hash || '';
@@ -296,6 +320,51 @@ function renderPresets() {
     fragment.append(btn);
   }
   $('#presetGroup').replaceChildren(fragment);
+
+  const tierFrag = document.createDocumentFragment();
+  for (const tier of SUBSCRIPTION_TIERS) {
+    const btn = html('button', t(tier.zh, tier.en));
+    btn.type = 'button';
+    btn.dataset.fee = String(tier.price);
+    btn.setAttribute('aria-pressed', String(state ? state.subFee === tier.price : tier.price === MONTHLY_USAGE.defaultFee));
+    btn.addEventListener('click', () => setSubFee(tier.price));
+    tierFrag.append(btn);
+  }
+  $('#subTierGroup').replaceChildren(tierFrag);
+
+  const taskFrag = document.createDocumentFragment();
+  for (const tp of TASK_VOLUME_PRESETS) {
+    const btn = html('button', t(tp.zh, tp.en));
+    btn.type = 'button';
+    btn.dataset.tasks = String(tp.tasks);
+    btn.setAttribute('aria-pressed', String(state ? state.monthlyTasks === tp.tasks : false));
+    btn.addEventListener('click', () => setMonthlyTasks(tp.tasks));
+    taskFrag.append(btn);
+  }
+  $('#taskPresetGroup').replaceChildren(taskFrag);
+}
+
+function formatTaskCount(tasks) {
+  if (tasks === null) return '—';
+  if (tasks < 1) return t(`< 1 次 (${format(tasks, 2)})`, `< 1 (${format(tasks, 2)})`);
+  if (tasks >= 100) return `${Math.round(tasks).toLocaleString('en-US')}${t(' 次', '')}`;
+  return `${format(tasks, 1)}${t(' 次', '')}`;
+}
+
+function compactMoney(value) {
+  if (value >= 100) return '$' + Math.round(value).toLocaleString('en-US');
+  if (value >= 1) return '$' + format(value, 1);
+  return money(value);
+}
+
+function tierBreakevenText(cost) {
+  const parts = SUBSCRIPTION_TIERS.map(tier => {
+    const n = breakEvenTasks(cost, tier.price);
+    if (n === null) return null;
+    const countStr = n < 1 ? '<1' : n >= 100 ? Math.round(n).toLocaleString('en-US') : format(n, 1);
+    return `$${tier.price}: ${countStr}\u00A0${t('次', 'x')}`;
+  }).filter(Boolean);
+  return parts.length ? `${t('回本', 'Break-even')} · ${parts.join(' · ')}` : '';
 }
 
 function syncStaticText() {
@@ -310,12 +379,14 @@ function syncStaticText() {
 
   $('[data-i18n="scatterView"]').textContent = t('散点图', 'Scatter');
   $('[data-i18n="tableView"]').textContent = t('数据表', 'Table');
-  $('[data-i18n="curveView"]').textContent = t('权重曲线', 'Utility Curve');
+  $('[data-i18n="curveView"]').textContent = t('权重曲线', 'Curve');
+  $('[data-i18n="subView"]').textContent = t('订阅回本', 'Sub vs API');
 
   $('#keyLinear').textContent = t('线性美元横轴', 'Linear USD axis');
   $('#keyQuadrant').textContent = t('优于中位参考区', 'Above-median score & below-median cost');
   $('#keyFrontier').textContent = t('帕累托前沿', 'Pareto frontier');
   $('#keyIso').textContent = t('最优等性价比切线', 'Best-value iso-curve');
+  $('#keySub').textContent = t('订阅回本成本线', 'Subscription break-even');
   $('#keyBetter').textContent = t('越靠左上越理想', 'Upper-left is better');
 
   $('#reset').textContent = t('重置视图', 'Reset view');
@@ -390,6 +461,25 @@ function syncStaticText() {
     '50 分锚点恒对应效用 50；曲线上的圆点为当前榜单帕累托前沿条目，外环高亮当前性价比榜首。',
     'Score 50 is anchored at utility 50; dots mark Pareto frontier entries, with the ring highlighting the #1 value leader.'
   );
+
+  $('#subSettings').setAttribute('aria-label', t('月度订阅与 API 回本测算', 'Subscription vs API break-even calculator'));
+  $('#subTierGroup').setAttribute('aria-label', t('订阅月费档位', 'Subscription fee presets'));
+  $('#taskPresetGroup').setAttribute('aria-label', t('月任务量预设', 'Monthly task volume presets'));
+  $('#subFeeLabel').textContent = t('参考月订阅', 'Monthly sub');
+  $('#subFeeValue').setAttribute('aria-label', t('自定义月订阅美元价格', 'Custom monthly subscription USD price'));
+  $('#monthlyTasksLabel').textContent = t('预计月任务量', 'Tasks / mo');
+  $('#monthlyTasksValue').setAttribute('aria-label', t('输入预计每月任务次数', 'Enter estimated monthly tasks'));
+  $('#resetSubInline').textContent = t('重置测算', 'Reset');
+  $('#subDisclaimer').textContent = t(
+    '基于实测 API 单任务均价精确换算；官方订阅含 5 小时/周动态限流且不公开配额，超线代表“配额够用时订阅划算”。',
+    'Derived from verified API cost per task; official plans enforce dynamic rate limits, so exceeding means subscription wins if quota suffices.'
+  );
+  $('#subTableCaption').textContent = t('API 按量计费与月订阅盈亏平衡对比表', 'Pay-as-you-go API versus monthly subscription break-even table');
+  $('#subThName').textContent = t('名称', 'Name');
+  $('#subThIndex').textContent = t('指数 (0–100)', 'Index (0–100)');
+  $('#subThCost').textContent = t('单任务 API', 'API / task');
+  $('#subThBreakeven').textContent = t('回本任务数', 'Break-even');
+  $('#subThBill').textContent = t('预计月 API 账单', 'Est. Monthly API');
 
   renderPresets();
   applyThemeText();
@@ -506,6 +596,7 @@ function renderLegend() {
       syncControls();
       syncUrlHash();
       if (state.mode === 'table') renderTable();
+      else if (state.mode === 'sub') renderSubTable();
       scheduleDraw();
     });
     fragment.append(button);
@@ -522,6 +613,11 @@ function syncControls() {
   $('#isoToggle').setAttribute('aria-pressed', String(state.isoCurve));
   $('#isoToggle').textContent = state.isoCurve ? t('等值切线 ✓', 'Iso-value ✓') : t('等值切线', 'Iso-value');
   $('#keyIsoWrap').hidden = !state.isoCurve;
+
+  $('#subLineToggle').hidden = state.mode !== 'chart';
+  $('#subLineToggle').setAttribute('aria-pressed', String(state.subLine));
+  $('#subLineToggle').textContent = state.subLine ? t('回本线 ✓', 'Sub line ✓') : t('回本线', 'Sub line');
+  $('#keySubWrap').hidden = !state.subLine;
 
   $('#labels').setAttribute('aria-pressed', String(state.labels));
   $('#labels').textContent = state.labels ? t('显示标签 ✓', 'Labels ✓') : t('标签已关', 'Labels off');
@@ -541,15 +637,18 @@ function syncControls() {
 
   syncSettingsReset();
   syncValueControls();
+  syncSubControls();
 
   $('#optionsPanel').hidden = state.mode !== 'chart';
   for (const button of document.querySelectorAll('[data-view]')) {
     button.setAttribute('aria-pressed', String(button.dataset.view === state.mode));
   }
   $('#dataTable').hidden = state.mode !== 'table';
+  $('#subPanel').hidden = state.mode !== 'sub';
   host.hidden = state.mode !== 'chart';
   $('#curvePanel').hidden = state.mode !== 'curve';
-  $('#valueSettings').hidden = state.mode === 'chart' && !state.isoCurve;
+  $('#valueSettings').hidden = !(state.mode === 'table' || state.mode === 'curve' || (state.mode === 'chart' && state.isoCurve));
+  $('#subSettings').hidden = !(state.mode === 'sub' || (state.mode === 'chart' && state.subLine));
   $('#interactionHelp').hidden = state.mode !== 'chart';
   $('#viewControls').hidden = state.mode !== 'chart';
   $('#legend').hidden = state.mode === 'curve';
@@ -725,6 +824,40 @@ function syncValueControls() {
   $('#valueUnit').textContent = pureCost ? t('50/USD', '50/USD') : linear ? t('指数/USD', 'Index/USD') : t('加权/USD', 'Weighted/USD');
 }
 
+function syncSubControls() {
+  const fee = state.subFee, tasks = state.monthlyTasks;
+  const restored = fee === MONTHLY_USAGE.defaultFee && tasks === state.defaultTasks;
+  $('#subFeeValue').value = fee;
+  $('#monthlyTasks').value = Math.min(500, tasks);
+  $('#monthlyTasksValue').value = tasks;
+  $('#dailyTasksHint').textContent = t(`≈ ${format(tasks / 30, 1)}/天`, `≈ ${format(tasks / 30, 1)}/day`);
+  $('#resetSubInline').hidden = restored;
+
+  for (const btn of document.querySelectorAll('#subTierGroup button')) {
+    btn.setAttribute('aria-pressed', String(Number(btn.dataset.fee) === fee));
+  }
+  for (const btn of document.querySelectorAll('#taskPresetGroup button')) {
+    btn.setAttribute('aria-pressed', String(Number(btn.dataset.tasks) === tasks));
+  }
+
+  $('#subThTierHint').textContent = t(`达 $${fee}/月`, `for $${fee}/mo`);
+  $('#subThTasksHint').textContent = t(`${tasks} 次/月`, `${tasks} tasks/mo`);
+
+  const rows = filteredRows();
+  const thresholdCost = fee / tasks;
+  let apiCount = 0, subCount = 0;
+  for (const row of rows) {
+    const verdict = subscriptionVerdict(row.cost, tasks, fee);
+    if (!verdict) continue;
+    if (verdict.status === 'api-cheaper') apiCount++;
+    else if (verdict.status === 'sub-cheaper') subCount++;
+  }
+  $('#subBreakevenSummary').textContent = t(
+    `盈亏平衡单价：${money(thresholdCost)}/任务 · 当前 ${apiCount} 项 API 按量更省，${subCount} 项超 $${fee}/月订阅线`,
+    `Break-even cost: ${money(thresholdCost)}/task · ${apiCount} cheaper via API, ${subCount} exceed $${fee}/mo line`
+  );
+}
+
 function renderStatus() {
   const cfg = BENCHMARKS[activeKey];
   const version = activeKey === 'models' ? snapshot.modelIndexVersion : snapshot.codingAgentIndexVersion;
@@ -801,6 +934,7 @@ function buildPlot() {
   const floorGuide = node('line', {class: 'floor-guide'});
   const paretoPath = node('path', {class: 'pareto'});
   const isoPath = node('path', {class: 'iso-curve'});
+  const subGuide = node('line', {class: 'sub-guide'});
   const connectors = node('g', {class: 'connector-layer'});
   const points = node('g', {class: 'points'});
   const labels = node('g', {class: 'label-layer'});
@@ -808,7 +942,7 @@ function buildPlot() {
   const emphasis = node('g', {class: 'emphasis-layer', 'clip-path': 'url(#emphasis-clip)', 'aria-hidden': 'true', 'pointer-events': 'none'});
   emphasis.append(node('g', {class: 'glow-layer'}), node('g', {class: 'company-layer'}), node('g', {class: 'active-layer'}));
 
-  plot.append(quadrant, quadrantBorder, floorRect, floorGuide, paretoPath, isoPath, connectors, points, labels);
+  plot.append(quadrant, quadrantBorder, floorRect, floorGuide, paretoPath, isoPath, subGuide, connectors, points, labels);
   svg.replaceChildren(defs, node('g', {class: 'grid'}), plot, node('g', {class: 'axis'}), emphasis);
 
   const axisName = t(BENCHMARKS[activeKey].zhAxis, BENCHMARKS[activeKey].enAxis);
@@ -847,6 +981,7 @@ function buildPlot() {
 
   if (state.selected && !rows.some(row => row.id === state.selected)) state.selected = null;
   if (state.mode === 'table') renderTable(rows);
+  else if (state.mode === 'sub') renderSubTable(rows);
   scheduleDraw();
 }
 
@@ -977,6 +1112,114 @@ function comparisonCell(value, ratio, displayColor) {
   comparison.append(html('span', value, 'comparison-value'), track);
   cell.append(comparison);
   return cell;
+}
+
+function renderSubTable(rows = filteredRows()) {
+  const fragment = document.createDocumentFragment();
+  const frontierIds = new Set(paretoFrontier(state.rows).map(row => row.id));
+  const fee = state.subFee, tasks = state.monthlyTasks;
+  const collator = new Intl.Collator('zh-CN', {numeric: true, sensitivity: 'base'});
+  const sign = state.subSortDirection === 'asc' ? 1 : -1;
+
+  const sorted = [...rows].sort((a, b) => {
+    let primary = 0;
+    if (state.subSortKey === 'name') {
+      primary = collator.compare(a.name, b.name);
+    } else if (state.subSortKey === 'intelligenceIndex') {
+      primary = a.intelligenceIndex - b.intelligenceIndex;
+    } else if (state.subSortKey === 'cost' || state.subSortKey === 'apiBill') {
+      primary = a.cost - b.cost;
+    } else if (state.subSortKey === 'breakeven') {
+      const ba = breakEvenTasks(a.cost, fee) ?? Infinity;
+      const bb = breakEvenTasks(b.cost, fee) ?? Infinity;
+      primary = ba - bb;
+    }
+    return primary * sign || collator.compare(a.name, b.name) || a.id.localeCompare(b.id);
+  });
+
+  const maxBe = Math.max(...rows.map(r => Math.min(500, breakEvenTasks(r.cost, fee) || 0)), 1);
+
+  for (const row of sorted) {
+    const tr = html('tr');
+    tr.dataset.id = row.id;
+    tr.classList.toggle('is-muted', !!state.company && row.creator?.name !== state.company);
+    tr.classList.toggle('is-selected', state.selected === row.id);
+
+    const displayColor = color(row.creator?.color);
+    const nameTd = html('td', null, 'table-name');
+    const wrap = html('div', null, 'name-wrap');
+    const dot = html('i', null, 'creator-dot');
+    dot.style.background = displayColor;
+    dot.setAttribute('aria-hidden', 'true');
+    wrap.append(dot, html('span', row.name));
+    if (frontierIds.has(row.id)) wrap.append(html('span', t('前沿', 'Frontier'), 'row-tag'));
+
+    const locateBtn = html('button', t('图中定位', 'Locate'), 'locate-btn');
+    locateBtn.type = 'button';
+    locateBtn.addEventListener('click', event => {
+      event.stopPropagation();
+      locateRowInChart(row);
+    });
+    wrap.append(locateBtn);
+    nameTd.append(wrap);
+
+    const costTd = html('td', money(row.cost));
+    costTd.style.fontVariantNumeric = 'tabular-nums';
+
+    const verdict = subscriptionVerdict(row.cost, tasks, fee);
+    const beRatio = verdict ? Math.min(1, Math.min(500, verdict.breakeven) / maxBe) : 0;
+    const beTd = comparisonCell(verdict ? formatTaskCount(verdict.breakeven) : '—', beRatio, displayColor);
+    beTd.title = tierBreakevenText(row.cost);
+
+    const billTd = html('td');
+    const verdictWrap = html('div', null, 'verdict-wrap');
+    verdictWrap.append(html('span', verdict ? compactMoney(verdict.apiBill) : '—', 'bill-amount'));
+    if (verdict) {
+      let pillText, pillClass;
+      if (verdict.status === 'api-cheaper') {
+        pillText = t(`API 省 ${compactMoney(Math.abs(verdict.delta))}`, `API −${compactMoney(Math.abs(verdict.delta))}`);
+        pillClass = 'verdict-pill pill-api';
+      } else if (verdict.status === 'sub-cheaper') {
+        pillText = t(`超线 +${compactMoney(verdict.delta)}`, `+${compactMoney(verdict.delta)} sub`);
+        pillClass = 'verdict-pill pill-sub';
+      } else {
+        pillText = t('约持平', '≈ Even');
+        pillClass = 'verdict-pill pill-even';
+      }
+      verdictWrap.append(html('span', pillText, pillClass));
+    }
+    billTd.append(verdictWrap);
+
+    tr.append(
+      nameTd,
+      comparisonCell(format(row.intelligenceIndex, 2), row.intelligenceIndex / 100, displayColor),
+      costTd,
+      beTd,
+      billTd
+    );
+
+    tr.addEventListener('click', () => {
+      state.selected = state.selected === row.id ? null : row.id;
+      renderSubTable(rows);
+      updateSummary();
+    });
+    fragment.append(tr);
+  }
+
+  if (!rows.length) {
+    const td = html('td', t('没有匹配的条目，请调整搜索词或清除筛选。', 'No matching entries. Try clearing filters.'));
+    td.colSpan = 5;
+    const tr = html('tr');
+    tr.append(td);
+    fragment.append(tr);
+  }
+  $('#subTableBody').replaceChildren(fragment);
+
+  for (const button of document.querySelectorAll('.sub-sort-button')) {
+    const selected = button.dataset.subSort === state.subSortKey;
+    button.closest('th').setAttribute('aria-sort', selected ? (state.subSortDirection === 'asc' ? 'ascending' : 'descending') : 'none');
+    button.querySelector('.sort-arrow').textContent = selected ? (state.subSortDirection === 'asc' ? '↑' : '↓') : '↕';
+  }
 }
 
 function drawCurve() {
@@ -1239,6 +1482,17 @@ function draw() {
     isoPath.setAttribute('d', '');
   }
 
+  // Optional vertical subscription break-even threshold line: cost* = subFee / monthlyTasks
+  const subGuide = svg.querySelector('.sub-guide');
+  if (state.subLine && state.monthlyTasks > 0) {
+    const thresholdCost = state.subFee / state.monthlyTasks;
+    const sx = x(thresholdCost);
+    setAttrs(subGuide, {x1: sx, x2: sx, y1: frame.top, y2: frame.bottom});
+    subGuide.style.display = '';
+  } else {
+    subGuide.style.display = 'none';
+  }
+
   for (const item of nodes) {
     const visible = inView(item.row);
     setAttrs(item.p, {cx: x(item.row.cost), cy: y(item.row.intelligenceIndex), tabindex: visible ? 0 : -1});
@@ -1290,6 +1544,26 @@ function drawAxes(medianX, medianY) {
       y: frame.top + 13,
       'text-anchor': 'end'
     }, t(`中位 ${money(medianX)}`, `Median ${money(medianX)}`)));
+  }
+
+  if (state.subLine && state.monthlyTasks > 0) {
+    const thresholdCost = state.subFee / state.monthlyTasks;
+    const sx = x(thresholdCost);
+    if (sx > frame.left + 20 && sx < frame.right - 20) {
+      const alignRight = sx > frame.left + frame.width * 0.62;
+      const compact = frame.width < 520;
+      axis.append(node('text', {
+        class: 'sub-guide-label',
+        x: alignRight ? sx - 6 : sx + 6,
+        y: frame.top + 27,
+        'text-anchor': alignRight ? 'end' : 'start'
+      }, compact
+        ? (alignRight ? `← ${money(thresholdCost)}` : `${money(thresholdCost)} →`)
+        : t(
+          alignRight ? `← API 省 · $${state.subFee}/${state.monthlyTasks}次 (${money(thresholdCost)})` : `${money(thresholdCost)} ($${state.subFee}/${state.monthlyTasks}次) · 超线订阅省 →`,
+          alignRight ? `← API cheaper · $${state.subFee}/${state.monthlyTasks}x` : `$${state.subFee}/${state.monthlyTasks}x · Sub cheaper →`
+        )));
+    }
   }
 
   axis.append(node('path', {class: 'frame', d: `M${frame.left},${frame.top}V${frame.bottom}H${frame.right}`}));
@@ -1502,6 +1776,7 @@ function renderPinned() {
   $('#pinnedScore').textContent = format(row.intelligenceIndex, 2);
   $('#pinnedCost').textContent = money(row.cost);
   $('#pinnedValue').textContent = rankInfo ? valueLabel(rankInfo.value) : t('未达门槛', 'Below min');
+  $('#pinnedSubNote').textContent = tierBreakevenText(row.cost);
   $('#pinnedOutside').hidden = !frame || inView(row);
 
   if (frame) {
@@ -1553,6 +1828,8 @@ function showHover(item, event) {
     line.append(html('span', label), html('b', value));
     tip.append(line);
   }
+  const beSummary = tierBreakevenText(row.cost);
+  if (beSummary) tip.append(html('span', beSummary, 'tip-foot'));
   tip.append(html('span', t('单击锁定详情卡片', 'Click to pin details card'), 'tip-foot'));
   tip.hidden = state.selected === row.id;
   const box = item.p.getBoundingClientRect();
@@ -1600,6 +1877,7 @@ function clearPin() {
   state.selected = null;
   clearHover();
   if (state.mode === 'table') renderTable();
+  else if (state.mode === 'sub') renderSubTable();
   scheduleDraw();
 }
 
@@ -1621,6 +1899,11 @@ function updateSummary() {
     $('#viewStatus').textContent = t(
       `共 ${rows.length} 项 · α = ${state.valueWeight.toFixed(1)}${state.minScore > 0 ? ' · 门槛 ≥' + state.minScore : ''}`,
       `${rows.length} entries · α = ${state.valueWeight.toFixed(1)}${state.minScore > 0 ? ' · Min ≥' + state.minScore : ''}`
+    );
+  } else if (state.mode === 'sub') {
+    $('#viewStatus').textContent = t(
+      `共 ${rows.length} 项 · 参考月费 $${state.subFee} · 预计 ${state.monthlyTasks} 次/月`,
+      `${rows.length} entries · Sub $${state.subFee}/mo · ${state.monthlyTasks} tasks/mo`
     );
   } else {
     $('#viewStatus').textContent = t(
@@ -1699,6 +1982,14 @@ $('#isoToggle').addEventListener('click', () => {
   scheduleDraw();
 });
 
+$('#subLineToggle').addEventListener('click', () => {
+  if (!state) return;
+  state.subLine = !state.subLine;
+  syncControls();
+  syncUrlHash();
+  scheduleDraw();
+});
+
 $('#clearFilters').addEventListener('click', () => {
   if (!state) return;
   state.company = null;
@@ -1746,7 +2037,7 @@ $('#resetSettings').addEventListener('click', () => {
 });
 
 function showView(mode) {
-  if (!state || !['chart', 'table', 'curve'].includes(mode)) return;
+  if (!state || !['chart', 'table', 'curve', 'sub'].includes(mode)) return;
   endPointerInteractions();
   clearHover();
   state.mode = mode;
@@ -1754,6 +2045,7 @@ function showView(mode) {
   syncControls();
   syncUrlHash();
   if (mode === 'table') renderTable();
+  else if (mode === 'sub') renderSubTable();
   scheduleDraw();
 }
 
@@ -1820,6 +2112,72 @@ function resetValuePreferences() {
 
 $('#resetValueWeight').addEventListener('click', resetValuePreferences);
 $('#resetValueInline').addEventListener('click', resetValuePreferences);
+
+function refreshSubView() {
+  if (!state) return;
+  syncSubControls();
+  syncUrlHash();
+  if (state.mode === 'sub') renderSubTable();
+  else if (state.mode === 'chart') draw();
+  updateSummary();
+}
+
+function setSubFee(value) {
+  if (!state || !Number.isFinite(value)) return;
+  state.subFee = Math.max(MONTHLY_USAGE.minFee, Math.min(MONTHLY_USAGE.maxFee, Math.round(value)));
+  refreshSubView();
+}
+
+function setMonthlyTasks(value) {
+  if (!state || !Number.isFinite(value)) return;
+  state.monthlyTasks = Math.max(MONTHLY_USAGE.minTasks, Math.min(MONTHLY_USAGE.maxTasks, Math.round(value)));
+  refreshSubView();
+}
+
+$('#monthlyTasks').addEventListener('input', () => setMonthlyTasks(Number($('#monthlyTasks').value)));
+$('#monthlyTasksValue').addEventListener('change', () => setMonthlyTasks($('#monthlyTasksValue').valueAsNumber));
+$('#monthlyTasksValue').addEventListener('blur', () => {
+  if (Number.isFinite($('#monthlyTasksValue').valueAsNumber)) setMonthlyTasks($('#monthlyTasksValue').valueAsNumber);
+  else if (state) syncSubControls();
+});
+$('#monthlyTasksValue').addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    setMonthlyTasks($('#monthlyTasksValue').valueAsNumber);
+  }
+});
+
+$('#subFeeValue').addEventListener('change', () => setSubFee($('#subFeeValue').valueAsNumber));
+$('#subFeeValue').addEventListener('blur', () => {
+  if (Number.isFinite($('#subFeeValue').valueAsNumber)) setSubFee($('#subFeeValue').valueAsNumber);
+  else if (state) syncSubControls();
+});
+$('#subFeeValue').addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    setSubFee($('#subFeeValue').valueAsNumber);
+  }
+});
+
+$('#resetSubInline').addEventListener('click', () => {
+  if (!state) return;
+  state.subFee = MONTHLY_USAGE.defaultFee;
+  state.monthlyTasks = state.defaultTasks;
+  refreshSubView();
+});
+
+for (const button of document.querySelectorAll('.sub-sort-button')) {
+  button.addEventListener('click', () => {
+    if (!state) return;
+    const key = button.dataset.subSort;
+    state.subSortDirection = state.subSortKey === key
+      ? (state.subSortDirection === 'asc' ? 'desc' : 'asc')
+      : (['intelligenceIndex', 'apiBill'].includes(key) ? 'desc' : 'asc');
+    state.subSortKey = key;
+    renderSubTable();
+    $('#subPanel .table-scroll').scrollTop = 0;
+  });
+}
 
 for (const button of document.querySelectorAll('.sort-button')) {
   button.addEventListener('click', () => {
@@ -2043,8 +2401,10 @@ new ResizeObserver(scheduleDraw).observe($('#curveHost'));
 function showLoadError(error) {
   host.hidden = false;
   $('#dataTable').hidden = true;
+  $('#subPanel').hidden = true;
   $('#curvePanel').hidden = true;
   $('#valueSettings').hidden = true;
+  $('#subSettings').hidden = true;
   for (const button of document.querySelectorAll('[data-view]')) {
     button.setAttribute('aria-pressed', String(button.dataset.view === 'chart'));
   }

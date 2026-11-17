@@ -12,9 +12,14 @@ import {
   valuePerDollar,
   capabilityUtility,
   isoValueCost,
+  breakEvenTasks,
+  monthlyApiBill,
+  subscriptionVerdict,
   VALUE_WEIGHT,
   MIN_SCORE,
-  VALUE_PRESETS
+  VALUE_PRESETS,
+  SUBSCRIPTION_TIERS,
+  MONTHLY_USAGE
 } from '../chart-math.mjs';
 
 const row = (id, cost, intelligenceIndex) => ({id, name: id, cost, intelligenceIndex});
@@ -288,6 +293,35 @@ test('isoValueCost passes exactly through the champion point and bounds all othe
   assert.ok(Math.abs(tangentCost - 0.75) < 1e-12);
   assert.equal(isoValueCost(50, 0, 4), null);
   assert.equal(isoValueCost(-1, val, 4), null);
+});
+
+test('subscription break-even and monthly API bill calculations remain exact and reject bad inputs', () => {
+  assert.ok(Object.isFrozen(SUBSCRIPTION_TIERS) && SUBSCRIPTION_TIERS.length === 3);
+  assert.ok(Object.isFrozen(MONTHLY_USAGE));
+  assert.equal(breakEvenTasks(0.5, 20), 40);
+  assert.equal(breakEvenTasks(8, 200), 25);
+  assert.equal(breakEvenTasks(0, 20), null);
+  assert.equal(breakEvenTasks(-1, 20), null);
+  assert.throws(() => breakEvenTasks(1, 0), RangeError);
+  assert.throws(() => breakEvenTasks(1, -20), RangeError);
+
+  assert.equal(monthlyApiBill(0.5, 60), 30);
+  assert.equal(monthlyApiBill(0.5, 0), 0);
+  assert.equal(monthlyApiBill(-1, 10), null);
+  assert.throws(() => monthlyApiBill(1, -5), RangeError);
+
+  const apiWins = subscriptionVerdict(0.1, 60, 20);
+  assert.equal(apiWins.status, 'api-cheaper');
+  assert.equal(apiWins.apiBill, 6);
+  assert.equal(apiWins.delta, -14);
+
+  const subWins = subscriptionVerdict(2.5, 60, 100);
+  assert.equal(subWins.status, 'sub-cheaper');
+  assert.equal(subWins.apiBill, 150);
+  assert.equal(subWins.breakeven, 40);
+
+  const even = subscriptionVerdict(1, 20, 20);
+  assert.equal(even.status, 'near-breakeven');
 });
 
 test('invalid weights or minScores throw RangeError across math helpers', () => {
