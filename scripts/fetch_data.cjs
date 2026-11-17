@@ -56,12 +56,43 @@ async function getBuffer(url, { fetchImpl = fetch, sleep = ms => new Promise(res
   }
 }
 
+function extractBalancedJson(source, startIndex) {
+  let depth = 0, inString = false, escaped = false;
+  for (let i = startIndex; i < source.length; i++) {
+    const ch = source[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === '\\') escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') { inString = true; continue; }
+    if (ch === '[') depth++;
+    else if (ch === ']') {
+      depth--;
+      if (depth === 0) return source.slice(startIndex, i + 1);
+    }
+  }
+  return null;
+}
+
 function readFlightRecords(pageHtml) {
-  // Decode JSON strings, never execute scripts. Chunks can split an individual record.
+  // Decode JSON strings, never execute scripts. Multiple pushes can share one script tag.
   const chunks = [];
-  for (const match of pageHtml.matchAll(/self\.__next_f\.push\((\[.*?\])\)<\/script>/gs)) {
+  const marker = 'self.__next_f.push(';
+  let cursor = 0;
+  for (;;) {
+    const found = pageHtml.indexOf(marker, cursor);
+    if (found === -1) break;
+    let arrayStart = found + marker.length;
+    while (arrayStart < pageHtml.length && /\s/.test(pageHtml[arrayStart])) arrayStart++;
+    cursor = arrayStart + 1;
+    if (pageHtml[arrayStart] !== '[') continue;
+    const rawArray = extractBalancedJson(pageHtml, arrayStart);
+    if (!rawArray) continue;
+    cursor = arrayStart + rawArray.length;
     let chunk;
-    try { chunk = JSON.parse(match[1]); } catch { continue; }
+    try { chunk = JSON.parse(rawArray); } catch { continue; }
     if (chunk[0] === 1 && typeof chunk[1] === 'string') chunks.push(chunk[1]);
   }
   const records = new Map();
@@ -147,10 +178,20 @@ function readCodingRows(pageHtml) {
   return resolved;
 }
 
-function simplifyCodingAgent(row) {
+function expectedCodingComponents(rows) {
+  let maxCount = 3;
+  for (const row of rows) {
+    if (Number.isInteger(row?.indexComponentCount) && row.indexComponentCount > maxCount) {
+      maxCount = row.indexComponentCount;
+    }
+  }
+  return maxCount;
+}
+
+function simplifyCodingAgent(row, requiredComponents = 3) {
   const cost = row.mean?.costUsd;
   const score = row.indexScore;
-  if (!row.id || typeof row.displayLabel !== 'string' || !Number.isFinite(cost) || cost <= 0 || !Number.isFinite(score) || score < 0 || score > 1 || row.indexComponentCount !== 3) return null;
+  if (!row.id || typeof row.displayLabel !== 'string' || !Number.isFinite(cost) || cost <= 0 || !Number.isFinite(score) || score < 0 || score > 1 || row.indexComponentCount !== requiredComponents) return null;
   const creators = row.modelCreators || [];
   const modelCreator = creators.length > 1
     ? { name: creators.map(item => item.name).join(' + '), color: '#64748b' }
@@ -220,7 +261,8 @@ async function main() {
   const [modelPage, codingPageBuffer] = await Promise.all([getBuffer(sourceUrl), getBuffer(codingAgentSourceUrl)]);
   const codingPage = codingPageBuffer.toString('utf8');
   const rawCodingRows = readCodingRows(codingPage);
-  const codingAgents = rawCodingRows.map(simplifyCodingAgent).filter(Boolean);
+  const requiredComponents = expectedCodingComponents(rawCodingRows);
+  const codingAgents = rawCodingRows.map(row => simplifyCodingAgent(row, requiredComponents)).filter(Boolean);
   validateRows(codingAgents, 5, 'coding-agent');
   const { models, manifestPath } = await fetchModels(modelPage.toString('utf8'), sourceUrl, previous);
   const output = {
@@ -242,5 +284,5 @@ async function main() {
     `### Artificial Analysis data check\n- Checked: ${new Date().toISOString()}\n- Models: ${models.length}\n- Coding-agent variants: ${codingAgents.length}\n- Excluded coding-agent rows without comparable score/cost: ${output.codingAgentExcludedCount}\n- Snapshot changed: ${changed}\n`);
 }
 
-module.exports = { getBuffer, readFlightRecords, readManifests, decryptPayload, simplifyModel, resolveFlightReference, readCodingRows, simplifyCodingAgent, validateRows, fetchModels, writeSnapshot };
+module.exports = { getBuffer, readFlightRecords, readManifests, decryptPayload, simplifyModel, resolveFlightReference, readCodingRows, expectedCodingComponents, simplifyCodingAgent, validateRows, fetchModels, writeSnapshot };
 if (require.main === module) main().catch(error => { console.error(error.stack || error); process.exitCode = 1; });

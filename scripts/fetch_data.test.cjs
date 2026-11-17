@@ -7,7 +7,7 @@ const crypto = require('node:crypto');
 const zlib = require('node:zlib');
 const http = require('node:http');
 const { spawn } = require('node:child_process');
-const { getBuffer, readCodingRows, readManifests, simplifyModel, simplifyCodingAgent, fetchModels, validateRows, writeSnapshot } = require('./fetch_data.cjs');
+const { getBuffer, readCodingRows, readManifests, simplifyModel, expectedCodingComponents, simplifyCodingAgent, fetchModels, validateRows, writeSnapshot } = require('./fetch_data.cjs');
 
 const model = { id: 'model-1', slug: 'example-model', name: 'Example Model', intelligenceIndex: 50, intelligenceIndexCostPerTask: { total: 0.5 } };
 const agent = { id: 'agent-1', displayLabel: 'Example Agent - Model', indexScore: 0.53, mean: { costUsd: 7.6 }, indexComponentCount: 3, modelCreators: [{ name: 'Example', color: '#123456' }] };
@@ -38,10 +38,23 @@ test('coding score is converted from a fraction once; absent telemetry is not ze
   assert.equal(simplifyCodingAgent({ ...agent, indexComponentCount: 2 }), null);
 });
 
-test('Flight rows resolve highlighted-row references across split chunks without losing variants', () => {
+test('Flight rows resolve highlighted-row references across split chunks and multi-push script tags', () => {
   const html = flight({ '31': ['$', '$L1', null, { children: ['$', '$L2', null, { rows: [agent] }] }], '32': ['$', '$L3', null, { benchmarkRows: ['$31:props:children:props:rows:0', { ...agent, id: 'agent-2' }] }] }, 83);
   assert.deepEqual(readCodingRows(html).map(row => row.id), ['agent-1', 'agent-2']);
+  const combinedScript = `<script>self.__next_f.push(${JSON.stringify([1, `10:${JSON.stringify({ benchmarkRows: [agent] })}\n`])});self.__next_f.push(${JSON.stringify([1, `11:{"extra":true}\n`])});</script>`;
+  assert.deepEqual(readCodingRows(combinedScript).map(row => row.id), ['agent-1']);
   assert.throws(() => readCodingRows(flight({ '32': { benchmarkRows: ['$99:props:rows:0'] } })), /Unresolved/);
+});
+
+test('coding component count adapts automatically if benchmark suite expands beyond 3 components', () => {
+  const expandedRows = [
+    { ...agent, id: 'partial', indexComponentCount: 3 },
+    { ...agent, id: 'full-4', indexComponentCount: 4 }
+  ];
+  const req = expectedCodingComponents(expandedRows);
+  assert.equal(req, 4);
+  assert.equal(simplifyCodingAgent(expandedRows[0], req), null);
+  assert.equal(simplifyCodingAgent(expandedRows[1], req).benchmarkCount, 4);
 });
 
 test('manifest selection prefers the existing model manifest and skips unrelated data', async () => {

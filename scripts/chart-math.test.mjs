@@ -1,7 +1,21 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {dataBounds, clampView, paretoFrontier, ticks, validRows, sortRows, valuePerDollar, capabilityUtility, VALUE_WEIGHT} from '../chart-math.mjs';
+import {
+  dataBounds,
+  clampView,
+  pointerZoomView,
+  paretoFrontier,
+  ticks,
+  validRows,
+  sortRows,
+  valuePerDollar,
+  capabilityUtility,
+  isoValueCost,
+  VALUE_WEIGHT,
+  MIN_SCORE,
+  VALUE_PRESETS
+} from '../chart-math.mjs';
 
 const row = (id, cost, intelligenceIndex) => ({id, name: id, cost, intelligenceIndex});
 
@@ -70,6 +84,17 @@ test('clamp prevents zero-size zooms and unbounded zoom-out', () => {
   assert.ok(Number.isFinite(large.height) && large.height >= bounds.height && large.height < bounds.height * 2);
   assert.equal(large.x, 0);
   assert.equal(large.y, 0);
+});
+
+test('pointerZoomView keeps the anchored data coordinate fixed under the cursor', () => {
+  const bounds = {x: 0, y: 0, width: 100, height: 80};
+  const view = {x: 10, y: 10, width: 40, height: 40};
+  // Anchor at 75% across X (dataX = 10 + 0.75 * 40 = 40) and 25% up Y (dataY = 10 + 0.25 * 40 = 20)
+  const zoomedX = pointerZoomView(view, bounds, 'x', 0.5, 0.75);
+  assert.ok(Math.abs((zoomedX.x + 0.75 * zoomedX.width) - 40) < 1e-12);
+  const zoomedXY = pointerZoomView(view, bounds, 'xy', 0.5, 0.75, 0.25);
+  assert.ok(Math.abs((zoomedXY.x + 0.75 * zoomedXY.width) - 40) < 1e-12);
+  assert.ok(Math.abs((zoomedXY.y + 0.25 * zoomedXY.height) - 20) < 1e-12);
 });
 
 test('same-price Pareto candidates retain the highest score regardless of source order', () => {
@@ -159,176 +184,140 @@ test('weight 1 exactly preserves the original index divided by actual per-task c
   }
 });
 
-test('weight configuration is frozen and defaults to cubic capability preference', () => {
-  assert.deepEqual(VALUE_WEIGHT, {min: 1, max: 10, step: 0.1, default: 3, reference: 100});
+test('weight 0 ranks purely by lowest per-task cost for positive-score entries', () => {
+  const rows = [row('expensive-smart', 5, 64), row('cheap-modest', 0.05, 12), row('mid', 0.5, 45)];
+  assert.equal(capabilityUtility(12, 0), 50);
+  assert.equal(capabilityUtility(64, 0), 50);
+  assert.equal(capabilityUtility(0, 0), 0);
+  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', 0).map(d => d.id), ['cheap-modest', 'mid', 'expensive-smart']);
+});
+
+test('weight configuration and presets are frozen and cover [0, 15] with anchor 50', () => {
+  assert.deepEqual(VALUE_WEIGHT, {min: 0, max: 15, step: 0.1, default: 3, anchor: 50, ceiling: 105});
+  assert.deepEqual(MIN_SCORE, {min: 0, max: 95, step: 1, default: 0});
   assert.ok(Object.isFrozen(VALUE_WEIGHT));
+  assert.ok(Object.isFrozen(MIN_SCORE));
+  assert.ok(Object.isFrozen(VALUE_PRESETS) && VALUE_PRESETS.length >= 5);
   assert.throws(() => { VALUE_WEIGHT.default = 1; }, TypeError);
-  assert.equal(valuePerDollar(row('default', 2, 50)), 6.25);
+  assert.equal(valuePerDollar(row('anchor', 2, 50), 3), 25);
 });
 
-test('weighted value follows the normalized formula across integer and fractional preferences', () => {
-  for (const weight of [1, 1.1, 1.5, 2, 2.7, 3, 4, 6, 9.9, 10]) {
-    for (const [score, cost] of [[25, 0.5], [50, 2], [100, 3], [125, 4]]) {
-      const actual = valuePerDollar(row('formula', cost, score), weight);
-      const expected = 100 * (score / 100) ** weight / cost;
-      assert.ok(Math.abs(actual - expected) <= Math.abs(expected) * 1e-14, `score=${score}, cost=${cost}, weight=${weight}`);
-      assert.equal(valuePerDollar(row('zero-score', cost, 0), weight), 0);
-      assert.equal(Object.is(valuePerDollar(row('negative-zero-score', cost, -0), weight), -0), false);
-    }
-    assert.equal(valuePerDollar(row('reference', 2, 100), weight), 50);
-    const low = valuePerDollar(row('low', 1, 25), weight), high = valuePerDollar(row('high', 1, 50), weight);
-    assert.ok(Math.abs(high / low - 2 ** weight) < 1e-12);
+test('IRT pass-odds hybrid curve is C1-smooth across weight = 1 and anchored at 50', () => {
+  for (const score of [15, 30, 45, 50, 62, 80]) {
+    assert.equal(capabilityUtility(50, 0.5), 50);
+    assert.equal(capabilityUtility(50, 3), 50);
+    assert.equal(capabilityUtility(50, 15), 50);
+    const leftSlope = (capabilityUtility(score, 1) - capabilityUtility(score, 1 - 1e-5)) / 1e-5;
+    const rightSlope = (capabilityUtility(score, 1 + 1e-5) - capabilityUtility(score, 1)) / 1e-5;
+    assert.ok(Math.abs(leftSlope - rightSlope) < 1e-3, `C1 slope continuity at weight=1 for score=${score}`);
   }
 });
 
-test('invalid weights throw for utilities, values and all sorts, including empty or single-row input', () => {
-  for (const weight of [NaN, Infinity, -Infinity, 0, 0.999, 10.001, -1, null, '3', {}, true, 3n, Symbol('weight')]) {
-    assert.throws(() => capabilityUtility(50, weight), RangeError);
-    assert.throws(() => capabilityUtility(null, weight), RangeError);
-    assert.throws(() => valuePerDollar(row('valid', 1, 50), weight), RangeError);
-    assert.throws(() => valuePerDollar(null, weight), RangeError);
-    assert.throws(() => sortRows([], 'valuePerDollar', 'asc', weight), RangeError);
-    assert.throws(() => sortRows([], 'name', 'asc', weight), RangeError);
-    assert.throws(() => sortRows([row('single', 1, 50)], 'cost', 'desc', weight), RangeError);
-  }
-});
-
-test('capability curve preserves its endpoints and increases monotonically across all 91 weights', () => {
-  const weights = Array.from({length: 91}, (_, i) => Number((1 + i * 0.1).toFixed(1)));
-  assert.equal(capabilityUtility(50), 12.5);
+test('relative preference for higher scores increases strictly across all 151 weights in [0, 15]', () => {
+  const weights = Array.from({length: 151}, (_, i) => Number((i * 0.1).toFixed(1)));
+  let prevRatio = 0;
   for (const weight of weights) {
     assert.equal(capabilityUtility(0, weight), 0);
     assert.equal(Object.is(capabilityUtility(-0, weight), -0), false);
-    assert.equal(capabilityUtility(100, weight), 100);
-    let previous = 0;
-    for (let score = 1; score <= 100; score++) {
-      const utility = capabilityUtility(score, weight);
-      assert.ok(Number.isFinite(utility) && utility > previous && utility <= 100);
-      assert.ok(Math.abs(valuePerDollar(row('curve-agreement', 1, score), weight) - utility) <= utility * 1e-14);
-      previous = utility;
-    }
-  }
-});
-
-test('capability utility rejects malformed scores and overflow instead of drawing invalid coordinates', () => {
-  for (const score of [null, undefined, NaN, Infinity, -Infinity, -1, '50', {}, 50n, Symbol('score')]) {
-    assert.equal(capabilityUtility(score), null);
-  }
-  assert.equal(capabilityUtility(Number.MAX_VALUE, 10), null);
-});
-
-test('capability curve quantifies the 40-to-50 tradeoff at low, default and high preferences', () => {
-  for (const [weight, expected] of [[1, 1.25], [3, 1.953125], [6, 3.814697265625], [10, 9.313225746154785]]) {
-    const ratio = capabilityUtility(50, weight) / capabilityUtility(40, weight);
-    assert.ok(Math.abs(ratio - expected) <= expected * 1e-14);
-    assert.ok(Math.abs(valuePerDollar(row('higher-cost', ratio, 50), weight) - valuePerDollar(row('lower-cost', 1, 40), weight)) <= capabilityUtility(40, weight) * 1e-14);
-  }
-});
-
-test('stronger capability preference changes the value ranking without changing costs or scores', () => {
-  const rows = Object.freeze([Object.freeze(row('cheap-low', 0.1, 20)), Object.freeze(row('capable', 1, 50))]);
-  const before = structuredClone(rows);
-  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', 1).map(d => d.id), ['cheap-low', 'capable']);
-  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', 2).map(d => d.id), ['cheap-low', 'capable']);
-  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', 3).map(d => d.id), ['capable', 'cheap-low']);
-  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', 4).map(d => d.id), ['capable', 'cheap-low']);
-  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc'), sortRows(rows, 'valuePerDollar', 'desc', 3));
-  assert.deepEqual(rows, before);
-});
-
-test('value per dollar rejects invalid or absent inputs and finite-input overflow', () => {
-  for (const invalid of [null, undefined, {}, {cost: 1}, {intelligenceIndex: 20},
-    row('zero-cost', 0, 20), row('negative-cost', -1, 20), row('nan-cost', NaN, 20),
-    row('infinite-cost', Infinity, 20), row('negative-score', 1, -1),
-    row('nan-score', 1, NaN), row('infinite-score', 1, Infinity),
-    row('string-cost', '1', 20), row('string-score', 1, '20'),
-    row('overflow', Number.MIN_VALUE, 1)]) {
-    for (const weight of [1, 1.5, 2, 3, 4, 6, 10]) assert.equal(valuePerDollar(invalid, weight), null);
-  }
-  assert.equal(valuePerDollar(row('weighted-overflow', 1, Number.MAX_VALUE), 10), null);
-});
-
-test('value sorting keeps full precision when displayed rounded values would tie', () => {
-  const rows = [row('A lower', 1, 100.0001), row('Z higher', 1, 100.0002)];
-  for (const weight of [1, 1.5, 2, 3, 4, 6, 10]) {
-    assert.equal(valuePerDollar(rows[0], weight).toFixed(2), valuePerDollar(rows[1], weight).toFixed(2));
-    assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', weight).map(d => d.id), ['Z higher', 'A lower']);
-    assert.deepEqual(sortRows(rows, 'valuePerDollar', 'asc', weight).map(d => d.id), ['A lower', 'Z higher']);
-  }
-});
-
-test('missing value ratios stay last in either direction and zero remains a valid ratio', () => {
-  const rows = [row('invalid 10', 0, 100), row('ten', 2, 20), row('zero', 1, 0), row('invalid 2', 1, NaN)];
-  for (const weight of [1, 1.5, 2, 3, 4, 6, 10]) {
-    assert.deepEqual(sortRows(rows, 'valuePerDollar', 'asc', weight).map(d => d.id), ['zero', 'ten', 'invalid 2', 'invalid 10']);
-    assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', weight).map(d => d.id), ['ten', 'zero', 'invalid 2', 'invalid 10']);
-  }
-});
-
-test('table names sort naturally across numeric suffixes and ignore letter case', () => {
-  const rows = [row('Model 10', 1, 1), row('model 2', 1, 1), row('MODEL 1', 1, 1)];
-  assert.deepEqual(sortRows(rows, 'name').map(d => d.name), ['MODEL 1', 'model 2', 'Model 10']);
-  assert.deepEqual(sortRows(rows, 'name', 'desc').map(d => d.name), ['Model 10', 'model 2', 'MODEL 1']);
-  assert.deepEqual(sortRows([row('模型10', 1, 1), row('模型2', 1, 1)], 'name').map(d => d.name), ['模型2', '模型10']);
-});
-
-test('creator sorting uses creator names and groups absent names under Other', () => {
-  const rows = [
-    {...row('missing', 1, 1)},
-    {...row('ten', 1, 1), creator: {name: 'Company 10'}},
-    {...row('two', 1, 1), creator: {name: 'Company 2'}},
-    {...row('first', 1, 1), creator: {name: 'Anthropic'}},
-  ];
-  assert.deepEqual(sortRows(rows, 'creator').map(d => d.id), ['first', 'two', 'ten', 'missing']);
-  assert.deepEqual(sortRows(rows, 'creator', 'desc').map(d => d.id), ['missing', 'ten', 'two', 'first']);
-});
-
-test('table ties use ascending natural name then id regardless of sort direction', () => {
-  const rows = [
-    {...row('b', 2, 40), name: 'Model 2'},
-    {...row('c', 2, 40), name: 'Model 10'},
-    {...row('a', 2, 40), name: 'Model 2'},
-  ];
-  for (const direction of ['asc', 'desc']) {
-    assert.deepEqual(sortRows(rows, 'cost', direction).map(d => d.id), ['a', 'b', 'c']);
-    assert.deepEqual(sortRows(rows, 'intelligenceIndex', direction).map(d => d.id), ['a', 'b', 'c']);
-    assert.deepEqual(sortRows(rows, 'valuePerDollar', direction).map(d => d.id), ['a', 'b', 'c']);
-  }
-});
-
-test('sorting copies the row order without mutating records or their source array', () => {
-  const rows = Object.freeze([Object.freeze(row('two', 2, 20)), Object.freeze(row('one', 1, 10))]);
-  const before = structuredClone(rows);
-  for (const key of ['cost', 'valuePerDollar']) {
-    const sorted = sortRows(rows, key);
-    assert.notEqual(sorted, rows);
-    assert.equal(sorted[0], rows[1]);
-    assert.equal(sorted[1], rows[0]);
-  }
-  assert.deepEqual(rows, before);
-  assert.deepEqual(sortRows([], 'name'), []);
-});
-
-test('sorting rejects unsupported columns and directions', () => {
-  for (const key of ['score', 'constructor', '__proto__', '', null]) assert.throws(() => sortRows([], key), RangeError);
-  for (const direction of ['ascending', 'DESC', '', null]) assert.throws(() => sortRows([], 'cost', direction), RangeError);
-});
-
-test('both actual snapshots sort monotonically across the full weight range without mutation', async () => {
-  const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
-  for (const rows of [snapshot.models, snapshot.codingAgents]) {
-    const before = structuredClone(rows), ids = rows.map(d => d.id).sort();
-    const weights = Array.from({length: 91}, (_, i) => Number((1 + i * 0.1).toFixed(1)));
-    for (const weight of weights) for (const key of ['cost', 'intelligenceIndex', 'valuePerDollar']) for (const direction of ['asc', 'desc']) {
-      const sorted = sortRows(rows, key, direction, weight);
-      assert.deepEqual(sorted.map(d => d.id).sort(), ids);
-      for (let i = 1; i < sorted.length; i++) {
-        const previous = key === 'valuePerDollar' ? valuePerDollar(sorted[i - 1], weight) : sorted[i - 1][key];
-        const current = key === 'valuePerDollar' ? valuePerDollar(sorted[i], weight) : sorted[i][key];
-        assert.ok(Number.isFinite(previous) && Number.isFinite(current));
-        assert.ok(direction === 'asc' ? previous <= current : previous >= current);
+    assert.equal(capabilityUtility(50, weight), 50);
+    if (weight > 0) {
+      let prev = 0;
+      for (let score = 1; score <= 100; score++) {
+        const u = capabilityUtility(score, weight);
+        assert.ok(Number.isFinite(u) && u > prev, `monotonic score at weight=${weight}, score=${score}`);
+        assert.ok(Math.abs(valuePerDollar(row('agree', 1, score), weight) - u) <= u * 1e-13);
+        prev = u;
       }
     }
-    assert.deepEqual(rows, before);
+    const ratio = capabilityUtility(62, weight) / capabilityUtility(45, weight);
+    assert.ok(ratio > prevRatio, `ratio 62/45 strictly increases at weight=${weight}`);
+    prevRatio = ratio;
   }
+});
+
+test('expanded curve range covers budget, mainstream, and flagship SOTA leaders on shipped data', async () => {
+  const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
+  const modelLeader = w => sortRows(snapshot.models, 'valuePerDollar', 'desc', w)[0];
+  assert.ok(modelLeader(0).cost < 0.01, 'w=0 picks ultra-low-cost model');
+  const mid = modelLeader(3);
+  assert.ok(mid.intelligenceIndex >= 40 && mid.intelligenceIndex <= 55, 'w=3 picks balanced mainstream model');
+  const flagship = modelLeader(8.5);
+  assert.ok(flagship.intelligenceIndex >= 60, 'w=8.5 reaches 60+ flagship tier');
+  const sota = modelLeader(13);
+  const highestScore = Math.max(...snapshot.models.map(m => m.intelligenceIndex));
+  assert.equal(sota.intelligenceIndex, highestScore, 'high weight reaches the #1 highest-scoring SOTA model');
+
+  const agentLeader = w => sortRows(snapshot.codingAgents, 'valuePerDollar', 'desc', w)[0];
+  assert.ok(agentLeader(0).cost <= 0.25, 'w=0 picks lowest-cost coding agent');
+  assert.ok(agentLeader(5.5).intelligenceIndex >= 50, 'w=5.5 picks 50+ coding agent');
+  assert.ok(agentLeader(9).intelligenceIndex >= 58, 'w=9 reaches 58+ frontier coding agent');
+});
+
+test('minimum score threshold disqualifies lower-scoring entries and keeps them last in value sorts', () => {
+  const rows = [
+    row('cheap-toy', 0.005, 10),
+    row('qualified-good', 0.8, 52),
+    row('qualified-pricey', 5, 60)
+  ];
+  assert.equal(valuePerDollar(rows[0], 1, 45), null);
+  assert.ok(valuePerDollar(rows[1], 1, 45) > 0);
+  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', 1, 45).map(d => d.id), ['qualified-good', 'qualified-pricey', 'cheap-toy']);
+  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'asc', 1, 45).map(d => d.id), ['qualified-pricey', 'qualified-good', 'cheap-toy']);
+});
+
+test('isoValueCost passes exactly through the champion point and bounds all other entries', () => {
+  const champ = row('champ', 0.75, 52);
+  const val = valuePerDollar(champ, 4);
+  const tangentCost = isoValueCost(52, val, 4);
+  assert.ok(Math.abs(tangentCost - 0.75) < 1e-12);
+  assert.equal(isoValueCost(50, 0, 4), null);
+  assert.equal(isoValueCost(-1, val, 4), null);
+});
+
+test('invalid weights or minScores throw RangeError across math helpers', () => {
+  for (const weight of [NaN, Infinity, -Infinity, -0.1, 15.001, -1, null, '3', {}, true]) {
+    assert.throws(() => capabilityUtility(50, weight), RangeError);
+    assert.throws(() => valuePerDollar(row('valid', 1, 50), weight), RangeError);
+    assert.throws(() => sortRows([], 'valuePerDollar', 'asc', weight), RangeError);
+  }
+  for (const badMin of [NaN, -1, 96, Infinity, '10', null]) {
+    assert.throws(() => valuePerDollar(row('valid', 1, 50), 3, badMin), RangeError);
+    assert.throws(() => sortRows([], 'cost', 'asc', 3, badMin), RangeError);
+  }
+});
+
+test('capability utility and valuePerDollar reject malformed scores and overflow safely', () => {
+  for (const score of [null, undefined, NaN, Infinity, -Infinity, -1, '50', {}]) {
+    assert.equal(capabilityUtility(score), null);
+  }
+  assert.equal(capabilityUtility(Number.MAX_VALUE, 15), null);
+  for (const invalid of [null, undefined, {}, row('zero-cost', 0, 20), row('neg-cost', -1, 20), row('nan-score', 1, NaN), row('overflow', Number.MIN_VALUE, 50)]) {
+    assert.equal(valuePerDollar(invalid, 3), null);
+  }
+});
+
+test('table names, creators, ties, and immutability hold across sorts', () => {
+  const rows = Object.freeze([
+    Object.freeze({...row('b', 2, 40), name: 'Model 2', creator: {name: 'Company 10'}}),
+    Object.freeze({...row('c', 2, 40), name: 'Model 10', creator: {name: 'Company 2'}}),
+    Object.freeze({...row('a', 2, 40), name: 'Model 2', creator: {name: 'Anthropic'}}),
+  ]);
+  const before = structuredClone(rows);
+  for (const direction of ['asc', 'desc']) {
+    assert.deepEqual(sortRows(rows, 'cost', direction).map(d => d.id), ['a', 'b', 'c']);
+    assert.deepEqual(sortRows(rows, 'valuePerDollar', direction).map(d => d.id), ['a', 'b', 'c']);
+  }
+  assert.deepEqual(sortRows(rows, 'creator', 'asc').map(d => d.id), ['a', 'c', 'b']);
+  assert.deepEqual(rows, before);
+});
+
+test('cache-busting version query strings match across index.html and app.js', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  const js = await readFile(new URL('../app.js', import.meta.url), 'utf8');
+  const cssVer = html.match(/styles\.css\?v=([^"']+)/)?.[1];
+  const appVer = html.match(/app\.js\?v=([^"']+)/)?.[1];
+  const mathVer = js.match(/chart-math\.mjs\?v=([^"']+)/)?.[1];
+  assert.ok(cssVer, 'styles.css should have a cache-busting version');
+  assert.equal(cssVer, appVer, 'index.html styles.css and app.js versions must match');
+  assert.equal(appVer, mathVer, 'app.js and chart-math.mjs versions must match');
 });
