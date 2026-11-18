@@ -929,6 +929,14 @@ function readTtsHostRows(pageHtml) {
   return best;
 }
 
+function cleanMediaShortName(raw) {
+  if (typeof raw !== 'string') return '';
+  return raw
+    .replace(/\s*\((?:Gemini|Tencent|Alibaba|OpenAI|ByteDance)[^)]{8,}\)$/i, '')
+    .replace(/\s*\((?:\d{4}-\d{2}-\d{2}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\s+\d{4})\)$/i, '')
+    .trim() || raw.trim();
+}
+
 function buildMediaModels({ imagePayload = null, videoPayload = null, ttsRows = [] } = {}) {
   const out = [];
 
@@ -969,7 +977,7 @@ function buildMediaModels({ imagePayload = null, videoPayload = null, ttsRows = 
         id: `img:${rawId}`,
         slug: rec.item.slug || rawId,
         name: rec.item.name,
-        shortName: rec.item.name,
+        shortName: cleanMediaShortName(meta?.shortName || rec.item.name),
         mediaKind: 'image',
         intelligenceIndex: idxScore,
         cost: Number((rec.pricePer1k / 1000).toFixed(6)),
@@ -1030,7 +1038,7 @@ function buildMediaModels({ imagePayload = null, videoPayload = null, ttsRows = 
         id: `vid:${rawId}`,
         slug: rec.item.slug || rawId,
         name: rec.item.name,
-        shortName: rec.item.name,
+        shortName: cleanMediaShortName(meta?.shortName || rec.item.name),
         mediaKind: 'video',
         intelligenceIndex: idxScore,
         cost: Number((rec.pricePerMin / 12).toFixed(5)),
@@ -1076,7 +1084,7 @@ function buildMediaModels({ imagePayload = null, videoPayload = null, ttsRows = 
         id: `tts:${mId}`,
         slug: m.slug || mId,
         name: m.name,
-        shortName: m.shortName || m.name,
+        shortName: cleanMediaShortName(m.shortName || m.name),
         mediaKind: 'tts',
         intelligenceIndex: ttsScore,
         cost: Number((h.pricePer1mCharacters / 1000).toFixed(6)),

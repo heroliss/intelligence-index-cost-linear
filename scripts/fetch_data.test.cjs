@@ -329,7 +329,7 @@ test('new hard benchmarks (MLCR, MMMU-Pro, SRE), 3D/Video/Slop, buildMediaModels
     },
     videoPayload: {
       media: {
-        textToVideo: [{ id: 'v1', slug: 'wan-3', name: 'Wan 3.0', elo: 1174, price: 12, creator: { name: 'Alibaba', color: '#ff7018' } }]
+        textToVideo: [{ id: 'v1', slug: 'wan-3', name: 'Wan 3.0 (2026-08-15)', elo: 1174, price: 12, creator: { name: 'Alibaba', color: '#ff7018' } }]
       }
     },
     ttsRows: [{
@@ -348,6 +348,7 @@ test('new hard benchmarks (MLCR, MMMU-Pro, SRE), 3D/Video/Slop, buildMediaModels
   assert.equal(img.isOpenWeights, true);
   assert.ok(img.mediaScores.t2i > 60 && img.mediaScores.imgEdit > 55);
   assert.equal(vid.cost, 1);
+  assert.equal(vid.shortName, 'Wan 3.0');
   assert.equal(tts.cost, 0.015);
   assert.equal(tts.mediaRaw.ttfaMs, 218);
 

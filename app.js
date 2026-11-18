@@ -29,7 +29,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261119-01';
+} from './chart-math.mjs?v=20261119-02';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -203,6 +203,7 @@ const Y_LENSES = {
     {id: 'imgEdit', zh: '纵轴：图像编辑 ($/次)', en: 'Y: Image Editing ($/edit)', axisZh: '图像编辑盲测胜率分', axisEn: 'Image Editing Arena Score', get: r => r.mediaScores?.imgEdit ?? null},
     {id: 't2v', zh: '纵轴：文生视频 ($/5秒)', en: 'Y: Text-to-Video ($/5s)', axisZh: '文生视频盲测胜率分', axisEn: 'Text-to-Video Arena Score', get: r => r.mediaScores?.t2v ?? null},
     {id: 'i2v', zh: '纵轴：图生视频 ($/5秒)', en: 'Y: Image-to-Video ($/5s)', axisZh: '图生视频盲测胜率分', axisEn: 'Image-to-Video Arena Score', get: r => r.mediaScores?.i2v ?? null},
+    {id: 'vidEdit', zh: '纵轴：视频编辑 ($/5秒)', en: 'Y: Video Editing ($/5s)', axisZh: '视频编辑盲测胜率分', axisEn: 'Video Editing Arena Score', get: r => r.mediaScores?.vidEdit ?? null},
     {id: 'tts', zh: '纵轴：语音合成 TTS ($/千字)', en: 'Y: Speech TTS ($/1k ch)', axisZh: 'TTS 语音自然度盲测分', axisEn: 'Speech TTS Arena Score', get: r => r.mediaScores?.tts ?? null}
   ]
 };
@@ -395,12 +396,63 @@ function xValOf(row, metric = state?.xMetric || 'cost') {
   return row.cost;
 }
 
+const CREATOR_ZH_ALIASES = [
+  [/alibaba|qwen/i, '阿里 阿里巴巴 通义 千问 万相 qwen wan'],
+  [/bytedance|seed|dreamina/i, '字节 字节跳动 豆包 即梦 seedream seedance'],
+  [/deepseek/i, '深度求索 deepseek'],
+  [/kuaishou|kling/i, '快手 可灵 kling'],
+  [/minimax|hailuo/i, '稀宇 海螺 minimax hailuo'],
+  [/\bz\s*ai\b|zhipu|glm/i, '智谱 智谱清言 glm'],
+  [/moonshot|kimi/i, '月之暗面 kimi'],
+  [/tencent|hunyuan/i, '腾讯 混元 hunyuan'],
+  [/stepfun|step/i, '阶跃 阶跃星辰 step'],
+  [/baidu|ernie/i, '百度 文心 ernie'],
+  [/google|deepmind|gemini/i, '谷歌 google gemini veo imagen'],
+  [/openai/i, 'openai chatgpt gpt sora'],
+  [/anthropic|claude/i, 'anthropic claude 克劳德'],
+  [/\bxai\b|grok/i, '马斯克 xai grok'],
+  [/meta|llama/i, 'meta 脸书 llama'],
+  [/mistral/i, 'mistral 米斯特拉尔'],
+  [/microsoft/i, '微软 microsoft mai'],
+  [/black forest|flux/i, '黑森林 bfl flux'],
+  [/elevenlabs|eleven/i, 'elevenlabs 11labs'],
+  [/vidu|shengshu/i, '生数 vidu']
+];
+
+function rowSearchBlob(row) {
+  if (!row) return '';
+  if (row._searchBlob) return row._searchBlob;
+  const raw = [row.name, row.shortName, row.creator?.name, row.slug, row.agentName, row.modelName, row.family?.name]
+    .filter(Boolean)
+    .join(' ');
+  const extra = [];
+  for (const [re, words] of CREATOR_ZH_ALIASES) {
+    if (re.test(raw)) extra.push(words);
+  }
+  if (row.isOpenWeights) extra.push('open 开源 开放权重');
+  if (row.mediaKind === 'image') extra.push('image t2i 文生图 图像 生图 修图');
+  else if (row.mediaKind === 'video') extra.push('video t2v i2v 文生视频 图生视频 视频');
+  else if (row.mediaKind === 'tts') extra.push('tts speech audio 语音 合成 配音');
+  const blob = `${raw} ${extra.join(' ')}`.toLocaleLowerCase();
+  try { Object.defineProperty(row, '_searchBlob', {value: blob, enumerable: false}); } catch {}
+  return blob;
+}
+
 function defaultCompareIds(rows) {
   if (!rows.length) return [];
   const picks = [];
   const add = item => {
     if (item && !picks.includes(item.id) && picks.length < 4) picks.push(item.id);
   };
+  const mediaKinds = new Set(rows.map(r => r.mediaKind).filter(Boolean));
+  if (mediaKinds.size >= 2) {
+    for (const mk of ['image', 'video', 'tts']) {
+      const topKind = sortRows(rows.filter(r => r.mediaKind === mk), 'intelligenceIndex', 'desc')[0];
+      if (topKind) add(topKind);
+    }
+    const topOpen = sortRows(rows.filter(r => r.isOpenWeights), 'intelligenceIndex', 'desc')[0];
+    if (topOpen) add(topOpen);
+  }
   const byScore = sortRows(rows, 'intelligenceIndex', 'desc');
   add(byScore[0]);
   if (byScore[1]) add(byScore[1]);
@@ -448,6 +500,44 @@ function syncMetricViewport(target, nextMetric) {
   target.view = {...target.views[target.xMetric]};
 }
 
+function mediaDefaultSpan(target) {
+  const yl = target.yLens || '';
+  const xf = target.extraFilter || '';
+  if (xf === 'media:video' || ['t2v', 'i2v', 'vidEdit'].includes(yl)) return 1.9;
+  if (xf === 'media:image' || ['t2i', 'imgEdit'].includes(yl)) return 0.23;
+  if (xf === 'media:tts' || yl === 'tts') return 0.15;
+  return 0.45;
+}
+
+function syncTargetBoundsAndViews(target) {
+  const rows = target.rows;
+  let boundSource = rows;
+  if (target.benchKey === 'media' && target.extraFilter?.startsWith('media:')) {
+    const mk = target.extraFilter.slice(6);
+    const sub = rows.filter(r => r.mediaKind === mk);
+    if (sub.length) boundSource = sub;
+  }
+  const costBounds = dataBounds(boundSource, r => r.cost);
+  const timeRows = boundSource.filter(r => Number.isFinite(r.timeSec) && r.timeSec > 0);
+  const timeBounds = dataBounds(timeRows.length ? timeRows : boundSource, r => (r.timeSec > 0 ? r.timeSec / 60 : 0));
+  const cfg = BENCHMARKS[target.benchKey];
+  const profileId = target.costProfile || 'benchmark';
+  const costMultiplier = profileId === 'chat' ? 0.35 : profileId === 'longdoc' ? 1.8 : profileId === 'reasoning' ? 1.5 : 1;
+  const defCostSpan = target.benchKey === 'media'
+    ? mediaDefaultSpan(target)
+    : cfg.defaultX
+      ? cfg.defaultX * costMultiplier
+      : costBounds.width;
+  const defaultCostView = {...costBounds, width: Math.min(costBounds.width, defCostSpan)};
+  const defaultTimeView = {...timeBounds, width: cfg.defaultTimeMin ? Math.min(timeBounds.width, cfg.defaultTimeMin) : timeBounds.width};
+  target.boundsByMetric = {cost: costBounds, time: timeBounds};
+  target.defaultViews = {cost: defaultCostView, time: defaultTimeView};
+  target.views = {cost: {...defaultCostView}, time: {...defaultTimeView}};
+  target.bounds = target.boundsByMetric[target.xMetric || 'cost'];
+  target.defaultView = target.defaultViews[target.xMetric || 'cost'];
+  target.view = {...target.views[target.xMetric || 'cost']};
+}
+
 function reprojectRows(target) {
   const list = Y_LENSES[target.benchKey] || Y_LENSES.models;
   const lens = list.find(l => l.id === target.yLens) || list[0];
@@ -463,24 +553,11 @@ function reprojectRows(target) {
     })
     .filter(Boolean);
   const rows = projected.length ? projected : target.baseRows;
-  const costBounds = dataBounds(rows, r => r.cost);
-  const timeRows = rows.filter(r => Number.isFinite(r.timeSec) && r.timeSec > 0);
-  const timeBounds = dataBounds(timeRows.length ? timeRows : rows, r => (r.timeSec > 0 ? r.timeSec / 60 : 0));
   const maxFloor = Math.min(MIN_SCORE.max, Math.max(15, Math.floor(Math.max(...rows.map(d => d.intelligenceIndex)))));
-  const cfg = BENCHMARKS[target.benchKey];
-  const costMultiplier = profileId === 'chat' ? 0.35 : profileId === 'longdoc' ? 1.8 : profileId === 'reasoning' ? 1.5 : 1;
-  const defCostSpan = cfg.defaultX ? cfg.defaultX * costMultiplier : costBounds.width;
-  const defaultCostView = {...costBounds, width: Math.min(costBounds.width, defCostSpan)};
-  const defaultTimeView = {...timeBounds, width: cfg.defaultTimeMin ? Math.min(timeBounds.width, cfg.defaultTimeMin) : timeBounds.width};
   target.rows = rows;
   target.releaseDates = [...new Set(rows.map(r => r.releaseDate).filter(Boolean))].sort();
   target.historyIndex = Math.min(target.historyIndex ?? Math.max(0, target.releaseDates.length - 1), Math.max(0, target.releaseDates.length - 1));
-  target.boundsByMetric = {cost: costBounds, time: timeBounds};
-  target.defaultViews = {cost: defaultCostView, time: defaultTimeView};
-  target.views = {cost: {...defaultCostView}, time: {...defaultTimeView}};
-  target.bounds = target.boundsByMetric[target.xMetric || 'cost'];
-  target.defaultView = target.defaultViews[target.xMetric || 'cost'];
-  target.view = {...target.views[target.xMetric || 'cost']};
+  syncTargetBoundsAndViews(target);
   target.maxFloor = maxFloor;
   if (target.minScore > maxFloor) target.minScore = 0;
   target._licCache = null;
@@ -604,7 +681,15 @@ function applyRouteParams(target, params) {
   const lic = params.get('lic');
   if (['all', 'open', 'closed'].includes(lic)) target.license = lic;
   const xf = params.get('xf');
-  if (xf) target.extraFilter = xf;
+  if (xf) {
+    target.extraFilter = xf;
+    if (target.benchKey === 'media' && xf.startsWith('media:')) {
+      syncTargetBoundsAndViews(target);
+      const mk = xf.slice(6);
+      const sub = target.rows.filter(r => r.mediaKind === mk);
+      if (sub.length && !params.has('cmp')) target.compareIds = defaultCompareIds(sub);
+    }
+  }
   if (params.get('radar') === 'domain') target.radarMode = 'domain';
   const cvis = params.get('cvis');
   if (['radar', 'strip', 'delta'].includes(cvis)) target.compareVis = cvis;
@@ -788,8 +873,14 @@ function activeFrontierSet() {
 
 function filteredRows() {
   const query = state.search.trim().toLocaleLowerCase();
+  const tokens = query ? query.split(/\s+/).filter(Boolean) : [];
   const pool = activePool();
-  let rows = pool.filter(row => !query || [row.name, row.shortName, row.creator?.name, row.agentName, row.modelName, row.family?.name].filter(Boolean).join(' ').toLocaleLowerCase().includes(query));
+  let rows = tokens.length
+    ? pool.filter(row => {
+      const blob = rowSearchBlob(row);
+      return tokens.every(tk => blob.includes(tk));
+    })
+    : pool;
   if (state.starredOnly) {
     rows = rows.filter(isStarred);
   }
@@ -968,12 +1059,19 @@ function compactMoney(value) {
   return money(value);
 }
 
-function tierBreakevenText(cost) {
+function tierBreakevenText(cost, row = null) {
+  const unitTxt = row?.mediaKind === 'image'
+    ? t('张', 'img')
+    : row?.mediaKind === 'video'
+      ? t('段', 'clip')
+      : row?.mediaKind === 'tts'
+        ? t('千字', 'k-ch')
+        : t('次', 'x');
   const parts = SUBSCRIPTION_TIERS.map(tier => {
     const n = breakEvenTasks(cost, tier.price);
     if (n === null) return null;
     const countStr = n < 1 ? '<1' : n >= 100 ? Math.round(n).toLocaleString('en-US') : format(n, 1);
-    return `$${tier.price}: ${countStr}\u00A0${t('次', 'x')}`;
+    return `$${tier.price}: ${countStr}\u00A0${unitTxt}`;
   }).filter(Boolean);
   return parts.length ? `${t('回本', 'Break-even')} · ${parts.join(' · ')}` : '';
 }
@@ -1292,6 +1390,7 @@ function chooseChart(key, {changeHash = true, routeParams = null} = {}) {
     if (!states.has(key)) states.set(key, makeState(key, routeParams));
     else if (routeParams) applyRouteParams(states.get(key), routeParams);
     state = states.get(key);
+    if (state.starredOnly && !state.rows.some(isStarred)) state.starredOnly = false;
     if (!routeParams?.has('view') && previousMode) state.mode = previousMode;
     $('#loading').hidden = true;
     host.setAttribute('aria-busy', 'false');
@@ -1946,10 +2045,13 @@ function syncRouterControls() {
   $('#routerPanel').hidden = !open;
   if (!open) return;
 
-  const sorted = sortRows(state.rows, 'intelligenceIndex', 'desc');
+  const pool = licenseFilteredRows(state.rows);
+  const sourceRows = pool.length ? pool : state.rows;
+  const sorted = sortRows(sourceRows, 'intelligenceIndex', 'desc');
+  const routerCacheKey = `${activeKey}|${lang}|${state.yLens}|${state.scenarioId}|${state.costProfile}|${state.license}|${state.extraFilter}`;
   for (const [selId, key] of [['#routerFastSelect', 'routerFastId'], ['#routerStrongSelect', 'routerStrongId']]) {
     const sel = $(selId);
-    if (sel.dataset.bench !== activeKey || sel.options.length !== sorted.length) {
+    if (sel.dataset.cacheKey !== routerCacheKey || sel.options.length !== sorted.length) {
       const frag = document.createDocumentFragment();
       for (const r of sorted) {
         const opt = html('option', `${r.shortName || r.name} (${format(r.intelligenceIndex, 1)} · ${money(r.cost)})`);
@@ -1957,17 +2059,21 @@ function syncRouterControls() {
         frag.append(opt);
       }
       sel.replaceChildren(frag);
-      sel.dataset.bench = activeKey;
+      sel.dataset.cacheKey = routerCacheKey;
     }
-    if (!state.rows.some(r => r.id === state[key])) state[key] = sorted[0].id;
+    if (!sourceRows.some(r => r.id === state[key])) {
+      state[key] = key === 'routerFastId'
+        ? (sortRows(sourceRows, 'valuePerDollar', 'desc', 2)[0] || sorted.at(-1)).id
+        : sorted[0].id;
+    }
     sel.value = state[key];
   }
 
   $('#routerShare').value = state.routerShare;
   $('#routerShareOut').textContent = `${state.routerShare}% / ${100 - state.routerShare}%`;
 
-  const fastRow = state.rows.find(r => r.id === state.routerFastId) || sorted.at(-1);
-  const strongRow = state.rows.find(r => r.id === state.routerStrongId) || sorted[0];
+  const fastRow = sourceRows.find(r => r.id === state.routerFastId) || sorted.at(-1);
+  const strongRow = sourceRows.find(r => r.id === state.routerStrongId) || sorted[0];
   const res = cascadingRouteSummary(fastRow, strongRow, state.routerShare / 100, state.monthlyTasks);
   if (res) {
     const subCmp = res.monthlyBlendedBill < state.subFee
@@ -2012,6 +2118,15 @@ function syncSubControls() {
     `盈亏平衡单价：${money(thresholdCost)}/任务 · 当前 ${subCount} 项买 $${fee}/月订阅已回本，${apiCount} 项未回本（按量 API 更省）`,
     `Break-even: ${money(thresholdCost)}/task · ${subCount} worth $${fee}/mo sub, ${apiCount} unmet (API cheaper)`
   );
+  $('#subDisclaimer').textContent = activeKey === 'media'
+    ? t(
+      '按单张图 / 单段 5 秒视频 / 每千字语音 API 均价折算月订阅（如 Midjourney / Kling / ElevenLabs 月费）回本生成量。',
+      'Compares per-image / per-5s-clip / per-1k-char API cost against monthly creative subscriptions (e.g. Midjourney, Kling, ElevenLabs).'
+    )
+    : t(
+      '基于实测 API 单任务均价精确换算；官方订阅含 5 小时/周动态限流且不公开配额，「已回本」代表配额够用时买月订阅更划算。',
+      'Derived from verified API cost per task; official plans enforce dynamic rate limits, so "Sub saves" holds when plan quota suffices.'
+    );
   syncRouterControls();
 }
 
@@ -2245,11 +2360,11 @@ function toggleStar(row) {
   if (starredKeys.has(key)) starredKeys.delete(key);
   else starredKeys.add(key);
   saveStars();
-  if (state?.starredOnly && !state.rows.some(isStarred)) {
-    state.starredOnly = false;
-    syncUrlHash();
+  for (const st of states.values()) {
+    if (st.starredOnly && !st.rows.some(isStarred)) st.starredOnly = false;
   }
   if (state) {
+    syncUrlHash();
     syncControls();
     if (state.starredOnly) {
       buildPlot();
@@ -2470,6 +2585,9 @@ function renderSubTable(rows = filteredRows()) {
     wrap.append(dot, html('span', row.name));
     if (isRecentRelease(row)) wrap.append(html('span', t('新', 'NEW'), 'row-tag tag-new'));
     if (frontierIds.has(row.id)) wrap.append(html('span', t('前沿', 'Frontier'), 'row-tag'));
+    if (activeKey === 'media' && row.mediaRaw) {
+      wrap.append(html('span', t(row.mediaRaw.unitZh, row.mediaRaw.unitEn.replace(/^\/\s*/, '')), 'row-tag'));
+    }
     if (row.isOpenWeights) wrap.append(html('span', t('开源', 'Open'), 'row-tag tag-open'));
 
     const locateBtn = html('button', t('图中定位', 'Locate'), 'locate-btn');
@@ -2487,7 +2605,7 @@ function renderSubTable(rows = filteredRows()) {
     const verdict = subscriptionVerdict(row.cost, tasks, fee);
     const beRatio = verdict ? Math.min(1, Math.min(500, verdict.breakeven) / maxBe) : 0;
     const beTd = comparisonCell(verdict ? formatTaskCount(verdict.breakeven) : '—', beRatio, displayColor);
-    beTd.title = tierBreakevenText(row.cost);
+    beTd.title = tierBreakevenText(row.cost, row);
 
     const billTd = html('td');
     const verdictWrap = html('div', null, 'verdict-wrap');
@@ -2544,13 +2662,30 @@ function renderSubTable(rows = filteredRows()) {
   for (const button of document.querySelectorAll('.sub-sort-button')) {
     const selected = button.dataset.subSort === state.subSortKey;
     button.closest('th').setAttribute('aria-sort', selected ? (state.subSortDirection === 'asc' ? 'ascending' : 'descending') : 'none');
-    button.querySelector('.sort-arrow').textContent = selected ? (state.sortDirection === 'asc' ? '↑' : '↓') : '↕';
+    button.querySelector('.sort-arrow').textContent = selected ? (state.subSortDirection === 'asc' ? '↑' : '↓') : '↕';
   }
 }
 
 function exportCsv() {
   if (!state) return;
-  const rows = sortRows(filteredRows(), state.sortKey, state.sortDirection, state.valueWeight, state.minScore, state.maxCost);
+  const rawRows = filteredRows();
+  let rows;
+  if (state.mode === 'sub') {
+    const collator = new Intl.Collator('zh-CN', {numeric: true, sensitivity: 'base'});
+    const sign = state.subSortDirection === 'asc' ? 1 : -1;
+    rows = [...rawRows].sort((a, b) => {
+      let primary = 0;
+      if (state.subSortKey === 'name') primary = collator.compare(a.name, b.name);
+      else if (state.subSortKey === 'intelligenceIndex') primary = a.intelligenceIndex - b.intelligenceIndex;
+      else if (state.subSortKey === 'cost' || state.subSortKey === 'apiBill') primary = a.cost - b.cost;
+      else if (state.subSortKey === 'breakeven') {
+        primary = (breakEvenTasks(a.cost, state.subFee) ?? Infinity) - (breakEvenTasks(b.cost, state.subFee) ?? Infinity);
+      }
+      return primary * sign || collator.compare(a.name, b.name) || a.id.localeCompare(b.id);
+    });
+  } else {
+    rows = sortRows(rawRows, state.sortKey, state.sortDirection, state.valueWeight, state.minScore, state.maxCost);
+  }
   const escapeCsv = val => {
     if (val === null || val === undefined) return '';
     const str = String(val);
@@ -2559,15 +2694,19 @@ function exportCsv() {
   const headers = [
     'Name',
     'Creator',
+    'Starred',
     'License',
     'Effort',
     'ReleaseDate',
-    'IntelligenceIndex',
-    'CostPerTaskUSD',
+    'Score_0_100',
+    'CostPerUnitUSD',
     'MeanTimeSec',
-    ...(activeKey === 'frontier' ? ['AA_OverallIndex', 'HardRankDelta'] : []),
-    ...(activeKey === 'human-arena' ? ['LMArena_ChatElo', 'LMArena_WebDevElo', 'DesignArena_WebElo', 'AA_GDPvalElo'] : []),
+    ...(activeKey === 'models' ? ['MMMU_Pro_Pct', 'MLCR_LongCtx_Pct', 'Omniscience_Acc_Pct', 'Hallucination_Guess_Pct'] : []),
+    ...(activeKey === 'frontier' ? ['AA_OverallIndex', 'HardRankDelta', 'GDP_PDF_AllPass_Pct', 'FrontierCode2_Pct', 'MLCR_Pct', 'IT_Bench_SRE_Pct'] : []),
+    ...(activeKey === 'human-arena' ? ['LMArena_ChatElo', 'LMArena_WebDevElo', 'DesignArena_WebElo', 'AA_GDPvalElo', 'AntiSlop_Pct', 'AA3D_Elo', 'Code2Video_Elo'] : []),
+    ...(activeKey === 'coding-agents' ? ['AgentHarness', 'BaseModel', 'CostP50_USD', 'CostP95_USD', 'CacheHit_Pct'] : []),
     ...(activeKey === 'cyber' ? ['SafetyRefusalPct'] : []),
+    ...(activeKey === 'media' ? ['MediaKind', 'BillingUnit', 'T2I_Elo', 'ImageEdit_Elo', 'T2V_Elo', 'I2V_Elo', 'TTS_Elo', 'TTS_TTFA_ms'] : []),
     `WeightedValue_w${state.valueWeight.toFixed(1)}`,
     `BreakEvenTasks_$${state.subFee}`,
     `EstMonthlyApiUSD_${state.monthlyTasks}tasks`,
@@ -2588,20 +2727,54 @@ function exportCsv() {
     lines.push([
       row.name,
       row.creator?.name || 'Other',
+      isStarred(row) ? 'Yes' : '',
       row.isOpenWeights ? 'Open Weights' : 'Proprietary',
       row.effort?.label || '',
       row.releaseDate || '',
       row.intelligenceIndex.toFixed(4),
       row.cost.toFixed(6),
       row.timeSec ?? '',
-      ...(activeKey === 'frontier' ? [row.aaIndex ?? '', row.rankDelta ?? ''] : []),
+      ...(activeKey === 'models' ? [
+        row.subscores?.mmmuPro ?? '',
+        row.subscores?.mlcr ?? '',
+        row.subscores?.omniscience ?? '',
+        row.subscores?.hallucination ?? ''
+      ] : []),
+      ...(activeKey === 'frontier' ? [
+        row.aaIndex ?? '',
+        row.rankDelta ?? '',
+        row.frontierScores?.gdpPdf ?? '',
+        row.frontierScores?.frontierCode ?? '',
+        row.frontierScores?.mlcr ?? '',
+        row.frontierScores?.itBenchSre ?? ''
+      ] : []),
       ...(activeKey === 'human-arena' ? [
         row.arenaRaw?.chatElo ?? '',
         row.arenaRaw?.webdevElo ?? '',
         row.arenaRaw?.designWebElo ?? '',
-        row.arenaRaw?.gdpvalElo ?? ''
+        row.arenaRaw?.gdpvalElo ?? '',
+        row.humanScores?.antiSlop ?? '',
+        row.arenaRaw?.aa3dElo ?? '',
+        row.arenaRaw?.code2videoElo ?? ''
+      ] : []),
+      ...(activeKey === 'coding-agents' ? [
+        row.agentName ?? '',
+        row.modelName ?? '',
+        row.costPercentiles?.p50 ?? '',
+        row.costPercentiles?.p95 ?? '',
+        row.agentStats?.cacheHitRate ?? ''
       ] : []),
       ...(activeKey === 'cyber' ? [row.refusalRate ?? ''] : []),
+      ...(activeKey === 'media' ? [
+        row.mediaKind ?? '',
+        row.mediaRaw?.unitEn?.replace(/^\/\s*/, '') ?? '',
+        row.mediaRaw?.t2iElo ?? '',
+        row.mediaRaw?.imgEditElo ?? '',
+        row.mediaRaw?.t2vElo ?? '',
+        row.mediaRaw?.i2vElo ?? '',
+        row.mediaRaw?.ttsElo ?? '',
+        row.mediaRaw?.ttfaMs ?? ''
+      ] : []),
       val !== null ? val.toFixed(4) : '',
       be !== null ? be.toFixed(2) : '',
       verdict ? verdict.apiBill.toFixed(4) : '',
@@ -2636,6 +2809,7 @@ function exportChartPng(kind = state?.mode) {
   const cs = getComputedStyle(document.documentElement);
   const v = name => cs.getPropertyValue(name).trim() || '#888';
   const clone = targetSvg.cloneNode(true);
+  clone.querySelector('.lasso-rect')?.remove();
   clone.setAttribute('xmlns', NS);
   clone.setAttribute('width', String(svgW));
   clone.setAttribute('height', String(svgH));
@@ -2662,6 +2836,12 @@ function exportChartPng(kind = state?.mode) {
     .point, .curve-pareto-dot { stroke: ${v('--halo')}; stroke-width: 1.2; }
     .label { stroke: ${v('--halo')}; stroke-width: 2.2; paint-order: stroke; }
     .connector { stroke-width: 0.75; opacity: 0.6; }
+    .star-ring { fill: none; stroke: ${v('--amber')}; stroke-width: 1.7; stroke-dasharray: 2.5 2; }
+    .pin-guides { stroke-width: 1; stroke-dasharray: 4 4; opacity: 0.7; fill: none; }
+    .pin-ring { stroke-width: 2.2; fill: none; }
+    .emphasis-marker { stroke: ${v('--halo')}; stroke-width: 1.6; }
+    .emphasis-connector { stroke-width: 1.25; }
+    .emphasis-label { font-weight: 600; stroke: ${v('--halo')}; stroke-width: 2.8px; paint-order: stroke; }
     .champion-ring { stroke: ${v('--accent')}; stroke-width: 2; stroke-dasharray: 3 2; fill: none; }
     .curve-champion-label { fill: ${v('--accent')}; font-size: 11.5px; font-weight: 600; }
     .utility-line { fill: none; stroke: ${v('--accent')}; stroke-width: 2.5; }
@@ -2684,7 +2864,7 @@ function exportChartPng(kind = state?.mode) {
     .radar-axis-label { fill: ${v('--ink')}; font-size: 12.5px; font-weight: 600; }
     .radar-axis-sub { fill: ${v('--accent')}; font-size: 11px; font-weight: 500; }
     .radar-svg.has-focus .radar-series:not(.is-focused) { opacity: 0.18; }
-    .radar-series.is-focused polygon { stroke-width: 3.4; fill-opacity: 0.25; }
+    .radar-series.is-focused polygon, .radar-series.is-focused path, .radar-series.is-focused line { stroke-width: 3.4; fill-opacity: 0.25; }
     .radar-vertex-val { font-size: 11px; font-weight: 600; stroke: ${v('--halo')}; stroke-width: 3px; paint-order: stroke; }
   `;
   const styleNode = node('style', {}, styleText);
@@ -2730,14 +2910,15 @@ function exportChartPng(kind = state?.mode) {
     ctx.fillStyle = v('--chart');
     ctx.fillRect(0, 0, outW, outH);
 
+    const maxTextW = outW - padX * 2;
     ctx.fillStyle = v('--ink');
     ctx.font = '600 16px "IBM Plex Sans", "Segoe UI", sans-serif';
     const titleStr = kind === 'compare' ? $('#radarHeading').textContent : $('#chartTitle').textContent;
-    ctx.fillText(titleStr, padX, 28);
+    ctx.fillText(titleStr, padX, 28, maxTextW);
 
     ctx.fillStyle = v('--muted');
     ctx.font = '400 12px "IBM Plex Sans", "Segoe UI", sans-serif';
-    ctx.fillText($('#viewStatus').textContent || '', padX, 46);
+    ctx.fillText($('#viewStatus').textContent || '', padX, 46, maxTextW);
 
     if (kind === 'compare') {
       for (const item of legendPlaced) {
@@ -2754,9 +2935,14 @@ function exportChartPng(kind = state?.mode) {
 
     ctx.drawImage(img, (outW - svgW) / 2, headH, svgW, svgH);
 
+    const srcFoot = activeKey === 'human-arena'
+      ? 'LMArena + Design Arena + Artificial Analysis'
+      : activeKey === 'media'
+        ? 'Artificial Analysis Image / Video / Speech Arenas'
+        : 'Artificial Analysis';
     ctx.fillStyle = v('--muted');
     ctx.font = '400 11.5px "IBM Plex Sans", "Segoe UI", sans-serif';
-    ctx.fillText(`Artificial Analysis · Intelligence vs. Cost (${new Date().toISOString().slice(0, 10)})`, padX, outH - 11);
+    ctx.fillText(`${srcFoot} · Intelligence vs. Cost (${new Date().toISOString().slice(0, 10)})`, padX, outH - 11, maxTextW);
 
     canvas.toBlob(pngBlob => {
       URL.revokeObjectURL(url);
@@ -3083,7 +3269,7 @@ function showMetricTip(metric, event, focusSeriesIdx = null, clusterCount = 0) {
       const totalWrong = ((100 - row.subscores.omniscience) * val) / 100;
       textVal += t(`（全题错答 ${format(totalWrong, 1)}%）`, ` (${format(totalWrong, 1)}% total)`);
     } else if (val !== null && bestVal !== null && selectedRows.length > 1) {
-      const diff = metric.lowerBetter ? val - bestVal : val - bestVal;
+      const diff = val - bestVal;
       if (Math.abs(diff) >= 0.05) {
         textVal += ` (${diff > 0 ? '+' : ''}${format(diff, 1)})`;
       }
@@ -3285,9 +3471,13 @@ function renderComparePicker() {
   if (!state) return;
   const list = $('#comparePickerList');
   const q = $('#compareSearchInput').value.trim().toLocaleLowerCase();
+  const tokens = q ? q.split(/\s+/).filter(Boolean) : [];
   const pool = sortRows(licenseFilteredRows(state.rows), 'intelligenceIndex', 'desc');
-  const filtered = q
-    ? pool.filter(r => [r.name, r.shortName, r.creator?.name, r.agentName, r.modelName].filter(Boolean).join(' ').toLocaleLowerCase().includes(q))
+  const filtered = tokens.length
+    ? pool.filter(r => {
+      const blob = rowSearchBlob(r);
+      return tokens.every(tk => blob.includes(tk));
+    })
     : pool;
   const frag = document.createDocumentFragment();
   const full = state.compareIds.length >= MAX_COMPARE;
@@ -3566,18 +3756,66 @@ function renderCompare() {
       ];
     }
   } else if (activeKey === 'media') {
-    $('#radarHeading').textContent = t('多模态生成盲测胜率雷达与各模态能力拆解', 'Multimodal Generation Blind Arena Radar & Modality Scores');
-    const allMediaAxes = [
-      {key: 'index', zh: '盲测综合分', en: 'Arena Index', srcZh: '所属模态真人双盲竞技场校准胜率总分 (0–100)', srcEn: 'Calibrated blind human arena composite win-pct score (0–100)', get: r => r.intelligenceIndex},
-      {key: 't2i', zh: '文生图 (T2I)', en: 'Text-to-Image', srcZh: 'Artificial Analysis Image Arena · 文生图真人双盲投票校准分', srcEn: 'AA Image Arena · Blind human preference on Text-to-Image', get: r => r.mediaScores?.t2i ?? null},
-      {key: 'imgEdit', zh: '图像编辑', en: 'Image Edit', srcZh: 'Artificial Analysis Image Editing · 指令修图与局部重绘双盲校准分', srcEn: 'AA Image Editing · Blind human preference on instruction-guided editing', get: r => r.mediaScores?.imgEdit ?? null},
-      {key: 't2v', zh: '文生视频 (T2V)', en: 'Text-to-Video', srcZh: 'Artificial Analysis Video Arena · 文生视频动态美感与物理一致性双盲分', srcEn: 'AA Video Arena · Blind human preference on Text-to-Video', get: r => r.mediaScores?.t2v ?? null},
-      {key: 'i2v', zh: '图生视频 (I2V)', en: 'Image-to-Video', srcZh: 'Artificial Analysis Video Arena · 首帧图生视频动态还原双盲分', srcEn: 'AA Video Arena · Blind human preference on Image-to-Video', get: r => r.mediaScores?.i2v ?? null},
-      {key: 'tts', zh: '语音合成 (TTS)', en: 'Speech TTS', srcZh: 'Artificial Analysis Speech Arena · 语音自然度与情感韵律真人盲听分', srcEn: 'AA Speech Arena · Blind human listening score on TTS naturalness', get: r => r.mediaScores?.tts ?? null}
-    ];
-    const activeSubAxes = allMediaAxes.slice(1).filter(ax => selectedRows.some(r => ax.get(r) !== null));
-    axes = activeSubAxes.length >= 3 ? [allMediaAxes[0], ...activeSubAxes] : allMediaAxes;
-    barMetrics = [allMediaAxes[0], ...(activeSubAxes.length ? activeSubAxes : allMediaAxes.slice(1))];
+    const kinds = new Set(selectedRows.map(r => r.mediaKind).filter(Boolean));
+    const medCostByKind = {};
+    for (const mk of ['image', 'video', 'tts']) {
+      const kc = state.rows.filter(r => r.mediaKind === mk && r.cost > 0).map(r => r.cost);
+      medCostByKind[mk] = kc.length ? median(kc) : 0.04;
+    }
+    const costEffAxis = (zhName = '单次经济性', enName = 'Cost Eff.') => ({
+      key: 'costEff',
+      zh: zhName,
+      en: enName,
+      srcZh: '所属模态单次成本经济性校准分 = 100 ÷ (1 + 单次成本 ÷ 同模态中位价)，50% 为行业中位成本，越高越便宜划算',
+      srcEn: 'Within-modality cost efficiency = 100 / (1 + cost / modality median), 50% = median price, higher = cheaper',
+      get: r => {
+        const med = medCostByKind[r.mediaKind] || 0.04;
+        return r.cost > 0 ? Number((100 / (1 + r.cost / med)).toFixed(2)) : null;
+      }
+    });
+    const axIndex = {key: 'index', zh: '盲测综合分', en: 'Arena Index', srcZh: '所属模态真人双盲竞技场校准胜率总分 (0–100)', srcEn: 'Calibrated blind human arena composite win-pct score (0–100)', get: r => r.intelligenceIndex};
+    const axT2i = {key: 't2i', zh: '文生图 (T2I)', en: 'Text-to-Image', srcZh: 'Artificial Analysis Image Arena · 文生图真人双盲投票校准分', srcEn: 'AA Image Arena · Blind human preference on Text-to-Image', get: r => r.mediaScores?.t2i ?? null};
+    const axImgEdit = {key: 'imgEdit', zh: '图像编辑', en: 'Image Edit', srcZh: 'Artificial Analysis Image Editing · 指令修图与局部重绘双盲校准分', srcEn: 'AA Image Editing · Blind human preference on instruction-guided editing', get: r => r.mediaScores?.imgEdit ?? null};
+    const axT2v = {key: 't2v', zh: '文生视频 (T2V)', en: 'Text-to-Video', srcZh: 'Artificial Analysis Video Arena · 文生视频动态美感与物理一致性双盲分', srcEn: 'AA Video Arena · Blind human preference on Text-to-Video', get: r => r.mediaScores?.t2v ?? null};
+    const axI2v = {key: 'i2v', zh: '图生视频 (I2V)', en: 'Image-to-Video', srcZh: 'Artificial Analysis Video Arena · 首帧图生视频动态还原双盲分', srcEn: 'AA Video Arena · Blind human preference on Image-to-Video', get: r => r.mediaScores?.i2v ?? null};
+    const axVidEdit = {key: 'vidEdit', zh: '视频编辑', en: 'Video Edit', srcZh: 'Artificial Analysis Video Editing · 视频指令重绘与风格编辑双盲分', srcEn: 'AA Video Editing · Blind human preference on video editing', get: r => r.mediaScores?.vidEdit ?? null};
+    const axTts = {key: 'tts', zh: '语音自然度', en: 'Speech TTS', srcZh: 'Artificial Analysis Speech Arena · 语音自然度与情感韵律真人盲听分', srcEn: 'AA Speech Arena · Blind human listening score on TTS naturalness', get: r => r.mediaScores?.tts ?? null};
+
+    if (kinds.size === 1 && kinds.has('image')) {
+      $('#radarHeading').textContent = t('图像生成与修图四维能力雷达（双盲审美 · 单张经济性）', 'Image Generation & Editing 4-Axis Radar');
+      axes = [axIndex, axT2i, axImgEdit, costEffAxis('单张经济性', 'Cost Eff.')];
+      barMetrics = [...axes];
+    } else if (kinds.size === 1 && kinds.has('video')) {
+      $('#radarHeading').textContent = t('视频生成与编辑能力雷达（T2V · I2V · 单段经济性）', 'Video Generation & Editing Capability Radar');
+      const hasVEdit = selectedRows.some(r => axVidEdit.get(r) !== null);
+      axes = [axIndex, axT2v, axI2v, ...(hasVEdit ? [axVidEdit] : []), costEffAxis('单段经济性', 'Cost Eff.')];
+      barMetrics = [...axes];
+    } else if (kinds.size === 1 && kinds.has('tts')) {
+      $('#radarHeading').textContent = t('语音合成 TTS 四维实战雷达（自然度 · 首包低延迟 · 吞吐 · 经济性）', 'Speech TTS 4-Axis Radar (Naturalness · TTFA Speed · Throughput · Cost)');
+      const axTtfa = {
+        key: 'ttfaSpeed',
+        zh: '首包低延迟',
+        en: 'Low Latency',
+        srcZh: '实测首包音频延迟 (TTFA) 响应分 = 100 ÷ (1 + TTFA_ms ÷ 250)，250ms 对应 50%，越高代表开口越快',
+        srcEn: 'First-audio responsiveness = 100 / (1 + TTFA_ms / 250); higher = faster time-to-first-audio',
+        get: r => r.mediaRaw?.ttfaMs > 0 ? Number((100 / (1 + r.mediaRaw.ttfaMs / 250)).toFixed(2)) : null
+      };
+      const axCps = {
+        key: 'cpsSpeed',
+        zh: '合成吞吐率',
+        en: 'Throughput',
+        srcZh: '实测中位字符吞吐分 = 100 × 字/秒 ÷ (字/秒 + 120)，越高代表长音频批量合成越快',
+        srcEn: 'Throughput score = 100 * chars/sec / (chars/sec + 120); higher = faster batch synthesis',
+        get: r => r.mediaRaw?.cps > 0 ? Number(((100 * r.mediaRaw.cps) / (r.mediaRaw.cps + 120)).toFixed(2)) : null
+      };
+      axes = [axTts, axTtfa, axCps, costEffAxis('千字经济性', 'Cost Eff.')];
+      barMetrics = [...axes];
+    } else {
+      $('#radarHeading').textContent = t('多模态生成盲测胜率雷达与各模态能力拆解', 'Multimodal Generation Blind Arena Radar & Modality Scores');
+      const subPool = [axT2i, axImgEdit, axT2v, axI2v, axVidEdit, axTts].filter(ax => selectedRows.some(r => ax.get(r) !== null));
+      axes = [axIndex, ...subPool, costEffAxis('单次经济性', 'Cost Eff.')];
+      barMetrics = [...axes];
+    }
   } else {
     $('#radarHeading').textContent = t('编程智能体四维基准能力雷达', 'Coding Agent 4-Axis Capability Radar');
     const evalNames = [];
@@ -3805,7 +4043,7 @@ function renderCompare() {
       const baseFillOpacity = selectedRows.length <= 4 ? 0.14 : Math.max(0.05, 0.2 - selectedRows.length * 0.018);
       const baseStrokeW = selectedRows.length <= 5 ? 2.5 : 2.1;
       const presentVerts = verts.filter(v => v.val !== null);
-      if (presentVerts.length >= 3) {
+      if (presentVerts.length === verts.length && presentVerts.length >= 3) {
         seriesG.append(node('polygon', {
           points: presentVerts.map(v => `${v.x},${v.y}`).join(' '),
           fill: sc,
@@ -3814,16 +4052,35 @@ function renderCompare() {
           'stroke-width': baseStrokeW,
           'stroke-linejoin': 'round'
         }));
-      } else if (presentVerts.length === 2) {
-        seriesG.append(node('line', {
-          x1: presentVerts[0].x,
-          y1: presentVerts[0].y,
-          x2: presentVerts[1].x,
-          y2: presentVerts[1].y,
+      } else if (presentVerts.length >= 2) {
+        // Partial/sparse data: draw solid segments ONLY between adjacent present spokes; bridge gaps with subtle dashed line without fake area fill
+        const solidSegs = [];
+        for (let i = 0; i < verts.length; i++) {
+          const a = verts[i], b = verts[(i + 1) % verts.length];
+          if (a.val !== null && b.val !== null) {
+            solidSegs.push(`M${a.x},${a.y}L${b.x},${b.y}`);
+          }
+        }
+        const bridgePts = [...presentVerts, ...(presentVerts.length >= 3 ? [presentVerts[0]] : [])]
+          .map((v, i) => `${i ? 'L' : 'M'}${v.x},${v.y}`)
+          .join(' ');
+        seriesG.append(node('path', {
+          d: bridgePts,
+          fill: 'none',
           stroke: sc,
-          'stroke-width': baseStrokeW,
-          'stroke-linecap': 'round'
+          'stroke-width': 1.4,
+          'stroke-dasharray': '3.5 3',
+          opacity: '0.52'
         }));
+        if (solidSegs.length) {
+          seriesG.append(node('path', {
+            d: solidSegs.join(' '),
+            fill: 'none',
+            stroke: sc,
+            'stroke-width': baseStrokeW,
+            'stroke-linecap': 'round'
+          }));
+        }
       }
       verts.forEach(v => {
         if (v.val === null) return;
@@ -4262,12 +4519,22 @@ function renderCompare() {
       });
       anatomyFrag.append(deltaBlock);
     }
+    const hasGranularCache = selectedRows.some(r => (r.costBreakdown?.cacheRead || 0) > 0 || (r.costBreakdown?.cacheWrite || 0) > 0);
     const legend = html('div', null, 'stack-legend');
-    for (const [col, zhL, enL] of [
-      ['#38bdf8', '输入 Prompt', 'Input'],
-      ['#f59e0b', '推理思考 Token', 'Reasoning'],
-      ['#10b981', '最终输出回答', 'Answer']
-    ]) {
+    const legendItems = hasGranularCache
+      ? [
+        ['#38bdf8', '新鲜输入', 'Fresh In'],
+        ['#818cf8', '缓存读取', 'Cache Read'],
+        ['#e879f9', '缓存写入', 'Cache Write'],
+        ['#f59e0b', '推理思考', 'Reasoning'],
+        ['#10b981', '最终回答', 'Answer']
+      ]
+      : [
+        ['#38bdf8', '输入 Prompt', 'Input'],
+        ['#f59e0b', '推理思考 Token', 'Reasoning'],
+        ['#10b981', '最终输出回答', 'Answer']
+      ];
+    for (const [col, zhL, enL] of legendItems) {
       const item = html('span');
       const sw = html('i');
       sw.style.background = col;
@@ -4278,7 +4545,21 @@ function renderCompare() {
 
     selectedRows.forEach((row, idx) => {
       const cb = row.costBreakdown || {input: 0, reasoning: 0, answer: row.cost};
-      const sum = Math.max(1e-9, (cb.input || 0) + (cb.reasoning || 0) + (cb.answer || 0));
+      const rowHasCache = hasGranularCache && Number.isFinite(cb.nonCacheInput);
+      const segments = rowHasCache
+        ? [
+          [cb.nonCacheInput || 0, '#38bdf8'],
+          [cb.cacheRead || 0, '#818cf8'],
+          [cb.cacheWrite || 0, '#e879f9'],
+          [cb.reasoning || 0, '#f59e0b'],
+          [cb.answer || 0, '#10b981']
+        ]
+        : [
+          [cb.input || 0, '#38bdf8'],
+          [cb.reasoning || 0, '#f59e0b'],
+          [cb.answer || 0, '#10b981']
+        ];
+      const sum = Math.max(1e-9, segments.reduce((acc, [v]) => acc + Math.max(0, v), 0));
       const thinkShare = Math.round(((cb.reasoning || 0) / sum) * 100);
       const tokStr = row.outTokens ? ` · ${format(row.outTokens.total / 1000, 1)}k tok` : '';
 
@@ -4292,8 +4573,10 @@ function renderCompare() {
       head.append(leftName, html('span', `${money(row.cost)} · ${t('思考占', 'Think')} ${thinkShare}%${tokStr}`));
 
       const stack = html('div', null, 'stack-track');
-      stack.title = `${t('输入', 'Input')}: ${money(cb.input || 0)} · ${t('思考', 'Reasoning')}: ${money(cb.reasoning || 0)} · ${t('回答', 'Answer')}: ${money(cb.answer || 0)}`;
-      for (const [part, col] of [[cb.input || 0, '#38bdf8'], [cb.reasoning || 0, '#f59e0b'], [cb.answer || 0, '#10b981']]) {
+      stack.title = rowHasCache
+        ? `${t('新鲜输入', 'Fresh In')}: ${money(cb.nonCacheInput || 0)} · ${t('缓存读', 'Cache Read')}: ${money(cb.cacheRead || 0)} · ${t('缓存写', 'Cache Write')}: ${money(cb.cacheWrite || 0)} · ${t('思考', 'Reasoning')}: ${money(cb.reasoning || 0)} · ${t('回答', 'Answer')}: ${money(cb.answer || 0)}`
+        : `${t('输入', 'Input')}: ${money(cb.input || 0)} · ${t('思考', 'Reasoning')}: ${money(cb.reasoning || 0)} · ${t('回答', 'Answer')}: ${money(cb.answer || 0)}`;
+      for (const [part, col] of segments) {
         if (part <= 0) continue;
         const seg = html('i');
         seg.style.width = `${(part / sum) * 100}%`;
@@ -5526,7 +5809,8 @@ function drawActive(champion) {
         class: 'star-ring',
         cx: xCoord(item.row),
         cy: y(item.row.intelligenceIndex),
-        r: 7.8
+        r: 7.8,
+        fill: 'none'
       }));
     }
   }
@@ -5640,10 +5924,19 @@ function renderPinned() {
   if (activeKey === 'media' && row.mediaRaw) {
     metaParts.push(t(row.mediaRaw.unitZh, row.mediaRaw.unitEn.replace(/^\/\s*/, 'per ')));
   }
+  if ((state.yLens || (state.scenarioId && state.scenarioId !== 'default')) && row._baseIndex != null) {
+    metaParts.push(t(`官方分 ${format(row._baseIndex, 1)}`, `Base ${format(row._baseIndex, 1)}`));
+  }
+  if (state.costProfile && state.costProfile !== 'benchmark' && row._baseCost != null) {
+    metaParts.push(t(`基准价 ${money(row._baseCost)}`, `Avg ${money(row._baseCost)}`));
+  }
   if (frontierIds.has(row.id)) metaParts.push(t('帕累托前沿', 'Pareto frontier'));
   if (rankInfo) metaParts.push(t(`性价比 #${rankInfo.rank}/${qualifiedCount}`, `Value #${rankInfo.rank}/${qualifiedCount}`));
   $('#pinnedMeta').textContent = metaParts.join(' · ');
 
+  $('#pinCostLabel').textContent = activeKey === 'media'
+    ? (row.mediaKind === 'image' ? t('单张成本', 'Cost / img') : row.mediaKind === 'video' ? t('单段成本', 'Cost / 5s') : t('千字成本', 'Cost / 1k ch'))
+    : (state.costProfile && state.costProfile !== 'benchmark' ? t('模拟成本', 'Sim cost') : t('单次成本', 'Cost / task'));
   $('#pinnedScore').textContent = format(row.intelligenceIndex, 2);
   $('#pinnedCost').textContent = money(row.cost);
   $('#pinnedTime').textContent = formatTime(row.timeSec);
@@ -5654,7 +5947,7 @@ function renderPinned() {
       : state.maxCost > 0 && row.cost > state.maxCost
         ? t('超出预算', 'Over cap')
         : '—';
-  $('#pinnedSubNote').textContent = tierBreakevenText(row.cost);
+  $('#pinnedSubNote').textContent = tierBreakevenText(row.cost, row);
 
   const crossEl = $('#pinnedCrossTabs');
   const crossInfo = !['coding-agents', 'media'].includes(activeKey) ? crossTabIndex.get(row.id) : null;
@@ -5825,7 +6118,7 @@ function showHover(item, event) {
     line.append(html('span', label), html('b', value));
     tip.append(line);
   }
-  const beSummary = tierBreakevenText(row.cost);
+  const beSummary = tierBreakevenText(row.cost, row);
   if (beSummary) tip.append(html('span', beSummary, 'tip-foot'));
   const inCmp = state.compareIds.includes(row.id);
   tip.append(html('span', inCmp
@@ -6120,6 +6413,13 @@ $('#extraFilter').addEventListener('change', () => {
   if (!state) return;
   state.extraFilter = $('#extraFilter').value;
   state.selected = null;
+  if (activeKey === 'media') {
+    syncTargetBoundsAndViews(state);
+    const pool = licenseFilteredRows(state.rows);
+    if (pool.length && !state.compareIds.every(id => pool.some(r => r.id === id))) {
+      state.compareIds = defaultCompareIds(pool);
+    }
+  }
   renderLegend();
   syncControls();
   syncUrlHash();
@@ -6800,10 +7100,13 @@ function releasePointer(event) {
         const menu = $('#lassoMenu');
         $('#lassoCount').textContent = t(`框选 ${hits.length} 项`, `${hits.length} in box`);
         $('#lassoCompareBtn').disabled = hits.length === 0;
+        menu.style.left = '8px';
+        menu.style.top = '8px';
         menu.hidden = false;
-        const menuW = Math.min(hostRect.width - 16, 310);
+        const menuW = Math.min(hostRect.width - 16, Math.max(180, menu.offsetWidth || 300));
+        const menuH = menu.offsetHeight || 38;
         const leftPx = Math.max(8, Math.min(hostRect.width - menuW - 8, (x1 + x2) / 2 - menuW / 2));
-        const topPx = y2 + 44 < hostRect.height ? y2 + 8 : Math.max(8, y1 - 42);
+        const topPx = y2 + menuH + 10 < hostRect.height ? y2 + 8 : Math.max(8, y1 - menuH - 8);
         menu.style.left = `${leftPx}px`;
         menu.style.top = `${topPx}px`;
       } else {
@@ -6897,7 +7200,7 @@ function buildGlobalCatalog(snap) {
         row,
         primaryTab: tabKey,
         kind: 'llm',
-        searchText: [row.name, row.shortName, row.creator?.name, row.slug, row.family?.name, 'llm model 智能 模型'].filter(Boolean).join(' ').toLocaleLowerCase()
+        searchText: `${rowSearchBlob(row)} llm model 大模型 智能`
       });
     }
   }
@@ -6906,16 +7209,15 @@ function buildGlobalCatalog(snap) {
       row,
       primaryTab: 'coding-agents',
       kind: 'agent',
-      searchText: [row.name, row.shortName, row.creator?.name, row.agentName, row.modelName, 'agent coding 编程 智能体'].filter(Boolean).join(' ').toLocaleLowerCase()
+      searchText: `${rowSearchBlob(row)} agent coding 编程 智能体`
     });
   }
   for (const row of (Array.isArray(snap.mediaModels) ? validRows(snap.mediaModels) : [])) {
-    const kindWords = row.mediaKind === 'image' ? 'image t2i 文生图 图像 修图' : row.mediaKind === 'video' ? 'video t2v i2v 视频' : 'tts speech audio 语音 合成';
     items.push({
       row,
       primaryTab: 'media',
       kind: row.mediaKind || 'media',
-      searchText: [row.name, row.shortName, row.creator?.name, row.slug, kindWords].filter(Boolean).join(' ').toLocaleLowerCase()
+      searchText: `${rowSearchBlob(row)} media 多模态 生成`
     });
   }
   return items;
@@ -6947,7 +7249,7 @@ function getCmdMatches() {
 
 function activateCmdEntry(entry, {toCompare = false} = {}) {
   if (!entry) return;
-  setCmdOpen(false);
+  setCmdOpen(false, {restoreFocus: false});
   if (activeKey !== entry.primaryTab) chooseChart(entry.primaryTab);
   if (!state) return;
   let targetRow = state.rows.find(r => r.id === entry.row.id);
@@ -6958,6 +7260,7 @@ function activateCmdEntry(entry, {toCompare = false} = {}) {
     state.starredOnly = false;
     state.frontierOnly = false;
     state.company = null;
+    if (activeKey === 'media') syncTargetBoundsAndViews(state);
     syncControls();
     renderLegend();
     buildPlot();
@@ -6974,6 +7277,7 @@ function activateCmdEntry(entry, {toCompare = false} = {}) {
     showView('compare');
   } else {
     locateRowInChart(targetRow);
+    requestAnimationFrame(() => host.focus({preventScroll: true}));
   }
 }
 
@@ -7056,7 +7360,11 @@ function renderCmdList() {
   listEl.replaceChildren(frag);
 }
 
-function setCmdOpen(open) {
+let cmdPrevFocus = null;
+function setCmdOpen(open, {restoreFocus = true} = {}) {
+  if (open && !cmdOpen) {
+    cmdPrevFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  }
   cmdOpen = open;
   $('#cmdBackdrop').hidden = !open;
   if (open) {
@@ -7066,8 +7374,14 @@ function setCmdOpen(open) {
       $('#cmdInput').focus({preventScroll: true});
       $('#cmdInput').select();
     });
+  } else if (restoreFocus) {
+    const target = cmdPrevFocus && cmdPrevFocus.isConnected && !$('#cmdBackdrop').contains(cmdPrevFocus)
+      ? cmdPrevFocus
+      : $('#cmdPaletteBtn');
+    target.focus({preventScroll: true});
+    cmdPrevFocus = null;
   } else {
-    $('#cmdPaletteBtn').focus({preventScroll: true});
+    cmdPrevFocus = null;
   }
 }
 
@@ -7277,14 +7591,33 @@ function showLoadError(error) {
 function hydrateDerivedModels(snap) {
   if (!snap || !Array.isArray(snap.models)) return snap;
   const humanById = new Map((snap.humanArenaModels || []).map(h => [h.id, h]));
+  const humanByFam = new Map();
+  for (const h of (snap.humanArenaModels || [])) {
+    if (h.family?.slug && !humanByFam.has(h.family.slug)) humanByFam.set(h.family.slug, h);
+  }
   const frontById = new Map((snap.frontierModels || []).map(f => [f.id, f]));
   snap.models = snap.models.map(m => {
-    const h = humanById.get(m.id);
+    const hExact = humanById.get(m.id);
+    const hFam = !hExact && m.family?.slug && (!m.effort || m.effort.level >= 2) ? humanByFam.get(m.family.slug) : null;
+    const sharedHumanScores = hFam?.humanScores
+      ? {
+        chatVibe: hFam.humanScores.chatVibe,
+        webdev: hFam.humanScores.webdev,
+        designWeb: hFam.humanScores.designWeb,
+        designUi: hFam.humanScores.designUi,
+        creativeCraft: hFam.humanScores.creativeCraft,
+        spatialMotion: hFam.humanScores.spatialMotion
+      }
+      : null;
     const f = frontById.get(m.id);
     return {
       ...m,
       ...(f?.frontierScores ? {frontierScores: f.frontierScores} : {}),
-      ...(h?.humanScores ? {humanScores: h.humanScores, arenaRaw: h.arenaRaw} : {})
+      ...(hExact?.humanScores
+        ? {humanScores: hExact.humanScores, arenaRaw: hExact.arenaRaw}
+        : sharedHumanScores
+          ? {humanScores: sharedHumanScores}
+          : {})
     };
   });
   const baseById = new Map(snap.models.map(m => [m.id, m]));

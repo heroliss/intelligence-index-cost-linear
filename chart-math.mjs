@@ -28,7 +28,9 @@ export function paretoFrontier(rows, xOf = d => d.cost) {
 
 export function dataBounds(rows, xOf = d => d.cost) {
   const xs = rows.map(xOf).filter(v => Number.isFinite(v) && v >= 0);
-  const maxX = Math.max(1, ...(xs.length ? xs : [1])), maxY = Math.max(1, ...rows.map(d => d.intelligenceIndex));
+  const rawMaxX = xs.length ? Math.max(...xs) : 1;
+  const maxX = rawMaxX > 0 ? rawMaxX : 1;
+  const maxY = Math.max(1, ...rows.map(d => d.intelligenceIndex));
   const minY = Math.min(0, ...rows.map(d => d.intelligenceIndex));
   const y = minY < 0 ? Math.floor(minY / 5) * 5 - 2 : 0;
   return {x: 0, y, width: maxX * 1.08, height: Math.ceil(maxY / 5) * 5 - y};
@@ -122,7 +124,7 @@ export const MIN_SCORE = Object.freeze({
   default: 0
 });
 
-export const MAX_COST_PRESETS = Object.freeze([0, 0.1, 0.25, 0.5, 1, 2, 5, 10]);
+export const MAX_COST_PRESETS = Object.freeze([0, 0.02, 0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10]);
 
 export const VALUE_PRESETS = Object.freeze([
   Object.freeze({value: 0, id: 'cost', zh: '纯成本', en: 'Cost only'}),
@@ -472,11 +474,16 @@ export function simulateWorkloadCost(row, profileId = 'benchmark') {
     const inp = Math.max(0, cb.input || 0);
     const rsn = Math.max(0, cb.reasoning || 0);
     const ans = Math.max(0, cb.answer || 0);
+    const hasGranularCache = Number.isFinite(cb.nonCacheInput) && (cb.cacheRead != null || cb.cacheWrite != null);
     if (profileId === 'chat') {
-      return Number(Math.max(0.0001, inp * 0.15 + rsn * 0.10 + ans * 0.45).toFixed(6));
+      const freshIn = hasGranularCache ? Math.max(0, cb.nonCacheInput) * 1.2 : inp * 0.15;
+      return Number(Math.max(0.0001, freshIn + rsn * 0.12 + ans * 0.45).toFixed(6));
     }
     if (profileId === 'longdoc') {
-      return Number(Math.max(0.0001, inp * 2.20 + rsn * 0.25 + ans * 0.40).toFixed(6));
+      const docIn = hasGranularCache
+        ? Math.max(0, cb.nonCacheInput) * 6.0 + Math.max(0, cb.cacheRead || 0) * 1.6 + Math.max(0, cb.cacheWrite || 0) * 1.4
+        : inp * 2.20;
+      return Number(Math.max(0.0001, docIn + rsn * 0.25 + ans * 0.40).toFixed(6));
     }
     if (profileId === 'reasoning') {
       return Number(Math.max(0.0001, inp * 1.15 + rsn * 1.75 + ans * 1.05).toFixed(6));

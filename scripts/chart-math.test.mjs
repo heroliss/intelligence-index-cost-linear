@@ -69,10 +69,13 @@ test('a score just beyond 65 automatically expands the upper boundary to 70', ()
 test('cost bounds remain in linear USD units across different cost ranges', () => {
   const first = dataBounds([row('a', 10, 50)]);
   const second = dataBounds([row('b', 20, 50)]);
+  const subDollar = dataBounds([row('img', 0.2, 85)]);
   assert.equal(first.x, 0);
   assert.equal(second.x, 0);
   assert.equal(second.width, first.width * 2);
-  assert.equal(second.height, first.height);
+  assert.equal(first.height, second.height);
+  assert.ok(Math.abs(subDollar.width - 0.2 * 1.08) < 1e-12, 'sub-dollar arenas fit tightly instead of padding to $1.08');
+  assert.equal(dataBounds([row('free', 0, 50)]).width, 1.08, 'pure-zero cost fallback stays non-degenerate');
 });
 
 test('bounds cover negative scores and zero-cost rows without a degenerate axis', () => {
@@ -506,6 +509,13 @@ test('computeScenarioScore and simulateWorkloadCost re-rank models by custom wor
   assert.ok(simulateWorkloadCost(coder, 'chat') < simulateWorkloadCost(coder, 'benchmark'), 'light Q&A reduces heavy reasoning cost');
   assert.ok(simulateWorkloadCost(designer, 'longdoc') > simulateWorkloadCost(coder, 'longdoc'), 'longdoc profile penalizes expensive input-heavy breakdown');
   assert.ok(simulateWorkloadCost(coder, 'reasoning') > simulateWorkloadCost(designer, 'reasoning'), 'heavy reasoning profile penalizes high thinking-token burn');
+
+  const agenticCacheHeavy = {
+    id: 'cache-heavy', _baseCost: 26.5, cost: 26.5,
+    costBreakdown: {input: 15.6, nonCacheInput: 0.07, cacheRead: 8.5, cacheWrite: 7.03, reasoning: 7.7, answer: 3.2}
+  };
+  assert.ok(simulateWorkloadCost(agenticCacheHeavy, 'chat') < 3.5, 'single-turn chat uses nonCacheInput instead of multi-turn cacheWrite churn');
+  assert.ok(simulateWorkloadCost(agenticCacheHeavy, 'longdoc') > 20, 'longdoc reflects multi-turn cacheRead + cacheWrite cost');
 });
 
 test('cache-busting version query strings match across index.html and app.js', async () => {

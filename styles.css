@@ -2160,7 +2160,9 @@ th[aria-sort="descending"] .sub-sort-button {
   opacity: 0.18;
 }
 
-.radar-series.is-focused polygon {
+.radar-series.is-focused polygon,
+.radar-series.is-focused path,
+.radar-series.is-focused line {
   stroke-width: 3.4;
   fill-opacity: 0.25;
 }
@@ -3047,6 +3049,9 @@ tbody tr.is-selected .locate-btn,
   z-index: 32;
   width: 340px;
   max-width: calc(100vw - 16px);
+  max-height: min(460px, calc(100dvh - 88px));
+  overflow-y: auto;
+  scrollbar-width: thin;
   padding: 12px 14px;
   background: var(--surface-elevated);
   border: 1px solid var(--border-strong);
@@ -3149,6 +3154,8 @@ tbody tr.is-selected .locate-btn,
   z-index: 16;
   display: inline-flex;
   align-items: center;
+  flex-wrap: wrap;
+  max-width: calc(100% - 16px);
   gap: 6px;
   padding: 6px 10px;
   background: var(--surface-elevated);
