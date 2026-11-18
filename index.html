@@ -26,8 +26,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261118-7">
-  <script type="module" src="app.js?v=20261118-7"></script>
+  <link rel="stylesheet" href="styles.css?v=20261118-8">
+  <script type="module" src="app.js?v=20261118-8"></script>
 </head>
 <body>
 <main class="app">
@@ -365,13 +365,18 @@
           <section class="compare-section radar-hero-section" aria-labelledby="radarHeading">
             <div class="section-head">
               <h3 id="radarHeading">细分基准能力雷达与分项对比</h3>
-              <div id="radarModeSwitch" class="axis-controls" role="group" aria-label="雷达图维度切换">
-                <button id="radarModeBench" type="button" aria-pressed="true">基准六维</button>
-                <button id="radarModeDomain" type="button" aria-pressed="false">行业六维</button>
+              <div class="section-actions">
+                <div id="radarModeSwitch" class="axis-controls" role="group" aria-label="雷达图维度切换">
+                  <button id="radarModeBench" type="button" aria-pressed="true">基准六维</button>
+                  <button id="radarModeDomain" type="button" aria-pressed="false">行业六维</button>
+                </div>
+                <button id="radarInfoBtn" type="button" class="ghost-btn radar-info-btn" aria-expanded="false" aria-controls="radarInfoPanel">指标口径</button>
               </div>
             </div>
+            <div id="radarInfoPanel" class="radar-info-panel" hidden></div>
             <div class="radar-layout">
               <svg id="radarSvg" class="radar-svg" viewBox="0 0 580 410" role="img" aria-label="多模型细分能力雷达图"></svg>
+              <p id="radarInteractHint" class="radar-interact-hint"></p>
               <div id="subscoreBars" class="radar-score-grid"></div>
             </div>
           </section>

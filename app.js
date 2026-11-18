@@ -20,7 +20,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261118-7';
+} from './chart-math.mjs?v=20261118-8';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -118,7 +118,7 @@ let loadController, loadGeneration = 0;
 const measure = document.createElement('canvas').getContext('2d');
 const colorCache = new Map();
 const mobileLayout = matchMedia('(max-width:760px), (max-height:500px)');
-let controlsOpen = !mobileLayout.matches, controlsTouched = false, valueDetailsOpen = false, changelogOpen = false, shareTimer = 0, curveFrame;
+let controlsOpen = !mobileLayout.matches, controlsTouched = false, valueDetailsOpen = false, changelogOpen = false, radarInfoOpen = false, radarCtx = null, shareTimer = 0, curveFrame;
 
 const node = (tag, attrs = {}, content) => {
   const element = document.createElementNS(NS, tag);
@@ -315,6 +315,7 @@ function makeState(key, routeParams = null) {
     ...DEFAULT_SETTINGS[key],
     mode: 'chart',
     radarMode: 'bench',
+    radarPinnedId: null,
     selected: null,
     defaultCompareKey: defaultCmp.join(','),
     compareIds: [...defaultCmp],
@@ -762,6 +763,7 @@ function syncStaticText() {
   $('#radarModeSwitch').setAttribute('aria-label', t('雷达图维度切换', 'Radar dimension mode'));
   $('#radarModeBench').textContent = t('基准六维', 'Benchmarks');
   $('#radarModeDomain').textContent = t('行业六维', 'Domains');
+  $('#radarInfoBtn').textContent = radarInfoOpen ? t('收起口径', 'Hide sources') : t('ⓘ 指标口径', 'ⓘ Sources');
   $('#radarHeading').textContent = t('细分基准能力雷达与分项对比', 'Sub-benchmark Capability Radar & Breakdown');
   $('#anatomyHeading').textContent = t('单任务成本结构拆解与耗时剖析', 'Per-Task Cost Anatomy & Latency Profile');
   $('#matrixHeading').textContent = t('核心指标并排对决表', 'Head-to-Head Metrics Matrix');
@@ -1939,10 +1941,13 @@ function exportChartPng(kind = state?.mode) {
     .utility-area { fill: ${v('--accent')}; opacity: 0.08; }
     .curve-probe path { stroke: ${v('--accent')}; stroke-width: 1; stroke-dasharray: 3 4; }
     .curve-probe circle { fill: ${v('--accent')}; stroke: ${v('--chart')}; stroke-width: 2; }
-    .radar-grid { fill: none; stroke: ${v('--border-strong')}; stroke-width: 1; opacity: 0.72; }
+    .radar-grid, .radar-spoke { fill: none; stroke: ${v('--border-strong')}; stroke-width: 1; opacity: 0.72; }
     .radar-ring-fill { fill: ${v('--chart')}; opacity: 0.42; }
     .radar-axis-label { fill: ${v('--ink')}; font-size: 12.5px; font-weight: 600; }
     .radar-axis-sub { fill: ${v('--accent')}; font-size: 11px; font-weight: 500; }
+    .radar-svg.has-focus .radar-series:not(.is-focused) { opacity: 0.18; }
+    .radar-series.is-focused polygon { stroke-width: 3.4; fill-opacity: 0.25; }
+    .radar-vertex-val { font-size: 11px; font-weight: 600; stroke: ${v('--halo')}; stroke-width: 3px; paint-order: stroke; }
   `;
   const styleNode = node('style', {}, styleText);
   clone.prepend(styleNode);
@@ -2022,17 +2027,304 @@ function modalitySummary(row) {
   return parts.join('+');
 }
 
-function focusRadarSeries(idxOrNull) {
-  const radarSvg = $('#radarSvg');
-  if (!radarSvg) return;
-  const groups = radarSvg.querySelectorAll('.radar-series');
-  if (idxOrNull === null || idxOrNull < 0) {
-    radarSvg.classList.remove('has-focus');
-    groups.forEach(g => g.classList.remove('is-focused'));
-  } else {
-    radarSvg.classList.add('has-focus');
-    groups.forEach(g => g.classList.toggle('is-focused', Number(g.dataset.seriesIdx) === idxOrNull));
+function distToSegment(px, py, ax, ay, bx, by) {
+  const dx = bx - ax, dy = by - ay;
+  const lenSq = dx * dx + dy * dy;
+  if (lenSq < 1e-6) return Math.hypot(px - ax, py - ay);
+  const u = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / lenSq));
+  return Math.hypot(px - (ax + u * dx), py - (ay + u * dy));
+}
+
+function radarSvgPoint(event) {
+  const rect = $('#radarSvg')?.getBoundingClientRect();
+  if (!rect || !rect.width || !rect.height) return null;
+  return {
+    x: ((event.clientX - rect.left) / rect.width) * 580,
+    y: ((event.clientY - rect.top) / rect.height) * 410
+  };
+}
+
+function hitTestRadar(sx, sy) {
+  if (!radarCtx) return null;
+  const {cx, cy, verticesBySeries, axisEndpoints} = radarCtx;
+
+  // 1. Exact vertex proximity (never blocked by upper polygon fills!)
+  const nearDots = [];
+  verticesBySeries.forEach((verts, sIdx) => {
+    verts.forEach((v, aIdx) => {
+      if (v.val === null) return;
+      const d = Math.hypot(sx - v.x, sy - v.y);
+      if (d <= 16) nearDots.push({sIdx, aIdx, d, x: v.x, y: v.y, val: v.val});
+    });
+  });
+  if (nearDots.length) {
+    nearDots.sort((a, b) => a.d - b.d || a.sIdx - b.sIdx);
+    const top = nearDots[0];
+    const cluster = nearDots.filter(m => m.aIdx === top.aIdx && m.d <= top.d + 6);
+    const pinnedIdx = state?.radarPinnedId ? radarCtx.selectedRows.findIndex(r => r.id === state.radarPinnedId) : -1;
+    const chosen = cluster.find(m => m.sIdx === pinnedIdx) || top;
+    return {kind: 'vertex', seriesIdx: chosen.sIdx, axisIdx: top.aIdx, cluster};
   }
+
+  // Nearest spoke angle helper
+  let nearestAxis = 0, bestAngDist = Infinity;
+  axisEndpoints.forEach((ep, aIdx) => {
+    const d = distToSegment(sx, sy, cx, cy, ep.ex, ep.ey);
+    if (d < bestAngDist) {
+      bestAngDist = d;
+      nearestAxis = aIdx;
+    }
+  });
+
+  // 2. Polygon outline edge proximity (pierces straight through overlapping fills!)
+  let bestEdgeDist = 10.5, bestEdgeSeries = -1;
+  verticesBySeries.forEach((verts, sIdx) => {
+    const N = verts.length;
+    for (let i = 0; i < N; i++) {
+      const a = verts[i], b = verts[(i + 1) % N];
+      if (a.val === null && b.val === null) continue;
+      const d = distToSegment(sx, sy, a.x, a.y, b.x, b.y);
+      if (d < bestEdgeDist) {
+        bestEdgeDist = d;
+        bestEdgeSeries = sIdx;
+      }
+    }
+  });
+  if (bestEdgeSeries >= 0) {
+    return {kind: 'edge', seriesIdx: bestEdgeSeries, axisIdx: bestAngDist <= 22 ? nearestAxis : null, cluster: null};
+  }
+
+  // 3. Axis label or spoke hover
+  for (let i = 0; i < axisEndpoints.length; i++) {
+    const ep = axisEndpoints[i];
+    if (Math.abs(sx - ep.lx) <= 52 && Math.abs(sy - (ep.ly + 4)) <= 19) {
+      return {kind: 'axis', seriesIdx: null, axisIdx: i, cluster: null};
+    }
+  }
+  if (Math.hypot(sx - cx, sy - cy) > 18 && bestAngDist <= 9) {
+    return {kind: 'axis', seriesIdx: null, axisIdx: nearestAxis, cluster: null};
+  }
+  return null;
+}
+
+function syncRadarSpotlight(hoverSeriesIdx = null, hoverAxisKey = null) {
+  if (!radarCtx || !state) return;
+  const {selectedRows, seriesLayer, calloutLayer, verticesBySeries, axes} = radarCtx;
+  const radarSvg = $('#radarSvg');
+
+  let pinnedIdx = state.radarPinnedId ? selectedRows.findIndex(r => r.id === state.radarPinnedId) : -1;
+  if (pinnedIdx === -1 && state.radarPinnedId) state.radarPinnedId = null;
+
+  const activeIdx = hoverSeriesIdx !== null && hoverSeriesIdx >= 0 ? hoverSeriesIdx : pinnedIdx;
+  const groups = [...seriesLayer.querySelectorAll('.radar-series')];
+
+  if (activeIdx >= 0) {
+    radarSvg.classList.add('has-focus');
+    groups.sort((a, b) => {
+      const ia = Number(a.dataset.seriesIdx), ib = Number(b.dataset.seriesIdx);
+      return Number(ia === activeIdx) - Number(ib === activeIdx) || ia - ib;
+    });
+    for (const g of groups) {
+      const isAct = Number(g.dataset.seriesIdx) === activeIdx;
+      g.classList.toggle('is-focused', isAct);
+      seriesLayer.append(g);
+    }
+  } else {
+    radarSvg.classList.remove('has-focus');
+    groups.sort((a, b) => Number(a.dataset.seriesIdx) - Number(b.dataset.seriesIdx));
+    for (const g of groups) {
+      g.classList.remove('is-focused');
+      seriesLayer.append(g);
+    }
+  }
+
+  // Render crisp vertex score badges for the spotlighted model
+  calloutLayer.replaceChildren();
+  if (activeIdx >= 0 && verticesBySeries[activeIdx]) {
+    const sc = compareColor(activeIdx);
+    verticesBySeries[activeIdx].forEach((v, i) => {
+      if (v.val === null) return;
+      const radialShift = v.ratio > 0.82 ? -13 : 12;
+      const tx = v.x + Math.cos(v.ang) * radialShift;
+      const ty = v.y + Math.sin(v.ang) * radialShift + 3.5;
+      calloutLayer.append(node('text', {
+        class: 'radar-vertex-val',
+        x: tx,
+        y: ty,
+        fill: sc,
+        'text-anchor': 'middle'
+      }, `${format(v.val, 1)}%`));
+    });
+  }
+
+  // Sync chip states
+  document.querySelectorAll('#compareChips .compare-chip').forEach((chip, idx) => {
+    chip.classList.toggle('is-pinned', idx === pinnedIdx);
+    chip.classList.toggle('is-focused', idx === activeIdx);
+  });
+
+  // Sync spoke, axis label & score card highlights
+  radarSvg.querySelectorAll('.radar-spoke').forEach((sp, i) => {
+    sp.classList.toggle('is-axis-active', axes[i]?.key === hoverAxisKey);
+  });
+  radarSvg.querySelectorAll('.radar-axis-label').forEach((lbl, i) => {
+    lbl.classList.toggle('is-axis-active', axes[i]?.key === hoverAxisKey);
+  });
+  document.querySelectorAll('#subscoreBars .radar-dim-card').forEach(card => {
+    card.classList.toggle('is-axis-active', !!hoverAxisKey && card.dataset.metricKey === hoverAxisKey);
+  });
+  document.querySelectorAll('#subscoreBars .radar-dim-item').forEach(item => {
+    item.classList.toggle('is-focused', Number(item.dataset.seriesIdx) === activeIdx);
+  });
+
+  const hintEl = $('#radarInteractHint');
+  if (hintEl) {
+    if (pinnedIdx >= 0) {
+      const pName = selectedRows[pinnedIdx].shortName || selectedRows[pinnedIdx].name;
+      hintEl.textContent = t(
+        `已锁定置顶：${pName} · 单击雷达空白处或按 Esc 解锁（重叠顶点再次单击可切换下层模型）`,
+        `Locked on top: ${pName} · Click blank space or press Esc to unlock (click overlapping dots to cycle)`
+      );
+    } else {
+      hintEl.textContent = t(
+        '线条与顶点支持穿透拾取（不被上层遮挡）· 单击曲线或标签锁定置顶 · 悬浮轴名或卡片查看指标来源',
+        'Piercing edge/vertex hit-test (never blocked by upper layers) · Click line or chip to lock on top · Hover axis for source'
+      );
+    }
+  }
+}
+
+function showMetricTip(metric, event, focusSeriesIdx = null, clusterCount = 0) {
+  if (!radarCtx || !metric) return;
+  const {selectedRows} = radarCtx;
+  const validNums = selectedRows.map(r => metric.get(r)).filter(v => v !== null);
+  const bestVal = validNums.length
+    ? (metric.lowerBetter ? Math.min(...validNums) : Math.max(...validNums))
+    : null;
+
+  tip.replaceChildren(html('strong', t(metric.zh, metric.en)));
+  if (metric.srcZh || metric.srcEn) {
+    tip.append(html('span', t(metric.srcZh, metric.srcEn), 'tip-sub'));
+  }
+
+  selectedRows.forEach((row, idx) => {
+    const val = metric.get(row);
+    const line = html('div', null, 'tip-value');
+    const left = html('span');
+    const dot = html('i', null, 'creator-dot');
+    dot.style.background = compareColor(idx);
+    dot.style.marginRight = '6px';
+    left.append(dot, document.createTextNode(row.shortName || row.name));
+    if (idx === focusSeriesIdx) left.style.fontWeight = '600';
+
+    let textVal = val === null ? '—' : `${format(val, 1)}%`;
+    if (metric.key === 'hallucination' && val !== null && row.subscores?.omniscience != null) {
+      const totalWrong = ((100 - row.subscores.omniscience) * val) / 100;
+      textVal += t(`（全题错答 ${format(totalWrong, 1)}%）`, ` (${format(totalWrong, 1)}% total)`);
+    }
+    const right = html('b', textVal);
+    if (val !== null && bestVal !== null && selectedRows.length > 1 && Math.abs(val - bestVal) < 1e-6) {
+      right.style.color = 'var(--accent)';
+    }
+    line.append(left, right);
+    tip.append(line);
+  });
+
+  if (clusterCount > 1) {
+    tip.append(html('span', t(`该处有 ${clusterCount} 个模型顶点重合，单击可依次轮换置顶`, `${clusterCount} models overlap here — click to cycle`), 'tip-foot'));
+  } else if (focusSeriesIdx !== null) {
+    tip.append(html('span', t('单击锁定并将该模型置顶展示', 'Click to lock and bring model to front'), 'tip-foot'));
+  }
+  tip.hidden = false;
+  positionTip(event.clientX, event.clientY);
+}
+
+function renderRadarInfo() {
+  const panel = $('#radarInfoPanel');
+  const btn = $('#radarInfoBtn');
+  btn.setAttribute('aria-expanded', String(radarInfoOpen));
+  btn.textContent = radarInfoOpen ? t('收起口径', 'Hide sources') : t('ⓘ 指标口径', 'ⓘ Sources');
+  panel.hidden = !radarInfoOpen;
+  if (!radarInfoOpen) return;
+
+  const extLink = (label, href) => {
+    const a = html('a', label);
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    return a;
+  };
+
+  const frag = document.createDocumentFragment();
+  if (activeKey === 'coding-agents') {
+    const p1 = html('p');
+    p1.append(
+      html('strong', t('数据来源与权威性：', 'Source & Reliability: ')),
+      document.createTextNode(t(
+        '全部来自独立第三方评测机构 Artificial Analysis 官方实测（Coding Agents v2.1），在真实沙盒容器与代码仓库中对各智能体客户端 + 模型组合统一黑盒测试，非厂商自报跑分。详见 ',
+        'Independently benchmarked by Artificial Analysis (Coding Agents v2.1) inside sandboxed repositories and terminals — never vendor self-reported. See '
+      )),
+      extLink('Coding Agents Methodology', 'https://artificialanalysis.ai/methodology/coding-agents-benchmarking'),
+      document.createTextNode('。')
+    );
+    const p2 = html('p');
+    p2.append(
+      html('strong', t('细分基准说明：', 'Sub-benchmarks: ')),
+      document.createTextNode(t(
+        'FrontierCode 2.0 考察复杂多语言软件工程；SWE-Atlas 考察大型真实仓库多文件修复与架构理解；Terminal-Bench 4.0 考察 Linux 终端命令行编译与排障；成本分位数（P05–P95）与缓存命中率均取自同一批任务的真实 API 账单。',
+        'FrontierCode 2.0 tests multi-language SWE; SWE-Atlas tests multi-file repo engineering; Terminal-Bench 4.0 tests Linux CLI tasks; cost percentiles and cache hit rates reflect actual API billing telemetry.'
+      ))
+    );
+    frag.append(p1, p2);
+  } else if (state?.radarMode === 'domain') {
+    const p1 = html('p');
+    p1.append(
+      html('strong', t('行业六维来源（GDPval-AA）：', 'Domain Scores (GDPval-AA): ')),
+      document.createTextNode(t(
+        '源自 Artificial Analysis 基于 OpenAI GDPval 框架独立运行的专业能力评测（覆盖 44 个高价值白领职业），模型在配备终端与浏览工具的代理循环中完成真实财务建模、法律文书、临床资料分析与工程方案，经盲测对决换算得分。详见 ',
+        'Derived from Artificial Analysis GDPval-AA across 44 knowledge-work occupations using agentic tool loops and blind pairwise grading. See '
+      )),
+      extLink('GDPval-AA Methodology', 'https://artificialanalysis.ai/evaluations/gdpval-aa'),
+      document.createTextNode('。')
+    );
+    frag.append(p1);
+  } else {
+    const p1 = html('p');
+    p1.append(
+      html('strong', t('数据来源与权威性：', 'Source & Reliability: ')),
+      document.createTextNode(t(
+        '100% 同步自独立评测机构 Artificial Analysis（Intelligence Index v5.0），采用防数据污染私有集与统一 API 参数实测，横向可比性极高；但固定评测集不等同于特定中文业务或私有知识库（RAG）表现。详见 ',
+        '100% sourced from independent Artificial Analysis evaluations (Intelligence Index v5.0) under standardized API settings. Highly reliable for cross-model comparison, though distinct from RAG or custom enterprise prompts. See '
+      )),
+      extLink('Intelligence Methodology', 'https://artificialanalysis.ai/methodology/intelligence-benchmarking'),
+      document.createTextNode(' · '),
+      extLink('AA-Omniscience', 'https://artificialanalysis.ai/evaluations/omniscience'),
+      document.createTextNode('。')
+    );
+    const p2 = html('p');
+    p2.append(
+      html('strong', t('为什么「盲区幻觉率」看起来偏高（50%–90%）？', 'Why is Omniscience Hallucination Rate 50%–90%? ')),
+      document.createTextNode(t(
+        'AA-Omniscience 在禁止联网搜索的闭卷条件下测试数千道跨学科冷门事实题，其定义为「条件盲猜率 = 答错瞎编数 ÷ (答错数 + 诚实承认不知道数)」。例如某模型全科准确率为 79%，仅剩 21% 不会答；若其中 60% 选择强行瞎编（即盲区幻觉率 60%），折算占全部题目的绝对错答率其实仅为 21% × 60% ≈ 12.6%。越低代表模型越懂得“不知为不知”，下方对决表已同时列出折算后的全题错答率。',
+        'AA-Omniscience is a closed-book (no web search) factuality test. Its Hallucination Rate is the conditional guessing rate when wrong: Incorrect / (Incorrect + Abstained). E.g. at 79% accuracy and 60% hallucination rate, overall fabricated answers across all questions are only 21% × 60% ≈ 12.6%.'
+      ))
+    );
+    frag.append(p1, p2);
+    if (activeKey === 'cyber') {
+      const p3 = html('p');
+      p3.append(
+        html('strong', t('网络安全指数与拒答率：', 'Cyber Index & Refusal Rate: ')),
+        document.createTextNode(t(
+          '衡量漏洞分析、逆向与安全运维能力；「安全拒答率」为模型因内置网络攻防合规护栏而主动拦截双用途测试指令的实测比例。详见 ',
+          'Measures offensive/defensive cyber tasks; Refusal Rate tracks prompts declined due to built-in cyber safety guardrails. See '
+        )),
+        extLink('Cyber Index', 'https://artificialanalysis.ai/cyber'),
+        document.createTextNode('。')
+      );
+      frag.append(p3);
+    }
+  }
+  panel.replaceChildren(frag);
 }
 
 function renderCompare() {
@@ -2043,13 +2335,17 @@ function renderCompare() {
     state.compareIds = defaultCompareIds(state.rows);
     selectedRows = state.compareIds.map(id => rowMap.get(id)).filter(Boolean);
   }
+  if (state.radarPinnedId && !selectedRows.some(r => r.id === state.radarPinnedId)) {
+    state.radarPinnedId = null;
+  }
 
-  // 1. Selected Chips & Selector (hovering a chip highlights its radar polygon!)
+  // 1. Selected Chips & Selector (hover previews, click locks & elevates to front!)
   const chipsFrag = document.createDocumentFragment();
   selectedRows.forEach((row, idx) => {
     const sc = compareColor(idx);
     const chip = html('div', null, 'compare-chip');
     chip.setAttribute('role', 'listitem');
+    chip.title = t('单击锁定置顶该模型曲线', 'Click to lock and bring curve to front');
     const dot = html('i', null, 'creator-dot');
     dot.style.background = sc;
     dot.setAttribute('aria-hidden', 'true');
@@ -2057,9 +2353,16 @@ function renderCompare() {
     rmBtn.type = 'button';
     rmBtn.disabled = selectedRows.length <= 1;
     rmBtn.setAttribute('aria-label', t(`移除 ${row.name}`, `Remove ${row.name}`));
-    rmBtn.addEventListener('click', () => toggleCompareId(row.id));
-    chip.addEventListener('pointerenter', () => focusRadarSeries(idx));
-    chip.addEventListener('pointerleave', () => focusRadarSeries(null));
+    rmBtn.addEventListener('click', event => {
+      event.stopPropagation();
+      toggleCompareId(row.id);
+    });
+    chip.addEventListener('pointerenter', () => syncRadarSpotlight(idx, null));
+    chip.addEventListener('pointerleave', () => syncRadarSpotlight(null, null));
+    chip.addEventListener('click', () => {
+      state.radarPinnedId = state.radarPinnedId === row.id ? null : row.id;
+      syncRadarSpotlight(null, null);
+    });
     chip.append(dot, html('span', row.shortName || row.name), rmBtn);
     chipsFrag.append(chip);
   });
@@ -2086,47 +2389,56 @@ function renderCompare() {
   $('#radarModeSwitch').hidden = activeKey === 'coding-agents';
   $('#radarModeBench').setAttribute('aria-pressed', String(state.radarMode !== 'domain'));
   $('#radarModeDomain').setAttribute('aria-pressed', String(state.radarMode === 'domain'));
+  renderRadarInfo();
 
   let axes, barMetrics;
   if (activeKey === 'models' || activeKey === 'cyber') {
     if (state.radarMode === 'domain') {
       $('#radarHeading').textContent = t('六大行业专业能力评估雷达', '6-Sector Professional Domain Capability Radar');
       axes = [
-        {key: 'finance', zh: '金融财务', en: 'Finance', get: r => r.domainScores?.finance ?? null},
-        {key: 'strategy', zh: '战略运营', en: 'Strategy & Ops', get: r => r.domainScores?.strategy ?? null},
-        {key: 'legal', zh: '法律合规', en: 'Legal', get: r => r.domainScores?.legal ?? null},
-        {key: 'healthcare', zh: '医疗健康', en: 'Healthcare', get: r => r.domainScores?.healthcare ?? null},
-        {key: 'engineering', zh: '工程研发', en: 'Engineering', get: r => r.domainScores?.engineering ?? null},
-        {key: 'economics', zh: '宏观经济', en: 'Economics', get: r => r.domainScores?.economics ?? null}
+        {key: 'finance', zh: '金融财务', en: 'Finance', srcZh: 'GDPval-AA · 财务建模、报表分析与定量推理实测', srcEn: 'GDPval-AA · Financial modeling, spreadsheets & quantitative analysis', get: r => r.domainScores?.finance ?? null},
+        {key: 'strategy', zh: '战略运营', en: 'Strategy & Ops', srcZh: 'GDPval-AA · 商业战略规划、管理咨询与运营决策交付物', srcEn: 'GDPval-AA · Business strategy, consulting decks & operations workflows', get: r => r.domainScores?.strategy ?? null},
+        {key: 'legal', zh: '法律合规', en: 'Legal', srcZh: 'GDPval-AA · 长篇法律合同审阅、判例推理与合规起草', srcEn: 'GDPval-AA · Contract review, legal briefs & compliance constraints', get: r => r.domainScores?.legal ?? null},
+        {key: 'healthcare', zh: '医疗健康', en: 'Healthcare', srcZh: 'GDPval-AA · 临床病历综合分析、生物医学文献与公卫评估', srcEn: 'GDPval-AA · Clinical record synthesis & biomedical knowledge tasks', get: r => r.domainScores?.healthcare ?? null},
+        {key: 'engineering', zh: '工程研发', en: 'Engineering', srcZh: 'GDPval-AA · 工程架构方案、技术文档与终端实操排障', srcEn: 'GDPval-AA · Technical architecture, engineering docs & shell workflows', get: r => r.domainScores?.engineering ?? null},
+        {key: 'economics', zh: '宏观经济', en: 'Economics', srcZh: 'GDPval-AA · 宏观经济指标建模、政策研究与计量分析', srcEn: 'GDPval-AA · Macroeconomic analysis, policy research & econometrics', get: r => r.domainScores?.economics ?? null}
       ];
       barMetrics = [...axes];
     } else if (activeKey === 'cyber') {
       $('#radarHeading').textContent = t('网络安全指数与五大核心基准能力雷达', 'Cyber Index & 5-Pillar Core Capability Radar');
       axes = [
-        {key: 'cyber', zh: '网络安全总分', en: 'Cyber Index', get: r => r.intelligenceIndex},
-        {key: 'frontierCode', zh: '前沿编程', en: 'FrontierCode', get: r => r.subscores?.frontierCode ?? null},
-        {key: 'terminalBench', zh: '终端代理', en: 'Terminal 4.0', get: r => r.subscores?.terminalBench ?? null},
-        {key: 'hleDiamond', zh: '人类终极考', en: 'HLE Diamond', get: r => r.subscores?.hleDiamond ?? null},
-        {key: 'critptAgentic', zh: '复杂研究', en: 'CritPt Agent', get: r => r.subscores?.critptAgentic ?? null},
-        {key: 'science', zh: '科学推理', en: 'Science', get: r => r.subscores?.science ?? null}
+        {key: 'cyber', zh: '网络安全总分', en: 'Cyber Index', srcZh: 'AA Cyber Index · 漏洞挖掘、逆向分析与攻防实操综合分', srcEn: 'AA Cyber Index · Composite offensive & defensive cybersecurity score', get: r => r.intelligenceIndex},
+        {key: 'frontierCode', zh: '前沿编程', en: 'FrontierCode', srcZh: 'FrontierCode 2.0 · 多语言高难度真实软件工程评测', srcEn: 'FrontierCode 2.0 · Contamination-resistant multi-language SWE benchmark', get: r => r.subscores?.frontierCode ?? null},
+        {key: 'terminalBench', zh: '终端代理', en: 'Terminal 4.0', srcZh: 'Terminal-Bench 4.0 · Linux 容器命令行多步编译与系统运维', srcEn: 'Terminal-Bench 4.0 · Multi-step Linux CLI & systems engineering', get: r => r.subscores?.terminalBench ?? null},
+        {key: 'hleDiamond', zh: '人类终极考', en: 'HLE Diamond', srcZh: 'Humanity’s Last Exam (Diamond) · 跨学科前沿博士级极限推理', srcEn: 'Humanity’s Last Exam (Diamond) · Frontier PhD-level academic reasoning', get: r => r.subscores?.hleDiamond ?? null},
+        {key: 'critptAgentic', zh: '复杂研究', en: 'CritPt Agent', srcZh: 'CritPt Agentic Hard · 多步深度检索、工具调用与复杂研究', srcEn: 'CritPt Agentic Hard · Multi-step agentic tool-use & deep research', get: r => r.subscores?.critptAgentic ?? null},
+        {key: 'science', zh: '科学推理', en: 'Science', srcZh: 'Terminal-Bench Science / SciCode · 计算科学与科研编程实测', srcEn: 'Terminal-Bench Science / SciCode · Scientific computing & reasoning', get: r => r.subscores?.science ?? null}
       ];
       barMetrics = [
         ...axes,
-        {key: 'refusal', zh: '安全拒答率 ↓', en: 'Refusal Rate ↓', lowerBetter: true, get: r => r.refusalRate ?? null}
+        {key: 'refusal', zh: '安全拒答率 ↓', en: 'Refusal Rate ↓', lowerBetter: true, srcZh: 'AA Cyber · 因内置安全护栏主动拒绝执行测试指令的比例（0% = 无拦截）', srcEn: 'AA Cyber · Share of cyber tasks refused due to safety guardrails', get: r => r.refusalRate ?? null}
       ];
     } else {
       $('#radarHeading').textContent = t('Intelligence Index v5 六维核心能力雷达', 'Intelligence Index v5 6-Pillar Capability Radar');
       axes = [
-        {key: 'frontierCode', zh: '前沿编程', en: 'FrontierCode', get: r => r.subscores?.frontierCode ?? null},
-        {key: 'terminalBench', zh: '终端代理', en: 'Terminal 4.0', get: r => r.subscores?.terminalBench ?? null},
-        {key: 'hleDiamond', zh: '人类终极考', en: 'HLE Diamond', get: r => r.subscores?.hleDiamond ?? null},
-        {key: 'critptAgentic', zh: '复杂研究', en: 'CritPt Agent', get: r => r.subscores?.critptAgentic ?? null},
-        {key: 'science', zh: '科学推理', en: 'Science', get: r => r.subscores?.science ?? null},
-        {key: 'omniscience', zh: '全科知识', en: 'Omniscience', get: r => r.subscores?.omniscience ?? null}
+        {key: 'frontierCode', zh: '前沿编程', en: 'FrontierCode', srcZh: 'FrontierCode 2.0 · Artificial Analysis 防污染多语言软件工程评测', srcEn: 'FrontierCode 2.0 · Contamination-resistant multi-language SWE benchmark', get: r => r.subscores?.frontierCode ?? null},
+        {key: 'terminalBench', zh: '终端代理', en: 'Terminal 4.0', srcZh: 'Terminal-Bench 4.0 · 真实 Linux 容器命令行多步排障与编译代理实测', srcEn: 'Terminal-Bench 4.0 · Sandboxed Linux CLI & systems agent benchmark', get: r => r.subscores?.terminalBench ?? null},
+        {key: 'hleDiamond', zh: '人类终极考', en: 'HLE Diamond', srcZh: 'Humanity’s Last Exam (Diamond) · 全球学者构建的跨学科极限推理题集', srcEn: 'Humanity’s Last Exam (Diamond) · Expert frontier academic reasoning', get: r => r.subscores?.hleDiamond ?? null},
+        {key: 'critptAgentic', zh: '复杂研究', en: 'CritPt Agent', srcZh: 'CritPt Agentic Hard · 长链路多步代理研究与复杂工具协同基准', srcEn: 'CritPt Agentic Hard · Long-horizon multi-step agentic research', get: r => r.subscores?.critptAgentic ?? null},
+        {key: 'science', zh: '科学推理', en: 'Science', srcZh: 'Terminal-Bench Science / SciCode · 计算科学、数理化与科研代码评测', srcEn: 'Terminal-Bench Science / SciCode · Scientific computing & reasoning', get: r => r.subscores?.science ?? null},
+        {key: 'omniscience', zh: '全科知识', en: 'Omniscience', srcZh: 'AA-Omniscience Accuracy · 跨 6 大专业领域 3,000+ 题闭卷事实准确率', srcEn: 'AA-Omniscience Accuracy · Closed-book factual accuracy across 6 domains', get: r => r.subscores?.omniscience ?? null}
       ];
       barMetrics = [
         ...axes,
-        {key: 'hallucination', zh: '全科幻觉率 ↓', en: 'Hallucination ↓', lowerBetter: true, get: r => r.subscores?.hallucination ?? null}
+        {
+          key: 'hallucination',
+          zh: '盲区幻觉率 ↓',
+          en: 'When-Wrong Guess ↓',
+          lowerBetter: true,
+          srcZh: 'AA-Omniscience 条件盲猜率 = 答错瞎编数 ÷ (答错数 + 诚实弃权数)，衡量闭卷不会答时强行瞎编的比例（越低越诚实）',
+          srcEn: 'AA-Omniscience conditional guessing rate = Incorrect / (Incorrect + Abstained) on closed-book questions',
+          get: r => r.subscores?.hallucination ?? null
+        }
       ];
     }
   } else {
@@ -2137,19 +2449,30 @@ function renderCompare() {
         if (!evalNames.includes(ev.name)) evalNames.push(ev.name);
       }
     }
-    const evalAxes = evalNames.map(ename => ({
-      key: ename,
-      zh: shortEvalLabel(ename),
-      en: shortEvalLabel(ename),
-      get: r => r.evalScores?.find(e => e.name === ename)?.score ?? null
-    }));
+    const evalDescOf = ename => {
+      if (/frontiercode/i.test(ename)) return ['FrontierCode 2.0 · 端到端多语言软件工程任务通过率', 'FrontierCode 2.0 · End-to-end multi-language SWE pass rate'];
+      if (/swe-atlas/i.test(ename)) return ['SWE-Atlas · 大型真实代码仓库跨文件缺陷定位与修复率', 'SWE-Atlas · Multi-file repository bug-fixing & architecture pass rate'];
+      if (/terminal-bench/i.test(ename)) return ['Terminal-Bench 4.0 · 真实容器终端编译、运维与排障通过率', 'Terminal-Bench 4.0 · Sandboxed CLI build & debugging pass rate'];
+      return [`${ename} · Artificial Analysis 编程智能体实测子项`, `${ename} · Coding agent sub-benchmark`];
+    };
+    const evalAxes = evalNames.map(ename => {
+      const [srcZh, srcEn] = evalDescOf(ename);
+      return {
+        key: ename,
+        zh: shortEvalLabel(ename),
+        en: shortEvalLabel(ename),
+        srcZh,
+        srcEn,
+        get: r => r.evalScores?.find(e => e.name === ename)?.score ?? null
+      };
+    });
     axes = [
-      {key: 'index', zh: '智能体总指数', en: 'Agent Index', get: r => r.intelligenceIndex},
+      {key: 'index', zh: '智能体总指数', en: 'Agent Index', srcZh: 'AA Coding Agent Index v2.1 · 三大实战编程基准等权综合得分', srcEn: 'AA Coding Agent Index v2.1 · Composite score across all agent suites', get: r => r.intelligenceIndex},
       ...evalAxes
     ];
     barMetrics = [
       ...axes,
-      {key: 'cache', zh: '缓存命中率', en: 'Cache Hit %', get: r => r.agentStats?.cacheHitRate ?? null}
+      {key: 'cache', zh: '缓存命中率', en: 'Cache Hit %', srcZh: '多轮代理循环中命中 Prompt KV 缓存的输入 Token 实测占比', srcEn: 'Measured share of input tokens served from prompt KV cache', get: r => r.agentStats?.cacheHitRate ?? null}
     ];
   }
 
@@ -2180,15 +2503,18 @@ function renderCompare() {
     }, String(Math.round(scaleMax * frac))));
   }
 
+  const axisEndpoints = [];
   axes.forEach((ax, i) => {
     const ang = -Math.PI / 2 + (i * 2 * Math.PI) / N;
     const cos = Math.cos(ang), sin = Math.sin(ang);
+    const ex = cx + cos * R, ey = cy + sin * R;
     radarSvg.append(node('line', {
-      class: 'radar-grid',
+      class: 'radar-spoke',
+      'data-axis-idx': i,
       x1: cx,
       y1: cy,
-      x2: cx + cos * R,
-      y2: cy + sin * R
+      x2: ex,
+      y2: ey
     }));
     const anchor = Math.abs(cos) < 0.18 ? 'middle' : cos > 0 ? 'start' : 'end';
     const labelR = R + 16;
@@ -2196,10 +2522,14 @@ function renderCompare() {
     const ly = cy + sin * labelR + (sin < -0.5 ? -8 : sin > 0.5 ? 12 : 1);
     radarSvg.append(node('text', {
       class: 'radar-axis-label',
+      'data-axis-idx': i,
       x: lx,
       y: ly,
       'text-anchor': anchor
     }, t(ax.zh, ax.en)));
+
+    const labelHitX = anchor === 'start' ? lx + 28 : anchor === 'end' ? lx - 28 : lx;
+    axisEndpoints.push({ex, ey, lx: labelHitX, ly});
 
     const vals = selectedRows.map(r => ax.get(r)).filter(v => v !== null);
     if (vals.length) {
@@ -2213,44 +2543,63 @@ function renderCompare() {
     }
   });
 
+  const seriesLayer = node('g', {class: 'radar-series-layer'});
+  const calloutLayer = node('g', {class: 'radar-callout-layer'});
+  const verticesBySeries = [];
+
   selectedRows.forEach((row, idx) => {
     const sc = compareColor(idx);
     const seriesG = node('g', {class: 'radar-series', 'data-series-idx': idx});
-    seriesG.addEventListener('pointerenter', () => focusRadarSeries(idx));
-    seriesG.addEventListener('pointerleave', () => focusRadarSeries(null));
-
-    const pts = axes.map((ax, i) => {
+    const verts = axes.map((ax, i) => {
       const val = ax.get(row);
       const ratio = val === null ? 0 : Math.max(0, Math.min(1, val / scaleMax));
       const ang = -Math.PI / 2 + (i * 2 * Math.PI) / N;
-      return `${cx + Math.cos(ang) * R * ratio},${cy + Math.sin(ang) * R * ratio}`;
-    }).join(' ');
+      return {
+        val,
+        ratio,
+        ang,
+        x: cx + Math.cos(ang) * R * ratio,
+        y: cy + Math.sin(ang) * R * ratio
+      };
+    });
+    verticesBySeries.push(verts);
+
     seriesG.append(node('polygon', {
-      points: pts,
+      points: verts.map(v => `${v.x},${v.y}`).join(' '),
       fill: sc,
-      'fill-opacity': 0.16,
+      'fill-opacity': 0.15,
       stroke: sc,
       'stroke-width': 2.6,
       'stroke-linejoin': 'round'
     }));
-    axes.forEach((ax, i) => {
-      const val = ax.get(row);
-      if (val === null) return;
-      const ratio = Math.max(0, Math.min(1, val / scaleMax));
-      const ang = -Math.PI / 2 + (i * 2 * Math.PI) / N;
-      const dot = node('circle', {
-        cx: cx + Math.cos(ang) * R * ratio,
-        cy: cy + Math.sin(ang) * R * ratio,
+    verts.forEach(v => {
+      if (v.val === null) return;
+      seriesG.append(node('circle', {
+        cx: v.x,
+        cy: v.y,
         r: 4.5,
         fill: sc,
         stroke: 'var(--halo)',
         'stroke-width': 1.4
-      });
-      dot.append(node('title', {}, `${row.name} · ${t(ax.zh, ax.en)}: ${format(val, 1)}%`));
-      seriesG.append(dot);
+      }));
     });
-    radarSvg.append(seriesG);
+    seriesLayer.append(seriesG);
   });
+  radarSvg.append(seriesLayer, calloutLayer);
+
+  radarCtx = {
+    cx,
+    cy,
+    R,
+    scaleMax,
+    axes,
+    barMetrics,
+    selectedRows,
+    verticesBySeries,
+    axisEndpoints,
+    seriesLayer,
+    calloutLayer
+  };
 
   // Compact score summary grid directly beneath the Hero Radar
   const barsFrag = document.createDocumentFragment();
@@ -2259,10 +2608,25 @@ function renderCompare() {
     if (!validNums.length) continue;
     const bestVal = m.lowerBetter ? Math.min(...validNums) : Math.max(...validNums);
     const card = html('div', null, 'radar-dim-card');
-    card.append(html('div', t(m.zh, m.en), 'radar-dim-title'));
+    card.dataset.metricKey = m.key;
+    const titleEl = html('div', t(m.zh, m.en), 'radar-dim-title');
+    if (m.srcZh || m.srcEn) titleEl.title = t(m.srcZh, m.srcEn);
+    card.addEventListener('pointerenter', event => {
+      syncRadarSpotlight(null, m.key);
+      showMetricTip(m, event, null, 0);
+    });
+    card.addEventListener('pointermove', event => {
+      if (!tip.hidden) positionTip(event.clientX, event.clientY);
+    });
+    card.addEventListener('pointerleave', () => {
+      tip.hidden = true;
+      syncRadarSpotlight(null, null);
+    });
+    card.append(titleEl);
     selectedRows.forEach((row, idx) => {
       const val = m.get(row);
       const item = html('div', null, 'radar-dim-item');
+      item.dataset.seriesIdx = String(idx);
       const nameWrap = html('span', null, 'radar-dim-name');
       const dot = html('i', null, 'creator-dot');
       dot.style.background = compareColor(idx);
@@ -2272,12 +2636,23 @@ function renderCompare() {
       if (val !== null && selectedRows.length > 1 && Math.abs(val - bestVal) < 1e-6) {
         valEl.style.color = 'var(--accent)';
       }
+      item.addEventListener('pointerenter', event => {
+        event.stopPropagation();
+        syncRadarSpotlight(idx, m.key);
+        showMetricTip(m, event, idx, 0);
+      });
+      item.addEventListener('click', event => {
+        event.stopPropagation();
+        state.radarPinnedId = state.radarPinnedId === row.id ? null : row.id;
+        syncRadarSpotlight(idx, m.key);
+      });
       item.append(nameWrap, valEl);
       card.append(item);
     });
     barsFrag.append(card);
   }
   $('#subscoreBars').replaceChildren(barsFrag);
+  syncRadarSpotlight(null, null);
 
   // 3. Cost Structure, Tail Risk, Multi-Provider Arbitrage & Latency Anatomy
   const anatomyFrag = document.createDocumentFragment();
@@ -2563,8 +2938,15 @@ function renderCompare() {
       true
     );
     addRow(
-      t('全科幻觉率 (Omniscience)', 'Hallucination Rate'),
-      selectedRows.map(r => r.subscores?.hallucination != null ? `${format(r.subscores.hallucination, 1)}%` : '—'),
+      t('盲区幻觉率（占全题错答）', 'When-Wrong Guess (Total Wrong)'),
+      selectedRows.map(r => {
+        const h = r.subscores?.hallucination;
+        if (h == null) return '—';
+        const acc = r.subscores?.omniscience;
+        if (acc == null) return `${format(h, 1)}%`;
+        const totalWrong = ((100 - acc) * h) / 100;
+        return t(`${format(h, 1)}%（全题 ${format(totalWrong, 1)}%）`, `${format(h, 1)}% (${format(totalWrong, 1)}% all)`);
+      }),
       selectedRows.map(r => r.subscores?.hallucination ?? null),
       true
     );
@@ -3635,6 +4017,77 @@ for (const [btnId, mode] of [['#radarModeBench', 'bench'], ['#radarModeDomain', 
   });
 }
 
+$('#radarInfoBtn').addEventListener('click', () => {
+  radarInfoOpen = !radarInfoOpen;
+  renderRadarInfo();
+});
+
+$('#radarSvg').addEventListener('pointermove', event => {
+  if (!state || state.mode !== 'compare' || !radarCtx) return;
+  const pt = radarSvgPoint(event);
+  if (!pt) return;
+  const hit = hitTestRadar(pt.x, pt.y);
+  $('#radarSvg').classList.toggle('is-interactive', !!(hit && hit.seriesIdx !== null));
+  if (!hit) {
+    tip.hidden = true;
+    syncRadarSpotlight(null, null);
+    return;
+  }
+  const ax = hit.axisIdx !== null ? radarCtx.axes[hit.axisIdx] : null;
+  syncRadarSpotlight(hit.seriesIdx, ax?.key || null);
+  if (ax) {
+    showMetricTip(ax, event, hit.seriesIdx, hit.cluster?.length || 0);
+  } else if (hit.seriesIdx !== null) {
+    const row = radarCtx.selectedRows[hit.seriesIdx];
+    tip.replaceChildren(
+      html('strong', row.name),
+      html('span', `${row.creator?.name || 'Other'} · ${t('综合指数', 'Index')} ${format(row.intelligenceIndex, 2)} · ${money(row.cost)}`, 'tip-sub'),
+      html('span', t('单击锁定并将该模型置顶展示', 'Click to lock and bring model to front'), 'tip-foot')
+    );
+    tip.hidden = false;
+    positionTip(event.clientX, event.clientY);
+  }
+});
+
+$('#radarSvg').addEventListener('pointerleave', () => {
+  $('#radarSvg').classList.remove('is-interactive');
+  tip.hidden = true;
+  if (state?.mode === 'compare') syncRadarSpotlight(null, null);
+});
+
+$('#radarSvg').addEventListener('click', event => {
+  if (!state || state.mode !== 'compare' || !radarCtx) return;
+  const pt = radarSvgPoint(event);
+  const hit = pt ? hitTestRadar(pt.x, pt.y) : null;
+  if (!hit || hit.seriesIdx === null) {
+    if (state.radarPinnedId) {
+      state.radarPinnedId = null;
+      syncRadarSpotlight(null, hit?.axisIdx != null ? radarCtx.axes[hit.axisIdx]?.key : null);
+    }
+    return;
+  }
+  if (hit.cluster && hit.cluster.length > 1) {
+    const ids = hit.cluster.map(c => radarCtx.selectedRows[c.sIdx].id);
+    const curPos = ids.indexOf(state.radarPinnedId);
+    state.radarPinnedId = curPos === -1
+      ? ids[0]
+      : curPos < ids.length - 1
+        ? ids[curPos + 1]
+        : null;
+  } else {
+    const targetId = radarCtx.selectedRows[hit.seriesIdx].id;
+    state.radarPinnedId = state.radarPinnedId === targetId ? null : targetId;
+  }
+  const nextActiveIdx = state.radarPinnedId
+    ? radarCtx.selectedRows.findIndex(r => r.id === state.radarPinnedId)
+    : null;
+  const ax = hit.axisIdx !== null ? radarCtx.axes[hit.axisIdx] : null;
+  syncRadarSpotlight(nextActiveIdx, ax?.key || null);
+  if (ax && nextActiveIdx !== null && nextActiveIdx >= 0) {
+    showMetricTip(ax, event, nextActiveIdx, hit.cluster?.length || 0);
+  }
+});
+
 $('#isoToggle').addEventListener('click', () => {
   if (!state) return;
   state.isoCurve = !state.isoCurve;
@@ -4107,6 +4560,14 @@ document.addEventListener('keydown', event => {
   if (changelogOpen) {
     setChangelogOpen(false);
     $('#updateBadge').focus({preventScroll: true});
+  } else if (state?.mode === 'compare' && state.radarPinnedId) {
+    state.radarPinnedId = null;
+    tip.hidden = true;
+    syncRadarSpotlight(null, null);
+  } else if (state?.mode === 'compare' && radarInfoOpen) {
+    radarInfoOpen = false;
+    renderRadarInfo();
+    $('#radarInfoBtn').focus({preventScroll: true});
   } else if (valueDetailsOpen) {
     valueDetailsOpen = false;
     syncPanelControls();
