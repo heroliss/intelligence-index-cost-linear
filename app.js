@@ -20,7 +20,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261118-8';
+} from './chart-math.mjs?v=20261118-9';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -752,7 +752,7 @@ function syncStaticText() {
   $('#subThIndex').textContent = t('指数 (0–100)', 'Index (0–100)');
   $('#subThCost').textContent = t('单任务 API', 'API / task');
   $('#subThBreakeven').textContent = t('回本任务数', 'Break-even');
-  $('#subThBill').textContent = t('预计月 API 账单', 'Est. Monthly API');
+  $('#subThBill').textContent = t('月 API 账单 · 订阅结论', 'Est. API · Sub Verdict');
 
   $('#historySettings').setAttribute('aria-label', t('历史帕累托演进与 AI 降本时间轴', 'Historical Pareto evolution & AI cost deflation timeline'));
   $('#historyLabel').textContent = t('发布时间轴', 'Timeline');
@@ -1397,8 +1397,8 @@ function syncSubControls() {
     else if (verdict.status === 'sub-cheaper') subCount++;
   }
   $('#subBreakevenSummary').textContent = t(
-    `盈亏平衡单价：${money(thresholdCost)}/任务 · 当前 ${apiCount} 项 API 按量更省，${subCount} 项超 $${fee}/月订阅线`,
-    `Break-even cost: ${money(thresholdCost)}/task · ${apiCount} cheaper via API, ${subCount} exceed $${fee}/mo line`
+    `盈亏平衡单价：${money(thresholdCost)}/任务 · 当前 ${subCount} 项买 $${fee}/月订阅已回本，${apiCount} 项未回本（按量 API 更省）`,
+    `Break-even: ${money(thresholdCost)}/task · ${subCount} worth $${fee}/mo sub, ${apiCount} unmet (API cheaper)`
   );
   syncRouterControls();
 }
@@ -1793,12 +1793,20 @@ function renderSubTable(rows = filteredRows()) {
     verdictWrap.append(html('span', verdict ? compactMoney(verdict.apiBill) : '—', 'bill-amount'));
     if (verdict) {
       let pillText, pillClass;
-      if (verdict.status === 'api-cheaper') {
-        pillText = t(`API 省 ${compactMoney(Math.abs(verdict.delta))}`, `API −${compactMoney(Math.abs(verdict.delta))}`);
-        pillClass = 'verdict-pill pill-api';
-      } else if (verdict.status === 'sub-cheaper') {
-        pillText = t(`超线 +${compactMoney(verdict.delta)}`, `+${compactMoney(verdict.delta)} sub`);
+      if (verdict.status === 'sub-cheaper') {
+        pillText = t(`已回本 · 订阅省 ${compactMoney(verdict.delta)}`, `Sub saves ${compactMoney(verdict.delta)}`);
         pillClass = 'verdict-pill pill-sub';
+        billTd.title = t(
+          `预计月 API 账单 ${compactMoney(verdict.apiBill)} 高于 $${fee} 订阅费：配额够用时买订阅划算（省 ${compactMoney(verdict.delta)}）`,
+          `Est. API bill ${compactMoney(verdict.apiBill)} exceeds $${fee}/mo: subscription saves ${compactMoney(verdict.delta)} if quota suffices`
+        );
+      } else if (verdict.status === 'api-cheaper') {
+        pillText = t(`未回本 · API 省 ${compactMoney(Math.abs(verdict.delta))}`, `Unmet · API −${compactMoney(Math.abs(verdict.delta))}`);
+        pillClass = 'verdict-pill pill-api';
+        billTd.title = t(
+          `预计月 API 账单仅 ${compactMoney(verdict.apiBill)}，未达 $${fee} 订阅回本线：买订阅不划算，直接按量用 API 省 ${compactMoney(Math.abs(verdict.delta))}`,
+          `Est. API bill ${compactMoney(verdict.apiBill)} is below $${fee}/mo: subscription doesn't break even; pay-as-you-go API saves ${compactMoney(Math.abs(verdict.delta))}`
+        );
       } else {
         pillText = t('约持平', '≈ Even');
         pillClass = 'verdict-pill pill-even';

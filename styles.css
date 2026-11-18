@@ -1563,13 +1563,13 @@ th[aria-sort="descending"] .sub-sort-button {
   font-variant-numeric: tabular-nums;
 }
 
-.verdict-pill.pill-api {
+.verdict-pill.pill-sub {
   background: var(--active-bg);
   color: var(--accent);
   border: 1px solid var(--accent);
 }
 
-.verdict-pill.pill-sub {
+.verdict-pill.pill-api {
   background: var(--amber-bg);
   color: var(--amber);
   border: 1px solid var(--amber-border);

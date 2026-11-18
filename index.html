@@ -26,8 +26,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261118-8">
-  <script type="module" src="app.js?v=20261118-8"></script>
+  <link rel="stylesheet" href="styles.css?v=20261118-9">
+  <script type="module" src="app.js?v=20261118-9"></script>
 </head>
 <body>
 <main class="app">
@@ -340,7 +340,7 @@
               <th scope="col" aria-sort="descending"><button type="button" class="sub-sort-button" data-sub-sort="intelligenceIndex"><span class="th-label" id="subThIndex">指数 (0–100)</span><span class="sort-arrow" aria-hidden="true">↓</span></button></th>
               <th scope="col" aria-sort="none"><button type="button" class="sub-sort-button" data-sub-sort="cost"><span class="th-label" id="subThCost">单任务 API</span><span class="sort-arrow" aria-hidden="true">↕</span></button></th>
               <th scope="col" aria-sort="none"><button type="button" class="sub-sort-button" data-sub-sort="breakeven"><span class="th-label" id="subThBreakeven">回本任务数</span><span id="subThTierHint" class="th-sub">达 $20/月</span><span class="sort-arrow" aria-hidden="true">↕</span></button></th>
-              <th scope="col" aria-sort="none"><button type="button" class="sub-sort-button" data-sub-sort="apiBill"><span class="th-label" id="subThBill">预计月 API 账单</span><span id="subThTasksHint" class="th-sub">60 次/月</span><span class="sort-arrow" aria-hidden="true">↕</span></button></th>
+              <th scope="col" aria-sort="none"><button type="button" class="sub-sort-button" data-sub-sort="apiBill"><span class="th-label" id="subThBill">月 API 账单 · 订阅结论</span><span id="subThTasksHint" class="th-sub">60 次/月</span><span class="sort-arrow" aria-hidden="true">↕</span></button></th>
             </tr>
           </thead>
           <tbody id="subTableBody"></tbody>
