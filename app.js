@@ -20,7 +20,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261118-9';
+} from './chart-math.mjs?v=20261118-11';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -77,9 +77,11 @@ const BENCHMARKS = {
   }
 };
 
+const MAX_COMPARE = 8;
+
 const COMPARE_PALETTE = {
-  dark: ['#5ce1c6', '#60a5fa', '#fbbf24', '#f472b6'],
-  light: ['#0b6e58', '#1d4ed8', '#b45309', '#be185d']
+  dark: ['#5ce1c6', '#60a5fa', '#fbbf24', '#f472b6', '#a78bfa', '#fb923c', '#a3e635', '#38bdf8'],
+  light: ['#0b6e58', '#1d4ed8', '#a14408', '#be185d', '#6d28d9', '#c2410c', '#3f6212', '#0369a1']
 };
 
 function compareColor(index) {
@@ -118,7 +120,7 @@ let loadController, loadGeneration = 0;
 const measure = document.createElement('canvas').getContext('2d');
 const colorCache = new Map();
 const mobileLayout = matchMedia('(max-width:760px), (max-height:500px)');
-let controlsOpen = !mobileLayout.matches, controlsTouched = false, valueDetailsOpen = false, changelogOpen = false, radarInfoOpen = false, radarCtx = null, shareTimer = 0, curveFrame;
+let controlsOpen = !mobileLayout.matches, controlsTouched = false, valueDetailsOpen = false, changelogOpen = false, radarInfoOpen = false, comparePickerOpen = false, radarCtx = null, shareTimer = 0, copyMdTimer = 0, curveFrame;
 
 const node = (tag, attrs = {}, content) => {
   const element = document.createElementNS(NS, tag);
@@ -267,6 +269,26 @@ function defaultCompareIds(rows) {
   return picks;
 }
 
+function frontierCompareIds(rows, limit = MAX_COMPARE) {
+  if (!rows.length) return [];
+  const frontier = [...paretoFrontier(rows)].reverse(); // Highest score -> lowest cost
+  if (frontier.length <= limit) {
+    const picks = frontier.map(r => r.id);
+    for (const r of sortRows(rows, 'intelligenceIndex', 'desc')) {
+      if (picks.length >= Math.min(limit, rows.length)) break;
+      if (!picks.includes(r.id)) picks.push(r.id);
+    }
+    return picks;
+  }
+  const sampled = [];
+  for (let i = 0; i < limit; i++) {
+    const idx = Math.round((i * (frontier.length - 1)) / (limit - 1));
+    const id = frontier[idx].id;
+    if (!sampled.includes(id)) sampled.push(id);
+  }
+  return sampled;
+}
+
 function syncMetricViewport(target, nextMetric) {
   if (target.xMetric && target.view) {
     target.views[target.xMetric] = {...target.view};
@@ -378,12 +400,16 @@ function applyRouteParams(target, params) {
   }
   if (params.get('iso') === '1') target.isoCurve = true;
   if (params.get('subline') === '1') target.subLine = true;
+  const validIds = new Set(target.rows.map(r => r.id));
   const cmp = params.get('cmp');
   if (cmp) {
-    const validIds = new Set(target.rows.map(r => r.id));
-    const parsed = [...new Set(cmp.split(',').filter(id => validIds.has(id)))].slice(0, 4);
+    const parsed = [...new Set(cmp.split(',').filter(id => validIds.has(id)))].slice(0, MAX_COMPARE);
     if (parsed.length) target.compareIds = parsed;
   }
+  const pin = params.get('pin');
+  if (pin && validIds.has(pin)) target.selected = pin;
+  const rpin = params.get('rpin');
+  if (rpin && target.compareIds.includes(rpin)) target.radarPinnedId = rpin;
 }
 
 function syncUrlHash() {
@@ -407,6 +433,12 @@ function syncUrlHash() {
   }
   if (state.isoCurve) params.set('iso', '1');
   if (state.subLine) params.set('subline', '1');
+  if (state.selected && state.mode !== 'curve' && state.mode !== 'compare') {
+    params.set('pin', state.selected);
+  }
+  if (state.mode === 'compare' && state.radarPinnedId) {
+    params.set('rpin', state.radarPinnedId);
+  }
   if (state.compareIds.join(',') !== state.defaultCompareKey) {
     params.set('cmp', state.compareIds.join(','));
   }
@@ -546,11 +578,25 @@ function renderChangelog() {
   list.replaceChildren(frag);
 }
 
+function clampAnchoredPopover(popover, anchor, maxWidth = 360) {
+  if (!popover || popover.hidden || !anchor) return;
+  const anchorRect = anchor.getBoundingClientRect();
+  const popW = Math.min(maxWidth, Math.max(240, innerWidth - 16));
+  const preferLeft = anchorRect.right - popW >= 8 ? anchorRect.right - popW : anchorRect.left;
+  const clampedLeft = Math.max(8, Math.min(innerWidth - popW - 8, preferLeft));
+  popover.style.width = `${popW}px`;
+  popover.style.left = `${clampedLeft - anchorRect.left}px`;
+  popover.style.right = 'auto';
+}
+
 function setChangelogOpen(open) {
   changelogOpen = open;
   $('#updateBadge').setAttribute('aria-expanded', String(open));
   $('#changelogPopover').hidden = !open;
-  if (open) renderChangelog();
+  if (open) {
+    renderChangelog();
+    clampAnchoredPopover($('#changelogPopover'), $('#updateBadge'), 340);
+  }
 }
 
 function renderPresets() {
@@ -677,6 +723,8 @@ function syncStaticText() {
   );
   $('#helpKeyboard').replaceChildren(
     document.createTextNode(t('键盘：', 'Keys: ')),
+    html('kbd', '1–5'),
+    document.createTextNode(t(' 切视图 · ', ' views · ')),
     html('kbd', '/'),
     document.createTextNode(t(' 搜索 · ', ' search · ')),
     html('kbd', '[ ]'),
@@ -744,8 +792,8 @@ function syncStaticText() {
   $('#routerShareLabel').textContent = t('主力分流', 'Fast %');
   $('#resetSubInline').textContent = t('重置测算', 'Reset');
   $('#subDisclaimer').textContent = t(
-    '基于实测 API 单任务均价精确换算；官方订阅含 5 小时/周动态限流且不公开配额，超线代表“配额够用时订阅划算”。',
-    'Derived from verified API cost per task; official plans enforce dynamic rate limits, so exceeding means subscription wins if quota suffices.'
+    '基于实测 API 单任务均价精确换算；官方订阅含 5 小时/周动态限流且不公开配额，「已回本」代表配额够用时买月订阅更划算。',
+    'Derived from verified API cost per task; official plans enforce dynamic rate limits, so "Sub saves" holds when plan quota suffices.'
   );
   $('#subTableCaption').textContent = t('API 按量计费与月订阅盈亏平衡对比表', 'Pay-as-you-go API versus monthly subscription break-even table');
   $('#subThName').textContent = t('名称', 'Name');
@@ -757,8 +805,16 @@ function syncStaticText() {
   $('#historySettings').setAttribute('aria-label', t('历史帕累托演进与 AI 降本时间轴', 'Historical Pareto evolution & AI cost deflation timeline'));
   $('#historyLabel').textContent = t('发布时间轴', 'Timeline');
 
-  $('#compareSelectSr').textContent = t('添加条目到多维对比', 'Add entry to comparison');
-  $('#compareAutoBtn').textContent = t('推荐代表组合', 'Auto-pick top set');
+  $('#compareSelectSr').textContent = t('搜索并添加条目到多维对比', 'Search and add entries to comparison');
+  $('#compareSearchInput').placeholder = t('搜索模型或厂商（点击多选）…', 'Search models or creators (click to toggle)…');
+  $('#compareAutoBtn').textContent = t('推荐 4 项', 'Top 4');
+  $('#compareAutoBtn').title = t('自动挑选榜首、高性价比与开源代表共 4 项', 'Auto-pick SOTA, best-value & top open-weights (4)');
+  $('#compareFrontierBtn').textContent = t(`前沿全览 (${MAX_COMPARE})`, `Frontier (${MAX_COMPARE})`);
+  $('#compareFrontierBtn').title = t(`沿帕累托前沿均匀抽取最多 ${MAX_COMPARE} 项进行跨档位全景对比`, `Sample up to ${MAX_COMPARE} Pareto frontier entries across tiers`);
+  $('#compareClearBtn').textContent = t('精简', 'Trim');
+  $('#compareClearBtn').title = t('仅保留当前锁定或第一项，便于从头自选组合', 'Keep only the pinned or first entry to rebuild selection');
+  if (!copyMdTimer) $('#compareCopyMd').textContent = t('复制表格', 'Copy MD');
+  $('#compareCopyMd').title = t('复制当前对比矩阵与细分得分为 Markdown 表格', 'Copy comparison matrix & subscores as Markdown table');
   $('#compareExportPng').textContent = t('导图 PNG', 'Export PNG');
   $('#radarModeSwitch').setAttribute('aria-label', t('雷达图维度切换', 'Radar dimension mode'));
   $('#radarModeBench').textContent = t('基准六维', 'Benchmarks');
@@ -857,6 +913,7 @@ function chooseChart(key, {changeHash = true, routeParams = null} = {}) {
     key = 'models';
   }
   stopHistoryPlay();
+  if (comparePickerOpen) setComparePickerOpen(false);
   const previousMode = state?.mode;
   endPointerInteractions();
   clearHover();
@@ -1359,8 +1416,8 @@ function syncRouterControls() {
   const res = cascadingRouteSummary(fastRow, strongRow, state.routerShare / 100, state.monthlyTasks);
   if (res) {
     const subCmp = res.monthlyBlendedBill < state.subFee
-      ? t(`较 $${state.subFee} 订阅省 ${compactMoney(state.subFee - res.monthlyBlendedBill)}/月`, `saves ${compactMoney(state.subFee - res.monthlyBlendedBill)} vs $${state.subFee}/mo`)
-      : t(`超 $${state.subFee} 订阅线 +${compactMoney(res.monthlyBlendedBill - state.subFee)}`, `+${compactMoney(res.monthlyBlendedBill - state.subFee)} over $${state.subFee}/mo`);
+      ? t(`比 $${state.subFee} 订阅还省 ${compactMoney(state.subFee - res.monthlyBlendedBill)}/月`, `saves ${compactMoney(state.subFee - res.monthlyBlendedBill)} vs $${state.subFee}/mo`)
+      : t(`高于 $${state.subFee} 订阅 +${compactMoney(res.monthlyBlendedBill - state.subFee)}（配额够用则订阅更省）`, `+${compactMoney(res.monthlyBlendedBill - state.subFee)} vs $${state.subFee}/mo (sub wins if quota suffices)`);
     $('#routerReadout').textContent = t(
       `混合均价 ${money(res.blendedCost)}/次（较纯旗舰省 ${Math.round(Math.max(0, res.savingsVsStrong) * 100)}%）· 月账单 ${compactMoney(res.monthlyBlendedBill)}（${subCmp}）`,
       `Blended ${money(res.blendedCost)}/task (−${Math.round(Math.max(0, res.savingsVsStrong) * 100)}% vs flagship) · ${compactMoney(res.monthlyBlendedBill)}/mo (${subCmp})`
@@ -1579,13 +1636,16 @@ function locateRowInChart(row) {
   scheduleDraw();
 }
 
-function toggleCompareId(id) {
+function toggleCompareId(id, {evictOldest = true} = {}) {
   if (!state) return;
   const idx = state.compareIds.indexOf(id);
   if (idx !== -1) {
     if (state.compareIds.length > 1) state.compareIds.splice(idx, 1);
   } else {
-    if (state.compareIds.length >= 4) state.compareIds.shift();
+    if (state.compareIds.length >= MAX_COMPARE) {
+      if (!evictOldest) return;
+      state.compareIds.shift();
+    }
     state.compareIds.push(id);
   }
   syncUrlHash();
@@ -1867,13 +1927,21 @@ function exportCsv() {
     ...(activeKey === 'cyber' ? ['SafetyRefusalPct'] : []),
     `WeightedValue_w${state.valueWeight.toFixed(1)}`,
     `BreakEvenTasks_$${state.subFee}`,
-    `EstMonthlyApiUSD_${state.monthlyTasks}tasks`
+    `EstMonthlyApiUSD_${state.monthlyTasks}tasks`,
+    `SubVerdict_$${state.subFee}`
   ];
   const lines = [headers.join(',')];
   for (const row of rows) {
     const val = valuePerDollar(row, state.valueWeight, state.minScore);
     const be = breakEvenTasks(row.cost, state.subFee);
     const verdict = subscriptionVerdict(row.cost, state.monthlyTasks, state.subFee);
+    const verdictCode = !verdict
+      ? ''
+      : verdict.status === 'sub-cheaper'
+        ? 'Worth_Subscription'
+        : verdict.status === 'api-cheaper'
+          ? 'Unmet_API_Cheaper'
+          : 'Near_BreakEven';
     lines.push([
       row.name,
       row.creator?.name || 'Other',
@@ -1886,7 +1954,8 @@ function exportCsv() {
       ...(activeKey === 'cyber' ? [row.refusalRate ?? ''] : []),
       val !== null ? val.toFixed(4) : '',
       be !== null ? be.toFixed(2) : '',
-      verdict ? verdict.apiBill.toFixed(4) : ''
+      verdict ? verdict.apiBill.toFixed(4) : '',
+      verdictCode
     ].map(escapeCsv).join(','));
   }
   const blob = new Blob(['\uFEFF' + lines.join('\r\n')], {type: 'text/csv;charset=utf-8'});
@@ -1967,8 +2036,29 @@ function exportChartPng(kind = state?.mode) {
   const img = new Image();
   img.onload = () => {
     const scale = 2;
-    const padX = 24, headH = kind === 'compare' ? 76 : 54, footH = 32;
+    const padX = 24, footH = 32;
     const outW = Math.max(640, svgW + padX * 2);
+    const measureCtx = document.createElement('canvas').getContext('2d');
+    measureCtx.font = '500 12px "IBM Plex Sans", "Segoe UI", sans-serif';
+    const legendPlaced = [];
+    let legendRows = 0;
+    if (kind === 'compare') {
+      const rowMap = new Map(state.rows.map(r => [r.id, r]));
+      let lx = padX, rowIdx = 0;
+      const maxRight = outW - padX;
+      state.compareIds.map(id => rowMap.get(id)).filter(Boolean).forEach((r, idx) => {
+        const nameTxt = r.shortName || r.name;
+        const itemW = measureCtx.measureText(nameTxt).width + 26;
+        if (lx > padX && lx + itemW > maxRight) {
+          rowIdx++;
+          lx = padX;
+        }
+        legendPlaced.push({idx, nameTxt, x: lx, rowIdx});
+        lx += itemW;
+      });
+      legendRows = legendPlaced.length ? rowIdx + 1 : 0;
+    }
+    const headH = kind === 'compare' ? 56 + legendRows * 20 : 54;
     const outH = svgH + headH + footH;
     const canvas = document.createElement('canvas');
     canvas.width = outW * scale;
@@ -1989,19 +2079,16 @@ function exportChartPng(kind = state?.mode) {
     ctx.fillText($('#viewStatus').textContent || '', padX, 46);
 
     if (kind === 'compare') {
-      let lx = padX;
-      const rowMap = new Map(state.rows.map(r => [r.id, r]));
-      state.compareIds.map(id => rowMap.get(id)).filter(Boolean).forEach((r, idx) => {
-        ctx.fillStyle = compareColor(idx);
+      for (const item of legendPlaced) {
+        const ly = 64 + item.rowIdx * 20;
+        ctx.fillStyle = compareColor(item.idx);
         ctx.beginPath();
-        ctx.arc(lx + 4, 62, 4, 0, Math.PI * 2);
+        ctx.arc(item.x + 4, ly - 4, 4, 0, Math.PI * 2);
         ctx.fill();
         ctx.fillStyle = v('--ink');
         ctx.font = '500 12px "IBM Plex Sans", "Segoe UI", sans-serif';
-        const nameTxt = r.shortName || r.name;
-        ctx.fillText(nameTxt, lx + 12, 66);
-        lx += ctx.measureText(nameTxt).width + 28;
-      });
+        ctx.fillText(item.nameTxt, item.x + 12, ly);
+      }
     }
 
     ctx.drawImage(img, (outW - svgW) / 2, headH, svgW, svgH);
@@ -2335,6 +2422,103 @@ function renderRadarInfo() {
   panel.replaceChildren(frag);
 }
 
+function renderComparePicker() {
+  if (!state) return;
+  const list = $('#comparePickerList');
+  const q = $('#compareSearchInput').value.trim().toLocaleLowerCase();
+  const pool = sortRows(licenseFilteredRows(state.rows), 'intelligenceIndex', 'desc');
+  const filtered = q
+    ? pool.filter(r => [r.name, r.shortName, r.creator?.name, r.agentName, r.modelName].filter(Boolean).join(' ').toLocaleLowerCase().includes(q))
+    : pool;
+  const frag = document.createDocumentFragment();
+  const full = state.compareIds.length >= MAX_COMPARE;
+
+  for (const row of filtered) {
+    const picked = state.compareIds.includes(row.id);
+    const btn = html('button', null, picked ? 'picker-item is-picked' : 'picker-item');
+    btn.type = 'button';
+    btn.setAttribute('aria-pressed', String(picked));
+    btn.disabled = (!picked && full) || (picked && state.compareIds.length <= 1);
+
+    const left = html('span', null, 'picker-item-name');
+    const dot = html('i', null, 'creator-dot');
+    dot.style.background = color(row.creator?.color);
+    dot.setAttribute('aria-hidden', 'true');
+    left.append(dot, html('span', row.name));
+
+    const statusMark = picked ? '✓' : '+';
+    const meta = html('span', `${format(row.intelligenceIndex, 1)} · ${money(row.cost)} ${statusMark}`, 'picker-item-meta');
+    btn.append(left, meta);
+    btn.addEventListener('click', () => {
+      toggleCompareId(row.id, {evictOldest: false});
+      renderComparePicker();
+    });
+    frag.append(btn);
+  }
+  if (!filtered.length) {
+    frag.append(html('div', t('无匹配模型，请换个关键词', 'No matching entries'), 'anatomy-note'));
+  }
+  list.replaceChildren(frag);
+  requestAnimationFrame(() => clampAnchoredPopover($('#comparePickerPopover'), $('#compareAddBtn'), 360));
+}
+
+function setComparePickerOpen(open) {
+  comparePickerOpen = open;
+  $('#compareAddBtn').setAttribute('aria-expanded', String(open));
+  $('#comparePickerPopover').hidden = !open;
+  if (open) {
+    renderComparePicker();
+    clampAnchoredPopover($('#comparePickerPopover'), $('#compareAddBtn'), 360);
+    requestAnimationFrame(() => $('#compareSearchInput').focus({preventScroll: true}));
+  }
+}
+
+async function copyCompareMarkdown() {
+  if (!state || !radarCtx) return;
+  const {selectedRows, barMetrics} = radarCtx;
+  const esc = s => String(s ?? '').replace(/\|/g, '\\|');
+  const lines = [];
+  lines.push(`| ${t('指标', 'Metric')} | ${selectedRows.map(r => esc(r.shortName || r.name)).join(' | ')} |`);
+  lines.push(`| --- | ${selectedRows.map(() => '---:').join(' | ')} |`);
+
+  for (const tr of document.querySelectorAll('#compareMatrix tbody tr')) {
+    const cells = [...tr.children].map(el => esc(el.textContent.trim()));
+    if (cells.length) lines.push(`| ${cells.join(' | ')} |`);
+  }
+  for (const m of barMetrics) {
+    const vals = selectedRows.map(r => {
+      const v = m.get(r);
+      return v === null ? '—' : `${format(v, 1)}%`;
+    });
+    lines.push(`| ${esc(t(m.zh, m.en))} | ${vals.join(' | ')} |`);
+  }
+
+  const md = lines.join('\n');
+  let copied = false;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(md);
+      copied = true;
+    }
+  } catch {}
+  if (!copied) {
+    const ta = document.createElement('textarea');
+    ta.value = md;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.append(ta);
+    ta.select();
+    try { copied = document.execCommand('copy'); } catch {}
+    ta.remove();
+  }
+  clearTimeout(copyMdTimer);
+  $('#compareCopyMd').textContent = copied ? t('已复制表格 ✓', 'Copied MD ✓') : t('复制失败', 'Copy failed');
+  copyMdTimer = setTimeout(() => {
+    copyMdTimer = 0;
+    $('#compareCopyMd').textContent = t('复制表格', 'Copy MD');
+  }, 1800);
+}
+
 function renderCompare() {
   if (!state) return;
   const rowMap = new Map(state.rows.map(r => [r.id, r]));
@@ -2347,51 +2531,48 @@ function renderCompare() {
     state.radarPinnedId = null;
   }
 
-  // 1. Selected Chips & Selector (hover previews, click locks & elevates to front!)
+  // 1. Selected Chips & Searchable Multi-Select Picker (up to MAX_COMPARE = 8)
   const chipsFrag = document.createDocumentFragment();
   selectedRows.forEach((row, idx) => {
     const sc = compareColor(idx);
     const chip = html('div', null, 'compare-chip');
     chip.setAttribute('role', 'listitem');
-    chip.title = t('单击锁定置顶该模型曲线', 'Click to lock and bring curve to front');
+    const focusBtn = html('button', null, 'chip-focus-btn');
+    focusBtn.type = 'button';
+    focusBtn.title = t('单击锁定置顶该模型曲线', 'Click to lock and bring curve to front');
     const dot = html('i', null, 'creator-dot');
     dot.style.background = sc;
     dot.setAttribute('aria-hidden', 'true');
-    const rmBtn = html('button', '×');
+    focusBtn.append(dot, html('span', row.shortName || row.name));
+    focusBtn.addEventListener('click', () => {
+      state.radarPinnedId = state.radarPinnedId === row.id ? null : row.id;
+      syncUrlHash();
+      syncRadarSpotlight(null, null);
+    });
+
+    const rmBtn = html('button', '×', 'chip-rm-btn');
     rmBtn.type = 'button';
     rmBtn.disabled = selectedRows.length <= 1;
     rmBtn.setAttribute('aria-label', t(`移除 ${row.name}`, `Remove ${row.name}`));
     rmBtn.addEventListener('click', event => {
       event.stopPropagation();
       toggleCompareId(row.id);
+      if (comparePickerOpen) renderComparePicker();
     });
+
     chip.addEventListener('pointerenter', () => syncRadarSpotlight(idx, null));
     chip.addEventListener('pointerleave', () => syncRadarSpotlight(null, null));
-    chip.addEventListener('click', () => {
-      state.radarPinnedId = state.radarPinnedId === row.id ? null : row.id;
-      syncRadarSpotlight(null, null);
-    });
-    chip.append(dot, html('span', row.shortName || row.name), rmBtn);
+    chip.append(focusBtn, rmBtn);
     chipsFrag.append(chip);
   });
   $('#compareChips').replaceChildren(chipsFrag);
 
-  const select = $('#compareSelect');
-  const optFrag = document.createDocumentFragment();
-  const placeholder = html('option', selectedRows.length >= 4
-    ? t('已选满 4 项（点击标签 × 可移除）', '4/4 selected (remove a chip to add)')
-    : t('+ 添加对比条目（最多 4 项）…', '+ Add entry to compare (up to 4)…'));
-  placeholder.value = '';
-  optFrag.append(placeholder);
-  for (const row of sortRows(licenseFilteredRows(state.rows), 'intelligenceIndex', 'desc')) {
-    if (state.compareIds.includes(row.id)) continue;
-    const opt = html('option', `${row.name} (${format(row.intelligenceIndex, 1)} · ${money(row.cost)})`);
-    opt.value = row.id;
-    optFrag.append(opt);
-  }
-  select.replaceChildren(optFrag);
-  select.value = '';
-  select.disabled = selectedRows.length >= 4;
+  const countStr = `${selectedRows.length}/${MAX_COMPARE}`;
+  $('#compareAddBtn').textContent = selectedRows.length >= MAX_COMPARE
+    ? t(`已满 (${countStr})`, `Full (${countStr})`)
+    : t(`+ 添加对比 (${countStr})`, `+ Add (${countStr})`);
+  $('#compareClearBtn').disabled = selectedRows.length <= 1;
+  if (comparePickerOpen) renderComparePicker();
 
   // 2. Hero Centerpiece Capability Radar & Compact Score Strip
   $('#radarModeSwitch').hidden = activeKey === 'coding-agents';
@@ -2572,12 +2753,14 @@ function renderCompare() {
     });
     verticesBySeries.push(verts);
 
+    const baseFillOpacity = selectedRows.length <= 4 ? 0.15 : Math.max(0.06, 0.21 - selectedRows.length * 0.018);
+    const baseStrokeW = selectedRows.length <= 5 ? 2.5 : 2.1;
     seriesG.append(node('polygon', {
       points: verts.map(v => `${v.x},${v.y}`).join(' '),
       fill: sc,
-      'fill-opacity': 0.15,
+      'fill-opacity': baseFillOpacity,
       stroke: sc,
-      'stroke-width': 2.6,
+      'stroke-width': baseStrokeW,
       'stroke-linejoin': 'round'
     }));
     verts.forEach(v => {
@@ -2652,6 +2835,7 @@ function renderCompare() {
       item.addEventListener('click', event => {
         event.stopPropagation();
         state.radarPinnedId = state.radarPinnedId === row.id ? null : row.id;
+        syncUrlHash();
         syncRadarSpotlight(idx, m.key);
       });
       item.append(nameWrap, valEl);
@@ -2800,7 +2984,8 @@ function renderCompare() {
   } else {
     $('#anatomyHeading').textContent = t('单任务成本分位箱线图（尾部风险）与执行耗时', 'Task Cost Distribution (P05–P50–P95 Tail Risk) & Wall Time');
     const maxDollar = Math.max(1, ...selectedRows.map(r => Math.max(r.costPercentiles?.p95 || 0, r.cost))) * 1.06;
-    const svgH = 30 + selectedRows.length * 38;
+    const rowStep = selectedRows.length > 5 ? 32 : 38;
+    const svgH = 30 + selectedRows.length * rowStep;
     const x0 = 136, x1 = 446;
     const mapX = v => x0 + (Math.max(0, v) / maxDollar) * (x1 - x0);
     const wSvg = node('svg', {class: 'whisker-svg', viewBox: `0 0 460 ${svgH}`, role: 'img', 'aria-label': t('单任务成本分位数箱线图', 'Cost percentiles box-and-whisker chart')});
@@ -2815,7 +3000,7 @@ function renderCompare() {
 
     selectedRows.forEach((row, idx) => {
       const sc = compareColor(idx);
-      const cy = 20 + idx * 38;
+      const cy = 20 + idx * rowStep;
       const short = (row.shortName || row.name).slice(0, 20);
       const g = node('g');
       g.append(node('text', {x: x0 - 8, y: cy + 4, 'text-anchor': 'end', fill: 'var(--ink)', 'font-size': '11.5'}, short));
@@ -3386,8 +3571,8 @@ function drawAxes(medianX, medianY) {
       }, compact
         ? (alignRight ? `← ${money(thresholdCost)}` : `${money(thresholdCost)} →`)
         : t(
-          alignRight ? `← API 省 · $${state.subFee}/${state.monthlyTasks}次 (${money(thresholdCost)})` : `${money(thresholdCost)} ($${state.subFee}/${state.monthlyTasks}次) · 超线订阅省 →`,
-          alignRight ? `← API cheaper · $${state.subFee}/${state.monthlyTasks}x` : `$${state.subFee}/${state.monthlyTasks}x · Sub cheaper →`
+          alignRight ? `← 未回本（API 省）· $${state.subFee}/${state.monthlyTasks}次 (${money(thresholdCost)})` : `${money(thresholdCost)} ($${state.subFee}/${state.monthlyTasks}次) · 已回本（订阅省）→`,
+          alignRight ? `← Unmet (API saves) · $${state.subFee}/${state.monthlyTasks}x` : `$${state.subFee}/${state.monthlyTasks}x · Sub saves →`
         )));
     }
   }
@@ -3772,6 +3957,7 @@ function nearestItem(event) {
 function togglePin(item) {
   state.selected = state.selected === item.row.id ? null : item.row.id;
   tip.hidden = true;
+  syncUrlHash();
   draw();
 }
 
@@ -3779,6 +3965,7 @@ function clearPin() {
   if (!state) return;
   state.selected = null;
   clearHover();
+  syncUrlHash();
   if (state.mode === 'table') renderTable();
   else if (state.mode === 'sub') renderSubTable();
   scheduleDraw();
@@ -3791,7 +3978,7 @@ $('#pinCompareBtn').addEventListener('click', () => {
 $('#pinGoCompareBtn').addEventListener('click', () => {
   if (!state?.selected) return;
   if (!state.compareIds.includes(state.selected)) {
-    if (state.compareIds.length >= 4) state.compareIds.shift();
+    if (state.compareIds.length >= MAX_COMPARE) state.compareIds.shift();
     state.compareIds.push(state.selected);
   }
   showView('compare');
@@ -3811,8 +3998,8 @@ function updateSummary() {
     );
   } else if (state.mode === 'compare') {
     $('#viewStatus').textContent = t(
-      `已选 ${state.compareIds.length}/4 项深度剖析 · 含细分雷达、成本结构与并排对决表`,
-      `Comparing ${state.compareIds.length}/4 entries · Sub-benchmark radar, cost anatomy & matrix`
+      `已选 ${state.compareIds.length}/${MAX_COMPARE} 项深度剖析 · 含大尺寸雷达、成本结构与并排对决表`,
+      `Comparing ${state.compareIds.length}/${MAX_COMPARE} entries · Hero radar, cost anatomy & matrix`
     );
   } else if (state.mode === 'table') {
     $('#viewStatus').textContent = t(
@@ -4070,6 +4257,7 @@ $('#radarSvg').addEventListener('click', event => {
   if (!hit || hit.seriesIdx === null) {
     if (state.radarPinnedId) {
       state.radarPinnedId = null;
+      syncUrlHash();
       syncRadarSpotlight(null, hit?.axisIdx != null ? radarCtx.axes[hit.axisIdx]?.key : null);
     }
     return;
@@ -4086,6 +4274,7 @@ $('#radarSvg').addEventListener('click', event => {
     const targetId = radarCtx.selectedRows[hit.seriesIdx].id;
     state.radarPinnedId = state.radarPinnedId === targetId ? null : targetId;
   }
+  syncUrlHash();
   const nextActiveIdx = state.radarPinnedId
     ? radarCtx.selectedRows.findIndex(r => r.id === state.radarPinnedId)
     : null;
@@ -4115,24 +4304,38 @@ $('#subLineToggle').addEventListener('click', () => {
 $('#exportPng').addEventListener('click', () => exportChartPng('chart'));
 $('#curveExportPng').addEventListener('click', () => exportChartPng('curve'));
 $('#compareExportPng').addEventListener('click', () => exportChartPng('compare'));
+$('#compareCopyMd').addEventListener('click', copyCompareMarkdown);
 $('#exportCsv').addEventListener('click', exportCsv);
 
-$('#compareSelect').addEventListener('change', () => {
-  const val = $('#compareSelect').value;
-  if (!state || !val) return;
-  if (!state.compareIds.includes(val) && state.compareIds.length < 4) {
-    state.compareIds.push(val);
-    syncUrlHash();
-    renderCompare();
-    updateSummary();
-  }
-  $('#compareSelect').value = '';
+$('#compareAddBtn').addEventListener('click', () => {
+  setComparePickerOpen(!comparePickerOpen);
 });
+$('#compareSearchInput').addEventListener('input', renderComparePicker);
 
 $('#compareAutoBtn').addEventListener('click', () => {
   if (!state) return;
   const pool = licenseFilteredRows(state.rows);
   state.compareIds = defaultCompareIds(pool.length >= 2 ? pool : state.rows);
+  syncUrlHash();
+  renderCompare();
+  updateSummary();
+});
+
+$('#compareFrontierBtn').addEventListener('click', () => {
+  if (!state) return;
+  const pool = licenseFilteredRows(state.rows);
+  state.compareIds = frontierCompareIds(pool.length >= 2 ? pool : state.rows, MAX_COMPARE);
+  syncUrlHash();
+  renderCompare();
+  updateSummary();
+});
+
+$('#compareClearBtn').addEventListener('click', () => {
+  if (!state || state.compareIds.length <= 1) return;
+  const keepId = state.radarPinnedId && state.compareIds.includes(state.radarPinnedId)
+    ? state.radarPinnedId
+    : state.compareIds[0];
+  state.compareIds = [keepId];
   syncUrlHash();
   renderCompare();
   updateSummary();
@@ -4190,6 +4393,7 @@ $('#resetSettings').addEventListener('click', () => {
 function showView(mode) {
   if (!state || !['chart', 'table', 'curve', 'sub', 'compare'].includes(mode)) return;
   stopHistoryPlay();
+  if (comparePickerOpen && mode !== 'compare') setComparePickerOpen(false);
   endPointerInteractions();
   clearHover();
   state.mode = mode;
@@ -4378,7 +4582,7 @@ host.addEventListener('click', event => {
       toggleCompareId(item.row.id);
       const inCmp = state.compareIds.includes(item.row.id);
       $('#selection').textContent = inCmp
-        ? t(`已加入剖析对比 (${state.compareIds.length}/4)：${item.row.name}`, `Added to compare (${state.compareIds.length}/4): ${item.row.name}`)
+        ? t(`已加入剖析对比 (${state.compareIds.length}/${MAX_COMPARE})：${item.row.name}`, `Added to compare (${state.compareIds.length}/${MAX_COMPARE}): ${item.row.name}`)
         : t(`已从对比移除：${item.row.name}`, `Removed from compare: ${item.row.name}`);
       if (hovered === item) showHover(item, event);
     } else {
@@ -4531,6 +4735,9 @@ document.addEventListener('pointerdown', event => {
   if (changelogOpen && !event.target.closest('.update-wrap')) {
     setChangelogOpen(false);
   }
+  if (comparePickerOpen && !event.target.closest('.compare-picker-wrap')) {
+    setComparePickerOpen(false);
+  }
   if (valueDetailsOpen && !event.target.closest('#valueMorePanel') && !event.target.closest('#valueMore')) {
     valueDetailsOpen = false;
     syncPanelControls();
@@ -4544,11 +4751,24 @@ document.addEventListener('keydown', event => {
   const tag = event.target?.tagName;
   const typing = tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || event.target?.isContentEditable;
   if (!typing && !event.ctrlKey && !event.metaKey && !event.altKey) {
-    if (event.key === '/' && state && state.mode !== 'curve' && state.mode !== 'compare') {
+    if (state && ['1', '2', '3', '4', '5'].includes(event.key)) {
+      const modes = ['chart', 'table', 'curve', 'sub', 'compare'];
+      const targetMode = modes[Number(event.key) - 1];
+      if (targetMode && state.mode !== targetMode) {
+        event.preventDefault();
+        showView(targetMode);
+      }
+      return;
+    }
+    if (event.key === '/' && state && state.mode !== 'curve') {
       event.preventDefault();
-      if (!controlsOpen) setControlsOpen(true);
-      $('#search').focus();
-      $('#search').select();
+      if (state.mode === 'compare') {
+        setComparePickerOpen(true);
+      } else {
+        if (!controlsOpen) setControlsOpen(true);
+        $('#search').focus();
+        $('#search').select();
+      }
       return;
     }
     if ((event.key === '[' || event.key === ']') && state && state.mode === 'chart') {
@@ -4568,9 +4788,13 @@ document.addEventListener('keydown', event => {
   if (changelogOpen) {
     setChangelogOpen(false);
     $('#updateBadge').focus({preventScroll: true});
+  } else if (comparePickerOpen) {
+    setComparePickerOpen(false);
+    $('#compareAddBtn').focus({preventScroll: true});
   } else if (state?.mode === 'compare' && state.radarPinnedId) {
     state.radarPinnedId = null;
     tip.hidden = true;
+    syncUrlHash();
     syncRadarSpotlight(null, null);
   } else if (state?.mode === 'compare' && radarInfoOpen) {
     radarInfoOpen = false;
@@ -4586,6 +4810,11 @@ document.addEventListener('keydown', event => {
   } else if (state?.selected) {
     clearPin();
   }
+});
+
+addEventListener('resize', () => {
+  if (changelogOpen) clampAnchoredPopover($('#changelogPopover'), $('#updateBadge'), 340);
+  if (comparePickerOpen) clampAnchoredPopover($('#comparePickerPopover'), $('#compareAddBtn'), 360);
 });
 
 addEventListener('blur', () => {

@@ -1611,15 +1611,13 @@ th[aria-sort="descending"] .sub-sort-button {
 .compare-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 3px 6px 3px 10px;
+  gap: 2px;
+  padding: 2px 5px 2px 3px;
   border-radius: 999px;
   background: var(--surface);
   border: 1px solid var(--border-strong);
   font-size: 12px;
   font-weight: 500;
-  cursor: pointer;
-  user-select: none;
   transition: background-color 140ms ease-out, border-color 140ms ease-out, color 140ms ease-out;
 }
 
@@ -1638,7 +1636,23 @@ th[aria-sort="descending"] .sub-sort-button {
   color: var(--accent);
 }
 
-.compare-chip button {
+.compare-chip .chip-focus-btn {
+  min-height: 24px;
+  padding: 0 5px 0 7px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  gap: 6px;
+}
+
+.compare-chip .chip-focus-btn:hover {
+  background: transparent;
+}
+
+.compare-chip .chip-rm-btn {
   min-height: 22px;
   min-width: 22px;
   padding: 0 5px;
@@ -1649,7 +1663,7 @@ th[aria-sort="descending"] .sub-sort-button {
   font-size: 12px;
 }
 
-.compare-chip button:hover {
+.compare-chip .chip-rm-btn:hover:not(:disabled) {
   color: var(--ink);
   background: var(--hover);
 }
@@ -1659,10 +1673,98 @@ th[aria-sort="descending"] .sub-sort-button {
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
+  margin-left: auto;
 }
 
-.compare-actions select {
-  max-width: 240px;
+.compare-picker-wrap {
+  position: relative;
+}
+
+.compare-picker-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 24;
+  width: min(360px, calc(100vw - 16px));
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 12px 32px var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.compare-search-label {
+  display: block;
+}
+
+.compare-search-label input {
+  width: 100%;
+  min-height: 32px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: var(--chart);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 12.5px;
+}
+
+.compare-picker-list {
+  max-height: 270px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  scrollbar-width: thin;
+}
+
+.picker-item {
+  width: 100%;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 12px;
+  text-align: left;
+}
+
+.picker-item:hover:not(:disabled) {
+  background: var(--hover);
+}
+
+.picker-item.is-picked {
+  background: var(--active-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.picker-item-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.picker-item-name span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.picker-item-meta {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.picker-item.is-picked .picker-item-meta {
+  color: var(--accent);
 }
 
 .compare-scroll {
@@ -2071,6 +2173,7 @@ th[aria-sort="descending"] .sub-sort-button {
   border-bottom: 1px solid var(--border);
   text-align: left;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .compare-matrix th {
@@ -2078,6 +2181,13 @@ th[aria-sort="descending"] .sub-sort-button {
   background: transparent;
   color: var(--muted);
   font-weight: 500;
+}
+
+.compare-matrix th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--surface);
 }
 
 .compare-matrix td.cell-best {

@@ -26,8 +26,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261118-9">
-  <script type="module" src="app.js?v=20261118-9"></script>
+  <link rel="stylesheet" href="styles.css?v=20261118-11">
+  <script type="module" src="app.js?v=20261118-11"></script>
 </head>
 <body>
 <main class="app">
@@ -241,7 +241,7 @@
       </div>
       <div class="sub-summary-strip">
         <span id="subBreakevenSummary" class="sub-kpi"></span>
-        <span id="subDisclaimer" class="sub-note">基于实测 API 单任务均价换算；各厂订阅含动态限流且不公开配额，超线代表“配额够用时订阅更划算”。</span>
+        <span id="subDisclaimer" class="sub-note">基于实测 API 单任务均价换算；各厂订阅含动态限流且不公开配额，「已回本」代表配额够用时买月订阅比按量更划算。</span>
       </div>
     </div>
 
@@ -352,11 +352,20 @@
       <div class="compare-bar">
         <div id="compareChips" class="compare-chips" role="list" aria-label="已选对比条目"></div>
         <div class="compare-actions">
-          <label class="compare-select-wrap">
-            <span id="compareSelectSr" class="sr-only">添加条目到多维对比</span>
-            <select id="compareSelect"><option value="">+ 添加对比条目…</option></select>
-          </label>
-          <button id="compareAutoBtn" type="button">推荐代表组合</button>
+          <div class="compare-picker-wrap">
+            <button id="compareAddBtn" type="button" aria-expanded="false" aria-controls="comparePickerPopover">+ 添加对比</button>
+            <div id="comparePickerPopover" class="compare-picker-popover" hidden>
+              <label class="compare-search-label">
+                <span id="compareSelectSr" class="sr-only">搜索并添加条目到多维对比</span>
+                <input id="compareSearchInput" type="search" placeholder="搜索模型或厂商加入对比…" autocomplete="off">
+              </label>
+              <div id="comparePickerList" class="compare-picker-list" role="group" aria-label="可选对比条目"></div>
+            </div>
+          </div>
+          <button id="compareAutoBtn" type="button">推荐 4 项</button>
+          <button id="compareFrontierBtn" type="button">前沿全览</button>
+          <button id="compareClearBtn" type="button">精简</button>
+          <button id="compareCopyMd" type="button">复制表格</button>
           <button id="compareExportPng" type="button">导图 PNG</button>
         </div>
       </div>
