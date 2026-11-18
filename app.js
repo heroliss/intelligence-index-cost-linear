@@ -20,7 +20,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261118-6';
+} from './chart-math.mjs?v=20261118-7';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -58,6 +58,22 @@ const BENCHMARKS = {
     source: 'https://artificialanalysis.ai/agents/coding-agents',
     defaultX: 20,
     defaultTimeMin: 60
+  },
+  cyber: {
+    key: 'cyberModels',
+    zhTitle: '网络安全指数与每任务成本',
+    enTitle: 'Cyber Index vs. Cost per Task',
+    zhSub: 'Artificial Analysis Cyber Index · 线性美元成本、耗时与拒答率',
+    enSub: 'Artificial Analysis Cyber Index · Linear USD cost, latency & refusal rate',
+    zhAxis: '网络安全指数',
+    enAxis: 'Cyber Index',
+    zhUnit: '个安全评测模型',
+    enUnit: 'cyber models',
+    zhCostNote: '网络安全基准任务的平均 API 成本（含安全防护拒答率）',
+    enCostNote: 'Average API cost per Cyber Index task (includes safety refusal rate)',
+    source: 'https://artificialanalysis.ai/cyber',
+    defaultX: 5,
+    defaultTimeMin: 30
   }
 };
 
@@ -74,7 +90,8 @@ function compareColor(index) {
 
 const DEFAULT_SETTINGS = {
   models: {labels: true, smartLabels: true, labelSize: 9.5, labelDistance: 4},
-  'coding-agents': {labels: true, smartLabels: true, labelSize: 10, labelDistance: 12}
+  'coding-agents': {labels: true, smartLabels: true, labelSize: 10, labelDistance: 12},
+  cyber: {labels: true, smartLabels: true, labelSize: 10, labelDistance: 8}
 };
 
 let lang = document.documentElement.lang === 'en' ? 'en' : 'zh';
@@ -86,7 +103,7 @@ function parseHash() {
   const ampIndex = raw.indexOf('&');
   const chartPart = ampIndex === -1 ? raw : raw.slice(0, ampIndex);
   const queryPart = ampIndex === -1 ? '' : raw.slice(ampIndex + 1);
-  const chart = chartPart === 'coding-agents' ? 'coding-agents' : 'models';
+  const chart = ['coding-agents', 'cyber'].includes(chartPart) ? chartPart : 'models';
   return {chart, params: new URLSearchParams(queryPart)};
 }
 
@@ -101,7 +118,7 @@ let loadController, loadGeneration = 0;
 const measure = document.createElement('canvas').getContext('2d');
 const colorCache = new Map();
 const mobileLayout = matchMedia('(max-width:760px), (max-height:500px)');
-let controlsOpen = !mobileLayout.matches, controlsTouched = false, valueDetailsOpen = false, curveFrame;
+let controlsOpen = !mobileLayout.matches, controlsTouched = false, valueDetailsOpen = false, changelogOpen = false, shareTimer = 0, curveFrame;
 
 const node = (tag, attrs = {}, content) => {
   const element = document.createElementNS(NS, tag);
@@ -401,6 +418,9 @@ function syncUrlHash() {
 }
 
 function licenseFilteredRows(rows = state.rows) {
+  const useCache = rows === state.rows;
+  const cacheKey = `${state.license}|${state.extraFilter}`;
+  if (useCache && state._licCache?.key === cacheKey) return state._licCache.rows;
   let out = rows;
   if (state.license === 'open') out = out.filter(row => row.isOpenWeights);
   else if (state.license === 'closed') out = out.filter(row => !row.isOpenWeights);
@@ -410,11 +430,16 @@ function licenseFilteredRows(rows = state.rows) {
       out = out.filter(row => Array.isArray(row.modalities) && row.modalities.includes(mod));
     } else if (state.extraFilter === 'lic:permissive') {
       out = out.filter(row => row.isOpenWeights && row.openLicense === 'permissive');
+    } else if (state.extraFilter === 'refusal:zero') {
+      out = out.filter(row => (row.refusalRate ?? 0) === 0);
+    } else if (state.extraFilter === 'refusal:guarded') {
+      out = out.filter(row => (row.refusalRate ?? 0) > 0);
     } else if (state.extraFilter.startsWith('agent:')) {
       const ag = state.extraFilter.slice(6);
       out = out.filter(row => row.agentName === ag);
     }
   }
+  if (useCache) state._licCache = {key: cacheKey, rows: out};
   return out;
 }
 
@@ -425,11 +450,23 @@ function currentXOf() {
 }
 
 function activePool() {
+  const metric = state.mode === 'chart' && state.xMetric === 'time' ? 'time' : 'cost';
+  const cacheKey = `${state.license}|${state.extraFilter}|${metric}`;
+  if (state._poolCache?.key === cacheKey) return state._poolCache.rows;
   const base = licenseFilteredRows(state.rows);
-  if (state.mode === 'chart' && state.xMetric === 'time') {
-    return base.filter(row => xValOf(row, 'time') !== null);
-  }
-  return base;
+  const out = metric === 'time' ? base.filter(row => xValOf(row, 'time') !== null) : base;
+  state._poolCache = {key: cacheKey, rows: out};
+  return out;
+}
+
+function activeFrontierSet() {
+  const metric = state.mode === 'chart' && state.xMetric === 'time' ? 'time' : 'cost';
+  const cacheKey = `${state.license}|${state.extraFilter}|${metric}`;
+  if (state._frontierCache?.key === cacheKey) return state._frontierCache;
+  const list = paretoFrontier(activePool(), currentXOf());
+  const entry = {key: cacheKey, list, idSet: new Set(list.map(row => row.id))};
+  state._frontierCache = entry;
+  return entry;
 }
 
 function filteredRows() {
@@ -437,13 +474,17 @@ function filteredRows() {
   const pool = activePool();
   let rows = pool.filter(row => !query || [row.name, row.shortName, row.creator?.name, row.agentName, row.modelName, row.family?.name].filter(Boolean).join(' ').toLocaleLowerCase().includes(query));
   if (state.frontierOnly) {
-    const frontier = new Set(paretoFrontier(pool, currentXOf()).map(row => row.id));
-    rows = rows.filter(row => frontier.has(row.id));
+    const {idSet} = activeFrontierSet();
+    rows = rows.filter(row => idSet.has(row.id));
   }
   return rows;
 }
 
 function computeRankings(rows = licenseFilteredRows(state.rows)) {
+  const defaultPool = licenseFilteredRows(state.rows);
+  const useCache = rows === defaultPool;
+  const cacheKey = `${state.license}|${state.extraFilter}|${state.valueWeight}|${state.minScore}`;
+  if (useCache && state._rankCache?.key === cacheKey) return state._rankCache.val;
   const ranked = sortRows(rows, 'valuePerDollar', 'desc', state.valueWeight, state.minScore);
   const rankMap = new Map();
   let qualifiedCount = 0, champion = null, championValue = null;
@@ -458,7 +499,57 @@ function computeRankings(rows = licenseFilteredRows(state.rows)) {
       }
     }
   }
-  return {rankMap, qualifiedCount, champion, championValue};
+  const result = {rankMap, qualifiedCount, champion, championValue};
+  if (useCache) state._rankCache = {key: cacheKey, val: result};
+  return result;
+}
+
+function isRecentRelease(row) {
+  if (!row?.releaseDate || !state?.releaseDates?.length) return false;
+  const latestMs = Date.parse(state.releaseDates.at(-1) + 'T00:00:00Z');
+  const rowMs = Date.parse(row.releaseDate + 'T00:00:00Z');
+  return Number.isFinite(latestMs) && Number.isFinite(rowMs) && (latestMs - rowMs) >= 0 && (latestMs - rowMs) <= 14 * 86400 * 1000;
+}
+
+function renderChangelog() {
+  $('#changelogTitle').textContent = t('Artificial Analysis 最新动态', 'Latest Upstream Updates');
+  $('#changelogTime').textContent = t('每 2 小时检查', '2h auto-sync');
+  const list = $('#changelogList');
+  const frag = document.createDocumentFragment();
+  const items = Array.isArray(snapshot?.changelog) ? snapshot.changelog : [];
+  const typeLabelOf = raw => {
+    if (raw === 'model') return t('新模型', 'Model');
+    if (raw === 'benchmark' || raw === 'index') return t('基准更新', 'Benchmark');
+    if (raw === 'agent') return t('智能体', 'Agent');
+    return t('动态', 'Update');
+  };
+  if (items.length) {
+    for (const item of items.slice(0, 10)) {
+      const li = html('li', null, 'changelog-item');
+      const meta = html('div', null, 'changelog-meta');
+      meta.append(html('span', item.date), html('span', typeLabelOf(item.type), 'row-tag'));
+      if (item.url) {
+        const link = html('a', item.title);
+        link.href = item.url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        li.append(meta, link);
+      } else {
+        li.append(meta, html('span', item.title));
+      }
+      frag.append(li);
+    }
+  } else {
+    frag.append(html('li', t('每 2 小时自动检查 Artificial Analysis 上游榜单更新。', 'Checked every 2 hours against upstream Artificial Analysis releases.'), 'changelog-item'));
+  }
+  list.replaceChildren(frag);
+}
+
+function setChangelogOpen(open) {
+  changelogOpen = open;
+  $('#updateBadge').setAttribute('aria-expanded', String(open));
+  $('#changelogPopover').hidden = !open;
+  if (open) renderChangelog();
 }
 
 function renderPresets() {
@@ -525,7 +616,11 @@ function syncStaticText() {
   $('#appSubtitle').textContent = t('Intelligence vs. Cost · 线性成本基准', 'Linear-cost AI benchmark explorer');
   $('#tab-models').textContent = t('模型智能指数', 'Intelligence Index');
   $('#tab-coding-agents').textContent = t('编程智能体', 'Coding Agents');
-  $('#updateText').textContent = t('每 2 小时检查', '2h check');
+  $('#tab-cyber').textContent = t('网络安全指数', 'Cyber Index');
+  $('#updateText').textContent = t('最新动态', 'Updates');
+  if (changelogOpen) renderChangelog();
+  if (!shareTimer) $('#shareBtn').textContent = t('分享', 'Share');
+  $('#shareBtn').setAttribute('aria-label', t('复制当前视图分享链接', 'Copy shareable view URL'));
   $('#langToggle').textContent = lang === 'en' ? '中文' : 'EN';
   $('#langToggle').setAttribute('aria-label', lang === 'en' ? '切换为中文界面' : 'Switch interface to English');
 
@@ -561,7 +656,7 @@ function syncStaticText() {
   $('[data-license="all"]').textContent = t('全部', 'All');
   $('[data-license="open"]').textContent = t('开源', 'Open');
   $('[data-license="closed"]').textContent = t('闭源', 'Closed');
-  $('#extraFilterSr').textContent = t('按模态或客户端框架筛选', 'Filter by modality or agent harness');
+  $('#extraFilterSr').textContent = t('按模态、安全拦截或框架筛选', 'Filter by modality, safeguards, or harness');
   $('#exportPng').textContent = t('导图 PNG', 'Export PNG');
   $('#curveExportPng').textContent = t('导图 PNG', 'Export PNG');
   $('#exportCsv').textContent = t('导出 CSV', 'Export CSV');
@@ -571,11 +666,13 @@ function syncStaticText() {
   $('#labelDistText').textContent = t('距离', 'Offset');
 
   $('#helpMouse').replaceChildren(
-    document.createTextNode(t('滚轮以指针为中心缩放 X · ', 'Wheel zooms X at cursor · ')),
+    document.createTextNode(t('滚轮缩放 X · ', 'Wheel X · ')),
     html('kbd', 'Shift'),
-    document.createTextNode(t('+滚轮缩放 Y · ', '+wheel Y · ')),
+    document.createTextNode(t('+滚轮 Y · ', '+wheel Y · ')),
     html('kbd', 'Ctrl'),
-    document.createTextNode(t('+滚轮双向缩放 · 拖动或双指缩放平移 · 单击锁定', '+wheel XY · Drag or pinch · Click to pin'))
+    document.createTextNode(t('+滚轮双向 · 拖动平移 · 单击锁定 · ', '+wheel XY · Drag · Click pin · ')),
+    html('kbd', 'Shift'),
+    document.createTextNode(t('+单击加入对比', '+click compare'))
   );
   $('#helpKeyboard').replaceChildren(
     document.createTextNode(t('键盘：', 'Keys: ')),
@@ -610,6 +707,7 @@ function syncStaticText() {
   $('#resetValueInline').textContent = t('重置参数', 'Reset');
 
   $('#pinnedBadge').textContent = t('已锁定节点', 'Pinned');
+  $('#pinGoCompareBtn').textContent = t('去剖析 →', 'Analyze →');
   $('#unpin').textContent = t('取消 · Esc', 'Unpin · Esc');
   $('#pinScoreLabel').textContent = t('指数', 'Index');
   $('#pinCostLabel').textContent = t('单次成本', 'Cost / task');
@@ -621,6 +719,7 @@ function syncStaticText() {
   $('#thCreator').textContent = t('厂商', 'Creator');
   $('#thIndex').textContent = t('指数 (0–100)', 'Index (0–100)');
   $('#thCost').textContent = t('每任务成本 (USD)', 'Cost / task (USD)');
+  $('#thTime').textContent = t('平均耗时', 'Mean time');
   $('#thValue').textContent = t('性价比', 'Value');
 
   $('#curveTitle').textContent = t('IRT 胜率混合能力效用曲线', 'IRT Pass-Odds Capability Utility Curve');
@@ -709,6 +808,38 @@ $('#langToggle').addEventListener('click', () => {
   syncStaticText();
 });
 
+$('#updateBadge').addEventListener('click', () => {
+  setChangelogOpen(!changelogOpen);
+});
+
+$('#shareBtn').addEventListener('click', async () => {
+  syncUrlHash();
+  const url = location.href;
+  let copied = false;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(url);
+      copied = true;
+    }
+  } catch {}
+  if (!copied) {
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.append(ta);
+    ta.select();
+    try { copied = document.execCommand('copy'); } catch {}
+    ta.remove();
+  }
+  clearTimeout(shareTimer);
+  $('#shareBtn').textContent = copied ? t('已复制 ✓', 'Copied ✓') : t('已同步链接', 'URL synced');
+  shareTimer = setTimeout(() => {
+    shareTimer = 0;
+    $('#shareBtn').textContent = t('分享', 'Share');
+  }, 1800);
+});
+
 let historyTimer = 0;
 function stopHistoryPlay() {
   if (historyTimer) {
@@ -720,6 +851,9 @@ function stopHistoryPlay() {
 
 function chooseChart(key, {changeHash = true, routeParams = null} = {}) {
   if (!BENCHMARKS[key]) return;
+  if (key === 'cyber' && snapshot && (!Array.isArray(snapshot.cyberModels) || !snapshot.cyberModels.length)) {
+    key = 'models';
+  }
   stopHistoryPlay();
   const previousMode = state?.mode;
   endPointerInteractions();
@@ -758,7 +892,15 @@ for (const tab of document.querySelectorAll('[role=tab]')) {
   tab.addEventListener('keydown', event => {
     if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
     event.preventDefault();
-    const key = event.key === 'Home' ? 'models' : event.key === 'End' ? 'coding-agents' : activeKey === 'models' ? 'coding-agents' : 'models';
+    const visibleTabs = [...document.querySelectorAll('[role=tab]')].filter(el => !el.hidden);
+    if (!visibleTabs.length) return;
+    const idx = Math.max(0, visibleTabs.findIndex(el => el.dataset.chart === activeKey));
+    const nextIdx = event.key === 'Home'
+      ? 0
+      : event.key === 'End'
+        ? visibleTabs.length - 1
+        : (idx + (event.key === 'ArrowRight' ? 1 : -1) + visibleTabs.length) % visibleTabs.length;
+    const key = visibleTabs[nextIdx].dataset.chart;
     chooseChart(key);
     $(`#tab-${key}`).focus();
   });
@@ -819,6 +961,19 @@ function syncExtraFilterOptions() {
       opt.value = val;
       frag.append(opt);
     }
+  } else if (activeKey === 'cyber') {
+    const opts = [
+      ['', t('全部安全模型', 'All cyber models')],
+      ['refusal:zero', t('零安全拒答 (0%)', 'Zero refusal (0%)')],
+      ['refusal:guarded', t('含安全拦截 (>0%)', 'With safeguards (>0%)')],
+      ['mod:image', t('支持图像输入', 'Image input')],
+      ['lic:permissive', t('宽松开源 (MIT/Apache)', 'Permissive open')]
+    ];
+    for (const [val, label] of opts) {
+      const opt = html('option', label);
+      opt.value = val;
+      frag.append(opt);
+    }
   } else {
     const counts = new Map();
     for (const r of state.rows) {
@@ -847,8 +1002,12 @@ function shiftMonthsIso(isoDate, deltaMonths) {
   return dt.toISOString().slice(0, 10);
 }
 
+function canHistoryMode() {
+  return (activeKey === 'models' || activeKey === 'cyber') && state.xMetric === 'cost' && state.releaseDates.length > 1;
+}
+
 function syncHistoryControls() {
-  const canHist = activeKey === 'models' && state.xMetric === 'cost' && state.releaseDates.length > 1;
+  const canHist = canHistoryMode();
   $('#historyToggle').hidden = state.mode !== 'chart' || !canHist;
   $('#historyToggle').setAttribute('aria-pressed', String(state.historyMode && canHist));
   $('#historyToggle').textContent = state.historyMode && canHist
@@ -1244,7 +1403,11 @@ function syncSubControls() {
 
 function renderStatus() {
   const cfg = BENCHMARKS[activeKey];
-  const version = activeKey === 'models' ? snapshot.modelIndexVersion : snapshot.codingAgentIndexVersion;
+  const version = activeKey === 'models'
+    ? snapshot.modelIndexVersion
+    : activeKey === 'coding-agents'
+      ? snapshot.codingAgentIndexVersion
+      : null;
   $('#count').textContent = `${state.rows.length} ${t(cfg.zhUnit, cfg.enUnit)}${version ? ' · v' + version : ''}`;
 
   const source = html('a', 'Artificial Analysis');
@@ -1449,6 +1612,7 @@ function renderTable(rows = filteredRows()) {
   const scaleSource = state.frontierOnly || state.search.trim() || state.minScore > 0 ? rows : pool;
   const fallbackRows = scaleSource.length ? scaleSource : state.rows;
   const maxCost = Math.max(...fallbackRows.map(row => row.cost), 0.001);
+  const maxTime = Math.max(...fallbackRows.map(row => row.timeSec || 0), 1);
   const comparableValues = fallbackRows
     .map(row => valuePerDollar(row, state.valueWeight, state.minScore))
     .filter(value => value !== null);
@@ -1456,8 +1620,8 @@ function renderTable(rows = filteredRows()) {
   const valueRange = maxValue === null ? t('暂无', 'None') : `0–${valueLabel(maxValue)}`;
 
   $('#tableScale').textContent = t(
-    `比较条比例（${scaleSource === pool && state.license === 'all' ? '全榜统一' : '当前筛选范围'}）：指数 0–100 · 成本 $0–${format(maxCost)} · 性价比 ${valueRange}`,
-    `Linear bar scale (${scaleSource === pool && state.license === 'all' ? 'full benchmark' : 'filtered set'}): Index 0–100 · Cost $0–${format(maxCost)} · Value ${valueRange}`
+    `比较条比例（${scaleSource === pool && state.license === 'all' ? '全榜统一' : '当前筛选范围'}）：指数 0–100 · 成本 $0–${format(maxCost)} · 耗时 0–${formatTime(maxTime)} · 性价比 ${valueRange}`,
+    `Linear bar scale (${scaleSource === pool && state.license === 'all' ? 'full benchmark' : 'filtered set'}): Index 0–100 · Cost $0–${format(maxCost)} · Time 0–${formatTime(maxTime)} · Value ${valueRange}`
   );
 
   const frontierIds = new Set(paretoFrontier(pool).map(row => row.id));
@@ -1481,6 +1645,9 @@ function renderTable(rows = filteredRows()) {
     if (champion && champion.id === row.id) {
       wrap.append(html('span', '#1', 'row-tag tag-top'));
     }
+    if (isRecentRelease(row)) {
+      wrap.append(html('span', t('新', 'NEW'), 'row-tag tag-new'));
+    }
     if (frontierIds.has(row.id)) {
       wrap.append(html('span', t('前沿', 'Frontier'), 'row-tag'));
     }
@@ -1496,6 +1663,10 @@ function renderTable(rows = filteredRows()) {
     });
     wrap.append(locateBtn, makeCompareRowBtn(row));
     nameTd.append(wrap);
+
+    const hasTime = typeof row.timeSec === 'number' && Number.isFinite(row.timeSec) && row.timeSec > 0;
+    const timeCell = comparisonCell(formatTime(row.timeSec), hasTime ? row.timeSec / maxTime : 0, displayColor);
+    if (!hasTime) timeCell.querySelector('.comparison-track').hidden = true;
 
     const value = valuePerDollar(row, state.valueWeight, state.minScore);
     const displayVal = belowFloor ? t('未达门槛', '< Min') : valueLabel(value);
@@ -1513,6 +1684,7 @@ function renderTable(rows = filteredRows()) {
       html('td', row.creator?.name || 'Other'),
       comparisonCell(format(row.intelligenceIndex, 2), row.intelligenceIndex / 100, displayColor),
       comparisonCell(money(row.cost), row.cost / maxCost, displayColor),
+      timeCell,
       valueCell
     );
 
@@ -1526,7 +1698,7 @@ function renderTable(rows = filteredRows()) {
 
   if (!rows.length) {
     const td = html('td', t('没有匹配的条目，请调整搜索词或清除筛选。', 'No matching entries. Try clearing filters.'));
-    td.colSpan = 5;
+    td.colSpan = 6;
     const tr = html('tr');
     tr.append(td);
     fragment.append(tr);
@@ -1593,6 +1765,7 @@ function renderSubTable(rows = filteredRows()) {
     dot.style.background = displayColor;
     dot.setAttribute('aria-hidden', 'true');
     wrap.append(dot, html('span', row.name));
+    if (isRecentRelease(row)) wrap.append(html('span', t('新', 'NEW'), 'row-tag tag-new'));
     if (frontierIds.has(row.id)) wrap.append(html('span', t('前沿', 'Frontier'), 'row-tag'));
     if (row.isOpenWeights) wrap.append(html('span', t('开源', 'Open'), 'row-tag tag-open'));
 
@@ -1677,9 +1850,11 @@ function exportCsv() {
     'Creator',
     'License',
     'Effort',
+    'ReleaseDate',
     'IntelligenceIndex',
     'CostPerTaskUSD',
     'MeanTimeSec',
+    ...(activeKey === 'cyber' ? ['SafetyRefusalPct'] : []),
     `WeightedValue_w${state.valueWeight.toFixed(1)}`,
     `BreakEvenTasks_$${state.subFee}`,
     `EstMonthlyApiUSD_${state.monthlyTasks}tasks`
@@ -1694,9 +1869,11 @@ function exportCsv() {
       row.creator?.name || 'Other',
       row.isOpenWeights ? 'Open Weights' : 'Proprietary',
       row.effort?.label || '',
+      row.releaseDate || '',
       row.intelligenceIndex.toFixed(4),
       row.cost.toFixed(6),
       row.timeSec ?? '',
+      ...(activeKey === 'cyber' ? [row.refusalRate ?? ''] : []),
       val !== null ? val.toFixed(4) : '',
       be !== null ? be.toFixed(2) : '',
       verdict ? verdict.apiBill.toFixed(4) : ''
@@ -1906,12 +2083,12 @@ function renderCompare() {
   select.disabled = selectedRows.length >= 4;
 
   // 2. Hero Centerpiece Capability Radar & Compact Score Strip
-  $('#radarModeSwitch').hidden = activeKey !== 'models';
+  $('#radarModeSwitch').hidden = activeKey === 'coding-agents';
   $('#radarModeBench').setAttribute('aria-pressed', String(state.radarMode !== 'domain'));
   $('#radarModeDomain').setAttribute('aria-pressed', String(state.radarMode === 'domain'));
 
   let axes, barMetrics;
-  if (activeKey === 'models') {
+  if (activeKey === 'models' || activeKey === 'cyber') {
     if (state.radarMode === 'domain') {
       $('#radarHeading').textContent = t('六大行业专业能力评估雷达', '6-Sector Professional Domain Capability Radar');
       axes = [
@@ -1923,6 +2100,20 @@ function renderCompare() {
         {key: 'economics', zh: '宏观经济', en: 'Economics', get: r => r.domainScores?.economics ?? null}
       ];
       barMetrics = [...axes];
+    } else if (activeKey === 'cyber') {
+      $('#radarHeading').textContent = t('网络安全指数与五大核心基准能力雷达', 'Cyber Index & 5-Pillar Core Capability Radar');
+      axes = [
+        {key: 'cyber', zh: '网络安全总分', en: 'Cyber Index', get: r => r.intelligenceIndex},
+        {key: 'frontierCode', zh: '前沿编程', en: 'FrontierCode', get: r => r.subscores?.frontierCode ?? null},
+        {key: 'terminalBench', zh: '终端代理', en: 'Terminal 4.0', get: r => r.subscores?.terminalBench ?? null},
+        {key: 'hleDiamond', zh: '人类终极考', en: 'HLE Diamond', get: r => r.subscores?.hleDiamond ?? null},
+        {key: 'critptAgentic', zh: '复杂研究', en: 'CritPt Agent', get: r => r.subscores?.critptAgentic ?? null},
+        {key: 'science', zh: '科学推理', en: 'Science', get: r => r.subscores?.science ?? null}
+      ];
+      barMetrics = [
+        ...axes,
+        {key: 'refusal', zh: '安全拒答率 ↓', en: 'Refusal Rate ↓', lowerBetter: true, get: r => r.refusalRate ?? null}
+      ];
     } else {
       $('#radarHeading').textContent = t('Intelligence Index v5 六维核心能力雷达', 'Intelligence Index v5 6-Pillar Capability Radar');
       axes = [
@@ -2168,6 +2359,61 @@ function renderCompare() {
       }
       anatomyFrag.append(provGroup);
     }
+  } else if (activeKey === 'cyber') {
+    $('#anatomyHeading').textContent = t('安全防护拒答率、多云比价与执行耗时', 'Safety Refusal Rate, Cloud Hosts & Task Latency');
+    const maxRefusal = Math.max(20, ...selectedRows.map(r => r.refusalRate || 0));
+    const refBlock = html('div', null, 'metric-block');
+    refBlock.append(html('div', t('安全评测拒答率（越低代表越少误拦合规测试）', 'Safety Benchmark Refusal Rate (0% = no refusal)'), 'metric-title'));
+    selectedRows.forEach((row, idx) => {
+      const rate = row.refusalRate;
+      const mini = html('div', null, 'mini-bar-row');
+      const track = html('span', null, 'comparison-track');
+      const fill = html('i');
+      fill.style.width = rate != null && rate > 0 ? `${Math.max(2, (rate / maxRefusal) * 100)}%` : '0%';
+      fill.style.background = compareColor(idx);
+      track.append(fill);
+      const rateLabel = rate != null ? `${format(rate, 1)}%` : '—';
+      mini.append(html('span', row.shortName || row.name, 'mini-bar-name'), track, html('span', rateLabel, 'mini-bar-val'));
+      refBlock.append(mini);
+    });
+    anatomyFrag.append(
+      refBlock,
+      html('p', t('部分前沿闭源模型内置网络攻防合规拦截策略，遇敏感载荷会主动拒答；开源模型通常为 0% 拒答。', 'Frontier closed models often enforce cyber-safety guardrails that refuse dual-use prompts; open-weights models typically show 0% refusal.'), 'anatomy-note')
+    );
+
+    const maxTime = Math.max(1, ...selectedRows.map(r => r.timeSec || 0));
+    const timeBlock = html('div', null, 'metric-block');
+    timeBlock.style.marginTop = '4px';
+    timeBlock.append(html('div', t('单任务平均端到端耗时', 'Mean End-to-End Task Time'), 'metric-title'));
+    selectedRows.forEach((row, idx) => {
+      const mini = html('div', null, 'mini-bar-row');
+      const track = html('span', null, 'comparison-track');
+      const fill = html('i');
+      fill.style.width = row.timeSec ? `${Math.max(2, (row.timeSec / maxTime) * 100)}%` : '0%';
+      fill.style.background = compareColor(idx);
+      track.append(fill);
+      mini.append(html('span', row.shortName || row.name, 'mini-bar-name'), track, html('span', formatTime(row.timeSec), 'mini-bar-val'));
+      timeBlock.append(mini);
+    });
+    anatomyFrag.append(timeBlock);
+
+    const multiHostRows = selectedRows.filter(r => r.providers?.length >= 2);
+    if (multiHostRows.length) {
+      const provGroup = html('div', null, 'provider-group');
+      provGroup.append(html('div', t('同模型多云 API 托管商实测比价与耗时', 'Multi-Cloud API Provider Cost & Latency'), 'metric-title'));
+      for (const row of multiHostRows) {
+        const sub = html('div', null, 'metric-block');
+        sub.append(html('span', `${row.shortName || row.name} (${row.providers.length} ${t('家服务商', 'hosts')})`, 'anatomy-note'));
+        const list = html('div', null, 'provider-chips');
+        row.providers.slice(0, 6).forEach((p, pIdx) => {
+          const pill = html('span', `${p.host}: ${money(p.cost)}${p.timeSec ? ' · ' + formatTime(p.timeSec) : ''}`, pIdx === 0 ? 'provider-pill is-cheapest' : 'provider-pill');
+          list.append(pill);
+        });
+        sub.append(list);
+        provGroup.append(sub);
+      }
+      anatomyFrag.append(provGroup);
+    }
   } else {
     $('#anatomyHeading').textContent = t('单任务成本分位箱线图（尾部风险）与执行耗时', 'Task Cost Distribution (P05–P50–P95 Tail Risk) & Wall Time');
     const maxDollar = Math.max(1, ...selectedRows.map(r => Math.max(r.costPercentiles?.p95 || 0, r.cost))) * 1.06;
@@ -2321,6 +2567,23 @@ function renderCompare() {
       selectedRows.map(r => r.subscores?.hallucination != null ? `${format(r.subscores.hallucination, 1)}%` : '—'),
       selectedRows.map(r => r.subscores?.hallucination ?? null),
       true
+    );
+    addRow(
+      t('发布日期', 'Release Date'),
+      selectedRows.map(r => r.releaseDate || '—')
+    );
+  } else if (activeKey === 'cyber') {
+    addRow(
+      t('安全拒答率 · 防护策略', 'Refusal Rate · Safeguards'),
+      selectedRows.map(r => r.refusalRate != null
+        ? `${format(r.refusalRate, 1)}%${r.mitigationStatus ? ' · ' + r.mitigationStatus : ''}`
+        : '—'),
+      selectedRows.map(r => r.refusalRate ?? null),
+      true
+    );
+    addRow(
+      t('参数规模 · 输入模态', 'Parameters · Modalities'),
+      selectedRows.map(r => `${r.parametersB ? r.parametersB + 'B' : t('未公开', 'Undisclosed')} · ${modalitySummary(r)}`)
     );
     addRow(
       t('发布日期', 'Release Date'),
@@ -2592,11 +2855,11 @@ function draw() {
   }
 
   // Active pool Pareto frontier (cost or time) + optional Historical Pareto evolution
-  const frontier = paretoFrontier(pool, xOf);
+  const {list: frontier} = activeFrontierSet();
   const paretoEl = svg.querySelector('.pareto');
   const histEl = svg.querySelector('.pareto-history');
   paretoEl.setAttribute('d', frontier.map((row, i) => `${i ? 'L' : 'M'}${xCoord(row)},${y(row.intelligenceIndex)}`).join(' '));
-  const inHist = activeKey === 'models' && state.historyMode && state.xMetric === 'cost' && state.releaseDates.length > 1;
+  const inHist = canHistoryMode() && state.historyMode;
   if (inHist) {
     const cutoff = state.releaseDates[state.historyIndex];
     const pastFront = paretoFrontier(pool.filter(r => r.releaseDate && r.releaseDate <= cutoff), xOf);
@@ -2763,7 +3026,7 @@ function overlapArea(a, b) {
 }
 
 function isFutureHidden(row) {
-  if (!(activeKey === 'models' && state.historyMode && state.xMetric === 'cost' && state.releaseDates.length > 1)) return false;
+  if (!(canHistoryMode() && state.historyMode)) return false;
   const cutoff = state.releaseDates[state.historyIndex];
   return !!(row.releaseDate && row.releaseDate > cutoff);
 }
@@ -2771,10 +3034,10 @@ function isFutureHidden(row) {
 function layoutLabels(championId) {
   const placed = [], visible = nodes.filter(item => inView(item.row) && !isFutureHidden(item.row));
   const pool = activePool();
-  const activeHistPool = activeKey === 'models' && state.historyMode && state.xMetric === 'cost' && state.releaseDates.length > 1
-    ? pool.filter(r => r.releaseDate && r.releaseDate <= state.releaseDates[state.historyIndex])
-    : pool;
-  const frontier = new Set(paretoFrontier(activeHistPool, currentXOf()).map(row => row.id));
+  const inHist = canHistoryMode() && state.historyMode;
+  const frontier = inHist
+    ? new Set(paretoFrontier(pool.filter(r => r.releaseDate && r.releaseDate <= state.releaseDates[state.historyIndex]), currentXOf()).map(row => row.id))
+    : activeFrontierSet().idSet;
   const baseDist = state.labelDistance;
   const radii = [3, baseDist * 0.55, baseDist * 0.85, Math.max(6, baseDist)].filter((v, i, arr) => v >= 2 && arr.indexOf(v) === i);
   measure.font = `500 ${state.labelSize}px "IBM Plex Sans", "Segoe UI", "Microsoft YaHei UI", sans-serif`;
@@ -2976,7 +3239,7 @@ function renderPinned() {
   card.hidden = !row || state.mode !== 'chart';
   if (!row) return;
 
-  const frontierIds = new Set(paretoFrontier(activePool(), currentXOf()).map(r => r.id));
+  const {idSet: frontierIds} = activeFrontierSet();
   const {rankMap, qualifiedCount} = computeRankings();
   const rankInfo = rankMap.get(row.id);
 
@@ -2985,6 +3248,7 @@ function renderPinned() {
   if (row.isOpenWeights) metaParts.push(row.parametersB ? `${t('开源', 'Open')} ${row.parametersB}B` : t('开源', 'Open'));
   if (row.effort?.label) metaParts.push(row.effort.label);
   if (row.modalities?.length) metaParts.push(modalitySummary(row));
+  if (row.refusalRate != null) metaParts.push(t(`拒答 ${format(row.refusalRate, 1)}%`, `Refusal ${format(row.refusalRate, 1)}%`));
   if (frontierIds.has(row.id)) metaParts.push(t('帕累托前沿', 'Pareto frontier'));
   if (rankInfo) metaParts.push(t(`性价比 #${rankInfo.rank}/${qualifiedCount}`, `Value #${rankInfo.rank}/${qualifiedCount}`));
   $('#pinnedMeta').textContent = metaParts.join(' · ');
@@ -3040,7 +3304,7 @@ function showHover(item, event) {
   drawActive(champion);
 
   const row = item.row;
-  const frontierIds = new Set(paretoFrontier(activePool(), currentXOf()).map(r => r.id));
+  const {idSet: frontierIds} = activeFrontierSet();
   const rankInfo = rankMap.get(row.id);
 
   tip.replaceChildren(html('strong', row.name));
@@ -3063,6 +3327,7 @@ function showHover(item, event) {
     [t('每任务成本', 'Cost / task'), money(row.cost)]
   ];
   if (row.timeSec > 0) kvRows.push([t('平均耗时', 'Mean time'), formatTime(row.timeSec)]);
+  if (row.refusalRate != null) kvRows.push([t('安全拒答率', 'Safety refusal'), `${format(row.refusalRate, 1)}%`]);
   if (row.costPercentiles) {
     kvRows.push([t('成本 P50 / P95', 'Cost P50 / P95'), `${money(row.costPercentiles.p50 || 0)} / ${money(row.costPercentiles.p95 || 0)}`]);
   }
@@ -3075,7 +3340,10 @@ function showHover(item, event) {
   }
   const beSummary = tierBreakevenText(row.cost);
   if (beSummary) tip.append(html('span', beSummary, 'tip-foot'));
-  tip.append(html('span', t('单击锁定详情卡片', 'Click to pin details card'), 'tip-foot'));
+  const inCmp = state.compareIds.includes(row.id);
+  tip.append(html('span', inCmp
+    ? t('单击锁定卡片 · 已在剖析对比组 ✓', 'Click to pin · In comparison ✓')
+    : t('单击锁定卡片 · Shift+单击加入对比', 'Click to pin · Shift+click to compare'), 'tip-foot'));
   tip.hidden = state.selected === row.id;
   const box = item.p.getBoundingClientRect();
   positionTip(event?.clientX ?? box.x + box.width / 2, event?.clientY ?? box.y);
@@ -3129,6 +3397,14 @@ function clearPin() {
 $('#unpin').addEventListener('click', clearPin);
 $('#pinCompareBtn').addEventListener('click', () => {
   if (state?.selected) toggleCompareId(state.selected);
+});
+$('#pinGoCompareBtn').addEventListener('click', () => {
+  if (!state?.selected) return;
+  if (!state.compareIds.includes(state.selected)) {
+    if (state.compareIds.length >= 4) state.compareIds.shift();
+    state.compareIds.push(state.selected);
+  }
+  showView('compare');
 });
 
 function updateSummary() {
@@ -3637,7 +3913,16 @@ host.addEventListener('click', event => {
   const item = nearestItem(event);
   if (item) {
     host.focus({preventScroll: true});
-    togglePin(item);
+    if (event.shiftKey) {
+      toggleCompareId(item.row.id);
+      const inCmp = state.compareIds.includes(item.row.id);
+      $('#selection').textContent = inCmp
+        ? t(`已加入剖析对比 (${state.compareIds.length}/4)：${item.row.name}`, `Added to compare (${state.compareIds.length}/4): ${item.row.name}`)
+        : t(`已从对比移除：${item.row.name}`, `Removed from compare: ${item.row.name}`);
+      if (hovered === item) showHover(item, event);
+    } else {
+      togglePin(item);
+    }
   }
 });
 
@@ -3782,6 +4067,9 @@ host.addEventListener('keydown', event => {
 
 // Close floating popovers on outside click or Escape
 document.addEventListener('pointerdown', event => {
+  if (changelogOpen && !event.target.closest('.update-wrap')) {
+    setChangelogOpen(false);
+  }
   if (valueDetailsOpen && !event.target.closest('#valueMorePanel') && !event.target.closest('#valueMore')) {
     valueDetailsOpen = false;
     syncPanelControls();
@@ -3803,7 +4091,7 @@ document.addEventListener('keydown', event => {
       return;
     }
     if ((event.key === '[' || event.key === ']') && state && state.mode === 'chart') {
-      const frontier = paretoFrontier(activePool(), currentXOf());
+      const {list: frontier} = activeFrontierSet();
       if (frontier.length) {
         event.preventDefault();
         const curIdx = frontier.findIndex(r => r.id === state.selected);
@@ -3816,7 +4104,10 @@ document.addEventListener('keydown', event => {
     }
   }
   if (event.key !== 'Escape') return;
-  if (valueDetailsOpen) {
+  if (changelogOpen) {
+    setChangelogOpen(false);
+    $('#updateBadge').focus({preventScroll: true});
+  } else if (valueDetailsOpen) {
     valueDetailsOpen = false;
     syncPanelControls();
     $('#valueMore').focus({preventScroll: true});
@@ -3882,8 +4173,11 @@ async function loadData() {
     if (generation !== loadGeneration) return;
     snapshot = next;
     states.clear();
+    const hasCyber = Array.isArray(snapshot.cyberModels) && snapshot.cyberModels.length > 0;
+    $('#tab-cyber').hidden = !hasCyber;
+    if (changelogOpen) renderChangelog();
     const parsed = parseHash();
-    chooseChart(parsed.chart, {changeHash: false, routeParams: parsed.params});
+    chooseChart(parsed.chart === 'cyber' && !hasCyber ? 'models' : parsed.chart, {changeHash: false, routeParams: parsed.params});
   } catch (error) {
     if (generation === loadGeneration) {
       showLoadError(error.name === 'AbortError' ? new Error(t('请求超时，请重试', 'Request timed out')) : error);

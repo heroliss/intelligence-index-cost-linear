@@ -314,7 +314,7 @@ export function cascadingRouteSummary(fastRow, strongRow, fastShare = 0.8, month
 export function sortRows(rows, key, direction = 'asc', weight = VALUE_WEIGHT.default, minScore = MIN_SCORE.default) {
   validateValueWeight(weight);
   validateMinScore(minScore);
-  if (!['name', 'creator', 'intelligenceIndex', 'cost', 'valuePerDollar'].includes(key)) throw new RangeError(`Unknown table sort key: ${key}`);
+  if (!['name', 'creator', 'intelligenceIndex', 'cost', 'timeSec', 'valuePerDollar'].includes(key)) throw new RangeError(`Unknown table sort key: ${key}`);
   if (direction !== 'asc' && direction !== 'desc') throw new RangeError(`Unknown table sort direction: ${direction}`);
   const sign = direction === 'asc' ? 1 : -1;
   return [...rows].sort((a, b) => {
@@ -324,6 +324,11 @@ export function sortRows(rows, key, direction = 'asc', weight = VALUE_WEIGHT.def
       // Disqualified or missing ratios are not infinite bargains; keep them last in either direction.
       if ((aValue === null) !== (bValue === null)) return aValue === null ? 1 : -1;
       primary = aValue === null ? 0 : aValue - bValue;
+    } else if (key === 'timeSec') {
+      const aTime = typeof a.timeSec === 'number' && Number.isFinite(a.timeSec) && a.timeSec > 0 ? a.timeSec : null;
+      const bTime = typeof b.timeSec === 'number' && Number.isFinite(b.timeSec) && b.timeSec > 0 ? b.timeSec : null;
+      if ((aTime === null) !== (bTime === null)) return aTime === null ? 1 : -1;
+      primary = aTime === null ? 0 : aTime - bTime;
     } else {
       primary = key === 'cost' || key === 'intelligenceIndex'
         ? a[key] - b[key]

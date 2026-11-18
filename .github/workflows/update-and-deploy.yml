@@ -8,6 +8,8 @@ on:
       - 'app.js'
       - 'styles.css'
       - 'chart-math.mjs'
+      - 'favicon.svg'
+      - 'manifest.webmanifest'
       - 'source-url.txt'
       - 'assets/**'
       - 'scripts/**'
@@ -66,11 +68,19 @@ jobs:
         if: github.event_name != 'schedule' || steps.refresh.outputs.changed == 'true'
         uses: actions/configure-pages@v5
 
+      - name: Stage clean static site bundle
+        if: github.event_name != 'schedule' || steps.refresh.outputs.changed == 'true'
+        run: |
+          rm -rf _site
+          mkdir -p _site/data
+          cp index.html styles.css app.js chart-math.mjs favicon.svg manifest.webmanifest .nojekyll _site/
+          cp data/current.json _site/data/current.json
+
       - name: Upload site artifact
         if: github.event_name != 'schedule' || steps.refresh.outputs.changed == 'true'
         uses: actions/upload-pages-artifact@v4
         with:
-          path: .
+          path: _site
 
       - name: Deploy to GitHub Pages
         if: github.event_name != 'schedule' || steps.refresh.outputs.changed == 'true'

@@ -7,7 +7,7 @@ const crypto = require('node:crypto');
 const zlib = require('node:zlib');
 const http = require('node:http');
 const { spawn } = require('node:child_process');
-const { getBuffer, readCodingRows, readManifests, simplifyModel, expectedCodingComponents, simplifyCodingAgent, fetchModels, validateRows, writeSnapshot } = require('./fetch_data.cjs');
+const { getBuffer, readCodingRows, readManifests, simplifyModel, simplifyCyberModel, simplifyChangelog, expectedCodingComponents, simplifyCodingAgent, fetchModels, validateRows, writeSnapshot } = require('./fetch_data.cjs');
 
 const model = { id: 'model-1', slug: 'example-model', name: 'Example Model', intelligenceIndex: 50, intelligenceIndexCostPerTask: { total: 0.5 } };
 const agent = { id: 'agent-1', displayLabel: 'Example Agent - Model', indexScore: 0.53, mean: { costUsd: 7.6 }, indexComponentCount: 3, modelCreators: [{ name: 'Example', color: '#123456' }] };
@@ -97,6 +97,41 @@ test('enriched model and coding-agent telemetry preserves open weights, subscore
   assert.equal(richAgent.costPercentiles.p50, 4.5);
   assert.equal(richAgent.costPercentiles.p95, 22.7);
   assert.deepEqual(richAgent.evalScores, [{ name: 'FrontierCode 2.0', score: 58.4 }]);
+
+  const byId = new Map([[richModel.id, richModel]]);
+  const cyber = simplifyCyberModel({
+    id: 'model-1',
+    slug: 'example-model',
+    name: 'Example Model',
+    shortName: 'Example',
+    score: 64.25,
+    costPerTask: 3.12,
+    refusalRate: 0.382,
+    mitigationStatus: 'Safeguards Active'
+  }, byId);
+  assert.equal(cyber.cyberIndex, 64.25);
+  assert.equal(cyber.intelligenceIndex, 64.25);
+  assert.equal(cyber.cost, 3.12);
+  assert.equal(cyber.refusalRate, 38.2);
+  assert.equal(cyber.mitigationStatus, 'Safeguards Active');
+  assert.equal(cyber.isOpenWeights, true);
+  assert.equal(cyber.releaseDate, '2026-09-01');
+  assert.equal(cyber.timeSec, 142.35);
+  assert.equal(cyber.subscores.frontierCode, 62.5);
+  assert.equal(cyber.domainScores.finance, 54.32);
+  assert.equal(cyber.providers.length, 2);
+  assert.equal(simplifyCyberModel({ id: 'bad', name: 'Bad', score: 50, costPerTask: 0 }), null);
+
+  const log = simplifyChangelog([
+    { dateLa: '2026-11-15', type: 'model', title: 'Added Example Model', url: '/models/example' },
+    { dateLa: '', title: 'Missing date' }
+  ]);
+  assert.deepEqual(log, [{
+    date: '2026-11-15',
+    type: 'model',
+    title: 'Added Example Model',
+    url: 'https://artificialanalysis.ai/models/example'
+  }]);
 });
 
 test('Flight rows resolve highlighted-row references across split chunks and multi-push script tags', () => {

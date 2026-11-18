@@ -353,6 +353,58 @@ function simplifyCodingAgent(row, requiredComponents = 3, openFamilyNames = null
   return entry;
 }
 
+function simplifyCyberModel(item, byId = null, bySlug = null) {
+  const cost = item?.costPerTask;
+  const score = item?.score;
+  if (!item?.id || typeof item.name !== 'string' || !Number.isFinite(cost) || cost <= 0 || !Number.isFinite(score) || score < 0 || score > 100) {
+    return null;
+  }
+  const base = byId?.get(item.id) || bySlug?.get(item.slug) || null;
+  const entry = {
+    id: item.id,
+    slug: item.slug,
+    name: item.name,
+    shortName: item.shortName || item.name,
+    cyberIndex: score,
+    intelligenceIndex: score,
+    cost,
+    creator: creator(item.creator || base?.creator),
+    isReasoning: !!base?.isReasoning,
+    isOpenWeights: !!base?.isOpenWeights,
+    refusalRate: pctOrNull(item.refusalRate),
+    mitigationStatus: typeof item.mitigationStatus === 'string' ? item.mitigationStatus : null
+  };
+  if (base?.releaseDate) entry.releaseDate = base.releaseDate;
+  if (base?.openLicense) entry.openLicense = base.openLicense;
+  if (base?.parametersB) entry.parametersB = base.parametersB;
+  if (base?.modalities) entry.modalities = base.modalities;
+  if (item.release?.slug || base?.family) {
+    entry.family = base?.family || { slug: item.release.slug, name: item.shortName || item.name };
+  }
+  if (base?.effort) entry.effort = base.effort;
+  if (base?.timeSec) entry.timeSec = base.timeSec;
+  if (base?.subscores) entry.subscores = base.subscores;
+  if (base?.domainScores) entry.domainScores = base.domainScores;
+  if (base?.providers) entry.providers = base.providers;
+  return entry;
+}
+
+function simplifyChangelog(items) {
+  if (!Array.isArray(items)) return [];
+  const out = [];
+  for (const item of items) {
+    if (!item?.title || !item?.dateLa) continue;
+    out.push({
+      date: String(item.dateLa),
+      type: typeof item.type === 'string' ? item.type : 'update',
+      title: String(item.title),
+      url: typeof item.url === 'string' && item.url.startsWith('/') ? `https://artificialanalysis.ai${item.url}` : null
+    });
+    if (out.length >= 12) break;
+  }
+  return out;
+}
+
 function validateRows(rows, minimum, name) {
   if (rows.length < minimum) throw new Error(`Unexpectedly low ${name} count: ${rows.length}`);
   if (new Set(rows.map(row => row.id)).size !== rows.length) throw new Error(`Duplicate ${name} IDs`);
@@ -417,7 +469,18 @@ async function fetchModels(page, sourceUrl, previous, get = getBuffer, { include
 
   const models = modelPayload.models.map(m => simplifyModel(m, capMap, hostMap)).filter(Boolean);
   validateRows(models, 50, 'model');
-  return { models, manifestPath: modelManifestPath, hostsManifestPath };
+
+  const byId = new Map(models.map(m => [m.id, m]));
+  const bySlug = new Map(models.filter(m => m.slug).map(m => [m.slug, m]));
+  let cyberModels = [];
+  if (Array.isArray(modelPayload.cyberIndexModels)) {
+    cyberModels = modelPayload.cyberIndexModels.map(c => simplifyCyberModel(c, byId, bySlug)).filter(Boolean);
+    if (cyberModels.length >= 3) validateRows(cyberModels, 3, 'cyber-model');
+    else cyberModels = [];
+  }
+  const changelog = simplifyChangelog(modelPayload.changelog);
+
+  return { models, cyberModels, changelog, manifestPath: modelManifestPath, hostsManifestPath };
 }
 
 function comparable(snapshot) {
@@ -449,7 +512,7 @@ async function main() {
   const [modelPage, codingPageBuffer] = await Promise.all([getBuffer(sourceUrl), getBuffer(codingAgentSourceUrl)]);
   const codingPage = codingPageBuffer.toString('utf8');
   const rawCodingRows = readCodingRows(codingPage);
-  const { models, manifestPath, hostsManifestPath } = await fetchModels(modelPage.toString('utf8'), sourceUrl, previous, getBuffer, { includeHosts: true });
+  const { models, cyberModels, changelog, manifestPath, hostsManifestPath } = await fetchModels(modelPage.toString('utf8'), sourceUrl, previous, getBuffer, { includeHosts: true });
   const openFamilyNames = new Set(
     models.filter(m => m.isOpenWeights && m.family?.name).map(m => m.family.name.toLowerCase())
   );
@@ -460,6 +523,7 @@ async function main() {
     schemaVersion: 2, source: 'Artificial Analysis', sourceUrl, manifestPath,
     ...(hostsManifestPath ? { hostsManifestPath } : {}),
     updatedAt: new Date().toISOString(), updateIntervalHours: 2,
+    ...(changelog.length ? { changelog } : {}),
     modelIndexVersion: modelPage.toString('utf8').match(/Artificial Analysis Intelligence Index v([\d.]+)/)?.[1] || null,
     modelCount: models.length, models,
     codingAgentSourceUrl,
@@ -467,14 +531,19 @@ async function main() {
     codingAgentIndexVersion: codingPage.match(/Coding Agent Index v([\d.]+)/)?.[1] || null,
     codingAgentCount: codingAgents.length,
     codingAgentExcludedCount: rawCodingRows.length - codingAgents.length,
-    codingAgents
+    codingAgents,
+    ...(cyberModels.length ? {
+      cyberSourceUrl: 'https://artificialanalysis.ai/cyber',
+      cyberModelCount: cyberModels.length,
+      cyberModels
+    } : {})
   };
   const changed = await writeSnapshot(outPath, output, previous);
-  console.log(`${changed ? 'Wrote' : 'Unchanged:'} ${models.length} models and ${codingAgents.length} coding-agent variants; checked ${new Date().toISOString()}`);
+  console.log(`${changed ? 'Wrote' : 'Unchanged:'} ${models.length} models, ${codingAgents.length} coding agents, ${cyberModels.length} cyber models; checked ${new Date().toISOString()}`);
   if (process.env.GITHUB_OUTPUT) await fs.appendFile(process.env.GITHUB_OUTPUT, `changed=${changed}\n`);
   if (process.env.GITHUB_STEP_SUMMARY) await fs.appendFile(process.env.GITHUB_STEP_SUMMARY,
-    `### Artificial Analysis data check\n- Checked: ${new Date().toISOString()}\n- Models: ${models.length}\n- Coding-agent variants: ${codingAgents.length}\n- Excluded coding-agent rows without comparable score/cost: ${output.codingAgentExcludedCount}\n- Snapshot changed: ${changed}\n`);
+    `### Artificial Analysis data check\n- Checked: ${new Date().toISOString()}\n- Models: ${models.length}\n- Coding-agent variants: ${codingAgents.length}\n- Cyber-index models: ${cyberModels.length}\n- Excluded coding-agent rows without comparable score/cost: ${output.codingAgentExcludedCount}\n- Snapshot changed: ${changed}\n`);
 }
 
-module.exports = { getBuffer, readFlightRecords, readManifests, decryptPayload, simplifyModel, resolveFlightReference, readCodingRows, expectedCodingComponents, simplifyCodingAgent, validateRows, fetchModels, writeSnapshot };
+module.exports = { getBuffer, readFlightRecords, readManifests, decryptPayload, simplifyModel, simplifyCyberModel, simplifyChangelog, resolveFlightReference, readCodingRows, expectedCodingComponents, simplifyCodingAgent, validateRows, fetchModels, writeSnapshot };
 if (require.main === module) main().catch(error => { console.error(error.stack || error); process.exitCode = 1; });

@@ -4,9 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>智能水平与任务成本 · Intelligence vs. Cost</title>
-  <meta name="description" content="用线性美元成本坐标比较 Artificial Analysis 模型与编程智能体，支持 IRT 胜率加权性价比、帕累托前沿与多视图联动。">
+  <meta name="description" content="用线性美元与实测耗时坐标比较 Artificial Analysis 模型、编程智能体与网络安全基准，支持 IRT 性价比、大尺寸多维雷达对比、历史演进与订阅回本测算。">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="智能水平与任务成本 · Intelligence vs. Cost">
+  <meta property="og:description" content="线性美元成本与耗时基准分析器：IRT 胜率性价比、大尺寸多维能力雷达、多云 API 比价、历史演进与订阅回本测算。">
+  <meta name="twitter:card" content="summary">
   <meta name="color-scheme" content="dark light">
   <meta name="darkreader-lock">
+  <meta name="theme-color" content="#0d1626">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -19,8 +26,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261118-6">
-  <script type="module" src="app.js?v=20261118-6"></script>
+  <link rel="stylesheet" href="styles.css?v=20261118-7">
+  <script type="module" src="app.js?v=20261118-7"></script>
 </head>
 <body>
 <main class="app">
@@ -41,10 +48,18 @@
     <nav class="tabs" role="tablist" aria-label="选择基准 / Choose benchmark">
       <button id="tab-models" type="button" role="tab" aria-selected="true" aria-controls="chart-panel" data-chart="models">模型智能指数</button>
       <button id="tab-coding-agents" type="button" role="tab" aria-selected="false" aria-controls="chart-panel" tabindex="-1" data-chart="coding-agents">编程智能体</button>
+      <button id="tab-cyber" type="button" role="tab" aria-selected="false" aria-controls="chart-panel" tabindex="-1" data-chart="cyber">网络安全指数</button>
     </nav>
 
     <div class="top-actions">
-      <span id="updateBadge" class="update-badge"><i aria-hidden="true"></i><span id="updateText">每 2 小时检查</span></span>
+      <div class="update-wrap">
+        <button id="updateBadge" type="button" class="update-badge" aria-expanded="false" aria-controls="changelogPopover"><i aria-hidden="true"></i><span id="updateText">最新动态</span></button>
+        <div id="changelogPopover" class="changelog-popover" hidden>
+          <div class="changelog-head"><strong id="changelogTitle">Artificial Analysis 最新动态</strong><span id="changelogTime" class="changelog-time"></span></div>
+          <ul id="changelogList" class="changelog-list"></ul>
+        </div>
+      </div>
+      <button id="shareBtn" type="button" class="ghost-btn">分享</button>
       <button id="langToggle" type="button" class="ghost-btn" aria-label="Switch language to English">EN</button>
       <button id="theme" type="button" class="ghost-btn theme-toggle" aria-pressed="true" aria-label="切换浅色主题">
         <svg class="theme-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
@@ -253,6 +268,7 @@
           <span id="pinnedBadge" class="pin-badge">已锁定节点</span>
           <div class="pin-actions">
             <button id="pinCompareBtn" type="button">+ 对比</button>
+            <button id="pinGoCompareBtn" type="button">去剖析 →</button>
             <button id="unpin" type="button">取消 · Esc</button>
           </div>
         </div>
@@ -280,6 +296,7 @@
               <th scope="col" aria-sort="none"><button type="button" class="sort-button" data-sort="creator"><span class="th-label" id="thCreator">厂商</span><span class="sort-arrow" aria-hidden="true">↕</span></button></th>
               <th scope="col" aria-sort="descending"><button type="button" class="sort-button" data-sort="intelligenceIndex"><span class="th-label" id="thIndex">指数 (0–100)</span><span class="sort-arrow" aria-hidden="true">↓</span></button></th>
               <th scope="col" aria-sort="none"><button type="button" class="sort-button" data-sort="cost"><span class="th-label" id="thCost">每任务成本 (USD)</span><span class="sort-arrow" aria-hidden="true">↕</span></button></th>
+              <th scope="col" aria-sort="none"><button type="button" class="sort-button" data-sort="timeSec"><span class="th-label" id="thTime">平均耗时</span><span class="sort-arrow" aria-hidden="true">↕</span></button></th>
               <th scope="col" aria-sort="none"><button type="button" class="sort-button" data-sort="valuePerDollar"><span class="th-label" id="thValue">性价比</span><span id="valueUnit" class="th-sub">IRT 加权/USD</span><span class="sort-arrow" aria-hidden="true">↕</span></button></th>
             </tr>
           </thead>

@@ -158,9 +158,11 @@ test('validRows accepts a true zero cost and rejects malformed or duplicated row
   }
 });
 
-test('both shipped datasets pass validation and fit inside their full-data view', async () => {
+test('all shipped datasets pass validation and fit inside their full-data view', async () => {
   const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
-  for (const [name, rows] of [['models', snapshot.models], ['codingAgents', snapshot.codingAgents]]) {
+  const suites = [['models', snapshot.models], ['codingAgents', snapshot.codingAgents]];
+  if (snapshot.cyberModels?.length) suites.push(['cyberModels', snapshot.cyberModels]);
+  for (const [name, rows] of suites) {
     validRows(rows);
     const bounds = dataBounds(rows);
     const highest = Math.max(...rows.map(item => item.intelligenceIndex));
@@ -174,12 +176,19 @@ test('both shipped datasets pass validation and fit inside their full-data view'
   }
 });
 
-test('table cost and index sorts compare actual numbers in both directions', () => {
-  const rows = [row('ten', 10, 9), row('two', 2, 100), row('fraction', 0.1, 10), row('zero', 0, 0)];
+test('table cost, index, and timeSec sorts compare actual numbers and keep missing latencies last', () => {
+  const rows = [
+    {...row('ten', 10, 9), timeSec: 120},
+    {...row('two', 2, 100), timeSec: 15.5},
+    {...row('fraction', 0.1, 10), timeSec: null},
+    {...row('zero', 0, 0), timeSec: 0}
+  ];
   assert.deepEqual(sortRows(rows, 'cost').map(d => d.cost), [0, 0.1, 2, 10]);
   assert.deepEqual(sortRows(rows, 'cost', 'desc').map(d => d.cost), [10, 2, 0.1, 0]);
   assert.deepEqual(sortRows(rows, 'intelligenceIndex').map(d => d.intelligenceIndex), [0, 9, 10, 100]);
   assert.deepEqual(sortRows(rows, 'intelligenceIndex', 'desc').map(d => d.intelligenceIndex), [100, 10, 9, 0]);
+  assert.deepEqual(sortRows(rows, 'timeSec', 'asc').map(d => d.id), ['two', 'ten', 'fraction', 'zero']);
+  assert.deepEqual(sortRows(rows, 'timeSec', 'desc').map(d => d.id), ['ten', 'two', 'fraction', 'zero']);
 });
 
 test('weight 1 exactly preserves the original index divided by actual per-task cost', () => {
@@ -258,7 +267,8 @@ test('expanded curve range traverses all capability tiers and preserves Pareto m
 
   // Structural invariants that hold across any valid live snapshot update
   const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
-  for (const rows of [snapshot.models, snapshot.codingAgents]) {
+  const liveSuites = [snapshot.models, snapshot.codingAgents, ...(snapshot.cyberModels?.length ? [snapshot.cyberModels] : [])];
+  for (const rows of liveSuites) {
     const frontierIds = new Set(paretoFrontier(rows).map(r => r.id));
     const minCost = Math.min(...rows.map(r => r.cost));
     const leader0 = sortRows(rows, 'valuePerDollar', 'desc', 0)[0];
