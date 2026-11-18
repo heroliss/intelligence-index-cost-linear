@@ -3,7 +3,7 @@
   "source": "Artificial Analysis",
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
-  "updatedAt": "2026-11-18T03:44:42.204Z",
+  "updatedAt": "2026-11-18T04:43:45.711Z",
   "updateIntervalHours": 2,
   "modelIndexVersion": "5.0.1",
   "modelCount": 133,
@@ -20,7 +20,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-22",
+      "family": {
+        "slug": "gpt-6-luna",
+        "name": "GPT-6 Luna"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 37.3,
+      "costBreakdown": {
+        "input": 0.00347,
+        "reasoning": 0.00035,
+        "answer": 0.0013
+      },
+      "outTokens": {
+        "reasoning": 702,
+        "answer": 2594,
+        "total": 3296
+      },
+      "subscores": {
+        "frontierCode": 2.2,
+        "terminalBench": 0,
+        "hleDiamond": 10.2,
+        "critptAgentic": 9.5,
+        "science": 0.95,
+        "omniscience": 36.1,
+        "hallucination": 84.82
+      }
     },
     {
       "id": "d80eb0f1-f62e-4d31-99d2-7a925eb126b0",
@@ -34,7 +65,33 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-04-03",
+      "family": {
+        "slug": "gemma-4-e4b",
+        "name": "Gemma 4 E4B"
+      },
+      "timeSec": 246.14,
+      "costBreakdown": {
+        "input": 0.00665,
+        "reasoning": 0.00101,
+        "answer": 0.00061
+      },
+      "outTokens": {
+        "reasoning": 10085,
+        "answer": 6100,
+        "total": 16185
+      },
+      "subscores": {
+        "frontierCode": 0,
+        "terminalBench": 0,
+        "hleDiamond": 3.7,
+        "critptAgentic": 0.5,
+        "science": 0,
+        "omniscience": 9.67,
+        "hallucination": 33.58
+      }
     },
     {
       "id": "3fd96175-4ef1-434c-8795-f873aec2abc1",
@@ -48,7 +105,33 @@
         "color": "#f32e02"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-03-16",
+      "family": {
+        "slug": "mistral-small-4",
+        "name": "Mistral Small 4"
+      },
+      "timeSec": 100.31,
+      "costBreakdown": {
+        "input": 0.03127,
+        "reasoning": 0.00249,
+        "answer": 0.00615
+      },
+      "outTokens": {
+        "reasoning": 4152,
+        "answer": 10248,
+        "total": 14400
+      },
+      "subscores": {
+        "frontierCode": 0,
+        "terminalBench": 0,
+        "hleDiamond": 4.4,
+        "critptAgentic": 0,
+        "science": 0,
+        "omniscience": 21.37,
+        "hallucination": 66.55
+      }
     },
     {
       "id": "adfae555-f489-4f3e-9064-c6b7fcdd0783",
@@ -62,7 +145,33 @@
         "color": "#0f62fe"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-08-25",
+      "family": {
+        "slug": "granite-4-2-8b",
+        "name": "Granite 4.2 8B"
+      },
+      "timeSec": 676.44,
+      "costBreakdown": {
+        "input": 0.02758,
+        "reasoning": 0.00927,
+        "answer": 0.00361
+      },
+      "outTokens": {
+        "reasoning": 37064,
+        "answer": 14451,
+        "total": 51515
+      },
+      "subscores": {
+        "frontierCode": 0,
+        "terminalBench": 0,
+        "hleDiamond": 4,
+        "critptAgentic": 0,
+        "science": 0,
+        "omniscience": 11.77,
+        "hallucination": 32.23
+      }
     },
     {
       "id": "36667da0-9222-4967-adbb-f7efa15ad213",
@@ -76,7 +185,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-22",
+      "family": {
+        "slug": "gpt-6-luna",
+        "name": "GPT-6 Luna"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 207.08,
+      "costBreakdown": {
+        "input": 0.03229,
+        "reasoning": 0.00552,
+        "answer": 0.00439
+      },
+      "outTokens": {
+        "reasoning": 11043,
+        "answer": 8781,
+        "total": 19823
+      },
+      "subscores": {
+        "frontierCode": 12.77,
+        "terminalBench": 2.53,
+        "hleDiamond": 15.1,
+        "critptAgentic": 27.5,
+        "science": 1.43,
+        "omniscience": 38.7,
+        "hallucination": 85.26
+      }
     },
     {
       "id": "42908ae3-d3bd-4934-be19-fbff93d3fde8",
@@ -90,7 +230,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-07",
+      "family": {
+        "slug": "claude-haiku-5-5",
+        "name": "Claude Haiku 5.5"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 131.11,
+      "costBreakdown": {
+        "input": 0.02968,
+        "reasoning": 0.00764,
+        "answer": 0.00644
+      },
+      "outTokens": {
+        "reasoning": 15280,
+        "answer": 12881,
+        "total": 28161
+      },
+      "subscores": {
+        "frontierCode": 8.04,
+        "terminalBench": 12.63,
+        "hleDiamond": 14.1,
+        "critptAgentic": 21.5,
+        "science": 1.9,
+        "omniscience": 30.37,
+        "hallucination": 40.5
+      }
     },
     {
       "id": "f586801a-2cff-4e77-8322-577cd57bbdd1",
@@ -104,7 +275,37 @@
         "color": "#676767"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-07-30",
+      "family": {
+        "slug": "inkling-small",
+        "name": "Inkling Small"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "costBreakdown": {
+        "input": 0.04453,
+        "reasoning": 0.00949,
+        "answer": 0.00737
+      },
+      "outTokens": {
+        "reasoning": 7911,
+        "answer": 6139,
+        "total": 14049
+      },
+      "subscores": {
+        "frontierCode": 1.5,
+        "terminalBench": 0.51,
+        "hleDiamond": 8.4,
+        "critptAgentic": 9.5,
+        "science": 0,
+        "omniscience": 30.53,
+        "hallucination": 63.29
+      }
     },
     {
       "id": "c955b262-a17f-4f1a-b097-6860b866295b",
@@ -118,7 +319,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-26",
+      "family": {
+        "slug": "gpt-6-1-terra",
+        "name": "GPT-6.1 Terra"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 72.2,
+      "costBreakdown": {
+        "input": 0.04923,
+        "reasoning": 0.00475,
+        "answer": 0.01736
+      },
+      "outTokens": {
+        "reasoning": 950,
+        "answer": 3472,
+        "total": 4422
+      },
+      "subscores": {
+        "frontierCode": 24.49,
+        "terminalBench": 15.15,
+        "hleDiamond": 24.9,
+        "critptAgentic": 50.5,
+        "science": 7.62,
+        "omniscience": 45.57,
+        "hallucination": 41.58
+      }
     },
     {
       "id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
@@ -132,7 +364,33 @@
         "color": "#1f1f1f"
       },
       "isReasoning": false,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-22",
+      "family": {
+        "slug": "gpt-6-luna",
+        "name": "GPT-6 Luna"
+      },
+      "timeSec": 110.33,
+      "costBreakdown": {
+        "input": 0.06639,
+        "reasoning": 0,
+        "answer": 0.00503
+      },
+      "outTokens": {
+        "reasoning": 0,
+        "answer": 10059,
+        "total": 10059
+      },
+      "subscores": {
+        "frontierCode": 1.58,
+        "terminalBench": 1.52,
+        "hleDiamond": 6.3,
+        "critptAgentic": 5,
+        "science": 0.95,
+        "omniscience": 30.1,
+        "hallucination": 79.97
+      }
     },
     {
       "id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
@@ -146,7 +404,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-22",
+      "family": {
+        "slug": "gpt-6-luna",
+        "name": "GPT-6 Luna"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 350.13,
+      "costBreakdown": {
+        "input": 0.05653,
+        "reasoning": 0.01081,
+        "answer": 0.00561
+      },
+      "outTokens": {
+        "reasoning": 21618,
+        "answer": 11221,
+        "total": 32839
+      },
+      "subscores": {
+        "frontierCode": 18.6,
+        "terminalBench": 4.55,
+        "hleDiamond": 15.6,
+        "critptAgentic": 31,
+        "science": 2.86,
+        "omniscience": 39,
+        "hallucination": 84.92
+      }
     },
     {
       "id": "af26fff4-8120-41be-a5f0-86aaea023f20",
@@ -160,7 +449,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-07",
+      "family": {
+        "slug": "claude-haiku-5-5",
+        "name": "Claude Haiku 5.5"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 236.8,
+      "costBreakdown": {
+        "input": 0.0651,
+        "reasoning": 0.01605,
+        "answer": 0.01062
+      },
+      "outTokens": {
+        "reasoning": 32091,
+        "answer": 21244,
+        "total": 53335
+      },
+      "subscores": {
+        "frontierCode": 16.09,
+        "terminalBench": 15.15,
+        "hleDiamond": 16.8,
+        "critptAgentic": 30.5,
+        "science": 7.14,
+        "omniscience": 31.73,
+        "hallucination": 40.38
+      }
     },
     {
       "id": "19813eb2-460a-475c-af65-810bb8660fec",
@@ -174,7 +494,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-22",
+      "family": {
+        "slug": "gpt-6-luna",
+        "name": "GPT-6 Luna"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 439.46,
+      "costBreakdown": {
+        "input": 0.08215,
+        "reasoning": 0.01501,
+        "answer": 0.00694
+      },
+      "outTokens": {
+        "reasoning": 30020,
+        "answer": 13873,
+        "total": 43893
+      },
+      "subscores": {
+        "frontierCode": 18.42,
+        "terminalBench": 8.08,
+        "hleDiamond": 18.9,
+        "critptAgentic": 37,
+        "science": 5.24,
+        "omniscience": 38.6,
+        "hallucination": 83.98
+      }
     },
     {
       "id": "7a64ffc4-36c3-4369-981e-73abdd6ff5e2",
@@ -188,7 +539,38 @@
         "color": "#0089f4"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-09",
+      "family": {
+        "slug": "muse-ember",
+        "name": "Muse Ember"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 168.64,
+      "costBreakdown": {
+        "input": 0.08005,
+        "reasoning": 0.02205,
+        "answer": 0.01413
+      },
+      "outTokens": {
+        "reasoning": 44097,
+        "answer": 28268,
+        "total": 72365
+      },
+      "subscores": {
+        "frontierCode": 21.97,
+        "terminalBench": 35.35,
+        "hleDiamond": 23.6,
+        "critptAgentic": 38.5,
+        "science": 17.62,
+        "omniscience": 21.37,
+        "hallucination": 17.34
+      }
     },
     {
       "id": "2b17227e-a229-474f-a86d-0dacb76212ca",
@@ -202,7 +584,33 @@
         "color": "#7B3AED"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-10-27",
+      "family": {
+        "slug": "lfm3-vl-2b",
+        "name": "LFM3-VL-2B"
+      },
+      "timeSec": 101.07,
+      "costBreakdown": {
+        "input": 0.10329,
+        "reasoning": 0.01262,
+        "answer": 0.00781
+      },
+      "outTokens": {
+        "reasoning": 25245,
+        "answer": 15627,
+        "total": 40872
+      },
+      "subscores": {
+        "frontierCode": 0,
+        "terminalBench": 0,
+        "hleDiamond": 4.6,
+        "critptAgentic": 0,
+        "science": 0,
+        "omniscience": 8.73,
+        "hallucination": 92.73
+      }
     },
     {
       "id": "127de816-57d3-4037-8484-480a613cd413",
@@ -216,7 +624,33 @@
         "color": "#ff6900"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-09-21",
+      "family": {
+        "slug": "mimo-v2-6-flash",
+        "name": "MiMo-V2.6-Flash"
+      },
+      "timeSec": 3328.35,
+      "costBreakdown": {
+        "input": 0.09162,
+        "reasoning": 0.02792,
+        "answer": 0.00899
+      },
+      "outTokens": {
+        "reasoning": 99712,
+        "answer": 32094,
+        "total": 131806
+      },
+      "subscores": {
+        "frontierCode": 21.62,
+        "terminalBench": 22.73,
+        "hleDiamond": 13.7,
+        "critptAgentic": 29.5,
+        "science": 4.29,
+        "omniscience": 27.2,
+        "hallucination": 52.24
+      }
     },
     {
       "id": "dbf63365-127f-41ee-9e51-81173adb3502",
@@ -230,7 +664,38 @@
         "color": "#0089f4"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-09",
+      "family": {
+        "slug": "muse-ember",
+        "name": "Muse Ember"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 185.87,
+      "costBreakdown": {
+        "input": 0.09369,
+        "reasoning": 0.02608,
+        "answer": 0.01616
+      },
+      "outTokens": {
+        "reasoning": 52167,
+        "answer": 32314,
+        "total": 84482
+      },
+      "subscores": {
+        "frontierCode": 27.17,
+        "terminalBench": 40.91,
+        "hleDiamond": 25.1,
+        "critptAgentic": 39,
+        "science": 20,
+        "omniscience": 21.07,
+        "hallucination": 17.36
+      }
     },
     {
       "id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
@@ -244,7 +709,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-22",
+      "family": {
+        "slug": "gpt-6-luna",
+        "name": "GPT-6 Luna"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 729.65,
+      "costBreakdown": {
+        "input": 0.11431,
+        "reasoning": 0.02878,
+        "answer": 0.00887
+      },
+      "outTokens": {
+        "reasoning": 57562,
+        "answer": 17734,
+        "total": 75296
+      },
+      "subscores": {
+        "frontierCode": 25.17,
+        "terminalBench": 12.63,
+        "hleDiamond": 22.2,
+        "critptAgentic": 42.5,
+        "science": 8.57,
+        "omniscience": 39.63,
+        "hallucination": 79.35
+      }
     },
     {
       "id": "20829974-af06-497e-9f42-77fb958d43b9",
@@ -258,7 +754,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-07",
+      "family": {
+        "slug": "claude-haiku-5-5",
+        "name": "Claude Haiku 5.5"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 386.96,
+      "costBreakdown": {
+        "input": 0.11453,
+        "reasoning": 0.02876,
+        "answer": 0.01527
+      },
+      "outTokens": {
+        "reasoning": 57529,
+        "answer": 30535,
+        "total": 88064
+      },
+      "subscores": {
+        "frontierCode": 23.2,
+        "terminalBench": 21.72,
+        "hleDiamond": 23.7,
+        "critptAgentic": 45,
+        "science": 10,
+        "omniscience": 31.83,
+        "hallucination": 38.92
+      }
     },
     {
       "id": "e76e0fe5-93ca-4272-9359-2eb1740467d1",
@@ -272,7 +799,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-29",
+      "family": {
+        "slug": "gpt-6-1-sol",
+        "name": "GPT-6.1 Sol"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 112.77,
+      "costBreakdown": {
+        "input": 0.10309,
+        "reasoning": 0.01585,
+        "answer": 0.04253
+      },
+      "outTokens": {
+        "reasoning": 1585,
+        "answer": 4253,
+        "total": 5838
+      },
+      "subscores": {
+        "frontierCode": 20.16,
+        "terminalBench": 30.81,
+        "hleDiamond": 38.2,
+        "critptAgentic": 62.5,
+        "science": 10.95,
+        "omniscience": 58.63,
+        "hallucination": 49.88
+      }
     },
     {
       "id": "c441e158-a87d-4116-911b-93325e4b4f1c",
@@ -286,7 +844,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-26",
+      "family": {
+        "slug": "gpt-6-1-terra",
+        "name": "GPT-6.1 Terra"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 169.29,
+      "costBreakdown": {
+        "input": 0.11443,
+        "reasoning": 0.02027,
+        "answer": 0.0341
+      },
+      "outTokens": {
+        "reasoning": 4055,
+        "answer": 6821,
+        "total": 10875
+      },
+      "subscores": {
+        "frontierCode": 34.54,
+        "terminalBench": 32.32,
+        "hleDiamond": 31.3,
+        "critptAgentic": 56.5,
+        "science": 24.76,
+        "omniscience": 47.43,
+        "hallucination": 39.63
+      }
     },
     {
       "id": "c76e1f60-9766-4ac5-8717-2837a05924af",
@@ -300,7 +889,33 @@
         "color": "#7B3AED"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-10-27",
+      "family": {
+        "slug": "lfm3-1-7b",
+        "name": "LFM3-1.7B"
+      },
+      "timeSec": 887.86,
+      "costBreakdown": {
+        "input": 0.15366,
+        "reasoning": 0.0154,
+        "answer": 0.00413
+      },
+      "outTokens": {
+        "reasoning": 77008,
+        "answer": 20626,
+        "total": 97634
+      },
+      "subscores": {
+        "frontierCode": 0,
+        "terminalBench": 0,
+        "hleDiamond": 3.8,
+        "critptAgentic": 0,
+        "science": 0,
+        "omniscience": 6.63,
+        "hallucination": 8.43
+      }
     },
     {
       "id": "583f98fb-c4b8-4df3-8d40-60ac0ed69882",
@@ -314,7 +929,38 @@
         "color": "#0089f4"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-08-10",
+      "family": {
+        "slug": "muse-glimmer",
+        "name": "Muse Glimmer"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 278.71,
+      "costBreakdown": {
+        "input": 0.14302,
+        "reasoning": 0.01945,
+        "answer": 0.01574
+      },
+      "outTokens": {
+        "reasoning": 14409,
+        "answer": 11658,
+        "total": 26067
+      },
+      "subscores": {
+        "frontierCode": 1.47,
+        "terminalBench": 0.51,
+        "hleDiamond": 9.1,
+        "critptAgentic": 7,
+        "science": 0,
+        "omniscience": 27.97,
+        "hallucination": 83.57
+      }
     },
     {
       "id": "a77965fb-2117-4e2c-bd8b-80b5579a7e7e",
@@ -328,7 +974,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-17",
+      "family": {
+        "slug": "gpt-6-2-sol",
+        "name": "GPT-6.2 Sol"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 84.71,
+      "costBreakdown": {
+        "input": 0.12379,
+        "reasoning": 0.0131,
+        "answer": 0.0467
+      },
+      "outTokens": {
+        "reasoning": 1310,
+        "answer": 4670,
+        "total": 5980
+      },
+      "subscores": {
+        "frontierCode": 31.37,
+        "terminalBench": 37.88,
+        "hleDiamond": 34.5,
+        "critptAgentic": 58,
+        "science": 37.14,
+        "omniscience": 54.63,
+        "hallucination": 65.83
+      }
     },
     {
       "id": "598190f8-dc9c-4fea-a7ea-4b81c402ab18",
@@ -342,7 +1019,38 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-03-03",
+      "family": {
+        "slug": "gemini-3-1-flash-lite",
+        "name": "Gemini 3.1 Flash-Lite"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 46.41,
+      "costBreakdown": {
+        "input": 0.17059,
+        "reasoning": 0.01612,
+        "answer": 0.00775
+      },
+      "outTokens": {
+        "reasoning": 10746,
+        "answer": 5165,
+        "total": 15911
+      },
+      "subscores": {
+        "frontierCode": 0.63,
+        "terminalBench": 0.51,
+        "hleDiamond": 9,
+        "critptAgentic": 3,
+        "science": 0,
+        "omniscience": 31.7,
+        "hallucination": 81.75
+      }
     },
     {
       "id": "7261504e-503c-4a66-a9d3-a3272cdf9ad6",
@@ -356,7 +1064,33 @@
         "color": "#676767"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-07-30",
+      "family": {
+        "slug": "inkling-small",
+        "name": "Inkling Small"
+      },
+      "timeSec": 403.7,
+      "costBreakdown": {
+        "input": 0.1591,
+        "reasoning": 0.03016,
+        "answer": 0.0139
+      },
+      "outTokens": {
+        "reasoning": 25134,
+        "answer": 11584,
+        "total": 36718
+      },
+      "subscores": {
+        "frontierCode": 4.77,
+        "terminalBench": 1.01,
+        "hleDiamond": 12.1,
+        "critptAgentic": 18.5,
+        "science": 0,
+        "omniscience": 31.8,
+        "hallucination": 60.51
+      }
     },
     {
       "id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
@@ -370,7 +1104,33 @@
         "color": "#1f1f1f"
       },
       "isReasoning": false,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-26",
+      "family": {
+        "slug": "gpt-6-1-terra",
+        "name": "GPT-6.1 Terra"
+      },
+      "timeSec": 149.57,
+      "costBreakdown": {
+        "input": 0.17846,
+        "reasoning": 0,
+        "answer": 0.04744
+      },
+      "outTokens": {
+        "reasoning": 0,
+        "answer": 9488,
+        "total": 9488
+      },
+      "subscores": {
+        "frontierCode": 33.35,
+        "terminalBench": 26.77,
+        "hleDiamond": 14.5,
+        "critptAgentic": 33.5,
+        "science": 24.29,
+        "omniscience": 40.73,
+        "hallucination": 77.11
+      }
     },
     {
       "id": "41b5bf5e-daf6-42d9-b8d1-60e340a3028d",
@@ -384,7 +1144,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-07",
+      "family": {
+        "slug": "claude-haiku-5-5",
+        "name": "Claude Haiku 5.5"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 577.05,
+      "costBreakdown": {
+        "input": 0.18027,
+        "reasoning": 0.04863,
+        "answer": 0.01946
+      },
+      "outTokens": {
+        "reasoning": 97261,
+        "answer": 38916,
+        "total": 136177
+      },
+      "subscores": {
+        "frontierCode": 29.93,
+        "terminalBench": 29.29,
+        "hleDiamond": 28.8,
+        "critptAgentic": 47.5,
+        "science": 18.1,
+        "omniscience": 33.77,
+        "hallucination": 39.15
+      }
     },
     {
       "id": "24d8fdfe-6241-424e-b7b7-1b6efb06e4fb",
@@ -398,7 +1189,33 @@
         "color": "#ff6900"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-09-21",
+      "family": {
+        "slug": "mimo-v2-6-pro",
+        "name": "MiMo-V2.6-Pro"
+      },
+      "timeSec": 2077.41,
+      "costBreakdown": {
+        "input": 0.15185,
+        "reasoning": 0.07506,
+        "answer": 0.03028
+      },
+      "outTokens": {
+        "reasoning": 86273,
+        "answer": 34800,
+        "total": 121073
+      },
+      "subscores": {
+        "frontierCode": 23.97,
+        "terminalBench": 34.85,
+        "hleDiamond": 15.2,
+        "critptAgentic": 34,
+        "science": 5.71,
+        "omniscience": 34.8,
+        "hallucination": 60.22
+      }
     },
     {
       "id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
@@ -412,7 +1229,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-26",
+      "family": {
+        "slug": "gpt-6-1-terra",
+        "name": "GPT-6.1 Terra"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 253.44,
+      "costBreakdown": {
+        "input": 0.17555,
+        "reasoning": 0.03809,
+        "answer": 0.04564
+      },
+      "outTokens": {
+        "reasoning": 7618,
+        "answer": 9129,
+        "total": 16746
+      },
+      "subscores": {
+        "frontierCode": 37.46,
+        "terminalBench": 41.92,
+        "hleDiamond": 35.4,
+        "critptAgentic": 61.5,
+        "science": 33.33,
+        "omniscience": 47.27,
+        "hallucination": 36.98
+      }
     },
     {
       "id": "69468cce-7b5c-414a-b498-41df4c34df85",
@@ -426,7 +1274,33 @@
         "color": "#195428"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-10-16",
+      "family": {
+        "slug": "reflection-beam",
+        "name": "Beam 1.0"
+      },
+      "timeSec": 131.05,
+      "costBreakdown": {
+        "input": 0.24332,
+        "reasoning": 0.02632,
+        "answer": 0.01477
+      },
+      "outTokens": {
+        "reasoning": 21933,
+        "answer": 12309,
+        "total": 34242
+      },
+      "subscores": {
+        "frontierCode": 5.53,
+        "terminalBench": 3.03,
+        "hleDiamond": 12.8,
+        "critptAgentic": 26.5,
+        "science": 0.48,
+        "omniscience": 30.73,
+        "hallucination": 41
+      }
     },
     {
       "id": "88c68c50-03c1-458a-9292-bd398c27adc5",
@@ -440,7 +1314,38 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-12",
+      "family": {
+        "slug": "gemini-4-hydrogen",
+        "name": "Gemini 4 Hydrogen"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 89.18,
+      "costBreakdown": {
+        "input": 0.18667,
+        "reasoning": 0.04577,
+        "answer": 0.05978
+      },
+      "outTokens": {
+        "reasoning": 6103,
+        "answer": 7971,
+        "total": 14074
+      },
+      "subscores": {
+        "frontierCode": 9.29,
+        "terminalBench": 6.57,
+        "hleDiamond": 32.2,
+        "critptAgentic": 48,
+        "science": 2.38,
+        "omniscience": 46.23,
+        "hallucination": 18.85
+      }
     },
     {
       "id": "29976311-665a-4b2f-ac72-557c33e0758e",
@@ -454,7 +1359,33 @@
         "color": "#76b900"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-08-11",
+      "family": {
+        "slug": "nemotron-3-5-lightning",
+        "name": "Nemotron 3.5 Lightning"
+      },
+      "timeSec": 227.99,
+      "costBreakdown": {
+        "input": 0.30145,
+        "reasoning": 0.00612,
+        "answer": 0.00688
+      },
+      "outTokens": {
+        "reasoning": 30602,
+        "answer": 34424,
+        "total": 65026
+      },
+      "subscores": {
+        "frontierCode": 0,
+        "terminalBench": 0.51,
+        "hleDiamond": 4.5,
+        "critptAgentic": 1.5,
+        "science": 0,
+        "omniscience": 14.73,
+        "hallucination": 35.69
+      }
     },
     {
       "id": "426d24c8-49ae-482a-b4a8-20f1c53f21c1",
@@ -468,7 +1399,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-07-09",
+      "family": {
+        "slug": "gpt-5-6-luna",
+        "name": "GPT-5.6 Luna"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 585.12,
+      "costBreakdown": {
+        "input": 0.26046,
+        "reasoning": 0.04537,
+        "answer": 0.02543
+      },
+      "outTokens": {
+        "reasoning": 37811,
+        "answer": 21192,
+        "total": 59003
+      },
+      "subscores": {
+        "frontierCode": 17.57,
+        "terminalBench": 11.62,
+        "hleDiamond": 20.9,
+        "critptAgentic": 30.5,
+        "science": 3.33,
+        "omniscience": 39.13,
+        "hallucination": 92.33
+      }
     },
     {
       "id": "f0083258-8646-45b8-8082-7aaf6c2ea82a",
@@ -482,7 +1444,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2025-08-05",
+      "family": {
+        "slug": "gpt-oss-120b",
+        "name": "gpt-oss-120b"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 388.15,
+      "costBreakdown": {
+        "input": 0.30127,
+        "reasoning": 0.02922,
+        "answer": 0.01485
+      },
+      "outTokens": {
+        "reasoning": 48703,
+        "answer": 24757,
+        "total": 73460
+      },
+      "subscores": {
+        "frontierCode": 0,
+        "terminalBench": 0,
+        "hleDiamond": 3.8,
+        "critptAgentic": 4,
+        "science": 0,
+        "omniscience": 21.67,
+        "hallucination": 86.94
+      }
     },
     {
       "id": "a2e51d62-ea4e-4f15-8be0-be9dc1fb489d",
@@ -496,7 +1489,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-29",
+      "family": {
+        "slug": "gpt-6-1-sol",
+        "name": "GPT-6.1 Sol"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 257.17,
+      "costBreakdown": {
+        "input": 0.22421,
+        "reasoning": 0.04805,
+        "answer": 0.08714
+      },
+      "outTokens": {
+        "reasoning": 4805,
+        "answer": 8714,
+        "total": 13518
+      },
+      "subscores": {
+        "frontierCode": 33.39,
+        "terminalBench": 47.98,
+        "hleDiamond": 46,
+        "critptAgentic": 67,
+        "science": 37.14,
+        "omniscience": 59.6,
+        "hallucination": 48.1
+      }
     },
     {
       "id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
@@ -510,7 +1534,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-26",
+      "family": {
+        "slug": "gpt-6-1-terra",
+        "name": "GPT-6.1 Terra"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 394,
+      "costBreakdown": {
+        "input": 0.26969,
+        "reasoning": 0.07097,
+        "answer": 0.06003
+      },
+      "outTokens": {
+        "reasoning": 14193,
+        "answer": 12006,
+        "total": 26200
+      },
+      "subscores": {
+        "frontierCode": 36.86,
+        "terminalBench": 46.46,
+        "hleDiamond": 42.3,
+        "critptAgentic": 60.5,
+        "science": 41.9,
+        "omniscience": 48.03,
+        "hallucination": 36.75
+      }
     },
     {
       "id": "82b37079-56d9-4451-8a1a-22b0a921f4f8",
@@ -524,7 +1579,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-17",
+      "family": {
+        "slug": "gpt-6-2-sol",
+        "name": "GPT-6.2 Sol"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 183.52,
+      "costBreakdown": {
+        "input": 0.26955,
+        "reasoning": 0.04402,
+        "answer": 0.09249
+      },
+      "outTokens": {
+        "reasoning": 4402,
+        "answer": 9249,
+        "total": 13651
+      },
+      "subscores": {
+        "frontierCode": 41.4,
+        "terminalBench": 56.06,
+        "hleDiamond": 50.7,
+        "critptAgentic": 64,
+        "science": 60.48,
+        "omniscience": 59.17,
+        "hallucination": 61.14
+      }
     },
     {
       "id": "7d064a11-6e78-4030-b535-cdf940615041",
@@ -538,7 +1624,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-07",
+      "family": {
+        "slug": "claude-haiku-5-5",
+        "name": "Claude Haiku 5.5"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 884.46,
+      "costBreakdown": {
+        "input": 0.29802,
+        "reasoning": 0.08641,
+        "answer": 0.02658
+      },
+      "outTokens": {
+        "reasoning": 172814,
+        "answer": 53151,
+        "total": 225966
+      },
+      "subscores": {
+        "frontierCode": 34.93,
+        "terminalBench": 32.83,
+        "hleDiamond": 29.6,
+        "critptAgentic": 43.5,
+        "science": 20,
+        "omniscience": 34.67,
+        "hallucination": 34.23
+      }
     },
     {
       "id": "5720fd2f-873a-4765-8640-a153b38bd64d",
@@ -552,7 +1669,33 @@
         "color": "#2243e6"
       },
       "isReasoning": false,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-10-17",
+      "family": {
+        "slug": "deepseek-v4-1-flash-1017",
+        "name": "DeepSeek V4.1 Flash 1017"
+      },
+      "timeSec": 430.77,
+      "costBreakdown": {
+        "input": 0.34699,
+        "reasoning": 0,
+        "answer": 0.07843
+      },
+      "outTokens": {
+        "reasoning": 0,
+        "answer": 65358,
+        "total": 65358
+      },
+      "subscores": {
+        "frontierCode": 6.1,
+        "terminalBench": 9.09,
+        "hleDiamond": 7.1,
+        "critptAgentic": 1,
+        "science": 2.38,
+        "omniscience": 21.87,
+        "hallucination": 25.3
+      }
     },
     {
       "id": "c3b66080-fdcb-48e4-8ade-6baf77921c7c",
@@ -566,7 +1709,38 @@
         "color": "#2243e6"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-10-17",
+      "family": {
+        "slug": "deepseek-v4-1-flash-1017",
+        "name": "DeepSeek V4.1 Flash 1017"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 625.44,
+      "costBreakdown": {
+        "input": 0.32368,
+        "reasoning": 0.08982,
+        "answer": 0.0427
+      },
+      "outTokens": {
+        "reasoning": 74847,
+        "answer": 35583,
+        "total": 110430
+      },
+      "subscores": {
+        "frontierCode": 16.84,
+        "terminalBench": 28.79,
+        "hleDiamond": 20.8,
+        "critptAgentic": 27.5,
+        "science": 10.48,
+        "omniscience": 38.93,
+        "hallucination": 61.24
+      }
     },
     {
       "id": "e2c0623e-c855-4a61-bb66-be1f1ed43234",
@@ -580,7 +1754,38 @@
         "color": "#76b900"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-10-15",
+      "family": {
+        "slug": "nemotron-3-5-super-vl",
+        "name": "Nemotron 3.5 Super VL"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 266.2,
+      "costBreakdown": {
+        "input": 0.44109,
+        "reasoning": 0.02807,
+        "answer": 0.01264
+      },
+      "outTokens": {
+        "reasoning": 56150,
+        "answer": 25285,
+        "total": 81435
+      },
+      "subscores": {
+        "frontierCode": 6.11,
+        "terminalBench": 0,
+        "hleDiamond": 8.8,
+        "critptAgentic": 13.5,
+        "science": 0,
+        "omniscience": 21.17,
+        "hallucination": 30.49
+      }
     },
     {
       "id": "d49c8680-e29b-400e-9511-824f7ddebe07",
@@ -594,7 +1799,38 @@
         "color": "#EB3568"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-10-19",
+      "family": {
+        "slug": "minimax-m3-1-flash",
+        "name": "MiniMax-M3.1-Flash"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1050.42,
+      "costBreakdown": {
+        "input": 0.40806,
+        "reasoning": 0.06176,
+        "answer": 0.02114
+      },
+      "outTokens": {
+        "reasoning": 102941,
+        "answer": 35236,
+        "total": 138176
+      },
+      "subscores": {
+        "frontierCode": 20.82,
+        "terminalBench": 25.76,
+        "hleDiamond": 28.1,
+        "critptAgentic": 32.5,
+        "science": 3.33,
+        "omniscience": 45.07,
+        "hallucination": 93.69
+      }
     },
     {
       "id": "bbc2ffea-cf6b-43be-8c41-1769347e234d",
@@ -608,7 +1844,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-28",
+      "family": {
+        "slug": "claude-sonnet-5-5",
+        "name": "Claude Sonnet 5.5"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 154.3,
+      "costBreakdown": {
+        "input": 0.30278,
+        "reasoning": 0.08559,
+        "answer": 0.12298
+      },
+      "outTokens": {
+        "reasoning": 8559,
+        "answer": 12298,
+        "total": 20856
+      },
+      "subscores": {
+        "frontierCode": 7.13,
+        "terminalBench": 20.71,
+        "hleDiamond": 20.6,
+        "critptAgentic": 26,
+        "science": 10.48,
+        "omniscience": 46,
+        "hallucination": 47.65
+      }
     },
     {
       "id": "a6340098-d7ae-462d-b372-0a0a67fc44b4",
@@ -622,7 +1889,33 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2025-10-15",
+      "family": {
+        "slug": "claude-4-5-haiku",
+        "name": "Claude 4.5 Haiku"
+      },
+      "timeSec": 225.76,
+      "costBreakdown": {
+        "input": 0.40549,
+        "reasoning": 0.02201,
+        "answer": 0.10428
+      },
+      "outTokens": {
+        "reasoning": 4401,
+        "answer": 20857,
+        "total": 25258
+      },
+      "subscores": {
+        "frontierCode": 0.44,
+        "terminalBench": 0,
+        "hleDiamond": 4.5,
+        "critptAgentic": 1.5,
+        "science": 0,
+        "omniscience": 17.53,
+        "hallucination": 23.44
+      }
     },
     {
       "id": "cd85e412-c43f-4535-bf8e-5ba113d97ca3",
@@ -636,7 +1929,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-17",
+      "family": {
+        "slug": "gpt-6-2-sol",
+        "name": "GPT-6.2 Sol"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 253.64,
+      "costBreakdown": {
+        "input": 0.36204,
+        "reasoning": 0.08116,
+        "answer": 0.12044
+      },
+      "outTokens": {
+        "reasoning": 8116,
+        "answer": 12044,
+        "total": 20160
+      },
+      "subscores": {
+        "frontierCode": 40.22,
+        "terminalBench": 58.59,
+        "hleDiamond": 58.3,
+        "critptAgentic": 61.5,
+        "science": 67.62,
+        "omniscience": 61.43,
+        "hallucination": 59.98
+      }
     },
     {
       "id": "9ac3908c-9eb2-44db-8c01-3ec7da6fc2ae",
@@ -650,7 +1974,33 @@
         "color": "#ff7018"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-08-26",
+      "family": {
+        "slug": "qwen3-8-flash-next",
+        "name": "Qwen3.8-Flash-Next"
+      },
+      "timeSec": 1767.62,
+      "costBreakdown": {
+        "input": 0.49996,
+        "reasoning": 0.04574,
+        "answer": 0.02368
+      },
+      "outTokens": {
+        "reasoning": 97313,
+        "answer": 50394,
+        "total": 147706
+      },
+      "subscores": {
+        "frontierCode": 27.14,
+        "terminalBench": 25.25,
+        "hleDiamond": 16.3,
+        "critptAgentic": 24.5,
+        "science": 7.14,
+        "omniscience": 23.53,
+        "hallucination": 46.77
+      }
     },
     {
       "id": "d4dd600d-0d8e-4d6e-ad18-0cb8f7d6c4d0",
@@ -664,7 +2014,33 @@
         "color": "#1521a9"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-07",
+      "family": {
+        "slug": "agnes-2-5-pro-theta",
+        "name": "Agnes 2.5 Pro Theta"
+      },
+      "timeSec": 1368.26,
+      "costBreakdown": {
+        "input": 0.49131,
+        "reasoning": 0.06885,
+        "answer": 0.01451
+      },
+      "outTokens": {
+        "reasoning": 229490,
+        "answer": 48378,
+        "total": 277868
+      },
+      "subscores": {
+        "frontierCode": 16.55,
+        "terminalBench": 10.1,
+        "hleDiamond": 16.8,
+        "critptAgentic": 26,
+        "science": 3.81,
+        "omniscience": 21.33,
+        "hallucination": 41.4
+      }
     },
     {
       "id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
@@ -678,7 +2054,38 @@
         "color": "#1c7ff8"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-08-26",
+      "family": {
+        "slug": "glm-5-3-flash",
+        "name": "GLM-5.3-Flash"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 2316.39,
+      "costBreakdown": {
+        "input": 0.51621,
+        "reasoning": 0.05129,
+        "answer": 0.01581
+      },
+      "outTokens": {
+        "reasoning": 102585,
+        "answer": 31620,
+        "total": 134205
+      },
+      "subscores": {
+        "frontierCode": 17.61,
+        "terminalBench": 32.83,
+        "hleDiamond": 18.2,
+        "critptAgentic": 24.5,
+        "science": 4.76,
+        "omniscience": 28.2,
+        "hallucination": 38.35
+      }
     },
     {
       "id": "3b84fee3-b70a-41bc-819e-5fbdef9a0042",
@@ -692,7 +2099,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-29",
+      "family": {
+        "slug": "gpt-6-1-sol",
+        "name": "GPT-6.1 Sol"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 444.88,
+      "costBreakdown": {
+        "input": 0.36492,
+        "reasoning": 0.10135,
+        "answer": 0.12471
+      },
+      "outTokens": {
+        "reasoning": 10135,
+        "answer": 12471,
+        "total": 22606
+      },
+      "subscores": {
+        "frontierCode": 36.74,
+        "terminalBench": 51.52,
+        "hleDiamond": 51.9,
+        "critptAgentic": 68.5,
+        "science": 46.19,
+        "omniscience": 60.4,
+        "hallucination": 48.99
+      }
     },
     {
       "id": "f151fd0b-2139-40cf-a3ec-995e8cedc592",
@@ -706,7 +2144,38 @@
         "color": "#2243e6"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-10-17",
+      "family": {
+        "slug": "deepseek-v4-1-flash-1017",
+        "name": "DeepSeek V4.1 Flash 1017"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 792.51,
+      "costBreakdown": {
+        "input": 0.43535,
+        "reasoning": 0.10874,
+        "answer": 0.05802
+      },
+      "outTokens": {
+        "reasoning": 90615,
+        "answer": 48347,
+        "total": 138962
+      },
+      "subscores": {
+        "frontierCode": 28.47,
+        "terminalBench": 33.84,
+        "hleDiamond": 25.3,
+        "critptAgentic": 25,
+        "science": 12.86,
+        "omniscience": 39.6,
+        "hallucination": 64.07
+      }
     },
     {
       "id": "ba83cb41-370c-4331-9e7e-3074d6cc66c4",
@@ -720,7 +2189,37 @@
         "color": "#676767"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-07-15",
+      "family": {
+        "slug": "inkling",
+        "name": "Inkling"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "costBreakdown": {
+        "input": 0.52033,
+        "reasoning": 0.05636,
+        "answer": 0.04027
+      },
+      "outTokens": {
+        "reasoning": 13917,
+        "answer": 9942,
+        "total": 23859
+      },
+      "subscores": {
+        "frontierCode": 2.83,
+        "terminalBench": 0.51,
+        "hleDiamond": 9.8,
+        "critptAgentic": 11,
+        "science": 0,
+        "omniscience": 38.23,
+        "hallucination": 70.32
+      }
     },
     {
       "id": "27c326a6-ec9b-415f-a29e-b1f4927484dc",
@@ -734,7 +2233,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-17",
+      "family": {
+        "slug": "gpt-6-2-sol",
+        "name": "GPT-6.2 Sol"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 296.78,
+      "costBreakdown": {
+        "input": 0.40474,
+        "reasoning": 0.11055,
+        "answer": 0.13268
+      },
+      "outTokens": {
+        "reasoning": 11055,
+        "answer": 13268,
+        "total": 24323
+      },
+      "subscores": {
+        "frontierCode": 42.75,
+        "terminalBench": 56.06,
+        "hleDiamond": 61.8,
+        "critptAgentic": 62.5,
+        "science": 66.67,
+        "omniscience": 60.7,
+        "hallucination": 56.23
+      }
     },
     {
       "id": "cc93ecfd-845e-455d-9642-6799d7133b7e",
@@ -748,7 +2278,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-17",
+      "family": {
+        "slug": "gpt-6-2-astra",
+        "name": "GPT-6.2 Astra"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 92.65,
+      "costBreakdown": {
+        "input": 0.45305,
+        "reasoning": 0.05903,
+        "answer": 0.14962
+      },
+      "outTokens": {
+        "reasoning": 1476,
+        "answer": 3741,
+        "total": 5216
+      },
+      "subscores": {
+        "frontierCode": 32.66,
+        "terminalBench": 51.01,
+        "hleDiamond": 47.7,
+        "critptAgentic": 61,
+        "science": 50.95,
+        "omniscience": 60.63,
+        "hallucination": 55.8
+      }
     },
     {
       "id": "093b9df2-ebee-4309-943f-5a7e88360adf",
@@ -762,7 +2323,38 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-07-21",
+      "family": {
+        "slug": "gemini-3-5-flash-lite",
+        "name": "Gemini 3.5 Flash-Lite"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 92.15,
+      "costBreakdown": {
+        "input": 0.61715,
+        "reasoning": 0.04191,
+        "answer": 0.03384
+      },
+      "outTokens": {
+        "reasoning": 16765,
+        "answer": 13536,
+        "total": 30301
+      },
+      "subscores": {
+        "frontierCode": 6.03,
+        "terminalBench": 1.01,
+        "hleDiamond": 9.9,
+        "critptAgentic": 3.5,
+        "science": 0,
+        "omniscience": 26.5,
+        "hallucination": 26.71
+      }
     },
     {
       "id": "092a3b0e-c5c8-45dc-bf1b-53673c8ff352",
@@ -776,7 +2368,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-29",
+      "family": {
+        "slug": "gpt-6-1-sol",
+        "name": "GPT-6.1 Sol"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 561.45,
+      "costBreakdown": {
+        "input": 0.46158,
+        "reasoning": 0.15527,
+        "answer": 0.14715
+      },
+      "outTokens": {
+        "reasoning": 15527,
+        "answer": 14715,
+        "total": 30241
+      },
+      "subscores": {
+        "frontierCode": 38.52,
+        "terminalBench": 54.04,
+        "hleDiamond": 55.8,
+        "critptAgentic": 69.5,
+        "science": 50.48,
+        "omniscience": 61.07,
+        "hallucination": 48.03
+      }
     },
     {
       "id": "08242385-ee91-4de6-be7f-271a6d9780ce",
@@ -790,7 +2413,32 @@
         "color": "#0FD9D2"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-08-30",
+      "family": {
+        "slug": "apodex-1-1",
+        "name": "Apodex 1.1"
+      },
+      "costBreakdown": {
+        "input": 0.4176,
+        "reasoning": 0.22857,
+        "answer": 0.11806
+      },
+      "outTokens": {
+        "reasoning": 76192,
+        "answer": 39354,
+        "total": 115546
+      },
+      "subscores": {
+        "frontierCode": 6.93,
+        "terminalBench": 0,
+        "hleDiamond": 11.6,
+        "critptAgentic": 17,
+        "science": 0.48,
+        "omniscience": 28.17,
+        "hallucination": 78
+      }
     },
     {
       "id": "042e8a37-fcd0-40f4-8f41-99215fb68eda",
@@ -804,7 +2452,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-28",
+      "family": {
+        "slug": "claude-sonnet-5-5",
+        "name": "Claude Sonnet 5.5"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 224.86,
+      "costBreakdown": {
+        "input": 0.4732,
+        "reasoning": 0.14369,
+        "answer": 0.16377
+      },
+      "outTokens": {
+        "reasoning": 14369,
+        "answer": 16377,
+        "total": 30746
+      },
+      "subscores": {
+        "frontierCode": 10.97,
+        "terminalBench": 29.8,
+        "hleDiamond": 23.8,
+        "critptAgentic": 33.5,
+        "science": 16.19,
+        "omniscience": 45.77,
+        "hallucination": 50.03
+      }
     },
     {
       "id": "f0537484-af30-4a8a-bf34-368c552e5cfd",
@@ -818,7 +2497,38 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-12",
+      "family": {
+        "slug": "gemini-4-hydrogen",
+        "name": "Gemini 4 Hydrogen"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 241.48,
+      "costBreakdown": {
+        "input": 0.50284,
+        "reasoning": 0.15442,
+        "answer": 0.14072
+      },
+      "outTokens": {
+        "reasoning": 20590,
+        "answer": 18763,
+        "total": 39353
+      },
+      "subscores": {
+        "frontierCode": 31.52,
+        "terminalBench": 29.29,
+        "hleDiamond": 47.7,
+        "critptAgentic": 61,
+        "science": 15.24,
+        "omniscience": 48.33,
+        "hallucination": 12.45
+      }
     },
     {
       "id": "e94c7595-a320-4c88-8f07-d9fd50fc4595",
@@ -832,7 +2542,37 @@
         "color": "#2243e6"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-08-13",
+      "family": {
+        "slug": "deepseek-v4-pro",
+        "name": "DeepSeek V4 Pro 0813"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "costBreakdown": {
+        "input": 0.57009,
+        "reasoning": 0.17809,
+        "answer": 0.10036
+      },
+      "outTokens": {
+        "reasoning": 44972,
+        "answer": 25342,
+        "total": 70314
+      },
+      "subscores": {
+        "frontierCode": 16.67,
+        "terminalBench": 6.06,
+        "hleDiamond": 20.5,
+        "critptAgentic": 28.5,
+        "science": 1.9,
+        "omniscience": 45.13,
+        "hallucination": 94.11
+      }
     },
     {
       "id": "15c4cbd7-b9aa-42c8-9ce5-5abbde0e6963",
@@ -846,7 +2586,33 @@
         "color": "#7c59f5"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-08-06",
+      "family": {
+        "slug": "solar-pro-4",
+        "name": "Solar Pro 4"
+      },
+      "timeSec": 4289.4,
+      "costBreakdown": {
+        "input": 0.58199,
+        "reasoning": 0.31594,
+        "answer": 0.0578
+      },
+      "outTokens": {
+        "reasoning": 263282,
+        "answer": 48171,
+        "total": 311453
+      },
+      "subscores": {
+        "frontierCode": 4.08,
+        "terminalBench": 0,
+        "hleDiamond": 4.7,
+        "critptAgentic": 18,
+        "science": 0,
+        "omniscience": 18.43,
+        "hallucination": 20.92
+      }
     },
     {
       "id": "b0c462cf-f2d0-4126-9434-28db9502219f",
@@ -860,7 +2626,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-26",
+      "family": {
+        "slug": "gpt-6-1-terra",
+        "name": "GPT-6.1 Terra"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 859.94,
+      "costBreakdown": {
+        "input": 0.66169,
+        "reasoning": 0.19681,
+        "answer": 0.10261
+      },
+      "outTokens": {
+        "reasoning": 39362,
+        "answer": 20521,
+        "total": 59883
+      },
+      "subscores": {
+        "frontierCode": 42.32,
+        "terminalBench": 55.56,
+        "hleDiamond": 47.3,
+        "critptAgentic": 68,
+        "science": 57.62,
+        "omniscience": 47.63,
+        "hallucination": 34.5
+      }
     },
     {
       "id": "4416ca93-fde6-4b7b-abbc-3a6be109cc3d",
@@ -874,7 +2671,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-22",
+      "family": {
+        "slug": "claude-opus-5-5",
+        "name": "Claude Opus 5.5"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 181.04,
+      "costBreakdown": {
+        "input": 0.59428,
+        "reasoning": 0.13734,
+        "answer": 0.24392
+      },
+      "outTokens": {
+        "reasoning": 6864,
+        "answer": 12196,
+        "total": 19060
+      },
+      "subscores": {
+        "frontierCode": 15.84,
+        "terminalBench": 31.31,
+        "hleDiamond": 41.7,
+        "critptAgentic": 36,
+        "science": 24.29,
+        "omniscience": 63.33,
+        "hallucination": 66.27
+      }
     },
     {
       "id": "d4f5b250-be37-4801-85e6-32fda4179337",
@@ -888,7 +2716,33 @@
         "color": "#2243e6"
       },
       "isReasoning": false,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-08-13",
+      "family": {
+        "slug": "deepseek-v4-pro",
+        "name": "DeepSeek V4 Pro 0813"
+      },
+      "timeSec": 840.3,
+      "costBreakdown": {
+        "input": 0.6935,
+        "reasoning": 0,
+        "answer": 0.28349
+      },
+      "outTokens": {
+        "reasoning": 0,
+        "answer": 71588,
+        "total": 71588
+      },
+      "subscores": {
+        "frontierCode": 10.31,
+        "terminalBench": 1.52,
+        "hleDiamond": 7.2,
+        "critptAgentic": 8.5,
+        "science": 0,
+        "omniscience": 38.6,
+        "hallucination": 93.92
+      }
     },
     {
       "id": "a1a84b18-e8c9-48fb-8e04-6003bd9f6ff4",
@@ -902,7 +2756,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-17",
+      "family": {
+        "slug": "gpt-6-2-sol",
+        "name": "GPT-6.2 Sol"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 474.47,
+      "costBreakdown": {
+        "input": 0.61078,
+        "reasoning": 0.228,
+        "answer": 0.17561
+      },
+      "outTokens": {
+        "reasoning": 22800,
+        "answer": 17561,
+        "total": 40360
+      },
+      "subscores": {
+        "frontierCode": 44.38,
+        "terminalBench": 60.1,
+        "hleDiamond": 64,
+        "critptAgentic": 62.5,
+        "science": 67.62,
+        "omniscience": 61.63,
+        "hallucination": 55.43
+      }
     },
     {
       "id": "d274918e-ea82-4951-8b37-8ed9ab898dbc",
@@ -916,7 +2801,33 @@
         "color": "#5CB9FF"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-03",
+      "family": {
+        "slug": "tencent-hy4",
+        "name": "Tencent Hy4"
+      },
+      "timeSec": 812.99,
+      "costBreakdown": {
+        "input": 0.83588,
+        "reasoning": 0.13652,
+        "answer": 0.0587
+      },
+      "outTokens": {
+        "reasoning": 54586,
+        "answer": 23472,
+        "total": 78058
+      },
+      "subscores": {
+        "frontierCode": 31.45,
+        "terminalBench": 37.37,
+        "hleDiamond": 32.7,
+        "critptAgentic": 39,
+        "science": 12.86,
+        "omniscience": 49.97,
+        "hallucination": 89.07
+      }
     },
     {
       "id": "dd059b25-d82a-4ead-82a4-4adceaaec48b",
@@ -930,7 +2841,38 @@
         "color": "#f32e02"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-04-29",
+      "family": {
+        "slug": "mistral-medium-3-5",
+        "name": "Mistral Medium 3.5"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 270.2,
+      "costBreakdown": {
+        "input": 0.74263,
+        "reasoning": 0.13374,
+        "answer": 0.16272
+      },
+      "outTokens": {
+        "reasoning": 17832,
+        "answer": 21696,
+        "total": 39528
+      },
+      "subscores": {
+        "frontierCode": 1.77,
+        "terminalBench": 0,
+        "hleDiamond": 4.7,
+        "critptAgentic": 0.5,
+        "science": 0,
+        "omniscience": 23.03,
+        "hallucination": 80.21
+      }
     },
     {
       "id": "e2ed7885-d46b-4da7-a873-f12f88af0081",
@@ -944,7 +2886,33 @@
         "color": "#676767"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-11-05",
+      "family": {
+        "slug": "inkling-2-small",
+        "name": "Inkling 2 Small"
+      },
+      "timeSec": 1276.22,
+      "costBreakdown": {
+        "input": 1.02865,
+        "reasoning": 0.08829,
+        "answer": 0.06148
+      },
+      "outTokens": {
+        "reasoning": 88293,
+        "answer": 61485,
+        "total": 149778
+      },
+      "subscores": {
+        "frontierCode": 25.35,
+        "terminalBench": 13.13,
+        "hleDiamond": 28.7,
+        "critptAgentic": 35,
+        "science": 5.71,
+        "omniscience": 33.77,
+        "hallucination": 26.67
+      }
     },
     {
       "id": "b25ac058-1e33-4c31-bbc9-a20c3ad0717a",
@@ -958,7 +2926,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-29",
+      "family": {
+        "slug": "gpt-6-1-sol",
+        "name": "GPT-6.1 Sol"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1397.97,
+      "costBreakdown": {
+        "input": 0.59383,
+        "reasoning": 0.49213,
+        "answer": 0.18611
+      },
+      "outTokens": {
+        "reasoning": 49213,
+        "answer": 18611,
+        "total": 67824
+      },
+      "subscores": {
+        "frontierCode": 40.63,
+        "terminalBench": 56.06,
+        "hleDiamond": 58.8,
+        "critptAgentic": 69.5,
+        "science": 58.1,
+        "omniscience": 61.83,
+        "hallucination": 51.88
+      }
     },
     {
       "id": "277f939a-985b-4b37-859d-b3eabc7c0b26",
@@ -972,7 +2971,33 @@
         "color": "#EB3568"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-06-01",
+      "family": {
+        "slug": "minimax-m3",
+        "name": "MiniMax-M3"
+      },
+      "timeSec": 863.45,
+      "costBreakdown": {
+        "input": 1.17536,
+        "reasoning": 0.05529,
+        "answer": 0.05446
+      },
+      "outTokens": {
+        "reasoning": 46071,
+        "answer": 45381,
+        "total": 91452
+      },
+      "subscores": {
+        "frontierCode": 21.9,
+        "terminalBench": 2.02,
+        "hleDiamond": 16,
+        "critptAgentic": 28,
+        "science": 0.48,
+        "omniscience": 44.87,
+        "hallucination": 91.35
+      }
     },
     {
       "id": "0de09623-2b1a-4c8d-86ef-7f5245d4e24b",
@@ -986,7 +3011,38 @@
         "color": "#676767"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-07-15",
+      "family": {
+        "slug": "inkling",
+        "name": "Inkling"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 483.77,
+      "costBreakdown": {
+        "input": 1.14437,
+        "reasoning": 0.13719,
+        "answer": 0.0704
+      },
+      "outTokens": {
+        "reasoning": 33874,
+        "answer": 17382,
+        "total": 51256
+      },
+      "subscores": {
+        "frontierCode": 3.92,
+        "terminalBench": 1.01,
+        "hleDiamond": 10.6,
+        "critptAgentic": 18,
+        "science": 0,
+        "omniscience": 39.3,
+        "hallucination": 67.22
+      }
     },
     {
       "id": "27b24366-fd1a-44b7-8011-e24d7501318d",
@@ -1000,7 +3056,38 @@
         "color": "#f32e02"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-10-29",
+      "family": {
+        "slug": "mistral-large-4",
+        "name": "Mistral Large 4"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 792.13,
+      "costBreakdown": {
+        "input": 1.29382,
+        "reasoning": 0.0751,
+        "answer": 0.04318
+      },
+      "outTokens": {
+        "reasoning": 35760,
+        "answer": 20564,
+        "total": 56324
+      },
+      "subscores": {
+        "frontierCode": 13.32,
+        "terminalBench": 23.23,
+        "hleDiamond": 13.9,
+        "critptAgentic": 22.5,
+        "science": 3.33,
+        "omniscience": 22.5,
+        "hallucination": 24.82
+      }
     },
     {
       "id": "a3f8100d-e38f-408b-b0fa-0085dae18dc1",
@@ -1014,7 +3101,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-03",
+      "family": {
+        "slug": "gpt-6-astra",
+        "name": "GPT-6 Astra"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 198.62,
+      "costBreakdown": {
+        "input": 0.96743,
+        "reasoning": 0.16522,
+        "answer": 0.29107
+      },
+      "outTokens": {
+        "reasoning": 3304,
+        "answer": 5821,
+        "total": 9126
+      },
+      "subscores": {
+        "frontierCode": 26.22,
+        "terminalBench": 41.92,
+        "hleDiamond": 45.1,
+        "critptAgentic": 63,
+        "science": 37.14,
+        "omniscience": 58.6,
+        "hallucination": 44.2
+      }
     },
     {
       "id": "cc1e488b-8ba4-464d-875d-690166b15ad3",
@@ -1028,7 +3146,38 @@
         "color": "#1c7ff8"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-08-18",
+      "family": {
+        "slug": "glm-5-3",
+        "name": "GLM-5.3"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 731.65,
+      "costBreakdown": {
+        "input": 1.34619,
+        "reasoning": 0.15691,
+        "answer": 0.07183
+      },
+      "outTokens": {
+        "reasoning": 35661,
+        "answer": 16324,
+        "total": 51986
+      },
+      "subscores": {
+        "frontierCode": 12.74,
+        "terminalBench": 34.85,
+        "hleDiamond": 17.5,
+        "critptAgentic": 21.5,
+        "science": 3.81,
+        "omniscience": 31.9,
+        "hallucination": 63.24
+      }
     },
     {
       "id": "8cec011f-c959-4726-8668-2ee2409a6bca",
@@ -1042,7 +3191,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-17",
+      "family": {
+        "slug": "gpt-6-2-astra",
+        "name": "GPT-6.2 Astra"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 230.86,
+      "costBreakdown": {
+        "input": 1.09111,
+        "reasoning": 0.2219,
+        "answer": 0.30469
+      },
+      "outTokens": {
+        "reasoning": 5547,
+        "answer": 7617,
+        "total": 13165
+      },
+      "subscores": {
+        "frontierCode": 46.56,
+        "terminalBench": 58.59,
+        "hleDiamond": 56,
+        "critptAgentic": 67.5,
+        "science": 74.76,
+        "omniscience": 64.17,
+        "hallucination": 54.14
+      }
     },
     {
       "id": "268525e2-f873-4178-bc07-e6a0ee1f002d",
@@ -1056,7 +3236,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-28",
+      "family": {
+        "slug": "claude-sonnet-5-5",
+        "name": "Claude Sonnet 5.5"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 420.66,
+      "costBreakdown": {
+        "input": 1.05192,
+        "reasoning": 0.31741,
+        "answer": 0.2668
+      },
+      "outTokens": {
+        "reasoning": 31741,
+        "answer": 26680,
+        "total": 58421
+      },
+      "subscores": {
+        "frontierCode": 25.74,
+        "terminalBench": 43.94,
+        "hleDiamond": 33.8,
+        "critptAgentic": 51.5,
+        "science": 34.29,
+        "omniscience": 50.33,
+        "hallucination": 63.62
+      }
     },
     {
       "id": "83173329-c09a-41f1-a028-a282a5f908d7",
@@ -1070,7 +3281,38 @@
         "color": "#2243e6"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-08-13",
+      "family": {
+        "slug": "deepseek-v4-pro",
+        "name": "DeepSeek V4 Pro 0813"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1015.16,
+      "costBreakdown": {
+        "input": 1.37815,
+        "reasoning": 0.24041,
+        "answer": 0.15058
+      },
+      "outTokens": {
+        "reasoning": 60709,
+        "answer": 38024,
+        "total": 98733
+      },
+      "subscores": {
+        "frontierCode": 17.07,
+        "terminalBench": 14.14,
+        "hleDiamond": 19.5,
+        "critptAgentic": 23.5,
+        "science": 5.71,
+        "omniscience": 45.2,
+        "hallucination": 94.1
+      }
     },
     {
       "id": "dae0262d-26a4-44d1-925a-6f2731cbda6a",
@@ -1084,7 +3326,38 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-12",
+      "family": {
+        "slug": "gemini-4-hydrogen",
+        "name": "Gemini 4 Hydrogen"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 501.45,
+      "costBreakdown": {
+        "input": 1.23598,
+        "reasoning": 0.3563,
+        "answer": 0.28104
+      },
+      "outTokens": {
+        "reasoning": 47507,
+        "answer": 37472,
+        "total": 84978
+      },
+      "subscores": {
+        "frontierCode": 36.33,
+        "terminalBench": 54.04,
+        "hleDiamond": 54.9,
+        "critptAgentic": 61.5,
+        "science": 41.43,
+        "omniscience": 48.17,
+        "hallucination": 8.68
+      }
     },
     {
       "id": "7e30585f-fad7-40df-a8cb-03c1d96df38a",
@@ -1098,7 +3371,38 @@
         "color": "#ff7018"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-08-14",
+      "family": {
+        "slug": "qwen3-8-27b",
+        "name": "Qwen3.8 27B"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 1664.56,
+      "costBreakdown": {
+        "input": 1.66538,
+        "reasoning": 0.15157,
+        "answer": 0.08896
+      },
+      "outTokens": {
+        "reasoning": 50523,
+        "answer": 29653,
+        "total": 80176
+      },
+      "subscores": {
+        "frontierCode": 12.37,
+        "terminalBench": 2.53,
+        "hleDiamond": 6.8,
+        "critptAgentic": 5.5,
+        "science": 0.48,
+        "omniscience": 18.3,
+        "hallucination": 48.67
+      }
     },
     {
       "id": "3661c8fb-caf7-4118-aa18-65b84fea8e44",
@@ -1112,7 +3416,38 @@
         "color": "#0089f4"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-10-15",
+      "family": {
+        "slug": "muse-spark-open",
+        "name": "Muse Spark Open"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 360.73,
+      "costBreakdown": {
+        "input": 1.7353,
+        "reasoning": 0.13726,
+        "answer": 0.14511
+      },
+      "outTokens": {
+        "reasoning": 32296,
+        "answer": 34144,
+        "total": 66440
+      },
+      "subscores": {
+        "frontierCode": 7.6,
+        "terminalBench": 8.08,
+        "hleDiamond": 26.3,
+        "critptAgentic": 29.5,
+        "science": 1.9,
+        "omniscience": 42.03,
+        "hallucination": 28
+      }
     },
     {
       "id": "ea5019ae-b0b7-49a5-80b3-0e584807af0f",
@@ -1126,7 +3461,38 @@
         "color": "#f32e02"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-10-29",
+      "family": {
+        "slug": "mistral-large-4",
+        "name": "Mistral Large 4"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 1168.34,
+      "costBreakdown": {
+        "input": 1.88963,
+        "reasoning": 0.11445,
+        "answer": 0.05765
+      },
+      "outTokens": {
+        "reasoning": 54500,
+        "answer": 27450,
+        "total": 81951
+      },
+      "subscores": {
+        "frontierCode": 14.96,
+        "terminalBench": 24.75,
+        "hleDiamond": 17.3,
+        "critptAgentic": 27,
+        "science": 4.29,
+        "omniscience": 26,
+        "hallucination": 28.2
+      }
     },
     {
       "id": "fe959a7a-944c-4ba8-8e41-349712599b39",
@@ -1140,7 +3506,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-17",
+      "family": {
+        "slug": "gpt-6-2-astra",
+        "name": "GPT-6.2 Astra"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 305.21,
+      "costBreakdown": {
+        "input": 1.36076,
+        "reasoning": 0.31725,
+        "answer": 0.39586
+      },
+      "outTokens": {
+        "reasoning": 7931,
+        "answer": 9897,
+        "total": 17828
+      },
+      "subscores": {
+        "frontierCode": 47.13,
+        "terminalBench": 60.1,
+        "hleDiamond": 65.9,
+        "critptAgentic": 71.5,
+        "science": 75.24,
+        "omniscience": 66.33,
+        "hallucination": 58.12
+      }
     },
     {
       "id": "6657d7de-a2a9-40bc-a32f-86e80ad63698",
@@ -1154,7 +3551,38 @@
         "color": "#ff7018"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-08-14",
+      "family": {
+        "slug": "qwen3-8-27b",
+        "name": "Qwen3.8 27B"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 1864.28,
+      "costBreakdown": {
+        "input": 1.90078,
+        "reasoning": 0.1716,
+        "answer": 0.08762
+      },
+      "outTokens": {
+        "reasoning": 57201,
+        "answer": 29207,
+        "total": 86407
+      },
+      "subscores": {
+        "frontierCode": 11.5,
+        "terminalBench": 5.05,
+        "hleDiamond": 6.7,
+        "critptAgentic": 16.5,
+        "science": 0.95,
+        "omniscience": 17.87,
+        "hallucination": 65.42
+      }
     },
     {
       "id": "5b52def2-ac9b-4465-ad80-91ea8079e253",
@@ -1168,7 +3596,33 @@
         "color": "#76b900"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-06-04",
+      "family": {
+        "slug": "nemotron-3-ultra-550b-a55b",
+        "name": "Nemotron 3 Ultra 550B A55B"
+      },
+      "timeSec": 264.34,
+      "costBreakdown": {
+        "input": 2.08677,
+        "reasoning": 0.04971,
+        "answer": 0.07381
+      },
+      "outTokens": {
+        "reasoning": 20714,
+        "answer": 30753,
+        "total": 51468
+      },
+      "subscores": {
+        "frontierCode": 1.09,
+        "terminalBench": 0.51,
+        "hleDiamond": 8.5,
+        "critptAgentic": 15,
+        "science": 0,
+        "omniscience": 21.23,
+        "hallucination": 22.6
+      }
     },
     {
       "id": "094ea3e3-ce41-419e-8bd1-723389663158",
@@ -1182,7 +3636,33 @@
         "color": "#00F5E7"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-09-18",
+      "family": {
+        "slug": "step-5-preview",
+        "name": "Step 5 Preview"
+      },
+      "timeSec": 782.97,
+      "costBreakdown": {
+        "input": 2.03888,
+        "reasoning": 0.21575,
+        "answer": 0.09063
+      },
+      "outTokens": {
+        "reasoning": 79907,
+        "answer": 33566,
+        "total": 113473
+      },
+      "subscores": {
+        "frontierCode": 12,
+        "terminalBench": 33.33,
+        "hleDiamond": 24.3,
+        "critptAgentic": 32.5,
+        "science": 2.38,
+        "omniscience": 36.37,
+        "hallucination": 31.33
+      }
     },
     {
       "id": "512d17ef-13d2-4f65-bf9b-154b0dec7e8d",
@@ -1196,7 +3676,38 @@
         "color": "#047AFE"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-07-16",
+      "family": {
+        "slug": "kimi-k3",
+        "name": "Kimi K3"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 955.14,
+      "costBreakdown": {
+        "input": 1.77378,
+        "reasoning": 0.4069,
+        "answer": 0.1881
+      },
+      "outTokens": {
+        "reasoning": 27126,
+        "answer": 12540,
+        "total": 39666
+      },
+      "subscores": {
+        "frontierCode": 10.9,
+        "terminalBench": 12.63,
+        "hleDiamond": 14,
+        "critptAgentic": 5.5,
+        "science": 0.95,
+        "omniscience": 42.4,
+        "hallucination": 76.56
+      }
     },
     {
       "id": "9999672c-b687-4026-9c15-5cef02ff53bb",
@@ -1210,7 +3721,38 @@
         "color": "#0089f4"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-02",
+      "family": {
+        "slug": "muse-spark-1-3",
+        "name": "Muse Spark 1.3"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 854.28,
+      "costBreakdown": {
+        "input": 1.99855,
+        "reasoning": 0.2317,
+        "answer": 0.15554
+      },
+      "outTokens": {
+        "reasoning": 54517,
+        "answer": 36597,
+        "total": 91114
+      },
+      "subscores": {
+        "frontierCode": 23.11,
+        "terminalBench": 33.33,
+        "hleDiamond": 33.7,
+        "critptAgentic": 48,
+        "science": 10.95,
+        "omniscience": 38,
+        "hallucination": 25.16
+      }
     },
     {
       "id": "ea9e0da6-169f-43c6-92f5-730a10d6ff8d",
@@ -1224,7 +3766,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-22",
+      "family": {
+        "slug": "claude-opus-5-5",
+        "name": "Claude Opus 5.5"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 410.71,
+      "costBreakdown": {
+        "input": 1.57467,
+        "reasoning": 0.41361,
+        "answer": 0.46281
+      },
+      "outTokens": {
+        "reasoning": 20676,
+        "answer": 23140,
+        "total": 43817
+      },
+      "subscores": {
+        "frontierCode": 33.08,
+        "terminalBench": 52.53,
+        "hleDiamond": 51.4,
+        "critptAgentic": 54,
+        "science": 43.33,
+        "omniscience": 63.9,
+        "hallucination": 66.85
+      }
     },
     {
       "id": "c50ea08c-88c0-4eb7-85b8-27f2bbf6d527",
@@ -1238,7 +3811,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-22",
+      "family": {
+        "slug": "gpt-6-sol",
+        "name": "GPT-6 Sol"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 447.31,
+      "costBreakdown": {
+        "input": 1.9269,
+        "reasoning": 0.3537,
+        "answer": 0.1852
+      },
+      "outTokens": {
+        "reasoning": 35370,
+        "answer": 18520,
+        "total": 53890
+      },
+      "subscores": {
+        "frontierCode": 35.58,
+        "terminalBench": 43.94,
+        "hleDiamond": 45.2,
+        "critptAgentic": 66.5,
+        "science": 30,
+        "omniscience": 51.13,
+        "hallucination": 60.85
+      }
     },
     {
       "id": "592572d5-f789-4106-abbc-fadf2206d10b",
@@ -1252,7 +3856,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-17",
+      "family": {
+        "slug": "gpt-6-2-astra",
+        "name": "GPT-6.2 Astra"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 391.23,
+      "costBreakdown": {
+        "input": 1.63164,
+        "reasoning": 0.4438,
+        "answer": 0.44571
+      },
+      "outTokens": {
+        "reasoning": 11095,
+        "answer": 11143,
+        "total": 22238
+      },
+      "subscores": {
+        "frontierCode": 48.95,
+        "terminalBench": 64.14,
+        "hleDiamond": 67.3,
+        "critptAgentic": 70.5,
+        "science": 78.57,
+        "omniscience": 67.2,
+        "hallucination": 57.72
+      }
     },
     {
       "id": "e97a4ef5-e817-480e-9595-12f81dc4974f",
@@ -1266,7 +3901,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-03",
+      "family": {
+        "slug": "gpt-6-astra",
+        "name": "GPT-6 Astra"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 388.4,
+      "costBreakdown": {
+        "input": 1.82986,
+        "reasoning": 0.42904,
+        "answer": 0.47355
+      },
+      "outTokens": {
+        "reasoning": 8581,
+        "answer": 9471,
+        "total": 18052
+      },
+      "subscores": {
+        "frontierCode": 36.58,
+        "terminalBench": 49.49,
+        "hleDiamond": 52.7,
+        "critptAgentic": 72,
+        "science": 53.33,
+        "omniscience": 59.63,
+        "hallucination": 45.17
+      }
     },
     {
       "id": "208c16f0-8c5b-4524-ac8a-ac74c02e80a9",
@@ -1280,7 +3946,38 @@
         "color": "#736cd3"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-21",
+      "family": {
+        "slug": "grok-4-7",
+        "name": "Grok 4.7"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 600.87,
+      "costBreakdown": {
+        "input": 2.66618,
+        "reasoning": 0.13004,
+        "answer": 0.12598
+      },
+      "outTokens": {
+        "reasoning": 21674,
+        "answer": 20996,
+        "total": 42670
+      },
+      "subscores": {
+        "frontierCode": 21.82,
+        "terminalBench": 16.16,
+        "hleDiamond": 18.5,
+        "critptAgentic": 43.5,
+        "science": 4.76,
+        "omniscience": 45.73,
+        "hallucination": 33.78
+      }
     },
     {
       "id": "cfc7acb1-d903-4858-9b6c-6c7776caf8f9",
@@ -1294,7 +3991,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-09",
+      "family": {
+        "slug": "claude-fable-5-2",
+        "name": "Claude Fable 5.2"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 320.92,
+      "costBreakdown": {
+        "input": 1.67315,
+        "reasoning": 0.65369,
+        "answer": 0.7704
+      },
+      "outTokens": {
+        "reasoning": 16503,
+        "answer": 19357,
+        "total": 35860
+      },
+      "subscores": {
+        "frontierCode": 38.44,
+        "terminalBench": 54.55,
+        "hleDiamond": 60.8,
+        "critptAgentic": 60,
+        "science": 53.81,
+        "omniscience": 76.3,
+        "hallucination": 56.4
+      }
     },
     {
       "id": "dad0e3b1-e3e7-477a-99f9-c14457a91114",
@@ -1308,7 +4036,38 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-12",
+      "family": {
+        "slug": "gemini-4-hydrogen",
+        "name": "Gemini 4 Hydrogen"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 895.65,
+      "costBreakdown": {
+        "input": 2.00212,
+        "reasoning": 0.72676,
+        "answer": 0.43128
+      },
+      "outTokens": {
+        "reasoning": 96902,
+        "answer": 57504,
+        "total": 154406
+      },
+      "subscores": {
+        "frontierCode": 38.96,
+        "terminalBench": 53.54,
+        "hleDiamond": 58.8,
+        "critptAgentic": 66,
+        "science": 49.52,
+        "omniscience": 50.47,
+        "hallucination": 8.48
+      }
     },
     {
       "id": "539ed227-38f4-4bea-a015-117057c14b18",
@@ -1322,7 +4081,32 @@
         "color": "#4fb5ff"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-10-22",
+      "family": {
+        "slug": "ling-3-1-flash",
+        "name": "Ling 3.1 Flash 1019"
+      },
+      "costBreakdown": {
+        "input": 2.98291,
+        "reasoning": 0.13616,
+        "answer": 0.06608
+      },
+      "outTokens": {
+        "reasoning": 151291,
+        "answer": 73420,
+        "total": 224711
+      },
+      "subscores": {
+        "frontierCode": 17.01,
+        "terminalBench": 32.83,
+        "hleDiamond": 17.2,
+        "critptAgentic": 38.5,
+        "science": 4.29,
+        "omniscience": 26.53,
+        "hallucination": 36.3
+      }
     },
     {
       "id": "e05a4828-0536-4876-870d-a235023f992b",
@@ -1336,7 +4120,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-03",
+      "family": {
+        "slug": "gpt-6-astra",
+        "name": "GPT-6 Astra"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 526.01,
+      "costBreakdown": {
+        "input": 2.0819,
+        "reasoning": 0.60458,
+        "answer": 0.5521
+      },
+      "outTokens": {
+        "reasoning": 12092,
+        "answer": 11042,
+        "total": 23133
+      },
+      "subscores": {
+        "frontierCode": 40.14,
+        "terminalBench": 54.04,
+        "hleDiamond": 59.3,
+        "critptAgentic": 71.5,
+        "science": 59.52,
+        "omniscience": 61.1,
+        "hallucination": 42.5
+      }
     },
     {
       "id": "fef6625d-9097-45f6-95c0-bcaa06e3d8e1",
@@ -1350,7 +4165,38 @@
         "color": "#ff7018"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-16",
+      "family": {
+        "slug": "qwen4-max",
+        "name": "Qwen4 Max"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 1924.29,
+      "costBreakdown": {
+        "input": 2.7959,
+        "reasoning": 0.31011,
+        "answer": 0.16211
+      },
+      "outTokens": {
+        "reasoning": 68914,
+        "answer": 36025,
+        "total": 104940
+      },
+      "subscores": {
+        "frontierCode": 26.45,
+        "terminalBench": 48.48,
+        "hleDiamond": 44.9,
+        "critptAgentic": 43,
+        "science": 23.33,
+        "omniscience": 43.7,
+        "hallucination": 28.42
+      }
     },
     {
       "id": "f314eade-2232-44bf-a3ab-9b326bc67de6",
@@ -1364,7 +4210,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-22",
+      "family": {
+        "slug": "claude-opus-5-5",
+        "name": "Claude Opus 5.5"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 556.2,
+      "costBreakdown": {
+        "input": 2.26315,
+        "reasoning": 0.63131,
+        "answer": 0.57021
+      },
+      "outTokens": {
+        "reasoning": 31561,
+        "answer": 28510,
+        "total": 60071
+      },
+      "subscores": {
+        "frontierCode": 35.93,
+        "terminalBench": 56.57,
+        "hleDiamond": 55.6,
+        "critptAgentic": 59.5,
+        "science": 49.05,
+        "omniscience": 64.83,
+        "hallucination": 63.89
+      }
     },
     {
       "id": "b01dee41-c62b-48ed-8d16-984adc405e5c",
@@ -1378,7 +4255,38 @@
         "color": "#ff7018"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-08-14",
+      "family": {
+        "slug": "qwen3-8-27b",
+        "name": "Qwen3.8 27B"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 2311.75,
+      "costBreakdown": {
+        "input": 3.20014,
+        "reasoning": 0.21709,
+        "answer": 0.11231
+      },
+      "outTokens": {
+        "reasoning": 72364,
+        "answer": 37438,
+        "total": 109802
+      },
+      "subscores": {
+        "frontierCode": 14.91,
+        "terminalBench": 5.56,
+        "hleDiamond": 15.3,
+        "critptAgentic": 4,
+        "science": 0.48,
+        "omniscience": 17.3,
+        "hallucination": 28.62
+      }
     },
     {
       "id": "1f541ef3-913f-4eb2-9d07-0e93c7a9a5e3",
@@ -1392,7 +4300,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-03",
+      "family": {
+        "slug": "gpt-6-astra",
+        "name": "GPT-6 Astra"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 609.99,
+      "costBreakdown": {
+        "input": 2.32274,
+        "reasoning": 0.73464,
+        "answer": 0.60154
+      },
+      "outTokens": {
+        "reasoning": 14693,
+        "answer": 12031,
+        "total": 26724
+      },
+      "subscores": {
+        "frontierCode": 41.4,
+        "terminalBench": 59.6,
+        "hleDiamond": 61.5,
+        "critptAgentic": 71,
+        "science": 54.76,
+        "omniscience": 61.03,
+        "hallucination": 44.57
+      }
     },
     {
       "id": "665c67ca-09eb-48f0-a7a3-0096e1d5de51",
@@ -1406,7 +4345,38 @@
         "color": "#047AFE"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-10-23",
+      "family": {
+        "slug": "kimi-k3-1-pro",
+        "name": "Kimi K3.1 Pro"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 2304.9,
+      "costBreakdown": {
+        "input": 2.95881,
+        "reasoning": 0.4423,
+        "answer": 0.28009
+      },
+      "outTokens": {
+        "reasoning": 44230,
+        "answer": 28009,
+        "total": 72239
+      },
+      "subscores": {
+        "frontierCode": 25.45,
+        "terminalBench": 67.17,
+        "hleDiamond": 37.3,
+        "critptAgentic": 49.5,
+        "science": 34.29,
+        "omniscience": 48.93,
+        "hallucination": 37.34
+      }
     },
     {
       "id": "bcf8db0a-3bb6-4d82-9516-0f57370c85a6",
@@ -1420,7 +4390,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-07-09",
+      "family": {
+        "slug": "gpt-5-6-terra",
+        "name": "GPT-5.6 Terra"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 735.03,
+      "costBreakdown": {
+        "input": 2.93991,
+        "reasoning": 0.49473,
+        "answer": 0.30026
+      },
+      "outTokens": {
+        "reasoning": 41228,
+        "answer": 25021,
+        "total": 66249
+      },
+      "subscores": {
+        "frontierCode": 23.89,
+        "terminalBench": 35.35,
+        "hleDiamond": 28.8,
+        "critptAgentic": 50.5,
+        "science": 13.81,
+        "omniscience": 42.3,
+        "hallucination": 89.37
+      }
     },
     {
       "id": "353c92f3-2148-4c2d-9231-aa7e1322a1fd",
@@ -1434,7 +4435,33 @@
         "color": "#ff7018"
       },
       "isReasoning": false,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-08-14",
+      "family": {
+        "slug": "qwen3-8-27b",
+        "name": "Qwen3.8 27B"
+      },
+      "timeSec": 1165.52,
+      "costBreakdown": {
+        "input": 3.63834,
+        "reasoning": 0,
+        "answer": 0.1346
+      },
+      "outTokens": {
+        "reasoning": 0,
+        "answer": 44867,
+        "total": 44867
+      },
+      "subscores": {
+        "frontierCode": 3.72,
+        "terminalBench": 0,
+        "hleDiamond": 4.2,
+        "critptAgentic": 2,
+        "science": 0,
+        "omniscience": 9.1,
+        "hallucination": 18.01
+      }
     },
     {
       "id": "0c9b4e05-9259-42cc-b40e-d6acbbeaa7e8",
@@ -1448,7 +4475,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-09",
+      "family": {
+        "slug": "claude-fable-5-2",
+        "name": "Claude Fable 5.2"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 382.34,
+      "costBreakdown": {
+        "input": 2.09237,
+        "reasoning": 0.81699,
+        "answer": 0.89324
+      },
+      "outTokens": {
+        "reasoning": 20675,
+        "answer": 22456,
+        "total": 43131
+      },
+      "subscores": {
+        "frontierCode": 41.3,
+        "terminalBench": 55.05,
+        "hleDiamond": 66.3,
+        "critptAgentic": 61.5,
+        "science": 60.48,
+        "omniscience": 76.97,
+        "hallucination": 58.47
+      }
     },
     {
       "id": "75c1b0b8-9db3-4c7e-95be-d74e59defee4",
@@ -1462,7 +4520,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-17",
+      "family": {
+        "slug": "gpt-6-2-astra",
+        "name": "GPT-6.2 Astra"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 688.99,
+      "costBreakdown": {
+        "input": 2.35673,
+        "reasoning": 1.04599,
+        "answer": 0.59519
+      },
+      "outTokens": {
+        "reasoning": 26150,
+        "answer": 14880,
+        "total": 41029
+      },
+      "subscores": {
+        "frontierCode": 45.38,
+        "terminalBench": 64.14,
+        "hleDiamond": 72.2,
+        "critptAgentic": 71.5,
+        "science": 78.1,
+        "omniscience": 68.57,
+        "hallucination": 59.07
+      }
     },
     {
       "id": "975aeaef-50bd-4a65-9c73-f1015adcd4d4",
@@ -1476,7 +4565,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-28",
+      "family": {
+        "slug": "claude-sonnet-5-5",
+        "name": "Claude Sonnet 5.5"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 850.79,
+      "costBreakdown": {
+        "input": 2.86994,
+        "reasoning": 0.78999,
+        "answer": 0.43206
+      },
+      "outTokens": {
+        "reasoning": 78999,
+        "answer": 43206,
+        "total": 122205
+      },
+      "subscores": {
+        "frontierCode": 35.65,
+        "terminalBench": 57.07,
+        "hleDiamond": 44.1,
+        "critptAgentic": 57.5,
+        "science": 52.38,
+        "omniscience": 50.9,
+        "hallucination": 61.71
+      }
     },
     {
       "id": "34fc646a-0174-470e-9e62-d8df452210b3",
@@ -1490,7 +4610,33 @@
         "color": "#f32e02"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-06",
+      "family": {
+        "slug": "mistral-large-4-preview",
+        "name": "Mistral Large 4 Preview"
+      },
+      "timeSec": 1662.61,
+      "costBreakdown": {
+        "input": 3.92473,
+        "reasoning": 0.21317,
+        "answer": 0.07099
+      },
+      "outTokens": {
+        "reasoning": 101512,
+        "answer": 33806,
+        "total": 135318
+      },
+      "subscores": {
+        "frontierCode": 13.58,
+        "terminalBench": 26.77,
+        "hleDiamond": 15.1,
+        "critptAgentic": 24.5,
+        "science": 4.76,
+        "omniscience": 23.93,
+        "hallucination": 41.32
+      }
     },
     {
       "id": "48e6f735-f2bc-418f-b99f-3dc5a0ddda77",
@@ -1504,7 +4650,38 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-30",
+      "family": {
+        "slug": "gemini-4-argon",
+        "name": "Gemini 4 Argon"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 1684.02,
+      "costBreakdown": {
+        "input": 3.31055,
+        "reasoning": 0.55065,
+        "answer": 0.45342
+      },
+      "outTokens": {
+        "reasoning": 55065,
+        "answer": 45342,
+        "total": 100407
+      },
+      "subscores": {
+        "frontierCode": 25.02,
+        "terminalBench": 55.05,
+        "hleDiamond": 42.5,
+        "critptAgentic": 53.5,
+        "science": 48.57,
+        "omniscience": 48.97,
+        "hallucination": 15.41
+      }
     },
     {
       "id": "05776db7-f5c0-40f7-b824-079160f8cfa8",
@@ -1518,7 +4695,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-01",
+      "family": {
+        "slug": "claude-fable-5-1",
+        "name": "Claude Fable 5.1"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 449.33,
+      "costBreakdown": {
+        "input": 2.61073,
+        "reasoning": 0.7564,
+        "answer": 1.104
+      },
+      "outTokens": {
+        "reasoning": 15534,
+        "answer": 22303,
+        "total": 37837
+      },
+      "subscores": {
+        "frontierCode": 22.84,
+        "terminalBench": 40.4,
+        "hleDiamond": 37.4,
+        "critptAgentic": 49.5,
+        "science": 21.43,
+        "omniscience": 58.67,
+        "hallucination": 59.84
+      }
     },
     {
       "id": "38a98e3d-779b-49ec-b005-230a3a72088a",
@@ -1532,7 +4740,38 @@
         "color": "#0089f4"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-12",
+      "family": {
+        "slug": "muse-wonder",
+        "name": "Muse Wonder"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 522,
+      "costBreakdown": {
+        "input": 3.20201,
+        "reasoning": 0.775,
+        "answer": 0.58354
+      },
+      "outTokens": {
+        "reasoning": 38750,
+        "answer": 29177,
+        "total": 67927
+      },
+      "subscores": {
+        "frontierCode": 26.63,
+        "terminalBench": 38.38,
+        "hleDiamond": 34.5,
+        "critptAgentic": 51,
+        "science": 21.9,
+        "omniscience": 38.2,
+        "hallucination": 22.17
+      }
     },
     {
       "id": "0d3eaafd-54ed-4f78-bdd7-05a2db883986",
@@ -1546,7 +4785,38 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-28",
+      "family": {
+        "slug": "gemini-4-carbon",
+        "name": "Gemini 4 Carbon"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 1731.36,
+      "costBreakdown": {
+        "input": 3.64753,
+        "reasoning": 0.56204,
+        "answer": 0.46808
+      },
+      "outTokens": {
+        "reasoning": 56204,
+        "answer": 46808,
+        "total": 103012
+      },
+      "subscores": {
+        "frontierCode": 39.45,
+        "terminalBench": 60.61,
+        "hleDiamond": 67.4,
+        "critptAgentic": 69,
+        "science": 62.38,
+        "omniscience": 48.93,
+        "hallucination": 4.24
+      }
     },
     {
       "id": "d6f43d0a-e8c4-447c-9ff7-5cf0a9d59aa3",
@@ -1560,7 +4830,38 @@
         "color": "#736cd3"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-08-12",
+      "family": {
+        "slug": "grok-4-6",
+        "name": "Grok 4.6"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 763.27,
+      "costBreakdown": {
+        "input": 4.32805,
+        "reasoning": 0.19253,
+        "answer": 0.15806
+      },
+      "outTokens": {
+        "reasoning": 32088,
+        "answer": 26343,
+        "total": 58431
+      },
+      "subscores": {
+        "frontierCode": 19.75,
+        "terminalBench": 17.17,
+        "hleDiamond": 21.5,
+        "critptAgentic": 40,
+        "science": 2.86,
+        "omniscience": 46.23,
+        "hallucination": 39.74
+      }
     },
     {
       "id": "d366dfa1-d940-4788-aa73-d298c45699b3",
@@ -1574,7 +4875,38 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-30",
+      "family": {
+        "slug": "gemini-4-argon",
+        "name": "Gemini 4 Argon"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 1753.22,
+      "costBreakdown": {
+        "input": 3.80962,
+        "reasoning": 0.68301,
+        "answer": 0.48067
+      },
+      "outTokens": {
+        "reasoning": 68301,
+        "answer": 48067,
+        "total": 116368
+      },
+      "subscores": {
+        "frontierCode": 25.71,
+        "terminalBench": 57.07,
+        "hleDiamond": 56.7,
+        "critptAgentic": 52.5,
+        "science": 52.86,
+        "omniscience": 48.3,
+        "hallucination": 4.26
+      }
     },
     {
       "id": "cd684ea4-b475-4269-b001-d469d06d8a7a",
@@ -1588,7 +4920,38 @@
         "color": "#1c7ff8"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-08-18",
+      "family": {
+        "slug": "glm-5-3",
+        "name": "GLM-5.3"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1320.05,
+      "costBreakdown": {
+        "input": 4.48572,
+        "reasoning": 0.37301,
+        "answer": 0.15053
+      },
+      "outTokens": {
+        "reasoning": 84776,
+        "answer": 34211,
+        "total": 118987
+      },
+      "subscores": {
+        "frontierCode": 21.59,
+        "terminalBench": 41.92,
+        "hleDiamond": 17.9,
+        "critptAgentic": 33.5,
+        "science": 9.52,
+        "omniscience": 32.33,
+        "hallucination": 38.87
+      }
     },
     {
       "id": "b3866703-a9f7-4ea2-8f3f-b361c90aaf0e",
@@ -1602,7 +4965,38 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-28",
+      "family": {
+        "slug": "gemini-4-carbon",
+        "name": "Gemini 4 Carbon"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 1777.8,
+      "costBreakdown": {
+        "input": 4.35975,
+        "reasoning": 0.32396,
+        "answer": 0.53769
+      },
+      "outTokens": {
+        "reasoning": 32396,
+        "answer": 53769,
+        "total": 86165
+      },
+      "subscores": {
+        "frontierCode": 29.62,
+        "terminalBench": 62.63,
+        "hleDiamond": 61.9,
+        "critptAgentic": 65,
+        "science": 61.9,
+        "omniscience": 49.23,
+        "hallucination": 19.76
+      }
     },
     {
       "id": "909ed0ba-bcc5-4f38-8162-08a4e187a772",
@@ -1616,7 +5010,38 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-28",
+      "family": {
+        "slug": "gemini-4-carbon",
+        "name": "Gemini 4 Carbon"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 2050.6,
+      "costBreakdown": {
+        "input": 4.2571,
+        "reasoning": 0.72178,
+        "answer": 0.5059
+      },
+      "outTokens": {
+        "reasoning": 72178,
+        "answer": 50590,
+        "total": 122768
+      },
+      "subscores": {
+        "frontierCode": 40.56,
+        "terminalBench": 65.15,
+        "hleDiamond": 69.1,
+        "critptAgentic": 69,
+        "science": 64.76,
+        "omniscience": 58.27,
+        "hallucination": 11.42
+      }
     },
     {
       "id": "3b7de71c-e034-4591-8ca6-6b6be2fa471f",
@@ -1630,7 +5055,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-01",
+      "family": {
+        "slug": "claude-fable-5-1",
+        "name": "Claude Fable 5.1"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 572.72,
+      "costBreakdown": {
+        "input": 3.17003,
+        "reasoning": 1.09759,
+        "answer": 1.29665
+      },
+      "outTokens": {
+        "reasoning": 22374,
+        "answer": 26171,
+        "total": 48545
+      },
+      "subscores": {
+        "frontierCode": 28.77,
+        "terminalBench": 44.95,
+        "hleDiamond": 45,
+        "critptAgentic": 58.5,
+        "science": 29.05,
+        "omniscience": 62.57,
+        "hallucination": 69.81
+      }
     },
     {
       "id": "df5bf99d-d228-4715-b41b-19ca86118777",
@@ -1644,7 +5100,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-22",
+      "family": {
+        "slug": "claude-opus-5-5",
+        "name": "Claude Opus 5.5"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 937.13,
+      "costBreakdown": {
+        "input": 3.97917,
+        "reasoning": 1.27537,
+        "answer": 0.79265
+      },
+      "outTokens": {
+        "reasoning": 63763,
+        "answer": 39632,
+        "total": 103395
+      },
+      "subscores": {
+        "frontierCode": 43.75,
+        "terminalBench": 59.6,
+        "hleDiamond": 64,
+        "critptAgentic": 67.5,
+        "science": 61.9,
+        "omniscience": 65.53,
+        "hallucination": 64.99
+      }
     },
     {
       "id": "272f5f03-aea9-4675-a244-2b753b618cdf",
@@ -1658,7 +5145,38 @@
         "color": "#736cd3"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-21",
+      "family": {
+        "slug": "grok-4-7",
+        "name": "Grok 4.7"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 1274.86,
+      "costBreakdown": {
+        "input": 5.64883,
+        "reasoning": 0.3491,
+        "answer": 0.18566
+      },
+      "outTokens": {
+        "reasoning": 58183,
+        "answer": 30944,
+        "total": 89127
+      },
+      "subscores": {
+        "frontierCode": 27.78,
+        "terminalBench": 24.75,
+        "hleDiamond": 23.6,
+        "critptAgentic": 37,
+        "science": 9.52,
+        "omniscience": 41.77,
+        "hallucination": 20.21
+      }
     },
     {
       "id": "2f339a97-9a0d-499a-9cb5-e0db665bfa25",
@@ -1672,7 +5190,38 @@
         "color": "#1f1f1f"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-03",
+      "family": {
+        "slug": "gpt-6-astra",
+        "name": "GPT-6 Astra"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1194.65,
+      "costBreakdown": {
+        "input": 3.64601,
+        "reasoning": 1.78798,
+        "answer": 0.81068
+      },
+      "outTokens": {
+        "reasoning": 35760,
+        "answer": 16214,
+        "total": 51973
+      },
+      "subscores": {
+        "frontierCode": 42.37,
+        "terminalBench": 59.09,
+        "hleDiamond": 63.8,
+        "critptAgentic": 70.5,
+        "science": 63.33,
+        "omniscience": 61.57,
+        "hallucination": 49.78
+      }
     },
     {
       "id": "744fa3c1-42a7-4995-b138-fb6be11f463c",
@@ -1686,7 +5235,38 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-02",
+      "family": {
+        "slug": "gemini-3-8-flash",
+        "name": "Gemini 3.8 Flash"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 682.36,
+      "costBreakdown": {
+        "input": 5.95083,
+        "reasoning": 0.1771,
+        "answer": 0.13065
+      },
+      "outTokens": {
+        "reasoning": 47228,
+        "answer": 34840,
+        "total": 82068
+      },
+      "subscores": {
+        "frontierCode": 16.47,
+        "terminalBench": 19.7,
+        "hleDiamond": 29.1,
+        "critptAgentic": 45,
+        "science": 10.48,
+        "omniscience": 49.63,
+        "hallucination": 51.49
+      }
     },
     {
       "id": "ff2f3f3d-783f-4e27-8a39-47237501a313",
@@ -1700,7 +5280,38 @@
         "color": "#0089f4"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-10-12",
+      "family": {
+        "slug": "muse-wonder",
+        "name": "Muse Wonder"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 800.64,
+      "costBreakdown": {
+        "input": 5.03077,
+        "reasoning": 1.17169,
+        "answer": 0.74957
+      },
+      "outTokens": {
+        "reasoning": 58584,
+        "answer": 37479,
+        "total": 96063
+      },
+      "subscores": {
+        "frontierCode": 27.88,
+        "terminalBench": 52.02,
+        "hleDiamond": 39,
+        "critptAgentic": 50.5,
+        "science": 25.71,
+        "omniscience": 38.03,
+        "hallucination": 20.87
+      }
     },
     {
       "id": "9d7d72cd-d95d-45a0-b109-4ad292c9aabd",
@@ -1714,7 +5325,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-01",
+      "family": {
+        "slug": "claude-fable-5-1",
+        "name": "Claude Fable 5.1"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 783.3,
+      "costBreakdown": {
+        "input": 4.2848,
+        "reasoning": 1.67171,
+        "answer": 1.58345
+      },
+      "outTokens": {
+        "reasoning": 34029,
+        "answer": 32002,
+        "total": 66031
+      },
+      "subscores": {
+        "frontierCode": 30.3,
+        "terminalBench": 52.02,
+        "hleDiamond": 50.4,
+        "critptAgentic": 62,
+        "science": 39.52,
+        "omniscience": 64.7,
+        "hallucination": 70.16
+      }
     },
     {
       "id": "8a999846-4c1d-4ce7-a8b7-1310a7166fd7",
@@ -1728,7 +5370,38 @@
         "color": "#34A853"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-02",
+      "family": {
+        "slug": "gemini-3-8-flash",
+        "name": "Gemini 3.8 Flash"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 851.75,
+      "costBreakdown": {
+        "input": 7.39498,
+        "reasoning": 0.22525,
+        "answer": 0.14577
+      },
+      "outTokens": {
+        "reasoning": 60067,
+        "answer": 38872,
+        "total": 98940
+      },
+      "subscores": {
+        "frontierCode": 18.74,
+        "terminalBench": 19.7,
+        "hleDiamond": 33.1,
+        "critptAgentic": 46.5,
+        "science": 10,
+        "omniscience": 50.53,
+        "hallucination": 55.12
+      }
     },
     {
       "id": "59627802-1546-422c-9a65-65b61c022d36",
@@ -1742,7 +5415,38 @@
         "color": "#736cd3"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-21",
+      "family": {
+        "slug": "grok-4-7",
+        "name": "Grok 4.7"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 1459.43,
+      "costBreakdown": {
+        "input": 7.14435,
+        "reasoning": 0.41664,
+        "answer": 0.21054
+      },
+      "outTokens": {
+        "reasoning": 69441,
+        "answer": 35090,
+        "total": 104531
+      },
+      "subscores": {
+        "frontierCode": 28.66,
+        "terminalBench": 25.76,
+        "hleDiamond": 23.2,
+        "critptAgentic": 33.5,
+        "science": 11.43,
+        "omniscience": 42.7,
+        "hallucination": 20.01
+      }
     },
     {
       "id": "fdc1913b-9497-45ef-83f7-17dae756f37e",
@@ -1756,7 +5460,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-09",
+      "family": {
+        "slug": "claude-fable-5-2",
+        "name": "Claude Fable 5.2"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 891.81,
+      "costBreakdown": {
+        "input": 5.1901,
+        "reasoning": 2.31482,
+        "answer": 1.57349
+      },
+      "outTokens": {
+        "reasoning": 58241,
+        "answer": 39600,
+        "total": 97841
+      },
+      "subscores": {
+        "frontierCode": 49.13,
+        "terminalBench": 59.6,
+        "hleDiamond": 73.8,
+        "critptAgentic": 73,
+        "science": 70,
+        "omniscience": 77.23,
+        "hallucination": 57.98
+      }
     },
     {
       "id": "b171d979-5ec1-45de-b8b9-db1ee65e77ec",
@@ -1770,7 +5505,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-28",
+      "family": {
+        "slug": "claude-sonnet-5-5",
+        "name": "Claude Sonnet 5.5"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1935.12,
+      "costBreakdown": {
+        "input": 7.16675,
+        "reasoning": 2.06362,
+        "answer": 0.79025
+      },
+      "outTokens": {
+        "reasoning": 206362,
+        "answer": 79025,
+        "total": 285387
+      },
+      "subscores": {
+        "frontierCode": 41.7,
+        "terminalBench": 63.64,
+        "hleDiamond": 53.3,
+        "critptAgentic": 59,
+        "science": 53.33,
+        "omniscience": 51.47,
+        "hallucination": 43.27
+      }
     },
     {
       "id": "b112af07-3bd5-4647-b09f-b23204361bb2",
@@ -1784,7 +5550,38 @@
         "color": "#ff7018"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-02",
+      "family": {
+        "slug": "qwen3-8-max",
+        "name": "Qwen3.8 Max (0902)"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 2847.32,
+      "costBreakdown": {
+        "input": 8.99913,
+        "reasoning": 0.71819,
+        "answer": 0.30658
+      },
+      "outTokens": {
+        "reasoning": 119698,
+        "answer": 51096,
+        "total": 170794
+      },
+      "subscores": {
+        "frontierCode": 23.42,
+        "terminalBench": 38.89,
+        "hleDiamond": 24,
+        "critptAgentic": 29.5,
+        "science": 11.9,
+        "omniscience": 29.53,
+        "hallucination": 27.06
+      }
     },
     {
       "id": "2f3c4dc9-a450-4303-8697-0237257cf08f",
@@ -1798,7 +5595,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-22",
+      "family": {
+        "slug": "claude-opus-5-5",
+        "name": "Claude Opus 5.5"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1472.18,
+      "costBreakdown": {
+        "input": 6.56995,
+        "reasoning": 2.4094,
+        "answer": 1.05706
+      },
+      "outTokens": {
+        "reasoning": 120460,
+        "answer": 52853,
+        "total": 173313
+      },
+      "subscores": {
+        "frontierCode": 46.44,
+        "terminalBench": 59.6,
+        "hleDiamond": 67.9,
+        "critptAgentic": 68,
+        "science": 59.05,
+        "omniscience": 65.5,
+        "hallucination": 50.34
+      }
     },
     {
       "id": "9b166bf3-42db-4f63-8338-1c4a1244ffe8",
@@ -1812,7 +5640,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-01",
+      "family": {
+        "slug": "claude-fable-5-1",
+        "name": "Claude Fable 5.1"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 1167.79,
+      "costBreakdown": {
+        "input": 6.07002,
+        "reasoning": 2.75008,
+        "answer": 2.02737
+      },
+      "outTokens": {
+        "reasoning": 55942,
+        "answer": 41116,
+        "total": 97059
+      },
+      "subscores": {
+        "frontierCode": 35.73,
+        "terminalBench": 55.05,
+        "hleDiamond": 58.8,
+        "critptAgentic": 60,
+        "science": 40.48,
+        "omniscience": 67.17,
+        "hallucination": 69.54
+      }
     },
     {
       "id": "b8fc61f7-5e9a-49e6-8547-6ac56db24627",
@@ -1826,7 +5685,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-07-24",
+      "family": {
+        "slug": "claude-opus-5",
+        "name": "Claude Opus 5"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1478.14,
+      "costBreakdown": {
+        "input": 8.86979,
+        "reasoning": 1.81928,
+        "answer": 1.13243
+      },
+      "outTokens": {
+        "reasoning": 72771,
+        "answer": 45297,
+        "total": 118068
+      },
+      "subscores": {
+        "frontierCode": 31.15,
+        "terminalBench": 48.99,
+        "hleDiamond": 44.8,
+        "critptAgentic": 50,
+        "science": 28.57,
+        "omniscience": 60.87,
+        "hallucination": 59.37
+      }
     },
     {
       "id": "3e87c73e-a257-495e-9730-367a66229811",
@@ -1840,7 +5730,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-09-01",
+      "family": {
+        "slug": "claude-fable-5-1",
+        "name": "Claude Fable 5.1"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1269.83,
+      "costBreakdown": {
+        "input": 7.21519,
+        "reasoning": 3.4879,
+        "answer": 2.2909
+      },
+      "outTokens": {
+        "reasoning": 71387,
+        "answer": 46554,
+        "total": 117941
+      },
+      "subscores": {
+        "frontierCode": 31.62,
+        "terminalBench": 52.02,
+        "hleDiamond": 60.1,
+        "critptAgentic": 52.5,
+        "science": 43.33,
+        "omniscience": 68.4,
+        "hallucination": 70.04
+      }
     },
     {
       "id": "76942526-cc96-46b0-bc27-29561c53ed70",
@@ -1854,7 +5775,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-09",
+      "family": {
+        "slug": "claude-fable-5-2",
+        "name": "Claude Fable 5.2"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 1442.88,
+      "costBreakdown": {
+        "input": 8.39789,
+        "reasoning": 4.22269,
+        "answer": 2.208
+      },
+      "outTokens": {
+        "reasoning": 106356,
+        "answer": 55588,
+        "total": 161944
+      },
+      "subscores": {
+        "frontierCode": 47.58,
+        "terminalBench": 61.62,
+        "hleDiamond": 75.8,
+        "critptAgentic": 73.5,
+        "science": 67.62,
+        "omniscience": 78.03,
+        "hallucination": 60.39
+      }
     },
     {
       "id": "593f2d23-247b-41c9-a679-cebd225f0a9a",
@@ -1868,7 +5820,38 @@
         "color": "#cc785c"
       },
       "isReasoning": true,
-      "deprecated": false
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-09",
+      "family": {
+        "slug": "claude-fable-5-2",
+        "name": "Claude Fable 5.2"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 2467.36,
+      "costBreakdown": {
+        "input": 15.64678,
+        "reasoning": 7.66661,
+        "answer": 3.22517
+      },
+      "outTokens": {
+        "reasoning": 192701,
+        "answer": 81075,
+        "total": 273776
+      },
+      "subscores": {
+        "frontierCode": 48.76,
+        "terminalBench": 59.6,
+        "hleDiamond": 80.2,
+        "critptAgentic": 76.5,
+        "science": 73.33,
+        "omniscience": 79.13,
+        "hallucination": 59.27
+      }
     }
   ],
   "codingAgentSourceUrl": "https://artificialanalysis.ai/agents/coding-agents",
@@ -1897,10 +5880,47 @@
       "agentSlug": "codex",
       "modelName": "GPT-6 Luna (Max)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Codex:gpt-6-luna",
+        "name": "Codex - GPT-6 Luna"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1411.63,
+      "agentStats": {
+        "steps": 88.8,
+        "totalTokens": 10141374,
+        "cacheHitRate": 95.69
+      },
+      "costPercentiles": {
+        "p05": 0.0314,
+        "p25": 0.0598,
+        "p50": 0.1125,
+        "p75": 0.2073,
+        "p95": 0.5224
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 24.09
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 38.44
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 15.15
+        }
+      ]
     },
     {
       "id": "ab4f6cb89f990484067eca06109875b3",
@@ -1922,10 +5942,47 @@
       "agentSlug": "muse-code",
       "modelName": "Muse Ember (Max)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": true,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Muse Code:muse-ember",
+        "name": "Muse Code - Muse Ember"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1191.16,
+      "agentStats": {
+        "steps": 225.4,
+        "totalTokens": 21159542,
+        "cacheHitRate": 96.23
+      },
+      "costPercentiles": {
+        "p05": 0.0395,
+        "p25": 0.0669,
+        "p50": 0.1165,
+        "p75": 0.197,
+        "p95": 0.4667
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 20.79
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 54.84
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 43.43
+        }
+      ]
     },
     {
       "id": "e00a520b90336304cd56ead289bb59f2",
@@ -1947,10 +6004,42 @@
       "agentSlug": "mirror",
       "modelName": "Beam 1.0",
       "isReasoning": true,
+      "isOpenWeights": true,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Mirror:reflection-beam",
+        "name": "Mirror - Beam 1.0"
+      },
+      "timeSec": 2427.06,
+      "agentStats": {
+        "steps": 97.6,
+        "totalTokens": 5566504,
+        "cacheHitRate": 92.3
+      },
+      "costPercentiles": {
+        "p05": 0.0503,
+        "p25": 0.1109,
+        "p50": 0.1878,
+        "p75": 0.2972,
+        "p95": 0.7687
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 4.76
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 37.63
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 4.04
+        }
+      ]
     },
     {
       "id": "4553886307abc03b6a785a5e0a54bcec",
@@ -1972,10 +6061,47 @@
       "agentSlug": "deepseek-harness",
       "modelName": "DeepSeek V4.1 Flash 1017 (Max)",
       "isReasoning": true,
+      "isOpenWeights": true,
       "isDefault": true,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "DeepSeek Harness:deepseek-v4-1-flash-1017",
+        "name": "DeepSeek Harness - DeepSeek V4.1 Flash 1017"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1886.65,
+      "agentStats": {
+        "steps": 99.4,
+        "totalTokens": 16687151,
+        "cacheHitRate": 95.31
+      },
+      "costPercentiles": {
+        "p05": 0.0636,
+        "p25": 0.12,
+        "p50": 0.1735,
+        "p75": 0.2641,
+        "p95": 0.9649
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 20.66
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 61.56
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 28.28
+        }
+      ]
     },
     {
       "id": "8178a0ab530e25e65f53d836ef248eae",
@@ -1997,10 +6123,47 @@
       "agentSlug": "codex",
       "modelName": "GPT-6.2 Sol (Low)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Codex:gpt-6-2-sol",
+        "name": "Codex - GPT-6.2 Sol"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 431.73,
+      "agentStats": {
+        "steps": 33.7,
+        "totalTokens": 1305459,
+        "cacheHitRate": 90.74
+      },
+      "costPercentiles": {
+        "p05": 0.075,
+        "p25": 0.1145,
+        "p50": 0.2149,
+        "p75": 0.3331,
+        "p95": 0.6406
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 28.1
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 42.47
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 40.91
+        }
+      ]
     },
     {
       "id": "2827f8a25558cdb94dfada79c70b0d8c",
@@ -2022,10 +6185,47 @@
       "agentSlug": "codex",
       "modelName": "GPT-6.2 Sol (Medium)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Codex:gpt-6-2-sol",
+        "name": "Codex - GPT-6.2 Sol"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 505.94,
+      "agentStats": {
+        "steps": 40.4,
+        "totalTokens": 2283352,
+        "cacheHitRate": 93.76
+      },
+      "costPercentiles": {
+        "p05": 0.1669,
+        "p25": 0.2662,
+        "p50": 0.4361,
+        "p75": 0.6326,
+        "p95": 1.1844
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 36.29
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 50.27
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 49.49
+        }
+      ]
     },
     {
       "id": "e7d93c34f5c806bec7608750fc56e91a",
@@ -2047,10 +6247,47 @@
       "agentSlug": "codex",
       "modelName": "GPT-6.2 Astra (Low)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Codex:gpt-6-2-astra",
+        "name": "Codex - GPT-6.2 Astra"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 469.29,
+      "agentStats": {
+        "steps": 24,
+        "totalTokens": 551428,
+        "cacheHitRate": 89.25
+      },
+      "costPercentiles": {
+        "p05": 0.2482,
+        "p25": 0.3441,
+        "p50": 0.5084,
+        "p75": 0.7657,
+        "p95": 1.3412
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 26.51
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 36.29
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 43.94
+        }
+      ]
     },
     {
       "id": "c4f606fc3bab9772d3e2ab6c95ebed5a",
@@ -2072,10 +6309,47 @@
       "agentSlug": "codex",
       "modelName": "GPT-6.2 Sol (High)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Codex:gpt-6-2-sol",
+        "name": "Codex - GPT-6.2 Sol"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 635.38,
+      "agentStats": {
+        "steps": 42.3,
+        "totalTokens": 2960997,
+        "cacheHitRate": 94.33
+      },
+      "costPercentiles": {
+        "p05": 0.2321,
+        "p25": 0.3886,
+        "p50": 0.648,
+        "p75": 0.8406,
+        "p95": 1.5048
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 38.29
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 50.54
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 53.54
+        }
+      ]
     },
     {
       "id": "2b66aa9f8afa482977259846d9b207ba",
@@ -2097,10 +6371,47 @@
       "agentSlug": "codex",
       "modelName": "GPT-6.2 Sol (Xhigh)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": true,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Codex:gpt-6-2-sol",
+        "name": "Codex - GPT-6.2 Sol"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 755.82,
+      "agentStats": {
+        "steps": 42.6,
+        "totalTokens": 3261840,
+        "cacheHitRate": 94.37
+      },
+      "costPercentiles": {
+        "p05": 0.2938,
+        "p25": 0.5189,
+        "p50": 0.7908,
+        "p75": 1.0267,
+        "p95": 1.8576
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 40.44
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 51.34
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 57.58
+        }
+      ]
     },
     {
       "id": "da3088d1680debe97b7b536e6908c548",
@@ -2122,10 +6433,47 @@
       "agentSlug": "mistral-vibe",
       "modelName": "Mistral Large 4 (Medium)",
       "isReasoning": true,
+      "isOpenWeights": true,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Mistral Vibe:mistral-large-4",
+        "name": "Mistral Vibe - Mistral Large 4"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 2583.09,
+      "agentStats": {
+        "steps": 95.8,
+        "totalTokens": 7734757,
+        "cacheHitRate": 92.14
+      },
+      "costPercentiles": {
+        "p05": 0.0687,
+        "p25": 0.1978,
+        "p50": 0.4918,
+        "p75": 1.1765,
+        "p95": 2.7554
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 17.95
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 44.62
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 26.26
+        }
+      ]
     },
     {
       "id": "eae5a29e0ed56a9c2aa5b6e82dd082e2",
@@ -2147,10 +6495,47 @@
       "agentSlug": "codex",
       "modelName": "GPT-6.2 Astra (Medium)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Codex:gpt-6-2-astra",
+        "name": "Codex - GPT-6.2 Astra"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 695.32,
+      "agentStats": {
+        "steps": 30.1,
+        "totalTokens": 1017094,
+        "cacheHitRate": 91.9
+      },
+      "costPercentiles": {
+        "p05": 0.344,
+        "p25": 0.6165,
+        "p50": 0.9271,
+        "p75": 1.3815,
+        "p95": 2.7391
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 39.87
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 53.76
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 53.54
+        }
+      ]
     },
     {
       "id": "eb55a750b7784b3f03c16efc3c39e1ff",
@@ -2172,10 +6557,47 @@
       "agentSlug": "codex",
       "modelName": "GPT-6.2 Sol (Max)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Codex:gpt-6-2-sol",
+        "name": "Codex - GPT-6.2 Sol"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1051.38,
+      "agentStats": {
+        "steps": 45.1,
+        "totalTokens": 4254922,
+        "cacheHitRate": 94.64
+      },
+      "costPercentiles": {
+        "p05": 0.3635,
+        "p25": 0.6788,
+        "p50": 1.072,
+        "p75": 1.4277,
+        "p95": 2.3343
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 41.53
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 46.24
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 58.08
+        }
+      ]
     },
     {
       "id": "ad1f505937d9446886b286573593bd42",
@@ -2197,10 +6619,47 @@
       "agentSlug": "mistral-vibe",
       "modelName": "Mistral Large 4 (High)",
       "isReasoning": true,
+      "isOpenWeights": true,
       "isDefault": true,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Mistral Vibe:mistral-large-4",
+        "name": "Mistral Vibe - Mistral Large 4"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 2942.37,
+      "agentStats": {
+        "steps": 107.3,
+        "totalTokens": 9419484,
+        "cacheHitRate": 91.68
+      },
+      "costPercentiles": {
+        "p05": 0.1249,
+        "p25": 0.3381,
+        "p50": 0.6077,
+        "p75": 1.2918,
+        "p95": 3.753
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 20.47
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 58.87
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 42.42
+        }
+      ]
     },
     {
       "id": "5146f276cbceb4e9fdeb5834609f805b",
@@ -2222,10 +6681,47 @@
       "agentSlug": "codex",
       "modelName": "GPT-6.1 Sol (Max)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Codex:gpt-6-1-sol",
+        "name": "Codex - GPT-6.1 Sol"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1313.97,
+      "agentStats": {
+        "steps": 43,
+        "totalTokens": 4325533,
+        "cacheHitRate": 92.71
+      },
+      "costPercentiles": {
+        "p05": 0.3494,
+        "p25": 0.6421,
+        "p50": 1.0401,
+        "p75": 1.5389,
+        "p95": 3.0781
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 42.49
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 59.95
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 54.04
+        }
+      ]
     },
     {
       "id": "1fece3eef716cd9668b972cced54606c",
@@ -2247,10 +6743,47 @@
       "agentSlug": "codex",
       "modelName": "GPT-6.1 Terra (Max)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Codex:gpt-6-1-terra",
+        "name": "Codex - GPT-6.1 Terra"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1685.53,
+      "agentStats": {
+        "steps": 105.5,
+        "totalTokens": 14350373,
+        "cacheHitRate": 96.77
+      },
+      "costPercentiles": {
+        "p05": 0.3502,
+        "p25": 0.646,
+        "p50": 1.0205,
+        "p75": 1.6498,
+        "p95": 3.7334
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 41.41
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 54.03
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 50.51
+        }
+      ]
     },
     {
       "id": "2b8b120200b4dc63bb579d5a53b52b70",
@@ -2272,10 +6805,47 @@
       "agentSlug": "claude-code",
       "modelName": "Claude Haiku 5.5 (Max)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Claude Code:claude-haiku-5-5",
+        "name": "Claude Code - Claude Haiku 5.5"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 4645.86,
+      "agentStats": {
+        "steps": 109.3,
+        "totalTokens": 12414139,
+        "cacheHitRate": 90.21
+      },
+      "costPercentiles": {
+        "p05": 0.3127,
+        "p25": 0.7373,
+        "p50": 1.6673,
+        "p75": 3.6308,
+        "p95": 5.854
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 23.08
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 33.87
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 31.82
+        }
+      ]
     },
     {
       "id": "f60010d6306ed860deef16152e949af3",
@@ -2297,10 +6867,47 @@
       "agentSlug": "codex",
       "modelName": "GPT-6.2 Astra (High)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Codex:gpt-6-2-astra",
+        "name": "Codex - GPT-6.2 Astra"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 947.36,
+      "agentStats": {
+        "steps": 40.2,
+        "totalTokens": 2262376,
+        "cacheHitRate": 94.07
+      },
+      "costPercentiles": {
+        "p05": 0.6403,
+        "p25": 1.1516,
+        "p50": 2.1377,
+        "p75": 3.1431,
+        "p95": 5.1528
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 42.16
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 54.57
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 60.1
+        }
+      ]
     },
     {
       "id": "09e56f8cd938c59b1a9a600141535ab0",
@@ -2322,10 +6929,47 @@
       "agentSlug": "claude-code",
       "modelName": "Claude Fable 5.2 (Low, Default Fallback)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Claude Code:claude-fable-5-2",
+        "name": "Claude Code - Claude Fable 5.2"
+      },
+      "effort": {
+        "slug": "low",
+        "label": "low",
+        "level": 20
+      },
+      "timeSec": 801.23,
+      "agentStats": {
+        "steps": 22.2,
+        "totalTokens": 1638981,
+        "cacheHitRate": 92.04
+      },
+      "costPercentiles": {
+        "p05": 0.5633,
+        "p25": 0.8932,
+        "p50": 1.3758,
+        "p75": 2.2097,
+        "p95": 6.5903
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 30.91
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 59.95
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 53.03
+        }
+      ]
     },
     {
       "id": "b02d0ed1020688cc426aebb910ee1cd8",
@@ -2347,10 +6991,47 @@
       "agentSlug": "claude-code",
       "modelName": "Claude Fable 5.2 (Medium, Default Fallback)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Claude Code:claude-fable-5-2",
+        "name": "Claude Code - Claude Fable 5.2"
+      },
+      "effort": {
+        "slug": "medium",
+        "label": "medium",
+        "level": 30
+      },
+      "timeSec": 907.76,
+      "agentStats": {
+        "steps": 25.7,
+        "totalTokens": 1902882,
+        "cacheHitRate": 92.46
+      },
+      "costPercentiles": {
+        "p05": 0.6284,
+        "p25": 1.0311,
+        "p50": 1.6653,
+        "p75": 2.7027,
+        "p95": 7.9172
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 35.82
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 63.71
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 59.6
+        }
+      ]
     },
     {
       "id": "291529f5989be92da6395f4bb93da395",
@@ -2372,10 +7053,47 @@
       "agentSlug": "kimi-code-cli",
       "modelName": "Kimi K3.1 Pro",
       "isReasoning": true,
+      "isOpenWeights": true,
       "isDefault": true,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Kimi Code CLI:kimi-k3-1-pro",
+        "name": "Kimi Code CLI - Kimi K3.1 Pro"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 2508.53,
+      "agentStats": {
+        "steps": 185.2,
+        "totalTokens": 8893460,
+        "cacheHitRate": 95.77
+      },
+      "costPercentiles": {
+        "p05": 0.6045,
+        "p25": 1.1365,
+        "p50": 1.9006,
+        "p75": 3.076,
+        "p95": 6.7447
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 22.02
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 56.72
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 67.17
+        }
+      ]
     },
     {
       "id": "d2d75a8abf0ca8d8888f99cff7bee543",
@@ -2397,10 +7115,47 @@
       "agentSlug": "codex",
       "modelName": "GPT-6.2 Astra (Xhigh)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Codex:gpt-6-2-astra",
+        "name": "Codex - GPT-6.2 Astra"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 992.35,
+      "agentStats": {
+        "steps": 45,
+        "totalTokens": 3087611,
+        "cacheHitRate": 94.54
+      },
+      "costPercentiles": {
+        "p05": 0.8328,
+        "p25": 1.6758,
+        "p50": 2.926,
+        "p75": 4.0385,
+        "p95": 6.7101
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 43.48
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 53.76
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 62.12
+        }
+      ]
     },
     {
       "id": "b4fbcf18275aad4049cd12448d37af9f",
@@ -2422,10 +7177,42 @@
       "agentSlug": "claude-code",
       "modelName": "Step 5 Preview",
       "isReasoning": true,
+      "isOpenWeights": true,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Claude Code:step-5-preview",
+        "name": "Claude Code - Step 5 Preview"
+      },
+      "timeSec": 3570.85,
+      "agentStats": {
+        "steps": 147.3,
+        "totalTokens": 24489159,
+        "cacheHitRate": 97.55
+      },
+      "costPercentiles": {
+        "p05": 0.4683,
+        "p25": 1.2241,
+        "p50": 1.9071,
+        "p75": 3.8285,
+        "p95": 9.7138
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 18.45
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 58.6
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 30.3
+        }
+      ]
     },
     {
       "id": "6e872dc3aa0bc90635d8ae831e28f074",
@@ -2447,10 +7234,42 @@
       "agentSlug": "claude-code",
       "modelName": "Qwen3.8 Max",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Claude Code:qwen3-8-max-0803",
+        "name": "Claude Code - Qwen3.8 Max"
+      },
+      "timeSec": 4886.4,
+      "agentStats": {
+        "steps": 118.8,
+        "totalTokens": 9635769,
+        "cacheHitRate": 94.56
+      },
+      "costPercentiles": {
+        "p05": 0.6365,
+        "p25": 1.5165,
+        "p50": 2.7139,
+        "p75": 4.6925,
+        "p95": 10.4963
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 24.83
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 56.18
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 17.17
+        }
+      ]
     },
     {
       "id": "8180f45e6f53fc70033de79909aa3b6c",
@@ -2472,10 +7291,47 @@
       "agentSlug": "muse-code",
       "modelName": "Muse Spark 1.3 (Max)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Muse Code:muse-spark-1-3",
+        "name": "Muse Code - Muse Spark 1.3"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1466.61,
+      "agentStats": {
+        "steps": 214.6,
+        "totalTokens": 19965956,
+        "cacheHitRate": 96.65
+      },
+      "costPercentiles": {
+        "p05": 0.3626,
+        "p25": 0.8253,
+        "p50": 1.5388,
+        "p75": 3.4503,
+        "p95": 12.9306
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 21.91
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 58.6
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 29.8
+        }
+      ]
     },
     {
       "id": "8e5d9d2dc96b716e4d0b96706efc4548",
@@ -2497,10 +7353,47 @@
       "agentSlug": "antigravity-cli",
       "modelName": "Gemini 4 Hydrogen (Xhigh)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": true,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Antigravity CLI:gemini-4-hydrogen",
+        "name": "Antigravity CLI - Gemini 4 Hydrogen"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 1926.3,
+      "agentStats": {
+        "steps": 405.5,
+        "totalTokens": 18536943,
+        "cacheHitRate": 93.28
+      },
+      "costPercentiles": {
+        "p05": 1.0069,
+        "p25": 2.0555,
+        "p50": 3.2237,
+        "p75": 5.6647,
+        "p95": 11.2353
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 36.63
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 60.22
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 60.1
+        }
+      ]
     },
     {
       "id": "7853ef55ffc046be0c351cb5ba7d0290",
@@ -2522,10 +7415,47 @@
       "agentSlug": "codex",
       "modelName": "GPT-6.2 Astra (Max)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": true,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Codex:gpt-6-2-astra",
+        "name": "Codex - GPT-6.2 Astra"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1506.75,
+      "agentStats": {
+        "steps": 51,
+        "totalTokens": 4665449,
+        "cacheHitRate": 95.37
+      },
+      "costPercentiles": {
+        "p05": 1.5094,
+        "p25": 3.0048,
+        "p50": 4.6705,
+        "p75": 6.2692,
+        "p95": 9.8341
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 41.67
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 55.11
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 63.64
+        }
+      ]
     },
     {
       "id": "5188996d2a6dad5165cdeebb51f983fe",
@@ -2547,10 +7477,47 @@
       "agentSlug": "opencode",
       "modelName": "GLM-5.3 (Max)",
       "isReasoning": true,
+      "isOpenWeights": true,
       "isDefault": true,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Opencode:glm-5-3",
+        "name": "Opencode - GLM-5.3"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 3167.21,
+      "agentStats": {
+        "steps": 114,
+        "totalTokens": 17732691,
+        "cacheHitRate": 96.65
+      },
+      "costPercentiles": {
+        "p05": 0.5557,
+        "p25": 1.523,
+        "p50": 2.7428,
+        "p75": 5.9824,
+        "p95": 18.0393
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 21.35
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 58.6
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 40.4
+        }
+      ]
     },
     {
       "id": "bdeb89e3a86551106e671c63fa1415bc",
@@ -2572,10 +7539,47 @@
       "agentSlug": "antigravity-cli",
       "modelName": "Gemini 4 Argon (High)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Antigravity CLI:gemini-4-argon",
+        "name": "Antigravity CLI - Gemini 4 Argon"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 2263.55,
+      "agentStats": {
+        "steps": 170.7,
+        "totalTokens": 16446080,
+        "cacheHitRate": 87
+      },
+      "costPercentiles": {
+        "p05": 0.977,
+        "p25": 2.2729,
+        "p50": 4.5154,
+        "p75": 9.2384,
+        "p95": 20.2355
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 24.82
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 55.11
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 56.57
+        }
+      ]
     },
     {
       "id": "7814cb87040ea234c69eca79cd85486d",
@@ -2597,10 +7601,47 @@
       "agentSlug": "antigravity-cli",
       "modelName": "Gemini 4 Carbon (High)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": true,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Antigravity CLI:gemini-4-carbon",
+        "name": "Antigravity CLI - Gemini 4 Carbon"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 2015.47,
+      "agentStats": {
+        "steps": 186.2,
+        "totalTokens": 15431287,
+        "cacheHitRate": 94.81
+      },
+      "costPercentiles": {
+        "p05": 1.7346,
+        "p25": 3.4183,
+        "p50": 5.2811,
+        "p75": 8.8545,
+        "p95": 16.7971
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 38.04
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 63.71
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 64.65
+        }
+      ]
     },
     {
       "id": "37d7db5622db33bcc5c6824d564246e7",
@@ -2622,10 +7663,47 @@
       "agentSlug": "claude-code",
       "modelName": "Claude Fable 5.2 (High, Default Fallback)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Claude Code:claude-fable-5-2",
+        "name": "Claude Code - Claude Fable 5.2"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 1878.96,
+      "agentStats": {
+        "steps": 54.6,
+        "totalTokens": 5117806,
+        "cacheHitRate": 94
+      },
+      "costPercentiles": {
+        "p05": 1.1742,
+        "p25": 2.4983,
+        "p50": 4.2255,
+        "p75": 8.0169,
+        "p95": 22.0928
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 48.74
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 61.83
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 64.14
+        }
+      ]
     },
     {
       "id": "f83b8dc1b834e06b1dd1142e29bc77fc",
@@ -2647,10 +7725,47 @@
       "agentSlug": "muse-code",
       "modelName": "Muse Wonder (Max)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": true,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Muse Code:muse-wonder",
+        "name": "Muse Code - Muse Wonder"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1632.34,
+      "agentStats": {
+        "steps": 201.1,
+        "totalTokens": 15991791,
+        "cacheHitRate": 93.81
+      },
+      "costPercentiles": {
+        "p05": 1.5274,
+        "p25": 2.9731,
+        "p50": 4.7617,
+        "p75": 7.5097,
+        "p95": 17.9179
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 24.39
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 61.56
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 47.47
+        }
+      ]
     },
     {
       "id": "97f24b3f300fe06034101d053f3a894b",
@@ -2672,10 +7787,47 @@
       "agentSlug": "codex",
       "modelName": "GPT-6 Astra (Max)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Codex:gpt-6-astra",
+        "name": "Codex - GPT-6 Astra"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 1559.43,
+      "agentStats": {
+        "steps": 40.8,
+        "totalTokens": 3474079,
+        "cacheHitRate": 93.08
+      },
+      "costPercentiles": {
+        "p05": 1.8791,
+        "p25": 3.5538,
+        "p50": 5.793,
+        "p75": 8.0631,
+        "p95": 13.5718
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 42.58
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 59.14
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 57.58
+        }
+      ]
     },
     {
       "id": "5dfda0c81da51afcbeb49869c14445b2",
@@ -2697,10 +7849,38 @@
       "agentSlug": "devin-fusion-cli",
       "modelName": "Claude Opus 5.5 Max + GPT-6 Luna High",
       "isReasoning": false,
+      "isOpenWeights": false,
       "isDefault": true,
       "isRouter": true,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "timeSec": 3295.79,
+      "agentStats": {
+        "steps": 111,
+        "totalTokens": 12394556,
+        "cacheHitRate": 86.93
+      },
+      "costPercentiles": {
+        "p05": 2.6889,
+        "p25": 5.0494,
+        "p50": 7.0176,
+        "p75": 9.8705,
+        "p95": 16.7187
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 44.3
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 68.28
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 62.63
+        }
+      ]
     },
     {
       "id": "4d278d53a18fbdcb5138d11466ea0b1b",
@@ -2722,10 +7902,47 @@
       "agentSlug": "claude-code",
       "modelName": "Claude Sonnet 5.5 (Max, Default Fallback)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": true,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Claude Code:claude-sonnet-5-5",
+        "name": "Claude Code - Claude Sonnet 5.5"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 5207.28,
+      "agentStats": {
+        "steps": 249.4,
+        "totalTokens": 26365825,
+        "cacheHitRate": 95.18
+      },
+      "costPercentiles": {
+        "p05": 1.8586,
+        "p25": 4.7105,
+        "p50": 8.5797,
+        "p75": 16.1646,
+        "p95": 27.9066
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 39.09
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 64.25
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 65.66
+        }
+      ]
     },
     {
       "id": "98e53b1f02eee089dc8221078e300b3e",
@@ -2747,10 +7964,47 @@
       "agentSlug": "claude-code",
       "modelName": "Claude Fable 5.1 (Max, Default Fallback)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Claude Code:claude-fable-5-1",
+        "name": "Claude Code - Claude Fable 5.1"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 2180.71,
+      "agentStats": {
+        "steps": 44,
+        "totalTokens": 6684287,
+        "cacheHitRate": 92.31
+      },
+      "costPercentiles": {
+        "p05": 3.8868,
+        "p25": 6.3953,
+        "p50": 8.995,
+        "p75": 12.5693,
+        "p95": 27.2864
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 32.99
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 66.4
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 58.08
+        }
+      ]
     },
     {
       "id": "e594775f1aa1026d8fa9385fa35f68b4",
@@ -2772,10 +8026,47 @@
       "agentSlug": "claude-code",
       "modelName": "Claude Opus 5.5 (Max, Default Fallback)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": true,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Claude Code:claude-opus-5-5",
+        "name": "Claude Code - Claude Opus 5.5"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 3919.21,
+      "agentStats": {
+        "steps": 159.1,
+        "totalTokens": 15885266,
+        "cacheHitRate": 95.24
+      },
+      "costPercentiles": {
+        "p05": 2.7215,
+        "p25": 5.6412,
+        "p50": 9.66,
+        "p75": 15.2185,
+        "p95": 32.5663
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 43.97
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 65.86
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 64.65
+        }
+      ]
     },
     {
       "id": "7989f86ae8d744efb7608655672ab296",
@@ -2797,10 +8088,47 @@
       "agentSlug": "grok-build",
       "modelName": "Grok 4.7 (Xhigh)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": true,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Grok Build:grok-4-7",
+        "name": "Grok Build - Grok 4.7"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 2197.96,
+      "agentStats": {
+        "steps": 174.2,
+        "totalTokens": 17067119,
+        "cacheHitRate": 95.31
+      },
+      "costPercentiles": {
+        "p05": 1.8838,
+        "p25": 4.1541,
+        "p50": 7.7384,
+        "p75": 14.9333,
+        "p95": 35.5906
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 29.69
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 62.9
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 32.32
+        }
+      ]
     },
     {
       "id": "9820ee072540fb8c51becfc2b1f274c8",
@@ -2822,10 +8150,47 @@
       "agentSlug": "claude-code",
       "modelName": "Claude Fable 5.2 (Xhigh, Default Fallback)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": true,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Claude Code:claude-fable-5-2",
+        "name": "Claude Code - Claude Fable 5.2"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xhigh",
+        "level": 50
+      },
+      "timeSec": 3195.41,
+      "agentStats": {
+        "steps": 94.7,
+        "totalTokens": 9754403,
+        "cacheHitRate": 94.31
+      },
+      "costPercentiles": {
+        "p05": 2.4573,
+        "p25": 6.3557,
+        "p50": 10.5373,
+        "p75": 17.642,
+        "p95": 44.3462
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 49.18
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 62.1
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 64.14
+        }
+      ]
     },
     {
       "id": "78442b1eea1f0b696ab08b6d12ec9354",
@@ -2847,10 +8212,47 @@
       "agentSlug": "claude-code",
       "modelName": "Claude Fable 5.2 (Max, Default Fallback)",
       "isReasoning": true,
+      "isOpenWeights": false,
       "isDefault": false,
       "isRouter": false,
       "isUnavailable": false,
-      "benchmarkCount": 3
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Claude Code:claude-fable-5-2",
+        "name": "Claude Code - Claude Fable 5.2"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "max",
+        "level": 60
+      },
+      "timeSec": 7767.6,
+      "agentStats": {
+        "steps": 214.4,
+        "totalTokens": 24031074,
+        "cacheHitRate": 93.44
+      },
+      "costPercentiles": {
+        "p05": 8.2423,
+        "p25": 24.1789,
+        "p50": 39.4675,
+        "p75": 58.5966,
+        "p95": 98.9595
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 43.6
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 60.48
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 63.13
+        }
+      ]
     }
   ]
 }

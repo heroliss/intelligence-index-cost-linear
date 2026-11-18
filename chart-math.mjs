@@ -14,20 +14,44 @@ export function ticks(min, max, count = 8) {
   return result;
 }
 
-export function paretoFrontier(rows) {
+export function paretoFrontier(rows, xOf = d => d.cost) {
   let best = -Infinity;
-  return [...rows].sort((a, b) => a.cost - b.cost || b.intelligenceIndex - a.intelligenceIndex).filter(row => {
-    if (row.intelligenceIndex <= best) return false;
-    best = row.intelligenceIndex;
-    return true;
-  });
+  return [...rows]
+    .filter(row => Number.isFinite(xOf(row)) && xOf(row) >= 0)
+    .sort((a, b) => xOf(a) - xOf(b) || b.intelligenceIndex - a.intelligenceIndex)
+    .filter(row => {
+      if (row.intelligenceIndex <= best) return false;
+      best = row.intelligenceIndex;
+      return true;
+    });
 }
 
-export function dataBounds(rows) {
-  const maxX = Math.max(1, ...rows.map(d => d.cost)), maxY = Math.max(1, ...rows.map(d => d.intelligenceIndex));
+export function dataBounds(rows, xOf = d => d.cost) {
+  const xs = rows.map(xOf).filter(v => Number.isFinite(v) && v >= 0);
+  const maxX = Math.max(1, ...(xs.length ? xs : [1])), maxY = Math.max(1, ...rows.map(d => d.intelligenceIndex));
   const minY = Math.min(0, ...rows.map(d => d.intelligenceIndex));
   const y = minY < 0 ? Math.floor(minY / 5) * 5 - 2 : 0;
   return {x: 0, y, width: maxX * 1.08, height: Math.ceil(maxY / 5) * 5 - y};
+}
+
+export function effortTrajectories(rows, xOf = d => d.cost) {
+  const groups = new Map();
+  for (const row of rows) {
+    const slug = row?.family?.slug;
+    const xVal = xOf(row);
+    if (!slug || !row?.effort || !Number.isFinite(xVal) || xVal < 0 || !Number.isFinite(row.intelligenceIndex)) continue;
+    if (!groups.has(slug)) {
+      groups.set(slug, {slug, name: row.family.name || slug, creator: row.creator, points: []});
+    }
+    groups.get(slug).points.push(row);
+  }
+  const trajectories = [];
+  for (const group of groups.values()) {
+    if (group.points.length < 2) continue;
+    group.points.sort((a, b) => (a.effort.level - b.effort.level) || (xOf(a) - xOf(b)) || a.id.localeCompare(b.id));
+    trajectories.push(group);
+  }
+  return trajectories;
 }
 
 export function clampView(view, bounds) {

@@ -19,8 +19,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261118-4">
-  <script type="module" src="app.js?v=20261118-4"></script>
+  <link rel="stylesheet" href="styles.css?v=20261118-5">
+  <script type="module" src="app.js?v=20261118-5"></script>
 </head>
 <body>
 <main class="app">
@@ -75,6 +75,10 @@
           <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="2" y="3.2" width="12" height="9.6" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M2 6.6h12M5.2 9.8h3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
           <span data-i18n="subView">订阅回本</span>
         </button>
+        <button id="compareView" type="button" data-view="compare" aria-pressed="false" aria-controls="comparePanel">
+          <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><polygon points="8,2 13.5,6 11.4,13 4.6,13 2.5,6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><circle cx="8" cy="8" r="1.4" fill="currentColor"/></svg>
+          <span data-i18n="compareView">剖析对比</span>
+        </button>
       </div>
 
       <div class="panel-heading">
@@ -95,6 +99,7 @@
         <span><i class="line-swatch" aria-hidden="true"></i><span id="keyFrontier">帕累托前沿</span></span>
         <span id="keyIsoWrap" hidden><i class="iso-swatch" aria-hidden="true"></i><span id="keyIso">最优等性价比切线</span></span>
         <span id="keySubWrap" hidden><i class="sub-swatch" aria-hidden="true"></i><span id="keySub">订阅回本成本线</span></span>
+        <span id="keyEffortWrap" hidden><i class="effort-swatch" aria-hidden="true"></i><span id="keyEffort">同系列推理轨迹</span></span>
         <span id="keyBetter" class="key-note">越靠左上越理想</span>
       </div>
 
@@ -102,15 +107,19 @@
 
       <div id="toolbar" class="toolbar">
         <div id="viewControls" class="view-controls">
-          <button id="reset" type="button">重置视图</button>
-          <button id="fit" type="button">显示全部</button>
+          <div id="xMetricSwitch" class="axis-controls" role="group" aria-label="横轴维度">
+            <button id="xMetricCost" type="button" aria-pressed="true">成本</button>
+            <button id="xMetricTime" type="button" aria-pressed="false">耗时</button>
+          </div>
+          <button id="reset" type="button">重置</button>
+          <button id="fit" type="button">全部</button>
           <div class="axis-controls" role="group" aria-label="横轴缩放">
-            <button id="xminus" type="button" aria-label="缩小横轴">X −</button>
-            <button id="xplus" type="button" aria-label="放大横轴">X +</button>
+            <button id="xminus" type="button" aria-label="缩小横轴">X−</button>
+            <button id="xplus" type="button" aria-label="放大横轴">X+</button>
           </div>
           <div class="axis-controls" role="group" aria-label="纵轴缩放">
-            <button id="yminus" type="button" aria-label="缩小纵轴">Y −</button>
-            <button id="yplus" type="button" aria-label="放大纵轴">Y +</button>
+            <button id="yminus" type="button" aria-label="缩小纵轴">Y−</button>
+            <button id="yplus" type="button" aria-label="放大纵轴">Y+</button>
           </div>
         </div>
 
@@ -119,10 +128,17 @@
             <span id="searchSr" class="sr-only">查找模型或厂商</span>
             <input id="search" type="search" placeholder="查找模型或厂商…" autocomplete="off">
           </label>
-          <button id="frontier" type="button" aria-pressed="false">仅看前沿</button>
-          <button id="isoToggle" type="button" aria-pressed="false">等值切线</button>
+          <div id="licenseGroup" class="axis-controls" role="group" aria-label="开源与闭源筛选">
+            <button type="button" data-license="all" aria-pressed="true">全部</button>
+            <button type="button" data-license="open" aria-pressed="false">开源</button>
+            <button type="button" data-license="closed" aria-pressed="false">闭源</button>
+          </div>
+          <button id="frontier" type="button" aria-pressed="false">仅前沿</button>
+          <button id="effortToggle" type="button" aria-pressed="false">推理轨迹</button>
+          <button id="isoToggle" type="button" aria-pressed="false">等值线</button>
           <button id="subLineToggle" type="button" aria-pressed="false">回本线</button>
-          <button id="clearFilters" type="button" hidden>清除筛选</button>
+          <button id="exportCsv" type="button" hidden>导出 CSV</button>
+          <button id="clearFilters" type="button" hidden>清除</button>
         </div>
 
         <div id="optionsPanel" class="options-panel">
@@ -206,13 +222,17 @@
       <aside id="pinnedCard" class="pinned-card" hidden aria-label="锁定节点详情" aria-live="polite">
         <div class="pin-heading">
           <span id="pinnedBadge" class="pin-badge">已锁定节点</span>
-          <button id="unpin" type="button">取消 · Esc</button>
+          <div class="pin-actions">
+            <button id="pinCompareBtn" type="button">+ 对比</button>
+            <button id="unpin" type="button">取消 · Esc</button>
+          </div>
         </div>
         <strong id="pinnedName"></strong>
         <div id="pinnedMeta" class="pin-meta"></div>
         <div class="pin-values">
           <div><span id="pinScoreLabel">指数</span><b id="pinnedScore"></b></div>
-          <div><span id="pinCostLabel">每任务成本</span><b id="pinnedCost"></b></div>
+          <div><span id="pinCostLabel">单次成本</span><b id="pinnedCost"></b></div>
+          <div><span id="pinTimeLabel">平均耗时</span><b id="pinnedTime"></b></div>
           <div><span id="pinValueLabel">性价比</span><b id="pinnedValue"></b></div>
         </div>
         <p id="pinnedSubNote" class="pin-sub-note"></p>
@@ -277,6 +297,38 @@
           </thead>
           <tbody id="subTableBody"></tbody>
         </table>
+      </div>
+    </div>
+
+    <div id="comparePanel" class="compare-panel" hidden>
+      <div class="compare-bar">
+        <div id="compareChips" class="compare-chips" role="list" aria-label="已选对比条目"></div>
+        <div class="compare-actions">
+          <label class="compare-select-wrap">
+            <span id="compareSelectSr" class="sr-only">添加条目到多维对比</span>
+            <select id="compareSelect"><option value="">+ 添加对比条目…</option></select>
+          </label>
+          <button id="compareAutoBtn" type="button">推荐代表组合</button>
+        </div>
+      </div>
+      <div class="compare-scroll">
+        <div class="compare-grid">
+          <section class="compare-section" aria-labelledby="radarHeading">
+            <h3 id="radarHeading">细分基准能力雷达与分项对比</h3>
+            <div class="radar-layout">
+              <svg id="radarSvg" class="radar-svg" viewBox="0 0 370 264" role="img" aria-label="多模型细分能力雷达图"></svg>
+              <div id="subscoreBars" class="subscore-bars"></div>
+            </div>
+          </section>
+          <section class="compare-section" aria-labelledby="anatomyHeading">
+            <h3 id="anatomyHeading">单任务成本结构拆解与耗时剖析</h3>
+            <div id="anatomyBody" class="anatomy-body"></div>
+          </section>
+          <section class="compare-section compare-full" aria-labelledby="matrixHeading">
+            <h3 id="matrixHeading">核心指标并排对决表</h3>
+            <div class="matrix-scroll"><table id="compareMatrix" class="compare-matrix"></table></div>
+          </section>
+        </div>
       </div>
     </div>
 

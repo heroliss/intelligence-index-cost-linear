@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {
   dataBounds,
+  effortTrajectories,
   clampView,
   pointerZoomView,
   paretoFrontier,
@@ -359,6 +360,30 @@ test('table names, creators, ties, and immutability hold across sorts', () => {
   }
   assert.deepEqual(sortRows(rows, 'creator', 'asc').map(d => d.id), ['a', 'c', 'b']);
   assert.deepEqual(rows, before);
+});
+
+test('custom xOf accessor supports speed-intelligence Pareto frontier, time bounds, and effort trajectories', async () => {
+  const entries = [
+    {id: 'm-low', name: 'M (low)', cost: 0.3, timeSec: 60, intelligenceIndex: 44, family: {slug: 'm', name: 'M'}, effort: {slug: 'low', label: 'low', level: 1}},
+    {id: 'm-high', name: 'M (high)', cost: 1.5, timeSec: 240, intelligenceIndex: 58, family: {slug: 'm', name: 'M'}, effort: {slug: 'high', label: 'high', level: 3}},
+    {id: 'm-med', name: 'M (med)', cost: 0.7, timeSec: 120, intelligenceIndex: 53, family: {slug: 'm', name: 'M'}, effort: {slug: 'med', label: 'med', level: 2}},
+    {id: 'solo', name: 'Solo', cost: 0.5, timeSec: 90, intelligenceIndex: 55, family: {slug: 's', name: 'S'}, effort: {slug: 'high', label: 'high', level: 3}},
+    {id: 'no-time', name: 'Legacy', cost: 0.1, timeSec: null, intelligenceIndex: 60, family: {slug: 'm', name: 'M'}, effort: {slug: 'max', label: 'max', level: 4}}
+  ];
+  const timeMin = d => (typeof d.timeSec === 'number' && d.timeSec > 0 ? d.timeSec / 60 : NaN);
+  assert.deepEqual(paretoFrontier(entries, timeMin).map(d => d.id), ['m-low', 'solo', 'm-high']);
+  const bounds = dataBounds(entries, timeMin);
+  assert.equal(bounds.x, 0);
+  assert.ok(Math.abs(bounds.width - 4 * 1.08) < 1e-12);
+
+  const trajs = effortTrajectories(entries, timeMin);
+  assert.equal(trajs.length, 1);
+  assert.equal(trajs[0].slug, 'm');
+  assert.deepEqual(trajs[0].points.map(p => p.id), ['m-low', 'm-med', 'm-high']);
+
+  const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
+  assert.ok(effortTrajectories(snapshot.models).length >= 5, 'live models include multi-effort trajectories');
+  assert.ok(effortTrajectories(snapshot.codingAgents).length >= 3, 'live coding agents include multi-effort trajectories');
 });
 
 test('cache-busting version query strings match across index.html and app.js', async () => {

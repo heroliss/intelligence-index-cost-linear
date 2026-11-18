@@ -38,6 +38,49 @@ test('coding score is converted from a fraction once; absent telemetry is not ze
   assert.equal(simplifyCodingAgent({ ...agent, indexComponentCount: 2 }), null);
 });
 
+test('enriched model and coding-agent telemetry preserves open weights, subscores, cost breakdown, and percentiles', () => {
+  const richModel = simplifyModel({
+    ...model,
+    isOpenWeights: true,
+    releaseDate: '2026-09-01',
+    release: { slug: 'example-family', name: 'Example Family' },
+    effort: { slug: 'high', label: 'High', level: 3 },
+    intelligenceIndexTimePerTask: 142.346,
+    intelligenceIndexCostPerTask: { cost: { total: 1.25, input: 0.15, output: 1.1, reasoning: 0.9, answer: 0.2 } },
+    intelligenceIndexOutputTokensPerTask: { output: 18400.4, reasoning: 15200.2, answer: 3200.2 },
+    frontierCode20: 0.625,
+    omniscienceHallucinationRate: 0.312
+  });
+  assert.equal(richModel.isOpenWeights, true);
+  assert.equal(richModel.releaseDate, '2026-09-01');
+  assert.deepEqual(richModel.family, { slug: 'example-family', name: 'Example Family' });
+  assert.deepEqual(richModel.effort, { slug: 'high', label: 'High', level: 3 });
+  assert.equal(richModel.timeSec, 142.35);
+  assert.deepEqual(richModel.costBreakdown, { input: 0.15, reasoning: 0.9, answer: 0.2 });
+  assert.deepEqual(richModel.outTokens, { reasoning: 15200, answer: 3200, total: 18400 });
+  assert.equal(richModel.subscores.frontierCode, 62.5);
+  assert.equal(richModel.subscores.hallucination, 31.2);
+  assert.equal(richModel.subscores.science, null);
+
+  const openSet = new Set(['example family']);
+  const richAgent = simplifyCodingAgent({
+    ...agent,
+    agentRelease: { key: 'claude-code', name: 'Claude Code' },
+    model: { release: { shortName: 'Example Family' }, effort: { slug: 'max', label: 'Max', level: 4 } },
+    mean: { costUsd: 7.6, agentWallTimeSec: 915.4, steps: 64.24, totalTokens: 1250000, cacheHitRate: 0.942 },
+    percentiles: { costUsd: { p05: 0.4, p25: 1.8, p50: 4.5, p75: 9.2, p95: 22.7 } },
+    evals: [{ evaluationDatasetSlug: 'FrontierCode 2.0', mean: { reward: 0.584 } }]
+  }, 3, openSet);
+  assert.equal(richAgent.isOpenWeights, true);
+  assert.deepEqual(richAgent.family, { slug: 'claude-code', name: 'Claude Code' });
+  assert.deepEqual(richAgent.effort, { slug: 'max', label: 'Max', level: 4 });
+  assert.equal(richAgent.timeSec, 915.4);
+  assert.deepEqual(richAgent.agentStats, { steps: 64.2, totalTokens: 1250000, cacheHitRate: 94.2 });
+  assert.equal(richAgent.costPercentiles.p50, 4.5);
+  assert.equal(richAgent.costPercentiles.p95, 22.7);
+  assert.deepEqual(richAgent.evalScores, [{ name: 'FrontierCode 2.0', score: 58.4 }]);
+});
+
 test('Flight rows resolve highlighted-row references across split chunks and multi-push script tags', () => {
   const html = flight({ '31': ['$', '$L1', null, { children: ['$', '$L2', null, { rows: [agent] }] }], '32': ['$', '$L3', null, { benchmarkRows: ['$31:props:children:props:rows:0', { ...agent, id: 'agent-2' }] }] }, 83);
   assert.deepEqual(readCodingRows(html).map(row => row.id), ['agent-1', 'agent-2']);

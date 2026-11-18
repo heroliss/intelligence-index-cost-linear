@@ -138,17 +138,69 @@ function creator(value) {
   return { name: value?.name || 'Other', color: /^#(?:[0-9a-f]{3}){1,2}$/i.test(value?.color || '') ? value.color : '#777777' };
 }
 
+function numOrNull(value, digits = 6) {
+  return typeof value === 'number' && Number.isFinite(value) ? Number(value.toFixed(digits)) : null;
+}
+
+function pctOrNull(value) {
+  return typeof value === 'number' && Number.isFinite(value) ? Number((value * 100).toFixed(2)) : null;
+}
+
 function simplifyModel(model) {
-  const cost = model.intelligenceIndexCostPerTask?.cost?.total ?? model.intelligenceIndexCostPerTask?.total;
+  const costObj = model.intelligenceIndexCostPerTask?.cost ?? model.intelligenceIndexCostPerTask;
+  const cost = costObj?.total;
   const score = model.intelligenceIndex;
   // Preserve the original positive-cost admission rule: zeroed source totals
   // are not sufficient evidence that a hosted model is free to run.
   if (!model.id || typeof model.name !== 'string' || !Number.isFinite(cost) || cost <= 0 || !Number.isFinite(score) || score < 0 || score > 100) return null;
-  return {
+
+  const entry = {
     id: model.id, slug: model.slug, name: model.name, shortName: model.shortName || model.name,
     intelligenceIndex: score, cost, creator: creator(model.creator),
-    isReasoning: !!model.isReasoning, deprecated: !!model.deprecated
+    isReasoning: !!model.isReasoning, isOpenWeights: !!model.isOpenWeights,
+    deprecated: !!model.deprecated
   };
+
+  if (typeof model.releaseDate === 'string' && model.releaseDate) entry.releaseDate = model.releaseDate;
+  if (model.release?.slug) {
+    entry.family = { slug: model.release.slug, name: model.release.name || model.shortName || model.name };
+  }
+  if (model.effort?.slug) {
+    entry.effort = {
+      slug: model.effort.slug,
+      label: model.effort.label || model.effort.slug,
+      level: Number.isFinite(model.effort.level) ? model.effort.level : 0
+    };
+  }
+  if (Number.isFinite(model.intelligenceIndexTimePerTask) && model.intelligenceIndexTimePerTask > 0) {
+    entry.timeSec = Number(model.intelligenceIndexTimePerTask.toFixed(2));
+  }
+  if (costObj && Number.isFinite(costObj.input) && Number.isFinite(costObj.output)) {
+    entry.costBreakdown = {
+      input: numOrNull(costObj.input, 5),
+      reasoning: numOrNull(costObj.reasoning ?? 0, 5),
+      answer: numOrNull(costObj.answer ?? costObj.output, 5)
+    };
+  }
+  const tok = model.intelligenceIndexOutputTokensPerTask;
+  if (tok && Number.isFinite(tok.output) && tok.output >= 0) {
+    entry.outTokens = {
+      reasoning: Math.round(tok.reasoning || 0),
+      answer: Math.round(tok.answer || 0),
+      total: Math.round(tok.output)
+    };
+  }
+  const subscores = {
+    frontierCode: pctOrNull(model.frontierCode20 ?? model.frontierCode),
+    terminalBench: pctOrNull(model.terminalBench40),
+    hleDiamond: pctOrNull(model.hleDiamond ?? model.hle),
+    critptAgentic: pctOrNull(model.critptAgenticHard),
+    science: pctOrNull(model.terminalBenchScience ?? model.scicode),
+    omniscience: pctOrNull(model.omniscienceAccuracy),
+    hallucination: pctOrNull(model.omniscienceHallucinationRate)
+  };
+  if (Object.values(subscores).some(v => v !== null)) entry.subscores = subscores;
+  return entry;
 }
 
 function resolveFlightReference(value, records) {
@@ -188,7 +240,7 @@ function expectedCodingComponents(rows) {
   return maxCount;
 }
 
-function simplifyCodingAgent(row, requiredComponents = 3) {
+function simplifyCodingAgent(row, requiredComponents = 3, openFamilyNames = null) {
   const cost = row.mean?.costUsd;
   const score = row.indexScore;
   if (!row.id || typeof row.displayLabel !== 'string' || !Number.isFinite(cost) || cost <= 0 || !Number.isFinite(score) || score < 0 || score > 1 || row.indexComponentCount !== requiredComponents) return null;
@@ -196,15 +248,58 @@ function simplifyCodingAgent(row, requiredComponents = 3) {
   const modelCreator = creators.length > 1
     ? { name: creators.map(item => item.name).join(' + '), color: '#64748b' }
     : creators[0] || row.agentCreator;
-  return {
+  const releaseShort = row.model?.release?.shortName || '';
+  const isOpen = typeof row.model?.isOpenWeights === 'boolean'
+    ? row.model.isOpenWeights
+    : !!(openFamilyNames && releaseShort && openFamilyNames.has(releaseShort.toLowerCase()));
+
+  const entry = {
     id: row.id, slug: row.agentSlug, name: row.displayLabel, shortName: row.shortLabel || row.displayLabel,
     codingAgentIndex: score * 100, intelligenceIndex: score * 100, cost,
     creator: creator(modelCreator), agentCreator: creator(row.agentCreator),
     agentName: row.agentName, agentSlug: row.agentSlug, modelName: row.display?.model || row.model?.name,
-    isReasoning: !!row.model?.isReasoning, isDefault: !!row.isDefault,
-    isRouter: !!row.isRouter, isUnavailable: !!row.isUnavailable,
+    isReasoning: !!row.model?.isReasoning, isOpenWeights: isOpen,
+    isDefault: !!row.isDefault, isRouter: !!row.isRouter, isUnavailable: !!row.isUnavailable,
     benchmarkCount: row.indexComponentCount
   };
+
+  if (row.agentRelease?.key) {
+    entry.family = { slug: row.agentRelease.key, name: row.agentRelease.name || row.agentName || row.displayLabel };
+  }
+  if (row.model?.effort?.slug) {
+    entry.effort = {
+      slug: row.model.effort.slug,
+      label: row.model.effort.label || row.model.effort.slug,
+      level: Number.isFinite(row.model.effort.level) ? row.model.effort.level : 0
+    };
+  }
+  if (Number.isFinite(row.mean?.agentWallTimeSec) && row.mean.agentWallTimeSec > 0) {
+    entry.timeSec = Number(row.mean.agentWallTimeSec.toFixed(2));
+  }
+  if (row.mean && (Number.isFinite(row.mean.steps) || Number.isFinite(row.mean.totalTokens))) {
+    entry.agentStats = {
+      steps: numOrNull(row.mean.steps, 1),
+      totalTokens: Number.isFinite(row.mean.totalTokens) ? Math.round(row.mean.totalTokens) : null,
+      cacheHitRate: pctOrNull(row.mean.cacheHitRate)
+    };
+  }
+  const pct = row.percentiles?.costUsd;
+  if (pct && Number.isFinite(pct.p50) && Number.isFinite(pct.p95)) {
+    entry.costPercentiles = {
+      p05: numOrNull(pct.p05, 4),
+      p25: numOrNull(pct.p25, 4),
+      p50: numOrNull(pct.p50, 4),
+      p75: numOrNull(pct.p75, 4),
+      p95: numOrNull(pct.p95, 4)
+    };
+  }
+  if (Array.isArray(row.evals) && row.evals.length) {
+    const evalScores = row.evals
+      .filter(e => e?.evaluationDatasetSlug && Number.isFinite(e?.mean?.reward))
+      .map(e => ({ name: e.evaluationDatasetSlug, score: pctOrNull(e.mean.reward) }));
+    if (evalScores.length) entry.evalScores = evalScores;
+  }
+  return entry;
 }
 
 function validateRows(rows, minimum, name) {
@@ -261,10 +356,13 @@ async function main() {
   const [modelPage, codingPageBuffer] = await Promise.all([getBuffer(sourceUrl), getBuffer(codingAgentSourceUrl)]);
   const codingPage = codingPageBuffer.toString('utf8');
   const rawCodingRows = readCodingRows(codingPage);
-  const requiredComponents = expectedCodingComponents(rawCodingRows);
-  const codingAgents = rawCodingRows.map(row => simplifyCodingAgent(row, requiredComponents)).filter(Boolean);
-  validateRows(codingAgents, 5, 'coding-agent');
   const { models, manifestPath } = await fetchModels(modelPage.toString('utf8'), sourceUrl, previous);
+  const openFamilyNames = new Set(
+    models.filter(m => m.isOpenWeights && m.family?.name).map(m => m.family.name.toLowerCase())
+  );
+  const requiredComponents = expectedCodingComponents(rawCodingRows);
+  const codingAgents = rawCodingRows.map(row => simplifyCodingAgent(row, requiredComponents, openFamilyNames)).filter(Boolean);
+  validateRows(codingAgents, 5, 'coding-agent');
   const output = {
     schemaVersion: 2, source: 'Artificial Analysis', sourceUrl, manifestPath,
     updatedAt: new Date().toISOString(), updateIntervalHours: 2,

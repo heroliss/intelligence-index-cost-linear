@@ -2,6 +2,7 @@ import {
   ticks,
   paretoFrontier,
   dataBounds,
+  effortTrajectories,
   clampView,
   pointerZoomView,
   validRows,
@@ -17,7 +18,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261118-4';
+} from './chart-math.mjs?v=20261118-5';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -28,8 +29,8 @@ const BENCHMARKS = {
     key: 'models',
     zhTitle: '模型智能指数与每任务成本',
     enTitle: 'Intelligence Index vs. Cost per Task',
-    zhSub: 'Artificial Analysis Intelligence Index · 线性美元成本',
-    enSub: 'Artificial Analysis Intelligence Index · Linear USD cost',
+    zhSub: 'Artificial Analysis Intelligence Index · 线性美元成本与耗时',
+    enSub: 'Artificial Analysis Intelligence Index · Linear USD cost & latency',
     zhAxis: '模型智能指数',
     enAxis: 'Intelligence Index',
     zhUnit: '个模型',
@@ -37,14 +38,15 @@ const BENCHMARKS = {
     zhCostNote: '智能指数基准任务的加权平均 API 成本',
     enCostNote: 'Weighted average API cost per Intelligence Index task',
     source: 'https://artificialanalysis.ai/',
-    defaultX: 4.5
+    defaultX: 4.5,
+    defaultTimeMin: 25
   },
   'coding-agents': {
     key: 'codingAgents',
     zhTitle: '编程智能体指数与每任务成本',
     enTitle: 'Coding Agent Index vs. Cost per Task',
-    zhSub: 'Artificial Analysis Coding Agents · 线性美元成本',
-    enSub: 'Artificial Analysis Coding Agents · Linear USD cost',
+    zhSub: 'Artificial Analysis Coding Agents · 线性美元成本与耗时',
+    enSub: 'Artificial Analysis Coding Agents · Linear USD cost & wall time',
     zhAxis: '编程智能体指数',
     enAxis: 'Coding Agent Index',
     zhUnit: '个智能体变体',
@@ -52,9 +54,21 @@ const BENCHMARKS = {
     zhCostNote: '编程基准任务的平均 API 成本（非订阅月费）',
     enCostNote: 'Average API cost per coding task, not subscription pricing',
     source: 'https://artificialanalysis.ai/agents/coding-agents',
-    defaultX: 20
+    defaultX: 20,
+    defaultTimeMin: 60
   }
 };
+
+const COMPARE_PALETTE = {
+  dark: ['#5ce1c6', '#60a5fa', '#fbbf24', '#f472b6'],
+  light: ['#0b6e58', '#1d4ed8', '#b45309', '#be185d']
+};
+
+function compareColor(index) {
+  const dark = document.documentElement.dataset.theme !== 'light';
+  const palette = dark ? COMPARE_PALETTE.dark : COMPARE_PALETTE.light;
+  return palette[index % palette.length];
+}
 
 const DEFAULT_SETTINGS = {
   models: {labels: true, smartLabels: true, labelSize: 9.5, labelDistance: 4},
@@ -195,27 +209,88 @@ function median(values) {
   return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
 }
 
+function formatTime(sec) {
+  if (typeof sec !== 'number' || !Number.isFinite(sec) || sec <= 0) return '—';
+  if (sec < 60) return t(`${format(sec, 1)} 秒`, `${format(sec, 1)}s`);
+  const mins = sec / 60;
+  if (mins < 60) return t(`${format(mins, 1)} 分`, `${format(mins, 1)}m`);
+  return t(`${format(mins / 60, 2)} 小时`, `${format(mins / 60, 2)}h`);
+}
+
+function xValOf(row, metric = state?.xMetric || 'cost') {
+  if (metric === 'time') {
+    return typeof row?.timeSec === 'number' && Number.isFinite(row.timeSec) && row.timeSec > 0
+      ? row.timeSec / 60
+      : null;
+  }
+  return row.cost;
+}
+
+function defaultCompareIds(rows) {
+  if (!rows.length) return [];
+  const picks = [];
+  const add = item => {
+    if (item && !picks.includes(item.id) && picks.length < 4) picks.push(item.id);
+  };
+  add(sortRows(rows, 'intelligenceIndex', 'desc')[0]);
+  add(sortRows(rows, 'valuePerDollar', 'desc', 6, 30)[0] || sortRows(rows, 'valuePerDollar', 'desc', 6)[0]);
+  add(sortRows(rows, 'valuePerDollar', 'desc', 2.5, 25)[0] || sortRows(rows, 'valuePerDollar', 'desc', 2.5)[0]);
+  const topOpen = sortRows(rows.filter(r => r.isOpenWeights), 'intelligenceIndex', 'desc')[0];
+  if (topOpen) add(topOpen);
+  for (const f of [...paretoFrontier(rows)].reverse()) {
+    if (picks.length >= 3) break;
+    add(f);
+  }
+  for (const r of sortRows(rows, 'intelligenceIndex', 'desc')) {
+    if (picks.length >= Math.min(3, rows.length)) break;
+    add(r);
+  }
+  return picks;
+}
+
+function syncMetricViewport(target, nextMetric) {
+  if (target.xMetric && target.view) {
+    target.views[target.xMetric] = {...target.view};
+  }
+  target.xMetric = nextMetric === 'time' ? 'time' : 'cost';
+  target.bounds = target.boundsByMetric[target.xMetric];
+  target.defaultView = target.defaultViews[target.xMetric];
+  target.view = {...target.views[target.xMetric]};
+}
+
 function makeState(key, routeParams = null) {
   const rows = validRows(snapshot[BENCHMARKS[key].key]);
-  const bounds = dataBounds(rows);
+  const costBounds = dataBounds(rows, r => r.cost);
+  const timeRows = rows.filter(r => Number.isFinite(r.timeSec) && r.timeSec > 0);
+  const timeBounds = dataBounds(timeRows.length ? timeRows : rows, r => (r.timeSec > 0 ? r.timeSec / 60 : 0));
   const maxFloor = Math.min(MIN_SCORE.max, Math.max(20, Math.floor(Math.max(...rows.map(d => d.intelligenceIndex)))));
-  const defaultView = {...bounds, width: BENCHMARKS[key].defaultX ? Math.min(bounds.width, BENCHMARKS[key].defaultX) : bounds.width};
+  const defaultCostView = {...costBounds, width: BENCHMARKS[key].defaultX ? Math.min(costBounds.width, BENCHMARKS[key].defaultX) : costBounds.width};
+  const defaultTimeView = {...timeBounds, width: BENCHMARKS[key].defaultTimeMin ? Math.min(timeBounds.width, BENCHMARKS[key].defaultTimeMin) : timeBounds.width};
   const defaultTasks = key === 'coding-agents' ? MONTHLY_USAGE.defaultAgentTasks : MONTHLY_USAGE.defaultModelTasks;
+  const defaultCmp = defaultCompareIds(rows);
   const next = {
     rows,
-    bounds,
+    xMetric: 'cost',
+    boundsByMetric: {cost: costBounds, time: timeBounds},
+    defaultViews: {cost: defaultCostView, time: defaultTimeView},
+    views: {cost: {...defaultCostView}, time: {...defaultTimeView}},
+    bounds: costBounds,
     maxFloor,
     defaultTasks,
-    defaultView,
-    view: {...defaultView},
+    defaultView: defaultCostView,
+    view: {...defaultCostView},
     company: null,
+    license: 'all',
     search: '',
     frontierOnly: false,
+    effortCurves: false,
     isoCurve: false,
     subLine: false,
     ...DEFAULT_SETTINGS[key],
     mode: 'chart',
     selected: null,
+    defaultCompareKey: defaultCmp.join(','),
+    compareIds: [...defaultCmp],
     sortKey: 'intelligenceIndex',
     sortDirection: 'desc',
     subSortKey: 'intelligenceIndex',
@@ -234,7 +309,10 @@ function makeState(key, routeParams = null) {
 
 function applyRouteParams(target, params) {
   const view = params.get('view');
-  if (['chart', 'table', 'curve', 'sub'].includes(view)) target.mode = view;
+  if (['chart', 'table', 'curve', 'sub', 'compare'].includes(view)) target.mode = view;
+  if (params.get('x') === 'time') syncMetricViewport(target, 'time');
+  const lic = params.get('lic');
+  if (['all', 'open', 'closed'].includes(lic)) target.license = lic;
   const w = Number(params.get('w'));
   if (params.has('w') && Number.isFinite(w) && w >= VALUE_WEIGHT.min && w <= VALUE_WEIGHT.max) {
     target.valueWeight = Math.round(w * 10) / 10;
@@ -256,14 +334,23 @@ function applyRouteParams(target, params) {
   const q = params.get('q');
   if (q) target.search = q;
   if (params.get('pf') === '1') target.frontierOnly = true;
+  if (params.get('effort') === '1') target.effortCurves = true;
   if (params.get('iso') === '1') target.isoCurve = true;
   if (params.get('subline') === '1') target.subLine = true;
+  const cmp = params.get('cmp');
+  if (cmp) {
+    const validIds = new Set(target.rows.map(r => r.id));
+    const parsed = [...new Set(cmp.split(',').filter(id => validIds.has(id)))].slice(0, 4);
+    if (parsed.length) target.compareIds = parsed;
+  }
 }
 
 function syncUrlHash() {
   if (!state) return;
   const params = new URLSearchParams();
   if (state.mode !== 'chart') params.set('view', state.mode);
+  if (state.xMetric === 'time') params.set('x', 'time');
+  if (state.license !== 'all') params.set('lic', state.license);
   if (state.valueWeight !== VALUE_WEIGHT.default) params.set('w', state.valueWeight.toFixed(1));
   if (state.minScore > 0) params.set('min', String(state.minScore));
   if (state.subFee !== MONTHLY_USAGE.defaultFee) params.set('fee', String(state.subFee));
@@ -271,8 +358,12 @@ function syncUrlHash() {
   if (state.company) params.set('focus', state.company);
   if (state.search.trim()) params.set('q', state.search.trim());
   if (state.frontierOnly) params.set('pf', '1');
+  if (state.effortCurves) params.set('effort', '1');
   if (state.isoCurve) params.set('iso', '1');
   if (state.subLine) params.set('subline', '1');
+  if (state.compareIds.join(',') !== state.defaultCompareKey) {
+    params.set('cmp', state.compareIds.join(','));
+  }
   const query = params.toString();
   const nextHash = activeKey === 'models' && !query ? '' : `#${activeKey}${query ? '&' + query : ''}`;
   const current = location.hash || '';
@@ -281,17 +372,38 @@ function syncUrlHash() {
   }
 }
 
+function licenseFilteredRows(rows = state.rows) {
+  if (state.license === 'open') return rows.filter(row => row.isOpenWeights);
+  if (state.license === 'closed') return rows.filter(row => !row.isOpenWeights);
+  return rows;
+}
+
+function currentXOf() {
+  return state.mode === 'chart' && state.xMetric === 'time'
+    ? row => xValOf(row, 'time')
+    : row => row.cost;
+}
+
+function activePool() {
+  const base = licenseFilteredRows(state.rows);
+  if (state.mode === 'chart' && state.xMetric === 'time') {
+    return base.filter(row => xValOf(row, 'time') !== null);
+  }
+  return base;
+}
+
 function filteredRows() {
   const query = state.search.trim().toLocaleLowerCase();
-  let rows = state.rows.filter(row => !query || [row.name, row.shortName, row.creator?.name, row.agentName, row.modelName].filter(Boolean).join(' ').toLocaleLowerCase().includes(query));
+  const pool = activePool();
+  let rows = pool.filter(row => !query || [row.name, row.shortName, row.creator?.name, row.agentName, row.modelName, row.family?.name].filter(Boolean).join(' ').toLocaleLowerCase().includes(query));
   if (state.frontierOnly) {
-    const frontier = new Set(paretoFrontier(state.rows).map(row => row.id));
+    const frontier = new Set(paretoFrontier(pool, currentXOf()).map(row => row.id));
     rows = rows.filter(row => frontier.has(row.id));
   }
   return rows;
 }
 
-function computeRankings(rows = state.rows) {
+function computeRankings(rows = licenseFilteredRows(state.rows)) {
   const ranked = sortRows(rows, 'valuePerDollar', 'desc', state.valueWeight, state.minScore);
   const rankMap = new Map();
   let qualifiedCount = 0, champion = null, championValue = null;
@@ -381,13 +493,19 @@ function syncStaticText() {
   $('[data-i18n="tableView"]').textContent = t('数据表', 'Table');
   $('[data-i18n="curveView"]').textContent = t('权重曲线', 'Curve');
   $('[data-i18n="subView"]').textContent = t('订阅回本', 'Sub vs API');
+  $('[data-i18n="compareView"]').textContent = t('剖析对比', 'Compare');
 
   $('#keyLinear').textContent = t('线性美元横轴', 'Linear USD axis');
   $('#keyQuadrant').textContent = t('优于中位参考区', 'Above-median score & below-median cost');
   $('#keyFrontier').textContent = t('帕累托前沿', 'Pareto frontier');
   $('#keyIso').textContent = t('最优等性价比切线', 'Best-value iso-curve');
   $('#keySub').textContent = t('订阅回本成本线', 'Subscription break-even');
+  $('#keyEffort').textContent = t('同系列推理轨迹', 'Reasoning effort trajectory');
   $('#keyBetter').textContent = t('越靠左上越理想', 'Upper-left is better');
+
+  $('#xMetricSwitch').setAttribute('aria-label', t('横轴维度', 'Horizontal axis metric'));
+  $('#xMetricCost').textContent = t('成本', 'Cost');
+  $('#xMetricTime').textContent = t('耗时', 'Time');
 
   $('#reset').textContent = t('重置视图', 'Reset view');
   $('#fit').textContent = t('显示全部', 'Fit all');
@@ -398,6 +516,11 @@ function syncStaticText() {
 
   $('#searchSr').textContent = t('查找模型或厂商', 'Search models or creators');
   $('#search').placeholder = t('查找模型或厂商…', 'Search models or creators…');
+  $('#licenseGroup').setAttribute('aria-label', t('开源与闭源筛选', 'Open vs proprietary filter'));
+  $('[data-license="all"]').textContent = t('全部', 'All');
+  $('[data-license="open"]').textContent = t('开源', 'Open');
+  $('[data-license="closed"]').textContent = t('闭源', 'Closed');
+  $('#exportCsv').textContent = t('导出 CSV', 'Export CSV');
   $('#clearFilters').textContent = t('清除筛选', 'Clear filters');
 
   $('#labelSizeText').textContent = t('字号', 'Size');
@@ -443,7 +566,8 @@ function syncStaticText() {
   $('#pinnedBadge').textContent = t('已锁定节点', 'Pinned');
   $('#unpin').textContent = t('取消 · Esc', 'Unpin · Esc');
   $('#pinScoreLabel').textContent = t('指数', 'Index');
-  $('#pinCostLabel').textContent = t('单任务成本', 'Cost / task');
+  $('#pinCostLabel').textContent = t('单次成本', 'Cost / task');
+  $('#pinTimeLabel').textContent = t('平均耗时', 'Mean time');
   $('#pinValueLabel').textContent = t('性价比', 'Value');
   $('#pinnedOutside').textContent = t('该节点当前在可视范围外', 'Point is outside current viewport');
 
@@ -480,6 +604,12 @@ function syncStaticText() {
   $('#subThCost').textContent = t('单任务 API', 'API / task');
   $('#subThBreakeven').textContent = t('回本任务数', 'Break-even');
   $('#subThBill').textContent = t('预计月 API 账单', 'Est. Monthly API');
+
+  $('#compareSelectSr').textContent = t('添加条目到多维对比', 'Add entry to comparison');
+  $('#compareAutoBtn').textContent = t('推荐代表组合', 'Auto-pick top set');
+  $('#radarHeading').textContent = t('细分基准能力雷达与分项对比', 'Sub-benchmark Capability Radar & Breakdown');
+  $('#anatomyHeading').textContent = t('单任务成本结构拆解与耗时剖析', 'Per-Task Cost Anatomy & Latency Profile');
+  $('#matrixHeading').textContent = t('核心指标并排对决表', 'Head-to-Head Metrics Matrix');
 
   renderPresets();
   applyThemeText();
@@ -525,6 +655,7 @@ $('#langToggle').addEventListener('click', () => {
 
 function chooseChart(key, {changeHash = true, routeParams = null} = {}) {
   if (!BENCHMARKS[key]) return;
+  const previousMode = state?.mode;
   endPointerInteractions();
   clearHover();
   activeKey = key;
@@ -541,6 +672,7 @@ function chooseChart(key, {changeHash = true, routeParams = null} = {}) {
     if (!states.has(key)) states.set(key, makeState(key, routeParams));
     else if (routeParams) applyRouteParams(states.get(key), routeParams);
     state = states.get(key);
+    if (!routeParams?.has('view') && previousMode) state.mode = previousMode;
     $('#loading').hidden = true;
     host.setAttribute('aria-busy', 'false');
     if (changeHash) syncUrlHash();
@@ -573,11 +705,12 @@ addEventListener('hashchange', () => {
 
 function renderLegend() {
   const companies = new Map();
-  for (const row of state.rows) {
+  for (const row of licenseFilteredRows(state.rows)) {
     const name = row.creator?.name || 'Other';
     if (!companies.has(name)) companies.set(name, {name, color: row.creator?.color, count: 0});
     companies.get(name).count++;
   }
+  if (state.company && !companies.has(state.company)) state.company = null;
   const fragment = document.createDocumentFragment();
   for (const creator of [...companies.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))) {
     const button = html('button');
@@ -605,19 +738,40 @@ function renderLegend() {
 }
 
 function syncControls() {
+  const isTimeAxis = state.xMetric === 'time';
+  $('#xMetricCost').setAttribute('aria-pressed', String(!isTimeAxis));
+  $('#xMetricTime').setAttribute('aria-pressed', String(isTimeAxis));
+  $('#keyLinear').textContent = isTimeAxis
+    ? t('线性耗时横轴（分钟）', 'Linear time axis (min)')
+    : t('线性美元横轴', 'Linear USD axis');
+  $('#keyQuadrant').textContent = isTimeAxis
+    ? t('高分且快于中位参考区', 'Above-median score & faster than median')
+    : t('优于中位参考区', 'Above-median score & below-median cost');
+
+  for (const btn of document.querySelectorAll('#licenseGroup [data-license]')) {
+    btn.setAttribute('aria-pressed', String(btn.dataset.license === state.license));
+  }
+
   $('#search').value = state.search;
   $('#frontier').setAttribute('aria-pressed', String(state.frontierOnly));
   $('#frontier').textContent = state.frontierOnly ? t('仅看前沿 ✓', 'Frontier ✓') : t('仅看前沿', 'Frontier only');
 
-  $('#isoToggle').hidden = state.mode !== 'chart';
+  $('#effortToggle').hidden = state.mode !== 'chart';
+  $('#effortToggle').setAttribute('aria-pressed', String(state.effortCurves));
+  $('#effortToggle').textContent = state.effortCurves ? t('推理轨迹 ✓', 'Effort paths ✓') : t('推理轨迹', 'Effort paths');
+  $('#keyEffortWrap').hidden = !state.effortCurves;
+
+  $('#isoToggle').hidden = state.mode !== 'chart' || isTimeAxis;
   $('#isoToggle').setAttribute('aria-pressed', String(state.isoCurve));
   $('#isoToggle').textContent = state.isoCurve ? t('等值切线 ✓', 'Iso-value ✓') : t('等值切线', 'Iso-value');
-  $('#keyIsoWrap').hidden = !state.isoCurve;
+  $('#keyIsoWrap').hidden = !(state.isoCurve && !isTimeAxis);
 
-  $('#subLineToggle').hidden = state.mode !== 'chart';
+  $('#subLineToggle').hidden = state.mode !== 'chart' || isTimeAxis;
   $('#subLineToggle').setAttribute('aria-pressed', String(state.subLine));
   $('#subLineToggle').textContent = state.subLine ? t('回本线 ✓', 'Sub line ✓') : t('回本线', 'Sub line');
-  $('#keySubWrap').hidden = !state.subLine;
+  $('#keySubWrap').hidden = !(state.subLine && !isTimeAxis);
+
+  $('#exportCsv').hidden = !(state.mode === 'table' || state.mode === 'sub');
 
   $('#labels').setAttribute('aria-pressed', String(state.labels));
   $('#labels').textContent = state.labels ? t('显示标签 ✓', 'Labels ✓') : t('标签已关', 'Labels off');
@@ -639,21 +793,23 @@ function syncControls() {
   syncValueControls();
   syncSubControls();
 
+  const hideFilterChrome = state.mode === 'curve' || state.mode === 'compare';
   $('#optionsPanel').hidden = state.mode !== 'chart';
   for (const button of document.querySelectorAll('[data-view]')) {
     button.setAttribute('aria-pressed', String(button.dataset.view === state.mode));
   }
   $('#dataTable').hidden = state.mode !== 'table';
   $('#subPanel').hidden = state.mode !== 'sub';
+  $('#comparePanel').hidden = state.mode !== 'compare';
   host.hidden = state.mode !== 'chart';
   $('#curvePanel').hidden = state.mode !== 'curve';
-  $('#valueSettings').hidden = !(state.mode === 'table' || state.mode === 'curve' || (state.mode === 'chart' && state.isoCurve));
-  $('#subSettings').hidden = !(state.mode === 'sub' || (state.mode === 'chart' && state.subLine));
+  $('#valueSettings').hidden = !(state.mode === 'table' || state.mode === 'curve' || (state.mode === 'chart' && state.isoCurve && !isTimeAxis));
+  $('#subSettings').hidden = !(state.mode === 'sub' || (state.mode === 'chart' && state.subLine && !isTimeAxis));
   $('#interactionHelp').hidden = state.mode !== 'chart';
   $('#viewControls').hidden = state.mode !== 'chart';
-  $('#legend').hidden = state.mode === 'curve';
-  $('#filterControls').hidden = state.mode === 'curve';
-  $('#toolbar').hidden = state.mode === 'curve';
+  $('#legend').hidden = hideFilterChrome;
+  $('#filterControls').hidden = hideFilterChrome;
+  $('#toolbar').hidden = hideFilterChrome;
   $('#readingKey').hidden = state.mode !== 'chart';
 
   const topScore = state.bounds.y + state.bounds.height;
@@ -664,7 +820,7 @@ function syncControls() {
   $('#curveScaleToggle').setAttribute('aria-pressed', String(state.curveLogY));
   $('#curveScaleToggle').textContent = state.curveLogY ? t('对数纵轴 ✓', 'Log Y ✓') : t('对数纵轴', 'Log Y');
 
-  const hasFocus = !!(state.company || state.search || state.frontierOnly || state.minScore > 0);
+  const hasFocus = !!(state.company || state.license !== 'all' || state.search || state.frontierOnly || state.minScore > 0);
   $('#clearFilters').hidden = false;
   $('#clearFilters').style.visibility = hasFocus ? 'visible' : 'hidden';
   $('#clearFilters').disabled = !hasFocus;
@@ -672,11 +828,13 @@ function syncControls() {
 }
 
 function syncPanelControls() {
+  const emptyDesktopPanel = !mobileLayout.matches && !!state && (state.mode === 'curve' || state.mode === 'compare');
   document.documentElement.dataset.mobile = String(mobileLayout.matches);
-  document.documentElement.dataset.panelCollapsed = String(!controlsOpen);
-  $('#controlPanel').hidden = !controlsOpen;
-  const activeFilters = state && state.mode !== 'curve'
-    ? Number(!!state.company) + Number(!!state.search) + Number(state.frontierOnly) + Number(state.minScore > 0)
+  document.documentElement.dataset.panelCollapsed = String(!controlsOpen || emptyDesktopPanel);
+  $('#controlsToggle').hidden = emptyDesktopPanel;
+  $('#controlPanel').hidden = !controlsOpen || emptyDesktopPanel;
+  const activeFilters = state && state.mode !== 'curve' && state.mode !== 'compare'
+    ? Number(!!state.company) + Number(state.license !== 'all') + Number(!!state.search) + Number(state.frontierOnly) + Number(state.minScore > 0)
     : 0;
   $('#controlsToggle').setAttribute('aria-expanded', String(controlsOpen));
   $('#controlsToggle').textContent = controlsOpen
@@ -900,8 +1058,15 @@ function y(value) {
   return frame.bottom - (value - state.view.y) / state.view.height * frame.height;
 }
 
+function xCoord(row) {
+  const val = xValOf(row, state.xMetric);
+  return val === null ? NaN : x(val);
+}
+
 function inView(row) {
-  const xx = x(row.cost), yy = y(row.intelligenceIndex);
+  const val = xValOf(row, state.xMetric);
+  if (val === null) return false;
+  const xx = x(val), yy = y(row.intelligenceIndex);
   return xx >= frame.left - 0.01 && xx <= frame.right + 0.01 && yy >= frame.top - 0.01 && yy <= frame.bottom + 0.01;
 }
 
@@ -933,6 +1098,7 @@ function buildPlot() {
   const floorRect = node('rect', {class: 'floor-rect'});
   const floorGuide = node('line', {class: 'floor-guide'});
   const paretoPath = node('path', {class: 'pareto'});
+  const effortLayer = node('g', {class: 'effort-layer'});
   const isoPath = node('path', {class: 'iso-curve'});
   const subGuide = node('line', {class: 'sub-guide'});
   const connectors = node('g', {class: 'connector-layer'});
@@ -940,14 +1106,20 @@ function buildPlot() {
   const labels = node('g', {class: 'label-layer'});
 
   const emphasis = node('g', {class: 'emphasis-layer', 'clip-path': 'url(#emphasis-clip)', 'aria-hidden': 'true', 'pointer-events': 'none'});
-  emphasis.append(node('g', {class: 'glow-layer'}), node('g', {class: 'company-layer'}), node('g', {class: 'active-layer'}));
+  emphasis.append(
+    node('g', {class: 'active-effort-layer'}),
+    node('g', {class: 'glow-layer'}),
+    node('g', {class: 'company-layer'}),
+    node('g', {class: 'active-layer'})
+  );
 
-  plot.append(quadrant, quadrantBorder, floorRect, floorGuide, paretoPath, isoPath, subGuide, connectors, points, labels);
+  plot.append(quadrant, quadrantBorder, floorRect, floorGuide, paretoPath, effortLayer, isoPath, subGuide, connectors, points, labels);
   svg.replaceChildren(defs, node('g', {class: 'grid'}), plot, node('g', {class: 'axis'}), emphasis);
 
   const axisName = t(BENCHMARKS[activeKey].zhAxis, BENCHMARKS[activeKey].enAxis);
   nodes = rows.map(row => {
     const display = color(row.creator?.color);
+    const metricText = state.xMetric === 'time' ? formatTime(row.timeSec) : money(row.cost);
     const p = node('circle', {
       class: 'point',
       'data-id': row.id,
@@ -955,7 +1127,7 @@ function buildPlot() {
       fill: display,
       tabindex: 0,
       role: 'button',
-      'aria-label': `${row.name}, ${axisName} ${format(row.intelligenceIndex, 2)}, ${money(row.cost)}`
+      'aria-label': `${row.name}, ${axisName} ${format(row.intelligenceIndex, 2)}, ${metricText}`
     });
     const label = node('text', {class: 'label', fill: display, 'font-size': state.labelSize}, row.shortName || row.name);
     const line = node('line', {class: 'connector', stroke: display});
@@ -982,22 +1154,29 @@ function buildPlot() {
   if (state.selected && !rows.some(row => row.id === state.selected)) state.selected = null;
   if (state.mode === 'table') renderTable(rows);
   else if (state.mode === 'sub') renderSubTable(rows);
+  else if (state.mode === 'compare') renderCompare();
   scheduleDraw();
 }
 
 function locateRowInChart(row) {
+  if (state.xMetric === 'time' && xValOf(row, 'time') === null) {
+    syncMetricViewport(state, 'cost');
+  }
   state.selected = row.id;
   state.mode = 'chart';
   valueDetailsOpen = false;
   syncControls();
+  buildPlot();
   const rect = host.getBoundingClientRect();
+  const rx = xValOf(row, state.xMetric) ?? row.cost;
+  const defSpan = state.xMetric === 'time' ? BENCHMARKS[activeKey].defaultTimeMin : BENCHMARKS[activeKey].defaultX;
   if (rect.width > 40 && rect.height > 40) {
     const v = state.view;
-    if (row.cost < v.x || row.cost > v.x + v.width || row.intelligenceIndex < v.y || row.intelligenceIndex > v.y + v.height) {
-      const targetWidth = Math.max(v.width, Math.min(state.bounds.width, Math.max(row.cost * 1.45, BENCHMARKS[activeKey].defaultX)));
+    if (rx < v.x || rx > v.x + v.width || row.intelligenceIndex < v.y || row.intelligenceIndex > v.y + v.height) {
+      const targetWidth = Math.max(v.width, Math.min(state.bounds.width, Math.max(rx * 1.45, defSpan)));
       const targetHeight = state.bounds.height;
       state.view = clampView({
-        x: Math.max(0, row.cost - targetWidth * 0.55),
+        x: Math.max(0, rx - targetWidth * 0.55),
         y: state.bounds.y,
         width: targetWidth,
         height: targetHeight
@@ -1008,23 +1187,54 @@ function locateRowInChart(row) {
   scheduleDraw();
 }
 
+function toggleCompareId(id) {
+  if (!state) return;
+  const idx = state.compareIds.indexOf(id);
+  if (idx !== -1) {
+    if (state.compareIds.length > 1) state.compareIds.splice(idx, 1);
+  } else {
+    if (state.compareIds.length >= 4) state.compareIds.shift();
+    state.compareIds.push(id);
+  }
+  syncUrlHash();
+  if (state.mode === 'table') renderTable();
+  else if (state.mode === 'sub') renderSubTable();
+  else if (state.mode === 'compare') renderCompare();
+  renderPinned();
+  updateSummary();
+}
+
+function makeCompareRowBtn(row) {
+  const inCompare = state.compareIds.includes(row.id);
+  const btn = html('button', inCompare ? t('已对比 ✓', 'In cmp ✓') : t('+对比', '+Cmp'), 'locate-btn compare-row-btn');
+  btn.type = 'button';
+  btn.setAttribute('aria-pressed', String(inCompare));
+  btn.addEventListener('click', event => {
+    event.stopPropagation();
+    toggleCompareId(row.id);
+  });
+  return btn;
+}
+
 function renderTable(rows = filteredRows()) {
+  const pool = licenseFilteredRows(state.rows);
   const fragment = document.createDocumentFragment();
-  const scaleSource = state.frontierOnly || state.search.trim() || state.minScore > 0 ? rows : state.rows;
-  const maxCost = Math.max(...(scaleSource.length ? scaleSource : state.rows).map(row => row.cost), 0.001);
-  const comparableValues = (scaleSource.length ? scaleSource : state.rows)
+  const scaleSource = state.frontierOnly || state.search.trim() || state.minScore > 0 ? rows : pool;
+  const fallbackRows = scaleSource.length ? scaleSource : state.rows;
+  const maxCost = Math.max(...fallbackRows.map(row => row.cost), 0.001);
+  const comparableValues = fallbackRows
     .map(row => valuePerDollar(row, state.valueWeight, state.minScore))
     .filter(value => value !== null);
   const maxValue = comparableValues.length ? Math.max(...comparableValues) : null;
   const valueRange = maxValue === null ? t('暂无', 'None') : `0–${valueLabel(maxValue)}`;
 
   $('#tableScale').textContent = t(
-    `比较条比例（${scaleSource === state.rows ? '全榜统一' : '当前筛选范围'}）：指数 0–100 · 成本 $0–${format(maxCost)} · 性价比 ${valueRange}`,
-    `Linear bar scale (${scaleSource === state.rows ? 'full benchmark' : 'filtered set'}): Index 0–100 · Cost $0–${format(maxCost)} · Value ${valueRange}`
+    `比较条比例（${scaleSource === pool && state.license === 'all' ? '全榜统一' : '当前筛选范围'}）：指数 0–100 · 成本 $0–${format(maxCost)} · 性价比 ${valueRange}`,
+    `Linear bar scale (${scaleSource === pool && state.license === 'all' ? 'full benchmark' : 'filtered set'}): Index 0–100 · Cost $0–${format(maxCost)} · Value ${valueRange}`
   );
 
-  const frontierIds = new Set(paretoFrontier(state.rows).map(row => row.id));
-  const {champion} = computeRankings();
+  const frontierIds = new Set(paretoFrontier(pool).map(row => row.id));
+  const {champion} = computeRankings(pool);
 
   for (const row of sortRows(rows, state.sortKey, state.sortDirection, state.valueWeight, state.minScore)) {
     const tr = html('tr');
@@ -1047,6 +1257,9 @@ function renderTable(rows = filteredRows()) {
     if (frontierIds.has(row.id)) {
       wrap.append(html('span', t('前沿', 'Frontier'), 'row-tag'));
     }
+    if (row.isOpenWeights) {
+      wrap.append(html('span', t('开源', 'Open'), 'row-tag tag-open'));
+    }
 
     const locateBtn = html('button', t('图中定位', 'Locate'), 'locate-btn');
     locateBtn.type = 'button';
@@ -1054,7 +1267,7 @@ function renderTable(rows = filteredRows()) {
       event.stopPropagation();
       locateRowInChart(row);
     });
-    wrap.append(locateBtn);
+    wrap.append(locateBtn, makeCompareRowBtn(row));
     nameTd.append(wrap);
 
     const value = valuePerDollar(row, state.valueWeight, state.minScore);
@@ -1115,8 +1328,9 @@ function comparisonCell(value, ratio, displayColor) {
 }
 
 function renderSubTable(rows = filteredRows()) {
+  const pool = licenseFilteredRows(state.rows);
   const fragment = document.createDocumentFragment();
-  const frontierIds = new Set(paretoFrontier(state.rows).map(row => row.id));
+  const frontierIds = new Set(paretoFrontier(pool).map(row => row.id));
   const fee = state.subFee, tasks = state.monthlyTasks;
   const collator = new Intl.Collator('zh-CN', {numeric: true, sensitivity: 'base'});
   const sign = state.subSortDirection === 'asc' ? 1 : -1;
@@ -1153,6 +1367,7 @@ function renderSubTable(rows = filteredRows()) {
     dot.setAttribute('aria-hidden', 'true');
     wrap.append(dot, html('span', row.name));
     if (frontierIds.has(row.id)) wrap.append(html('span', t('前沿', 'Frontier'), 'row-tag'));
+    if (row.isOpenWeights) wrap.append(html('span', t('开源', 'Open'), 'row-tag tag-open'));
 
     const locateBtn = html('button', t('图中定位', 'Locate'), 'locate-btn');
     locateBtn.type = 'button';
@@ -1160,7 +1375,7 @@ function renderSubTable(rows = filteredRows()) {
       event.stopPropagation();
       locateRowInChart(row);
     });
-    wrap.append(locateBtn);
+    wrap.append(locateBtn, makeCompareRowBtn(row));
     nameTd.append(wrap);
 
     const costTd = html('td', money(row.cost));
@@ -1218,8 +1433,493 @@ function renderSubTable(rows = filteredRows()) {
   for (const button of document.querySelectorAll('.sub-sort-button')) {
     const selected = button.dataset.subSort === state.subSortKey;
     button.closest('th').setAttribute('aria-sort', selected ? (state.subSortDirection === 'asc' ? 'ascending' : 'descending') : 'none');
-    button.querySelector('.sort-arrow').textContent = selected ? (state.subSortDirection === 'asc' ? '↑' : '↓') : '↕';
+    button.querySelector('.sort-arrow').textContent = selected ? (state.sortDirection === 'asc' ? '↑' : '↓') : '↕';
   }
+}
+
+function exportCsv() {
+  if (!state) return;
+  const rows = sortRows(filteredRows(), state.sortKey, state.sortDirection, state.valueWeight, state.minScore);
+  const escapeCsv = val => {
+    if (val === null || val === undefined) return '';
+    const str = String(val);
+    return /[",\n\r]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
+  };
+  const headers = [
+    'Name',
+    'Creator',
+    'License',
+    'Effort',
+    'IntelligenceIndex',
+    'CostPerTaskUSD',
+    'MeanTimeSec',
+    `WeightedValue_w${state.valueWeight.toFixed(1)}`,
+    `BreakEvenTasks_$${state.subFee}`,
+    `EstMonthlyApiUSD_${state.monthlyTasks}tasks`
+  ];
+  const lines = [headers.join(',')];
+  for (const row of rows) {
+    const val = valuePerDollar(row, state.valueWeight, state.minScore);
+    const be = breakEvenTasks(row.cost, state.subFee);
+    const verdict = subscriptionVerdict(row.cost, state.monthlyTasks, state.subFee);
+    lines.push([
+      row.name,
+      row.creator?.name || 'Other',
+      row.isOpenWeights ? 'Open Weights' : 'Proprietary',
+      row.effort?.label || '',
+      row.intelligenceIndex.toFixed(4),
+      row.cost.toFixed(6),
+      row.timeSec ?? '',
+      val !== null ? val.toFixed(4) : '',
+      be !== null ? be.toFixed(2) : '',
+      verdict ? verdict.apiBill.toFixed(4) : ''
+    ].map(escapeCsv).join(','));
+  }
+  const blob = new Blob(['\uFEFF' + lines.join('\r\n')], {type: 'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `intelligence-vs-cost-${activeKey}.csv`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function shortEvalLabel(name) {
+  if (/frontiercode/i.test(name)) return 'FrontierCode';
+  if (/swe-atlas/i.test(name)) return 'SWE-Atlas';
+  if (/terminal-bench/i.test(name)) return 'Terminal v4';
+  return name.length > 14 ? name.slice(0, 13) + '…' : name;
+}
+
+function renderCompare() {
+  if (!state) return;
+  const rowMap = new Map(state.rows.map(r => [r.id, r]));
+  let selectedRows = state.compareIds.map(id => rowMap.get(id)).filter(Boolean);
+  if (!selectedRows.length) {
+    state.compareIds = defaultCompareIds(state.rows);
+    selectedRows = state.compareIds.map(id => rowMap.get(id)).filter(Boolean);
+  }
+
+  // 1. Selected Chips & Selector
+  const chipsFrag = document.createDocumentFragment();
+  selectedRows.forEach((row, idx) => {
+    const sc = compareColor(idx);
+    const chip = html('div', null, 'compare-chip');
+    chip.setAttribute('role', 'listitem');
+    const dot = html('i', null, 'creator-dot');
+    dot.style.background = sc;
+    dot.setAttribute('aria-hidden', 'true');
+    const rmBtn = html('button', '×');
+    rmBtn.type = 'button';
+    rmBtn.disabled = selectedRows.length <= 1;
+    rmBtn.setAttribute('aria-label', t(`移除 ${row.name}`, `Remove ${row.name}`));
+    rmBtn.addEventListener('click', () => toggleCompareId(row.id));
+    chip.append(dot, html('span', row.shortName || row.name), rmBtn);
+    chipsFrag.append(chip);
+  });
+  $('#compareChips').replaceChildren(chipsFrag);
+
+  const select = $('#compareSelect');
+  const optFrag = document.createDocumentFragment();
+  const placeholder = html('option', selectedRows.length >= 4
+    ? t('已选满 4 项（点击标签 × 可移除）', '4/4 selected (remove a chip to add)')
+    : t('+ 添加对比条目（最多 4 项）…', '+ Add entry to compare (up to 4)…'));
+  placeholder.value = '';
+  optFrag.append(placeholder);
+  for (const row of sortRows(licenseFilteredRows(state.rows), 'intelligenceIndex', 'desc')) {
+    if (state.compareIds.includes(row.id)) continue;
+    const opt = html('option', `${row.name} (${format(row.intelligenceIndex, 1)} · ${money(row.cost)})`);
+    opt.value = row.id;
+    optFrag.append(opt);
+  }
+  select.replaceChildren(optFrag);
+  select.value = '';
+  select.disabled = selectedRows.length >= 4;
+
+  // 2. Radar & Sub-score Bars
+  let axes, barMetrics;
+  if (activeKey === 'models') {
+    $('#radarHeading').textContent = t('Intelligence Index v5 六维能力雷达与幻觉率', 'Intelligence Index v5 6-Pillar Radar & Hallucination');
+    axes = [
+      {key: 'frontierCode', zh: '前沿编程', en: 'FrontierCode', get: r => r.subscores?.frontierCode ?? null},
+      {key: 'terminalBench', zh: '终端代理', en: 'Terminal 4.0', get: r => r.subscores?.terminalBench ?? null},
+      {key: 'hleDiamond', zh: '人类终极考', en: 'HLE Diamond', get: r => r.subscores?.hleDiamond ?? null},
+      {key: 'critptAgentic', zh: '复杂研究', en: 'CritPt Agent', get: r => r.subscores?.critptAgentic ?? null},
+      {key: 'science', zh: '科学推理', en: 'Science', get: r => r.subscores?.science ?? null},
+      {key: 'omniscience', zh: '全科知识', en: 'Omniscience', get: r => r.subscores?.omniscience ?? null}
+    ];
+    barMetrics = [
+      ...axes,
+      {key: 'hallucination', zh: '全科幻觉率（越低越好 ↓）', en: 'Hallucination Rate (lower ↓)', lowerBetter: true, get: r => r.subscores?.hallucination ?? null}
+    ];
+  } else {
+    $('#radarHeading').textContent = t('编程智能体分项基准雷达与缓存效率', 'Coding Agent Sub-Benchmark Radar & Cache Efficiency');
+    const evalNames = [];
+    for (const r of state.rows) {
+      for (const ev of r.evalScores || []) {
+        if (!evalNames.includes(ev.name)) evalNames.push(ev.name);
+      }
+    }
+    const evalAxes = evalNames.map(ename => ({
+      key: ename,
+      zh: shortEvalLabel(ename),
+      en: shortEvalLabel(ename),
+      get: r => r.evalScores?.find(e => e.name === ename)?.score ?? null
+    }));
+    axes = [
+      {key: 'index', zh: '智能体总指数', en: 'Agent Index', get: r => r.intelligenceIndex},
+      ...evalAxes
+    ];
+    barMetrics = [
+      ...evalAxes,
+      {key: 'cache', zh: 'Prompt 缓存命中率', en: 'Prompt Cache Hit %', get: r => r.agentStats?.cacheHitRate ?? null}
+    ];
+  }
+
+  const radarSvg = $('#radarSvg');
+  radarSvg.setAttribute('viewBox', '0 0 370 264');
+  radarSvg.replaceChildren();
+  const cx = 185, cy = 132, R = 76, N = Math.max(3, axes.length);
+  const obsValues = selectedRows.flatMap(r => axes.map(a => a.get(r))).filter(v => v !== null);
+  const scaleMax = Math.min(100, Math.max(60, Math.ceil(Math.max(40, ...obsValues) / 20) * 20));
+
+  for (const frac of [0.25, 0.5, 0.75, 1]) {
+    const pts = axes.map((_, i) => {
+      const ang = -Math.PI / 2 + (i * 2 * Math.PI) / N;
+      return `${cx + Math.cos(ang) * R * frac},${cy + Math.sin(ang) * R * frac}`;
+    }).join(' ');
+    radarSvg.append(node('polygon', {class: 'radar-grid', points: pts}));
+  }
+  for (const frac of [0.5, 1]) {
+    radarSvg.append(node('text', {
+      class: 'radar-axis-label',
+      x: cx + 4,
+      y: cy - R * frac + 10,
+      'font-size': '10.5'
+    }, String(Math.round(scaleMax * frac))));
+  }
+
+  axes.forEach((ax, i) => {
+    const ang = -Math.PI / 2 + (i * 2 * Math.PI) / N;
+    const cos = Math.cos(ang), sin = Math.sin(ang);
+    radarSvg.append(node('line', {
+      class: 'radar-grid',
+      x1: cx,
+      y1: cy,
+      x2: cx + cos * R,
+      y2: cy + sin * R
+    }));
+    const anchor = Math.abs(cos) < 0.18 ? 'middle' : cos > 0 ? 'start' : 'end';
+    const dy = sin < -0.5 ? -3 : sin > 0.5 ? 10 : 4;
+    radarSvg.append(node('text', {
+      class: 'radar-axis-label',
+      x: cx + cos * (R + 13),
+      y: cy + sin * (R + 13) + dy,
+      'text-anchor': anchor
+    }, t(ax.zh, ax.en)));
+  });
+
+  selectedRows.forEach((row, idx) => {
+    const sc = compareColor(idx);
+    const pts = axes.map((ax, i) => {
+      const val = ax.get(row);
+      const ratio = val === null ? 0 : Math.max(0, Math.min(1, val / scaleMax));
+      const ang = -Math.PI / 2 + (i * 2 * Math.PI) / N;
+      return `${cx + Math.cos(ang) * R * ratio},${cy + Math.sin(ang) * R * ratio}`;
+    }).join(' ');
+    radarSvg.append(node('polygon', {
+      points: pts,
+      fill: sc,
+      'fill-opacity': 0.13,
+      stroke: sc,
+      'stroke-width': 2,
+      'stroke-linejoin': 'round'
+    }));
+    axes.forEach((ax, i) => {
+      const val = ax.get(row);
+      if (val === null) return;
+      const ratio = Math.max(0, Math.min(1, val / scaleMax));
+      const ang = -Math.PI / 2 + (i * 2 * Math.PI) / N;
+      const dot = node('circle', {
+        cx: cx + Math.cos(ang) * R * ratio,
+        cy: cy + Math.sin(ang) * R * ratio,
+        r: 3.3,
+        fill: sc
+      });
+      dot.append(node('title', {}, `${row.name} · ${t(ax.zh, ax.en)}: ${format(val, 1)}%`));
+      radarSvg.append(dot);
+    });
+  });
+
+  const barsFrag = document.createDocumentFragment();
+  for (const m of barMetrics) {
+    const validNums = selectedRows.map(r => m.get(r)).filter(v => v !== null);
+    if (!validNums.length) continue;
+    const bestVal = m.lowerBetter ? Math.min(...validNums) : Math.max(...validNums);
+    const block = html('div', null, 'metric-block');
+    const title = html('div', null, 'metric-title');
+    title.append(html('span', t(m.zh, m.en)));
+    block.append(title);
+    selectedRows.forEach((row, idx) => {
+      const val = m.get(row);
+      const sc = compareColor(idx);
+      const mini = html('div', null, 'mini-bar-row');
+      const track = html('span', null, 'comparison-track');
+      const fill = html('i');
+      fill.style.width = val === null ? '0%' : `${Math.max(2, Math.min(100, val))}%`;
+      fill.style.background = sc;
+      track.append(fill);
+      const valEl = html('span', val === null ? '—' : `${format(val, 1)}%`, 'mini-bar-val');
+      if (val !== null && selectedRows.length > 1 && Math.abs(val - bestVal) < 1e-6) {
+        valEl.style.color = 'var(--accent)';
+        valEl.style.fontWeight = '600';
+      }
+      mini.append(html('span', row.shortName || row.name, 'mini-bar-name'), track, valEl);
+      block.append(mini);
+    });
+    barsFrag.append(block);
+  }
+  $('#subscoreBars').replaceChildren(barsFrag);
+
+  // 3. Cost Structure, Tail Risk & Latency Anatomy
+  const anatomyFrag = document.createDocumentFragment();
+  if (activeKey === 'models') {
+    $('#anatomyHeading').textContent = t('单任务成本构成、输出 Token 与平均耗时', 'Per-Task Cost Composition, Output Tokens & Latency');
+    const legend = html('div', null, 'stack-legend');
+    for (const [col, zhL, enL] of [
+      ['#38bdf8', '输入 Prompt', 'Input'],
+      ['#f59e0b', '推理思考 Token', 'Reasoning'],
+      ['#10b981', '最终输出回答', 'Answer']
+    ]) {
+      const item = html('span');
+      const sw = html('i');
+      sw.style.background = col;
+      item.append(sw, document.createTextNode(t(zhL, enL)));
+      legend.append(item);
+    }
+    anatomyFrag.append(legend);
+
+    selectedRows.forEach((row, idx) => {
+      const cb = row.costBreakdown || {input: 0, reasoning: 0, answer: row.cost};
+      const sum = Math.max(1e-9, (cb.input || 0) + (cb.reasoning || 0) + (cb.answer || 0));
+      const thinkShare = Math.round(((cb.reasoning || 0) / sum) * 100);
+      const tokStr = row.outTokens ? ` · ${format(row.outTokens.total / 1000, 1)}k tok` : '';
+
+      const block = html('div', null, 'metric-block');
+      const head = html('div', null, 'metric-title');
+      const leftName = html('span');
+      const dot = html('i', null, 'creator-dot');
+      dot.style.background = compareColor(idx);
+      dot.style.marginRight = '6px';
+      leftName.append(dot, document.createTextNode(row.shortName || row.name));
+      head.append(leftName, html('span', `${money(row.cost)} · ${t('思考占', 'Think')} ${thinkShare}%${tokStr}`));
+
+      const stack = html('div', null, 'stack-track');
+      stack.title = `${t('输入', 'Input')}: ${money(cb.input || 0)} · ${t('思考', 'Reasoning')}: ${money(cb.reasoning || 0)} · ${t('回答', 'Answer')}: ${money(cb.answer || 0)}`;
+      for (const [part, col] of [[cb.input || 0, '#38bdf8'], [cb.reasoning || 0, '#f59e0b'], [cb.answer || 0, '#10b981']]) {
+        if (part <= 0) continue;
+        const seg = html('i');
+        seg.style.width = `${(part / sum) * 100}%`;
+        seg.style.background = col;
+        stack.append(seg);
+      }
+      block.append(head, stack);
+      anatomyFrag.append(block);
+    });
+
+    const maxTime = Math.max(1, ...selectedRows.map(r => r.timeSec || 0));
+    const timeBlock = html('div', null, 'metric-block');
+    timeBlock.style.marginTop = '6px';
+    timeBlock.append(html('div', t('单任务平均端到端耗时', 'Mean End-to-End Task Time'), 'metric-title'));
+    selectedRows.forEach((row, idx) => {
+      const mini = html('div', null, 'mini-bar-row');
+      const track = html('span', null, 'comparison-track');
+      const fill = html('i');
+      fill.style.width = row.timeSec ? `${Math.max(2, (row.timeSec / maxTime) * 100)}%` : '0%';
+      fill.style.background = compareColor(idx);
+      track.append(fill);
+      mini.append(html('span', row.shortName || row.name, 'mini-bar-name'), track, html('span', formatTime(row.timeSec), 'mini-bar-val'));
+      timeBlock.append(mini);
+    });
+    anatomyFrag.append(timeBlock);
+  } else {
+    $('#anatomyHeading').textContent = t('单任务成本分位箱线图（尾部风险）与执行耗时', 'Task Cost Distribution (P05–P50–P95 Tail Risk) & Wall Time');
+    const maxDollar = Math.max(1, ...selectedRows.map(r => Math.max(r.costPercentiles?.p95 || 0, r.cost))) * 1.06;
+    const svgH = 30 + selectedRows.length * 38;
+    const x0 = 136, x1 = 446;
+    const mapX = v => x0 + (Math.max(0, v) / maxDollar) * (x1 - x0);
+    const wSvg = node('svg', {class: 'whisker-svg', viewBox: `0 0 460 ${svgH}`, role: 'img', 'aria-label': t('单任务成本分位数箱线图', 'Cost percentiles box-and-whisker chart')});
+
+    for (const tk of ticks(0, maxDollar, 5)) {
+      const tx = mapX(tk);
+      wSvg.append(
+        node('line', {x1: tx, x2: tx, y1: 6, y2: svgH - 20, stroke: 'var(--grid)', 'stroke-width': 1}),
+        node('text', {x: tx, y: svgH - 5, 'text-anchor': 'middle', fill: 'var(--muted)', 'font-size': '11'}, compactMoney(tk))
+      );
+    }
+
+    selectedRows.forEach((row, idx) => {
+      const sc = compareColor(idx);
+      const cy = 20 + idx * 38;
+      const short = (row.shortName || row.name).slice(0, 20);
+      const g = node('g');
+      g.append(node('text', {x: x0 - 8, y: cy + 4, 'text-anchor': 'end', fill: 'var(--ink)', 'font-size': '11.5'}, short));
+      const pct = row.costPercentiles;
+      if (pct) {
+        const xp05 = mapX(pct.p05 ?? 0), xp25 = mapX(pct.p25 ?? 0), xp50 = mapX(pct.p50 ?? 0), xp75 = mapX(pct.p75 ?? 0), xp95 = mapX(pct.p95 ?? 0);
+        g.append(
+          node('line', {x1: xp05, x2: xp95, y1: cy, y2: cy, stroke: sc, 'stroke-width': 1.5}),
+          node('line', {x1: xp05, x2: xp05, y1: cy - 5, y2: cy + 5, stroke: sc, 'stroke-width': 1.5}),
+          node('line', {x1: xp95, x2: xp95, y1: cy - 5, y2: cy + 5, stroke: sc, 'stroke-width': 1.5}),
+          node('rect', {x: xp25, y: cy - 8, width: Math.max(2, xp75 - xp25), height: 16, rx: 3, fill: sc, 'fill-opacity': 0.24, stroke: sc, 'stroke-width': 1.5}),
+          node('line', {x1: xp50, x2: xp50, y1: cy - 8, y2: cy + 8, stroke: sc, 'stroke-width': 2.5})
+        );
+        g.append(node('title', {}, `${row.name}\nP05: ${money(pct.p05 || 0)} · P25: ${money(pct.p25 || 0)} · P50: ${money(pct.p50 || 0)}\nMean: ${money(row.cost)} · P75: ${money(pct.p75 || 0)} · P95: ${money(pct.p95 || 0)}`));
+      }
+      const xm = mapX(row.cost);
+      g.append(node('polygon', {
+        points: `${xm},${cy - 5} ${xm + 5},${cy} ${xm},${cy + 5} ${xm - 5},${cy}`,
+        fill: 'var(--ink)',
+        stroke: sc,
+        'stroke-width': 1.4
+      }));
+      wSvg.append(g);
+    });
+    anatomyFrag.append(
+      wSvg,
+      html('p', t('竖线 = P50 中位成本 · 方框 = P25–P75 · 菱形 ◆ = 平均成本 · 须线 = P05–P95 长尾分布', 'Line = P50 median · Box = P25–P75 · ◆ = Mean cost · Whiskers = P05–P95 tail range'), 'anatomy-note')
+    );
+
+    const maxTime = Math.max(1, ...selectedRows.map(r => r.timeSec || 0));
+    const timeBlock = html('div', null, 'metric-block');
+    timeBlock.style.marginTop = '4px';
+    timeBlock.append(html('div', t('单任务平均耗时与代理步数', 'Mean Wall Time & Agent Steps'), 'metric-title'));
+    selectedRows.forEach((row, idx) => {
+      const mini = html('div', null, 'mini-bar-row');
+      const track = html('span', null, 'comparison-track');
+      const fill = html('i');
+      fill.style.width = row.timeSec ? `${Math.max(2, (row.timeSec / maxTime) * 100)}%` : '0%';
+      fill.style.background = compareColor(idx);
+      track.append(fill);
+      const stepNote = row.agentStats?.steps ? ` · ${format(row.agentStats.steps, 0)}${t('步', 'st')}` : '';
+      mini.append(html('span', row.shortName || row.name, 'mini-bar-name'), track, html('span', `${formatTime(row.timeSec)}${stepNote}`, 'mini-bar-val'));
+      timeBlock.append(mini);
+    });
+    anatomyFrag.append(timeBlock);
+  }
+  $('#anatomyBody').replaceChildren(anatomyFrag);
+
+  // 4. Side-by-Side Head-to-Head Matrix
+  const matrix = $('#compareMatrix');
+  const thead = html('thead');
+  const headTr = html('tr');
+  headTr.append(html('th', t('核心指标', 'Metric')));
+  selectedRows.forEach((row, idx) => {
+    const th = html('th');
+    const dot = html('i', null, 'creator-dot');
+    dot.style.background = compareColor(idx);
+    dot.style.marginRight = '6px';
+    th.append(dot, document.createTextNode(row.shortName || row.name));
+    headTr.append(th);
+  });
+  thead.append(headTr);
+
+  const tbody = html('tbody');
+  const addRow = (label, texts, nums = null, lowerBetter = false) => {
+    const tr = html('tr');
+    tr.append(html('th', label));
+    let best = null;
+    if (nums && selectedRows.length > 1) {
+      const finite = nums.filter(v => typeof v === 'number' && Number.isFinite(v));
+      if (finite.length > 1) best = lowerBetter ? Math.min(...finite) : Math.max(...finite);
+    }
+    texts.forEach((txt, i) => {
+      const td = html('td', txt);
+      if (best !== null && typeof nums[i] === 'number' && Math.abs(nums[i] - best) < 1e-9) {
+        td.className = 'cell-best';
+      }
+      tr.append(td);
+    });
+    tbody.append(tr);
+  };
+
+  addRow(
+    t('综合智能指数', 'Composite Index'),
+    selectedRows.map(r => format(r.intelligenceIndex, 2)),
+    selectedRows.map(r => r.intelligenceIndex),
+    false
+  );
+  addRow(
+    t('单任务平均 API 成本', 'Mean Cost / Task'),
+    selectedRows.map(r => money(r.cost)),
+    selectedRows.map(r => r.cost),
+    true
+  );
+  addRow(
+    t('单任务平均耗时', 'Mean Time / Task'),
+    selectedRows.map(r => formatTime(r.timeSec)),
+    selectedRows.map(r => r.timeSec ?? null),
+    true
+  );
+  const vals = selectedRows.map(r => valuePerDollar(r, state.valueWeight, state.minScore));
+  addRow(
+    t(`加权性价比 (α=${state.valueWeight.toFixed(1)})`, `Weighted Value (α=${state.valueWeight.toFixed(1)})`),
+    vals.map(v => valueLabel(v)),
+    vals,
+    false
+  );
+  addRow(
+    t('开源属性 · 推理档位', 'License · Effort'),
+    selectedRows.map(r => `${r.isOpenWeights ? t('开源权重', 'Open weights') : t('闭源专有', 'Proprietary')}${r.effort?.label ? ' · ' + r.effort.label : ''}`)
+  );
+  addRow(
+    t('Pro $20 / Max $100 回本数', 'Pro $20 / Max $100 Break-even'),
+    selectedRows.map(r => `${formatTaskCount(breakEvenTasks(r.cost, 20))} / ${formatTaskCount(breakEvenTasks(r.cost, 100))}`)
+  );
+
+  if (activeKey === 'models') {
+    addRow(
+      t('输出总 Token（思考占比）', 'Output Tokens (Reasoning %)'),
+      selectedRows.map(r => r.outTokens
+        ? `${format(r.outTokens.total / 1000, 1)}k (${Math.round((r.outTokens.reasoning / Math.max(1, r.outTokens.total)) * 100)}%)`
+        : '—'),
+      selectedRows.map(r => r.outTokens?.total ?? null),
+      true
+    );
+    addRow(
+      t('全科幻觉率 (Omniscience)', 'Hallucination Rate'),
+      selectedRows.map(r => r.subscores?.hallucination != null ? `${format(r.subscores.hallucination, 1)}%` : '—'),
+      selectedRows.map(r => r.subscores?.hallucination ?? null),
+      true
+    );
+    addRow(
+      t('发布日期', 'Release Date'),
+      selectedRows.map(r => r.releaseDate || '—')
+    );
+  } else {
+    addRow(
+      t('成本中位数 P50 / 尾部 P95', 'Median P50 / P95 Tail Cost'),
+      selectedRows.map(r => r.costPercentiles ? `${money(r.costPercentiles.p50 || 0)} / ${money(r.costPercentiles.p95 || 0)}` : '—'),
+      selectedRows.map(r => r.costPercentiles?.p95 ?? null),
+      true
+    );
+    addRow(
+      t('平均交互步数 / 总 Token', 'Mean Steps / Total Tokens'),
+      selectedRows.map(r => `${r.agentStats?.steps != null ? format(r.agentStats.steps, 1) + t(' 步', ' steps') : '—'}${r.agentStats?.totalTokens ? ' · ' + format(r.agentStats.totalTokens / 1e6, 2) + 'M' : ''}`),
+      selectedRows.map(r => r.agentStats?.steps ?? null),
+      true
+    );
+    addRow(
+      t('Prompt 缓存命中率', 'Prompt Cache Hit Rate'),
+      selectedRows.map(r => r.agentStats?.cacheHitRate != null ? `${format(r.agentStats.cacheHitRate, 1)}%` : '—'),
+      selectedRows.map(r => r.agentStats?.cacheHitRate ?? null),
+      false
+    );
+  }
+
+  matrix.replaceChildren(thead, tbody);
 }
 
 function drawCurve() {
@@ -1307,7 +2007,7 @@ function drawCurve() {
 
   // Project actual Pareto frontier entries directly onto the utility curve
   const paretoLayer = node('g');
-  const frontier = paretoFrontier(state.rows);
+  const frontier = paretoFrontier(licenseFilteredRows(state.rows));
   const {champion} = computeRankings();
   for (const row of frontier) {
     if (row.intelligenceIndex > xMax) continue;
@@ -1419,6 +2119,7 @@ function draw() {
   if (!state) return;
   if (state.mode !== 'chart') {
     if (state.mode === 'curve') drawCurve();
+    else if (state.mode === 'compare') renderCompare();
     updateSummary();
     return;
   }
@@ -1433,12 +2134,15 @@ function draw() {
 
   svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
   state.view = clampView(state.view, state.bounds);
+  state.views[state.xMetric] = {...state.view};
 
   setAttrs(svg.querySelector('#plot-clip rect'), {x: frame.left - 5, y: frame.top - 5, width: frame.width + 10, height: frame.height + 10});
   setAttrs(svg.querySelector('#emphasis-clip rect'), {x: frame.left - 14, y: Math.max(0, frame.top - 14), width: frame.width + 28, height: frame.height + 28});
 
-  const medianX = median(state.rows.map(d => d.cost));
-  const medianY = median(state.rows.map(d => d.intelligenceIndex));
+  const pool = activePool();
+  const xOf = currentXOf();
+  const medianX = pool.length ? median(pool.map(xOf)) : 0;
+  const medianY = pool.length ? median(pool.map(d => d.intelligenceIndex)) : 0;
   const qx = Math.max(frame.left, Math.min(frame.right, x(medianX)));
   const qy = Math.max(frame.top, Math.min(frame.bottom, y(medianY)));
   const qWidth = Math.max(0, qx - frame.left), qHeight = Math.max(0, qy - frame.top);
@@ -1459,14 +2163,34 @@ function draw() {
     floorRect.style.display = floorGuide.style.display = 'none';
   }
 
-  // Full-dataset Pareto frontier
-  const frontier = paretoFrontier(state.rows);
-  svg.querySelector('.pareto').setAttribute('d', frontier.map((row, i) => `${i ? 'L' : 'M'}${x(row.cost)},${y(row.intelligenceIndex)}`).join(' '));
+  // Active pool Pareto frontier (cost or time)
+  const frontier = paretoFrontier(pool, xOf);
+  svg.querySelector('.pareto').setAttribute('d', frontier.map((row, i) => `${i ? 'L' : 'M'}${xCoord(row)},${y(row.intelligenceIndex)}`).join(' '));
 
-  // Optional Iso-Value tangent contour passing through the #1 best-value entry
+  // Optional reasoning effort trajectories across multi-effort families
+  const effortLayer = svg.querySelector('.effort-layer');
+  effortLayer.replaceChildren();
+  if (state.effortCurves) {
+    const visibleIds = new Set(nodes.map(n => n.row.id));
+    for (const traj of effortTrajectories(pool, xOf)) {
+      const pts = traj.points.filter(r => visibleIds.has(r.id));
+      if (pts.length < 2) continue;
+      const muted = state.company && traj.creator?.name !== state.company;
+      const path = node('path', {
+        class: 'effort-line',
+        'data-family': traj.slug,
+        stroke: color(traj.creator?.color),
+        d: pts.map((r, i) => `${i ? 'L' : 'M'}${xCoord(r)},${y(r.intelligenceIndex)}`).join(' ')
+      });
+      if (muted) path.style.opacity = '0.16';
+      effortLayer.append(path);
+    }
+  }
+
+  // Optional Iso-Value tangent contour passing through the #1 best-value entry (USD mode only)
   const isoPath = svg.querySelector('.iso-curve');
   const {champion, championValue} = computeRankings();
-  if (state.isoCurve && champion && championValue > 0) {
+  if (state.xMetric === 'cost' && state.isoCurve && champion && championValue > 0) {
     const sMin = Math.max(0.25, state.minScore || 0.25, state.view.y);
     const sMax = Math.min(104, state.view.y + state.view.height);
     const segments = [];
@@ -1482,9 +2206,9 @@ function draw() {
     isoPath.setAttribute('d', '');
   }
 
-  // Optional vertical subscription break-even threshold line: cost* = subFee / monthlyTasks
+  // Optional vertical subscription break-even threshold line: cost* = subFee / monthlyTasks (USD mode only)
   const subGuide = svg.querySelector('.sub-guide');
-  if (state.subLine && state.monthlyTasks > 0) {
+  if (state.xMetric === 'cost' && state.subLine && state.monthlyTasks > 0) {
     const thresholdCost = state.subFee / state.monthlyTasks;
     const sx = x(thresholdCost);
     setAttrs(subGuide, {x1: sx, x2: sx, y1: frame.top, y2: frame.bottom});
@@ -1495,7 +2219,12 @@ function draw() {
 
   for (const item of nodes) {
     const visible = inView(item.row);
-    setAttrs(item.p, {cx: x(item.row.cost), cy: y(item.row.intelligenceIndex), tabindex: visible ? 0 : -1});
+    const cx = xCoord(item.row);
+    if (Number.isFinite(cx)) {
+      setAttrs(item.p, {cx, cy: y(item.row.intelligenceIndex), tabindex: visible ? 0 : -1});
+    } else {
+      item.p.setAttribute('tabindex', '-1');
+    }
     item.p.style.visibility = visible ? 'visible' : 'hidden';
   }
 
@@ -1505,6 +2234,7 @@ function draw() {
   updateSummary();
 
   host.dataset.chart = activeKey;
+  host.dataset.xMetric = state.xMetric;
   host.dataset.xMin = state.view.x;
   host.dataset.xMax = state.view.x + state.view.width;
   host.dataset.yMin = state.view.y;
@@ -1516,11 +2246,13 @@ function drawAxes(medianX, medianY) {
   grid.replaceChildren();
   axis.replaceChildren();
   const v = state.view;
+  const isTime = state.xMetric === 'time';
 
   for (const value of ticks(v.x, v.x + v.width, Math.max(3, Math.floor(frame.width / 105)))) {
     const xx = x(value);
     grid.append(node('line', {x1: xx, x2: xx, y1: frame.top, y2: frame.bottom}));
-    axis.append(node('text', {class: 'x-tick', x: xx, y: frame.bottom + 17, 'text-anchor': 'middle'}, '$' + format(value, 6)));
+    const tickText = isTime ? t(`${format(value, 2)}分`, `${format(value, 2)}m`) : '$' + format(value, 6);
+    axis.append(node('text', {class: 'x-tick', x: xx, y: frame.bottom + 17, 'text-anchor': 'middle'}, tickText));
   }
 
   const yTicks = ticks(v.y, v.y + v.height, Math.max(3, Math.floor(frame.height / 54)));
@@ -1538,15 +2270,16 @@ function drawAxes(medianX, medianY) {
   // Subtle quadrant median reference micro-labels when inside plot frame
   const qx = x(medianX), qy = y(medianY);
   if (frame.width > 360 && qx > frame.left + 70 && qx < frame.right - 70 && qy > frame.top + 26) {
+    const medLabel = isTime ? formatTime(medianX * 60) : money(medianX);
     axis.append(node('text', {
       class: 'quadrant-note',
       x: qx - 5,
       y: frame.top + 13,
       'text-anchor': 'end'
-    }, t(`中位 ${money(medianX)}`, `Median ${money(medianX)}`)));
+    }, t(`中位 ${medLabel}`, `Median ${medLabel}`)));
   }
 
-  if (state.subLine && state.monthlyTasks > 0) {
+  if (!isTime && state.subLine && state.monthlyTasks > 0) {
     const thresholdCost = state.subFee / state.monthlyTasks;
     const sx = x(thresholdCost);
     if (sx > frame.left + 20 && sx < frame.right - 20) {
@@ -1572,7 +2305,9 @@ function drawAxes(medianX, medianY) {
     x: (frame.left + frame.right) / 2,
     y: frame.bottom + 36,
     'text-anchor': 'middle'
-  }, t('每任务成本（美元 · 线性刻度）', 'Cost per Task (USD · Linear Scale)')));
+  }, isTime
+    ? t('每任务平均耗时（分钟 · 线性刻度）', 'Mean Wall Time per Task (Minutes · Linear Scale)')
+    : t('每任务成本（美元 · 线性刻度）', 'Cost per Task (USD · Linear Scale)')));
 
   const group = node('g', {transform: `translate(16 ${(frame.top + frame.bottom) / 2}) rotate(-90)`});
   group.append(node('text', {
@@ -1589,7 +2324,7 @@ function overlapArea(a, b) {
 
 function layoutLabels(championId) {
   const placed = [], visible = nodes.filter(item => inView(item.row));
-  const frontier = new Set(paretoFrontier(state.rows).map(row => row.id));
+  const frontier = new Set(paretoFrontier(activePool(), currentXOf()).map(row => row.id));
   const baseDist = state.labelDistance;
   const radii = [3, baseDist * 0.55, baseDist * 0.85, Math.max(6, baseDist)].filter((v, i, arr) => v >= 2 && arr.indexOf(v) === i);
   measure.font = `500 ${state.labelSize}px "IBM Plex Sans", "Segoe UI", "Microsoft YaHei UI", sans-serif`;
@@ -1597,7 +2332,7 @@ function layoutLabels(championId) {
   const priorityOf = item => {
     const id = item.row.id;
     if (id === state.selected || item === hovered) return 4;
-    if (state.isoCurve && id === championId) return 3;
+    if (state.xMetric === 'cost' && state.isoCurve && id === championId) return 3;
     if (state.company && item.row.creator?.name === state.company) return 2;
     if (frontier.has(id)) return 1;
     return 0;
@@ -1613,7 +2348,7 @@ function layoutLabels(championId) {
     }
 
     const priority = priorityOf(item);
-    const px = x(item.row.cost), py = y(item.row.intelligenceIndex);
+    const px = xCoord(item.row), py = y(item.row.intelligenceIndex);
     const w = measure.measureText(item.row.shortName || item.row.name).width + 2;
     const h = state.labelSize * 1.22;
 
@@ -1632,7 +2367,7 @@ function layoutLabels(championId) {
         let labelCollision = 0, pointCollision = 0;
         for (const previous of placed) labelCollision += overlapArea(candidate, previous);
         for (const other of visible) {
-          if (other !== item) pointCollision += overlapArea(candidate, {x: x(other.row.cost) - 4.5, y: y(other.row.intelligenceIndex) - 4.5, w: 9, h: 9});
+          if (other !== item) pointCollision += overlapArea(candidate, {x: xCoord(other.row) - 4.5, y: y(other.row.intelligenceIndex) - 4.5, w: 9, h: 9});
         }
         const score = radius * 0.12 + labelCollision * 6 + pointCollision * 2.2;
         if (score < bestScore) {
@@ -1673,10 +2408,12 @@ function drawActive(champion) {
   const layer = svg.querySelector('.active-layer');
   const companies = svg.querySelector('.company-layer');
   const glows = svg.querySelector('.glow-layer');
+  const activeEffortLayer = svg.querySelector('.active-effort-layer');
   if (!layer || !companies || !glows || !frame) return;
   layer.replaceChildren();
   companies.replaceChildren();
   glows.replaceChildren();
+  activeEffortLayer?.replaceChildren();
 
   for (const item of nodes) {
     const selected = item.row.id === state.selected, active = selected || item === hovered;
@@ -1698,21 +2435,44 @@ function drawActive(champion) {
     if (focused && !active && inView(item.row)) companies.append(emphasisCopy(item, 5, 'company'));
   }
 
-  if (state.isoCurve && champion) {
+  const selected = nodes.find(item => item.row.id === state.selected);
+  const focusItem = hovered || selected;
+  if (activeEffortLayer && focusItem?.row.family?.slug) {
+    const traj = effortTrajectories(activePool(), currentXOf()).find(tr => tr.slug === focusItem.row.family.slug);
+    if (traj && traj.points.length >= 2) {
+      activeEffortLayer.append(node('path', {
+        class: 'effort-line is-highlighted',
+        stroke: focusItem.color,
+        d: traj.points.map((r, i) => `${i ? 'L' : 'M'}${xCoord(r)},${y(r.intelligenceIndex)}`).join(' ')
+      }));
+      for (const sibling of traj.points) {
+        if (sibling.id === focusItem.row.id || !inView(sibling)) continue;
+        activeEffortLayer.append(node('circle', {
+          cx: xCoord(sibling),
+          cy: y(sibling.intelligenceIndex),
+          r: 5.5,
+          fill: 'none',
+          stroke: focusItem.color,
+          'stroke-width': 1.5
+        }));
+      }
+    }
+  }
+
+  if (state.xMetric === 'cost' && state.isoCurve && champion) {
     const champNode = nodes.find(item => item.row.id === champion.id);
     if (champNode && inView(champNode.row)) {
       layer.append(node('circle', {
         class: 'champion-ring',
-        cx: x(champNode.row.cost),
+        cx: xCoord(champNode.row),
         cy: y(champNode.row.intelligenceIndex),
         r: 9
       }));
     }
   }
 
-  const selected = nodes.find(item => item.row.id === state.selected);
   if (selected && inView(selected.row)) {
-    const xx = x(selected.row.cost), yy = y(selected.row.intelligenceIndex);
+    const xx = xCoord(selected.row), yy = y(selected.row.intelligenceIndex);
     layer.append(
       node('path', {class: 'pin-guides', d: `M${frame.left} ${yy}H${xx}V${frame.bottom}`, stroke: selected.color, fill: 'none'}),
       node('circle', {class: 'pin-ring', cx: xx, cy: yy, r: 10, stroke: selected.color, fill: 'none'}),
@@ -1721,7 +2481,7 @@ function drawActive(champion) {
   }
   if (hovered && hovered !== selected && inView(hovered.row)) {
     layer.append(
-      node('circle', {cx: x(hovered.row.cost), cy: y(hovered.row.intelligenceIndex), r: 8, stroke: hovered.color, 'stroke-width': 1.5, fill: 'none'}),
+      node('circle', {cx: xCoord(hovered.row), cy: y(hovered.row.intelligenceIndex), r: 8, stroke: hovered.color, 'stroke-width': 1.5, fill: 'none'}),
       emphasisCopy(hovered, 6, 'hovered')
     );
   }
@@ -1730,11 +2490,12 @@ function drawActive(champion) {
 
 function emphasisCopy(item, radius, kind) {
   const group = node('g', {class: `emphasis-item emphasis-${kind}`, 'data-id': item.row.id});
+  const cx = xCoord(item.row), cy = y(item.row.intelligenceIndex);
   svg.querySelector('.glow-layer').append(node('circle', {
     class: `emphasis-glow glow-${kind}`,
     'data-id': item.row.id,
-    cx: x(item.row.cost),
-    cy: y(item.row.intelligenceIndex),
+    cx,
+    cy,
     r: kind === 'company' ? 11 : 12,
     fill: `url(#${glowId(item.color)})`
   }));
@@ -1747,7 +2508,7 @@ function emphasisCopy(item, radius, kind) {
     line.style.opacity = '1';
     group.append(line);
   }
-  group.append(node('circle', {class: 'emphasis-marker', cx: x(item.row.cost), cy: y(item.row.intelligenceIndex), r: radius, fill: item.color}));
+  group.append(node('circle', {class: 'emphasis-marker', cx, cy, r: radius, fill: item.color}));
   if (hasLabel && item.label.hasAttribute('x')) {
     const label = item.label.cloneNode(true);
     label.setAttribute('class', 'label emphasis-label');
@@ -1763,21 +2524,28 @@ function renderPinned() {
   card.hidden = !row || state.mode !== 'chart';
   if (!row) return;
 
-  const frontierIds = new Set(paretoFrontier(state.rows).map(r => r.id));
+  const frontierIds = new Set(paretoFrontier(activePool(), currentXOf()).map(r => r.id));
   const {rankMap, qualifiedCount} = computeRankings();
   const rankInfo = rankMap.get(row.id);
 
   $('#pinnedName').textContent = row.name;
   const metaParts = [row.creator?.name || 'Other'];
+  if (row.isOpenWeights) metaParts.push(t('开源', 'Open'));
+  if (row.effort?.label) metaParts.push(row.effort.label);
   if (frontierIds.has(row.id)) metaParts.push(t('帕累托前沿', 'Pareto frontier'));
-  if (rankInfo) metaParts.push(t(`性价比排名 #${rankInfo.rank}/${qualifiedCount}`, `Value rank #${rankInfo.rank}/${qualifiedCount}`));
+  if (rankInfo) metaParts.push(t(`性价比 #${rankInfo.rank}/${qualifiedCount}`, `Value #${rankInfo.rank}/${qualifiedCount}`));
   $('#pinnedMeta').textContent = metaParts.join(' · ');
 
   $('#pinnedScore').textContent = format(row.intelligenceIndex, 2);
   $('#pinnedCost').textContent = money(row.cost);
+  $('#pinnedTime').textContent = formatTime(row.timeSec);
   $('#pinnedValue').textContent = rankInfo ? valueLabel(rankInfo.value) : t('未达门槛', 'Below min');
   $('#pinnedSubNote').textContent = tierBreakevenText(row.cost);
   $('#pinnedOutside').hidden = !frame || inView(row);
+
+  const inCmp = state.compareIds.includes(row.id);
+  $('#pinCompareBtn').textContent = inCmp ? t('已对比 ✓', 'In cmp ✓') : t('+ 对比', '+ Compare');
+  $('#pinCompareBtn').setAttribute('aria-pressed', String(inCmp));
 
   if (frame) {
     card.style.left = 'auto';
@@ -1785,9 +2553,10 @@ function renderPinned() {
     card.style.top = '10px';
     card.style.bottom = 'auto';
     card.style.width = '';
+    const rx = xCoord(row);
     if (frame.width >= 440) {
-      card.style.width = Math.min(295, frame.width * 0.45) + 'px';
-      if (x(row.cost) > frame.left + frame.width / 2) {
+      card.style.width = Math.min(318, frame.width * 0.46) + 'px';
+      if (Number.isFinite(rx) && rx > frame.left + frame.width / 2) {
         card.style.left = frame.left + 10 + 'px';
         card.style.right = 'auto';
       }
@@ -1805,11 +2574,13 @@ function showHover(item, event) {
   drawActive(champion);
 
   const row = item.row;
-  const frontierIds = new Set(paretoFrontier(state.rows).map(r => r.id));
+  const frontierIds = new Set(paretoFrontier(activePool(), currentXOf()).map(r => r.id));
   const rankInfo = rankMap.get(row.id);
 
   tip.replaceChildren(html('strong', row.name));
   const subParts = [row.creator?.name || 'Other'];
+  if (row.isOpenWeights) subParts.push(t('开源权重', 'Open weights'));
+  if (row.effort?.label) subParts.push(`${t('推理', 'Effort')}: ${row.effort.label}`);
   if (row.agentName && row.modelName) subParts.push(`${row.agentName} · ${row.modelName}`);
   if (frontierIds.has(row.id)) subParts.push(t('帕累托前沿', 'Pareto frontier'));
   if (row.isRouter) subParts.push(t('路由变体', 'Router'));
@@ -1819,11 +2590,17 @@ function showHover(item, event) {
   const valText = rankInfo
     ? `${valueLabel(rankInfo.value)} (#${rankInfo.rank}/${qualifiedCount})`
     : t('未达最低门槛', 'Below min score');
-  for (const [label, value] of [
+  const kvRows = [
     [axisLabel, format(row.intelligenceIndex, 2)],
-    [t('每任务成本', 'Cost / task'), money(row.cost)],
-    [t(`性价比 (α=${state.valueWeight.toFixed(1)})`, `Value (α=${state.valueWeight.toFixed(1)})`), valText]
-  ]) {
+    [t('每任务成本', 'Cost / task'), money(row.cost)]
+  ];
+  if (row.timeSec > 0) kvRows.push([t('平均耗时', 'Mean time'), formatTime(row.timeSec)]);
+  if (row.costPercentiles) {
+    kvRows.push([t('成本 P50 / P95', 'Cost P50 / P95'), `${money(row.costPercentiles.p50 || 0)} / ${money(row.costPercentiles.p95 || 0)}`]);
+  }
+  kvRows.push([t(`性价比 (α=${state.valueWeight.toFixed(1)})`, `Value (α=${state.valueWeight.toFixed(1)})`), valText]);
+
+  for (const [label, value] of kvRows) {
     const line = html('div', null, 'tip-value');
     line.append(html('span', label), html('b', value));
     tip.append(line);
@@ -1857,7 +2634,7 @@ function nearestItem(event) {
   let closest = null, best = 13 * 13;
   for (const item of nodes) {
     if (!inView(item.row)) continue;
-    const distance = (x(item.row.cost) - px) ** 2 + (y(item.row.intelligenceIndex) - py) ** 2;
+    const distance = (xCoord(item.row) - px) ** 2 + (y(item.row.intelligenceIndex) - py) ** 2;
     if (distance < best) {
       closest = item;
       best = distance;
@@ -1882,6 +2659,9 @@ function clearPin() {
 }
 
 $('#unpin').addEventListener('click', clearPin);
+$('#pinCompareBtn').addEventListener('click', () => {
+  if (state?.selected) toggleCompareId(state.selected);
+});
 
 function updateSummary() {
   const rows = filteredRows();
@@ -1895,6 +2675,11 @@ function updateSummary() {
       `α = ${state.valueWeight.toFixed(1)} · 50→60 分效用倍率 ×${format(ratio, 2)}${champion ? ' · 当前榜首：' + (champion.shortName || champion.name) : ''}`,
       `α = ${state.valueWeight.toFixed(1)} · 50→60 utility ×${format(ratio, 2)}${champion ? ' · #1: ' + (champion.shortName || champion.name) : ''}`
     );
+  } else if (state.mode === 'compare') {
+    $('#viewStatus').textContent = t(
+      `已选 ${state.compareIds.length}/4 项深度剖析 · 含细分雷达、成本结构与并排对决表`,
+      `Comparing ${state.compareIds.length}/4 entries · Sub-benchmark radar, cost anatomy & matrix`
+    );
   } else if (state.mode === 'table') {
     $('#viewStatus').textContent = t(
       `共 ${rows.length} 项 · α = ${state.valueWeight.toFixed(1)}${state.minScore > 0 ? ' · 门槛 ≥' + state.minScore : ''}`,
@@ -1905,6 +2690,12 @@ function updateSummary() {
       `共 ${rows.length} 项 · 参考月费 $${state.subFee} · 预计 ${state.monthlyTasks} 次/月`,
       `${rows.length} entries · Sub $${state.subFee}/mo · ${state.monthlyTasks} tasks/mo`
     );
+  } else if (state.xMetric === 'time') {
+    const startTime = v.x <= 0 ? t('0 分', '0m') : formatTime(v.x * 60);
+    $('#viewStatus').textContent = t(
+      `当前视野 ${shown}/${rows.length} 项 · 耗时区间 ${startTime}–${formatTime((v.x + v.width) * 60)}`,
+      `Showing ${shown}/${rows.length} · Time ${startTime}–${formatTime((v.x + v.width) * 60)}`
+    );
   } else {
     $('#viewStatus').textContent = t(
       `当前视野 ${shown}/${rows.length} 项 · 成本区间 ${money(v.x)}–${money(v.x + v.width)}`,
@@ -1912,7 +2703,9 @@ function updateSummary() {
     );
   }
 
-  if (state.mode !== 'curve') {
+  if (state.mode !== 'curve' && state.mode !== 'compare') {
+    if (state.license === 'open') $('#viewStatus').append(document.createTextNode(t(' · 仅开源', ' · Open only')));
+    else if (state.license === 'closed') $('#viewStatus').append(document.createTextNode(t(' · 仅闭源', ' · Proprietary')));
     if (state.company) $('#viewStatus').append(document.createTextNode(t(` · 聚焦：${state.company}`, ` · Focus: ${state.company}`)));
     if (state.search) $('#viewStatus').append(document.createTextNode(t(` · 搜索：${state.search}`, ` · Search: ${state.search}`)));
     if (state.frontierOnly) $('#viewStatus').append(document.createTextNode(t(' · 仅前沿', ' · Frontier')));
@@ -1927,7 +2720,7 @@ function updateSummary() {
   }
 
   const selected = state.rows.find(row => row.id === state.selected);
-  $('#selection').textContent = selected && state.mode !== 'curve'
+  $('#selection').textContent = selected && state.mode !== 'curve' && state.mode !== 'compare'
     ? t(`已锁定：${selected.name}`, `Pinned: ${selected.name}`)
     : '';
 }
@@ -1936,6 +2729,7 @@ function changeView(view) {
   if (!state) return;
   clearHover();
   state.view = clampView(view, state.bounds);
+  state.views[state.xMetric] = {...state.view};
   scheduleDraw();
 }
 
@@ -1943,7 +2737,18 @@ function zoom(axis, factor, anchorX = 0.5, anchorY = 0.5) {
   if (!state) return;
   clearHover();
   state.view = pointerZoomView(state.view, state.bounds, axis, factor, anchorX, anchorY);
+  state.views[state.xMetric] = {...state.view};
   scheduleDraw();
+}
+
+for (const [id, metric] of [['xMetricCost', 'cost'], ['xMetricTime', 'time']]) {
+  $('#' + id).addEventListener('click', () => {
+    if (!state || state.xMetric === metric) return;
+    syncMetricViewport(state, metric);
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+  });
 }
 
 $('#reset').addEventListener('click', () => {
@@ -1965,6 +2770,18 @@ $('#search').addEventListener('input', () => {
   buildPlot();
 });
 
+for (const btn of document.querySelectorAll('#licenseGroup [data-license]')) {
+  btn.addEventListener('click', () => {
+    if (!state || state.license === btn.dataset.license) return;
+    state.license = btn.dataset.license;
+    state.selected = null;
+    renderLegend();
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+  });
+}
+
 $('#frontier').addEventListener('click', () => {
   if (!state) return;
   state.frontierOnly = !state.frontierOnly;
@@ -1972,6 +2789,14 @@ $('#frontier').addEventListener('click', () => {
   syncControls();
   syncUrlHash();
   buildPlot();
+});
+
+$('#effortToggle').addEventListener('click', () => {
+  if (!state) return;
+  state.effortCurves = !state.effortCurves;
+  syncControls();
+  syncUrlHash();
+  scheduleDraw();
 });
 
 $('#isoToggle').addEventListener('click', () => {
@@ -1990,9 +2815,33 @@ $('#subLineToggle').addEventListener('click', () => {
   scheduleDraw();
 });
 
+$('#exportCsv').addEventListener('click', exportCsv);
+
+$('#compareSelect').addEventListener('change', () => {
+  const val = $('#compareSelect').value;
+  if (!state || !val) return;
+  if (!state.compareIds.includes(val) && state.compareIds.length < 4) {
+    state.compareIds.push(val);
+    syncUrlHash();
+    renderCompare();
+    updateSummary();
+  }
+  $('#compareSelect').value = '';
+});
+
+$('#compareAutoBtn').addEventListener('click', () => {
+  if (!state) return;
+  const pool = licenseFilteredRows(state.rows);
+  state.compareIds = defaultCompareIds(pool.length >= 2 ? pool : state.rows);
+  syncUrlHash();
+  renderCompare();
+  updateSummary();
+});
+
 $('#clearFilters').addEventListener('click', () => {
   if (!state) return;
   state.company = null;
+  state.license = 'all';
   state.search = '';
   state.frontierOnly = false;
   state.minScore = 0;
@@ -2037,15 +2886,17 @@ $('#resetSettings').addEventListener('click', () => {
 });
 
 function showView(mode) {
-  if (!state || !['chart', 'table', 'curve', 'sub'].includes(mode)) return;
+  if (!state || !['chart', 'table', 'curve', 'sub', 'compare'].includes(mode)) return;
   endPointerInteractions();
   clearHover();
   state.mode = mode;
   valueDetailsOpen = false;
   syncControls();
   syncUrlHash();
-  if (mode === 'table') renderTable();
+  if (mode === 'chart') buildPlot();
+  else if (mode === 'table') renderTable();
   else if (mode === 'sub') renderSubTable();
+  else if (mode === 'compare') renderCompare();
   scheduleDraw();
 }
 
@@ -2062,6 +2913,7 @@ function scheduleValueRefresh() {
       syncUrlHash();
       if (state.mode === 'table') renderTable();
       else if (state.mode === 'curve') drawCurve();
+      else if (state.mode === 'compare') renderCompare();
       else if (state.mode === 'chart') draw();
       updateSummary();
     });
@@ -2402,6 +3254,7 @@ function showLoadError(error) {
   host.hidden = false;
   $('#dataTable').hidden = true;
   $('#subPanel').hidden = true;
+  $('#comparePanel').hidden = true;
   $('#curvePanel').hidden = true;
   $('#valueSettings').hidden = true;
   $('#subSettings').hidden = true;
