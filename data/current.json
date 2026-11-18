@@ -4,7 +4,7 @@
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
   "hostsManifestPath": "/data/324ed05c14a0dc8b.txt",
-  "updatedAt": "2026-11-18T06:27:06.558Z",
+  "updatedAt": "2026-11-18T06:53:09.078Z",
   "updateIntervalHours": 2,
   "modelIndexVersion": "5.0.1",
   "modelCount": 133,
@@ -8507,8 +8507,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -8569,8 +8569,8 @@
         "color": "#0089f4"
       },
       "agentCreator": {
-        "name": "Meta",
-        "color": "#0089f4"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Muse Code",
       "agentSlug": "muse-code",
@@ -8750,8 +8750,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -8812,8 +8812,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -8874,8 +8874,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -8936,8 +8936,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -8998,8 +8998,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -9060,8 +9060,8 @@
         "color": "#f32e02"
       },
       "agentCreator": {
-        "name": "Mistral",
-        "color": "#f32e02"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Mistral Vibe",
       "agentSlug": "mistral-vibe",
@@ -9122,8 +9122,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -9184,8 +9184,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -9308,8 +9308,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -9370,8 +9370,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -9432,8 +9432,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -9494,8 +9494,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -9556,8 +9556,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -9618,8 +9618,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -9742,8 +9742,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -9804,8 +9804,8 @@
         "color": "#00F5E7"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -9861,8 +9861,8 @@
         "color": "#ff7018"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -9918,8 +9918,8 @@
         "color": "#0089f4"
       },
       "agentCreator": {
-        "name": "Meta",
-        "color": "#0089f4"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Muse Code",
       "agentSlug": "muse-code",
@@ -9980,8 +9980,8 @@
         "color": "#34A853"
       },
       "agentCreator": {
-        "name": "Google",
-        "color": "#34A853"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Antigravity CLI",
       "agentSlug": "antigravity-cli",
@@ -10166,8 +10166,8 @@
         "color": "#34A853"
       },
       "agentCreator": {
-        "name": "Google",
-        "color": "#34A853"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Antigravity CLI",
       "agentSlug": "antigravity-cli",
@@ -10290,8 +10290,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -10352,8 +10352,8 @@
         "color": "#0089f4"
       },
       "agentCreator": {
-        "name": "Meta",
-        "color": "#0089f4"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Muse Code",
       "agentSlug": "muse-code",
@@ -10414,8 +10414,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -10472,7 +10472,7 @@
       "intelligenceIndex": 58.403088954056706,
       "cost": 8.75258496053315,
       "creator": {
-        "name": "Anthropic + OpenAI",
+        "name": " + ",
         "color": "#64748b"
       },
       "agentCreator": {
@@ -10529,8 +10529,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -10591,8 +10591,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -10653,8 +10653,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -10839,8 +10839,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
