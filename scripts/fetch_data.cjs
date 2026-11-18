@@ -420,6 +420,35 @@ const HIGH_EFFORTS = new Set(['high', 'xhigh', 'max', 'default']);
 const LMARENA_DATASET_BASE = 'https://datasets-server.huggingface.co/rows?dataset=lmarena-ai%2Fleaderboard-dataset';
 const DESIGN_ARENA_API_BASE = 'https://www.designarena.ai/api/leaderboard?arenaType=models&category=';
 const DESIGN_ARENA_CATEGORIES = ['website', 'uicomponent', 'dataviz', 'gamedev', 'svg'];
+const DESIGN_ARENA_CALIBRATION = {
+  website: { center: 1220, scale: 195 },
+  uicomponent: { center: 1220, scale: 210 },
+  dataviz: { center: 1225, scale: 200 },
+  gamedev: { center: 1220, scale: 285 },
+  svg: { center: 1220, scale: 300 }
+};
+
+function slimDerivedBase(m) {
+  const base = {
+    id: m.id,
+    slug: m.slug,
+    name: m.name,
+    shortName: m.shortName,
+    cost: m.cost,
+    creator: m.creator,
+    isReasoning: !!m.isReasoning,
+    isOpenWeights: !!m.isOpenWeights,
+    deprecated: !!m.deprecated
+  };
+  if (m.releaseDate) base.releaseDate = m.releaseDate;
+  if (m.openLicense) base.openLicense = m.openLicense;
+  if (m.parametersB) base.parametersB = m.parametersB;
+  if (m.modalities) base.modalities = m.modalities;
+  if (m.family) base.family = m.family;
+  if (m.effort) base.effort = m.effort;
+  if (m.timeSec) base.timeSec = m.timeSec;
+  return base;
+}
 
 function buildFrontierModels(models) {
   if (!Array.isArray(models)) return [];
@@ -432,12 +461,13 @@ function buildFrontierModels(models) {
     const frontierIndex = Number((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2));
     const aaIndex = Number(m.intelligenceIndex.toFixed(2));
     candidates.push({
-      ...m,
+      ...slimDerivedBase(m),
       frontierIndex,
       intelligenceIndex: frontierIndex,
       aaIndex,
       indexDelta: Number((frontierIndex - aaIndex).toFixed(2)),
-      coreCount: vals.length
+      coreCount: vals.length,
+      frontierScores: fs
     });
   }
   const byAa = [...candidates].sort((a, b) => b.aaIndex - a.aaIndex || a.cost - b.cost || a.id.localeCompare(b.id));
@@ -633,12 +663,28 @@ function buildHumanArenaModels(models, external = {}) {
     const briefcaseElo = model.expertElo?.briefcase ?? null;
     if (gdpvalElo !== null || briefcaseElo !== null) sources.add('aa-expert');
 
-    const chatVibe = chat ? eloToWinPct(chat.elo, 1360, 220) : null;
-    const docCraft = doc ? eloToWinPct(doc.elo, 1360, 200) : null;
-    const webdevScore = webdev ? eloToWinPct(webdev.elo, 1490, 440) : null;
-    const designScore = cat => (design[cat] ? eloToWinPct(design[cat].elo, 1235, 190) : null);
+    const shrinkBySample = (rawScore, count, prior = 54, k = 220) => {
+      if (rawScore === null) return null;
+      if (typeof count !== 'number' || !Number.isFinite(count) || count <= 0) return rawScore;
+      const w = count / (count + k);
+      return Number((w * rawScore + (1 - w) * prior).toFixed(2));
+    };
+
+    const chatVibe = chat ? shrinkBySample(eloToWinPct(chat.elo, 1360, 220), chat.votes, 54, 600) : null;
+    const docCraft = doc ? shrinkBySample(eloToWinPct(doc.elo, 1360, 200), doc.votes, 54, 400) : null;
+    const webdevScore = webdev ? shrinkBySample(eloToWinPct(webdev.elo, 1490, 440), webdev.votes, 54, 500) : null;
+
+    const designScore = cat => {
+      const entry = design[cat];
+      if (!entry) return null;
+      const cal = DESIGN_ARENA_CALIBRATION[cat] || DESIGN_ARENA_CALIBRATION.website;
+      const raw = eloToWinPct(entry.elo, cal.center, cal.scale);
+      return shrinkBySample(raw, entry.battles, 53, 220);
+    };
+
     const designWeb = designScore('website');
-    const uiParts = ['uicomponent', 'dataviz', 'gamedev', 'svg']
+    // Strictly visual UI & chart layout aesthetics — exclude GameDev JS physics and SVG coordinate math!
+    const uiParts = ['uicomponent', 'dataviz']
       .map(designScore)
       .filter(v => typeof v === 'number' && Number.isFinite(v));
     const designUi = uiParts.length ? Number((uiParts.reduce((a, b) => a + b, 0) / uiParts.length).toFixed(2)) : null;
@@ -649,18 +695,25 @@ function buildHumanArenaModels(models, external = {}) {
     ].filter(v => v !== null);
     const deliverable = expParts.length ? Number((expParts.reduce((a, b) => a + b, 0) / expParts.length).toFixed(2)) : null;
 
+    const pureVisualParts = [designWeb, designUi].filter(v => typeof v === 'number' && Number.isFinite(v));
+    const pureVisual = pureVisualParts.length
+      ? Number((pureVisualParts.reduce((a, b) => a + b, 0) / pureVisualParts.length).toFixed(2))
+      : null;
+
     const humanScores = {
       chatVibe,
       docCraft,
       webdev: webdevScore,
       designWeb,
       designUi,
-      deliverable
+      deliverable,
+      pureVisual
     };
-    const compositeParts = Object.values(humanScores).filter(v => typeof v === 'number' && Number.isFinite(v));
+    const headlineKeys = ['chatVibe', 'docCraft', 'webdev', 'designWeb', 'designUi', 'deliverable'];
+    const compositeParts = headlineKeys.map(k => humanScores[k]).filter(v => typeof v === 'number' && Number.isFinite(v));
     if (!compositeParts.length) continue;
     const rawSum = compositeParts.reduce((a, b) => a + b, 0);
-    const humanIndex = Number(((rawSum + 0.75 * 55) / (compositeParts.length + 0.75)).toFixed(2));
+    const humanIndex = Number(((rawSum + 1.0 * 55) / (compositeParts.length + 1.0)).toFixed(2));
     const aaIndex = Number(model.intelligenceIndex.toFixed(2));
 
     const designSub = {
@@ -684,6 +737,7 @@ function buildHumanArenaModels(models, external = {}) {
       designAvgCostUsd: design.website?.avgCostUsd ?? design.uicomponent?.avgCostUsd ?? null,
       designUiElo: design.uicomponent?.elo ?? null,
       designUiWinRate: design.uicomponent?.winRate ?? null,
+      designUiBattles: design.uicomponent?.battles ?? null,
       designDatavizElo: design.dataviz?.elo ?? null,
       designGameElo: design.gamedev?.elo ?? null,
       designSvgElo: design.svg?.elo ?? null,
@@ -694,7 +748,7 @@ function buildHumanArenaModels(models, external = {}) {
     };
 
     out.push({
-      ...model,
+      ...slimDerivedBase(model),
       humanIndex,
       intelligenceIndex: humanIndex,
       aaIndex,

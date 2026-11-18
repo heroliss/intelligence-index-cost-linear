@@ -271,18 +271,23 @@ test('buildHumanArenaModels matches effort-aware variants without cloning onto l
     ],
     docRows: [],
     designByCat: {
-      website: [{ modelId: 'muse-wonder-1.0', elo: 1375, winRate: 63.8, battles: 4960, avgCostUsd: 0.4279 }]
+      website: [{ modelId: 'muse-wonder-1.0', elo: 1375, winRate: 63.8, battles: 4960, avgCostUsd: 0.4279 }],
+      gamedev: [{ modelId: 'qwen3-8-max', elo: 1460, winRate: 70.0, battles: 80 }]
     }
   });
 
   // museLow must NOT inherit un-suffixed muse-wonder-1.0 or (Max) ratings!
   assert.deepEqual(arenaRows.map(r => r.id).sort(), ['mw-max', 'qw-max']);
   const mw = arenaRows.find(r => r.id === 'mw-max');
+  const qw = arenaRows.find(r => r.id === 'qw-max');
   assert.equal(mw.arenaRaw.chatElo, 1510.9);
   assert.equal(mw.arenaRaw.designWebElo, 1375);
   assert.equal(mw.arenaRaw.designWebWinRate, 63.8);
   assert.equal(mw.arenaRaw.gdpvalElo, 1770.3);
   assert.ok(mw.humanIndex > 70 && mw.humanIndex < 90);
+  // GameDev must NOT contaminate headline designUi aesthetic score, and 80-battle low sample is shrunk!
+  assert.equal(qw.humanScores.designUi, null);
+  assert.ok(qw.designSub.gamedev < 70, 'low-sample gamedev score is shrunk toward prior');
 
   // Fault tolerance: network error falls back cleanly to previous snapshot
   const fallbackPrev = { humanArenaModels: arenaRows, lmArenaPublishDate: '2026-11-11' };

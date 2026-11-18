@@ -20,7 +20,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261118-12';
+} from './chart-math.mjs?v=20261118-13';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -129,6 +129,52 @@ const DEFAULT_SETTINGS = {
   'coding-agents': {labels: true, smartLabels: true, labelSize: 10, labelDistance: 12},
   cyber: {labels: true, smartLabels: true, labelSize: 10, labelDistance: 8}
 };
+
+const Y_LENSES = {
+  models: [
+    {id: '', zh: '纵轴：综合智能总分', en: 'Y: Overall Index', axisZh: '综合智能指数', axisEn: 'Intelligence Index', get: r => r._baseIndex},
+    {id: 'omniscience', zh: '纵轴：全科闭卷准确率', en: 'Y: Omniscience Acc.', axisZh: '全科闭卷准确率 (%)', axisEn: 'Omniscience Accuracy (%)', get: r => r.subscores?.omniscience ?? null},
+    {id: 'finance', zh: '纵轴：金融财务 (GDPval)', en: 'Y: Finance (GDPval)', axisZh: '金融财务专业分', axisEn: 'Finance & Accounting', get: r => r.domainScores?.finance ?? null},
+    {id: 'legal', zh: '纵轴：法律合规 (GDPval)', en: 'Y: Legal (GDPval)', axisZh: '法律合规专业分', axisEn: 'Legal Domain', get: r => r.domainScores?.legal ?? null},
+    {id: 'healthcare', zh: '纵轴：医疗健康 (GDPval)', en: 'Y: Healthcare (GDPval)', axisZh: '医疗健康专业分', axisEn: 'Healthcare Domain', get: r => r.domainScores?.healthcare ?? null},
+    {id: 'engineering', zh: '纵轴：工程研发 (GDPval)', en: 'Y: Engineering (GDPval)', axisZh: '工程研发专业分', axisEn: 'Engineering Domain', get: r => r.domainScores?.engineering ?? null}
+  ],
+  frontier: [
+    {id: '', zh: '纵轴：未饱和硬核总分', en: 'Y: Frontier Hard Index', axisZh: '未饱和前沿极限指数', axisEn: 'Frontier Hard Index', get: r => r._baseIndex},
+    {id: 'gdpPdf', zh: '纵轴：GDP-PDF 一次全过', en: 'Y: GDP-PDF All-Pass', axisZh: 'GDP-PDF 全过率 (%)', axisEn: 'GDP-PDF All-Pass (%)', get: r => r.frontierScores?.gdpPdf ?? null},
+    {id: 'frontierCode', zh: '纵轴：FrontierCode 2.0', en: 'Y: FrontierCode 2.0', axisZh: 'FrontierCode 2.0 (%)', axisEn: 'FrontierCode 2.0 (%)', get: r => r.frontierScores?.frontierCode ?? null},
+    {id: 'terminal4', zh: '纵轴：Terminal-Bench 4.0', en: 'Y: Terminal-Bench 4.0', axisZh: 'Terminal-Bench 4.0 (%)', axisEn: 'Terminal-Bench 4.0 (%)', get: r => r.frontierScores?.terminal4 ?? null},
+    {id: 'critptAgent', zh: '纵轴：CritPt 深度研究', en: 'Y: CritPt Research', axisZh: 'CritPt 深度研究 (%)', axisEn: 'CritPt Agentic Hard (%)', get: r => r.frontierScores?.critptAgent ?? null},
+    {id: 'hleDiamond', zh: '纵轴：HLE 人类终极考', en: 'Y: HLE Diamond', axisZh: 'HLE 人类终极考 (%)', axisEn: 'HLE Diamond (%)', get: r => r.frontierScores?.hleDiamond ?? null},
+    {id: 'harveyLaw', zh: '纵轴：Harvey 顶尖律所', en: 'Y: Harvey BigLaw', axisZh: 'Harvey 律所实测 (%)', axisEn: 'Harvey BigLaw (%)', get: r => r.frontierScores?.harveyLaw ?? null}
+  ],
+  'human-arena': [
+    {id: '', zh: '纵轴：人类与审美总分', en: 'Y: Human & Taste Index', axisZh: '人类审美与体感指数', axisEn: 'Human & Aesthetic Index', get: r => r._baseIndex},
+    {id: 'chatVibe', zh: '纵轴：交流人味 (去水份)', en: 'Y: Chat Vibe (De-biased)', axisZh: 'LMArena 交流人味校准分', axisEn: 'LMArena Chat Vibe Score', get: r => r.humanScores?.chatVibe ?? null},
+    {id: 'pureVisual', zh: '纵轴：纯网页与UI审美', en: 'Y: Pure Web & UI Taste', axisZh: '网页与UI视觉审美分', axisEn: 'Web & UI Aesthetic Score', get: r => r.humanScores?.pureVisual ?? null},
+    {id: 'deliverable', zh: '纵轴：专家办公交付 (GDPval)', en: 'Y: Expert Deliverables', axisZh: '44职业真实交付盲评分', axisEn: 'Expert Deliverable Score', get: r => r.humanScores?.deliverable ?? null},
+    {id: 'webdev', zh: '纵轴：Web全栈体感 (WebDev)', en: 'Y: WebDev Arena', axisZh: 'WebDev 全栈体感分', axisEn: 'WebDev Arena Score', get: r => r.humanScores?.webdev ?? null}
+  ],
+  'coding-agents': [
+    {id: '', zh: '纵轴：编程智能体总分', en: 'Y: Coding Agent Index', axisZh: '编程智能体指数', axisEn: 'Coding Agent Index', get: r => r._baseIndex},
+    {id: 'fc2', zh: '纵轴：FrontierCode 2.0', en: 'Y: FrontierCode 2.0', axisZh: 'FrontierCode 2.0 (%)', axisEn: 'FrontierCode 2.0 (%)', get: r => r.evalScores?.find(e => /frontiercode/i.test(e.name))?.score ?? null},
+    {id: 'swe', zh: '纵轴：SWE-Atlas 仓库修复', en: 'Y: SWE-Atlas', axisZh: 'SWE-Atlas (%)', axisEn: 'SWE-Atlas (%)', get: r => r.evalScores?.find(e => /swe-atlas/i.test(e.name))?.score ?? null},
+    {id: 'tb4', zh: '纵轴：Terminal-Bench 4.0', en: 'Y: Terminal-Bench 4.0', axisZh: 'Terminal-Bench 4.0 (%)', axisEn: 'Terminal-Bench 4.0 (%)', get: r => r.evalScores?.find(e => /terminal-bench/i.test(e.name))?.score ?? null}
+  ],
+  cyber: [
+    {id: '', zh: '纵轴：网络安全总指数', en: 'Y: Cyber Index', axisZh: '网络安全指数', axisEn: 'Cyber Index', get: r => r._baseIndex}
+  ]
+};
+
+function currentLensObj(target = state, key = activeKey) {
+  const list = Y_LENSES[key] || Y_LENSES.models;
+  return list.find(l => l.id === (target?.yLens || '')) || list[0];
+}
+
+function currentAxisLabel(target = state, key = activeKey) {
+  const lens = currentLensObj(target, key);
+  return t(lens.axisZh, lens.axisEn);
+}
 
 let lang = document.documentElement.lang === 'en' ? 'en' : 'zh';
 const t = (zh, en) => (lang === 'en' ? en : zh);
@@ -333,31 +379,64 @@ function syncMetricViewport(target, nextMetric) {
   target.view = {...target.views[target.xMetric]};
 }
 
-function makeState(key, routeParams = null) {
-  const rows = validRows(snapshot[BENCHMARKS[key].key]);
+function applyYLens(target, lensId = '') {
+  const list = Y_LENSES[target.benchKey] || Y_LENSES.models;
+  const lens = list.find(l => l.id === lensId) || list[0];
+  target.yLens = lens.id;
+  const projected = target.baseRows
+    .map(r => {
+      const val = lens.get(r);
+      return typeof val === 'number' && Number.isFinite(val) && val >= 0
+        ? {...r, intelligenceIndex: Number(val.toFixed(4))}
+        : null;
+    })
+    .filter(Boolean);
+  const rows = projected.length ? projected : target.baseRows;
   const costBounds = dataBounds(rows, r => r.cost);
   const timeRows = rows.filter(r => Number.isFinite(r.timeSec) && r.timeSec > 0);
   const timeBounds = dataBounds(timeRows.length ? timeRows : rows, r => (r.timeSec > 0 ? r.timeSec / 60 : 0));
-  const maxFloor = Math.min(MIN_SCORE.max, Math.max(20, Math.floor(Math.max(...rows.map(d => d.intelligenceIndex)))));
-  const defaultCostView = {...costBounds, width: BENCHMARKS[key].defaultX ? Math.min(costBounds.width, BENCHMARKS[key].defaultX) : costBounds.width};
-  const defaultTimeView = {...timeBounds, width: BENCHMARKS[key].defaultTimeMin ? Math.min(timeBounds.width, BENCHMARKS[key].defaultTimeMin) : timeBounds.width};
+  const maxFloor = Math.min(MIN_SCORE.max, Math.max(15, Math.floor(Math.max(...rows.map(d => d.intelligenceIndex)))));
+  const cfg = BENCHMARKS[target.benchKey];
+  const defaultCostView = {...costBounds, width: cfg.defaultX ? Math.min(costBounds.width, cfg.defaultX) : costBounds.width};
+  const defaultTimeView = {...timeBounds, width: cfg.defaultTimeMin ? Math.min(timeBounds.width, cfg.defaultTimeMin) : timeBounds.width};
+  target.rows = rows;
+  target.releaseDates = [...new Set(rows.map(r => r.releaseDate).filter(Boolean))].sort();
+  target.historyIndex = Math.min(target.historyIndex ?? Math.max(0, target.releaseDates.length - 1), Math.max(0, target.releaseDates.length - 1));
+  target.boundsByMetric = {cost: costBounds, time: timeBounds};
+  target.defaultViews = {cost: defaultCostView, time: defaultTimeView};
+  target.views = {cost: {...defaultCostView}, time: {...defaultTimeView}};
+  target.bounds = target.boundsByMetric[target.xMetric || 'cost'];
+  target.defaultView = target.defaultViews[target.xMetric || 'cost'];
+  target.view = {...target.views[target.xMetric || 'cost']};
+  target.maxFloor = maxFloor;
+  if (target.minScore > maxFloor) target.minScore = 0;
+  target._licCache = null;
+  target._poolCache = null;
+  target._frontierCache = null;
+  target._rankCache = null;
+}
+
+function makeState(key, routeParams = null) {
+  const baseRows = validRows(snapshot[BENCHMARKS[key].key]).map(r => ({...r, _baseIndex: r.intelligenceIndex}));
   const defaultTasks = key === 'coding-agents' ? MONTHLY_USAGE.defaultAgentTasks : MONTHLY_USAGE.defaultModelTasks;
-  const defaultCmp = defaultCompareIds(rows);
-  const releaseDates = [...new Set(rows.map(r => r.releaseDate).filter(Boolean))].sort();
-  const defaultFast = sortRows(rows, 'valuePerDollar', 'desc', 2, 25)[0] || rows[0];
-  const defaultStrong = sortRows(rows, 'intelligenceIndex', 'desc')[0] || rows.at(-1);
+  const defaultCmp = defaultCompareIds(baseRows);
+  const defaultFast = sortRows(baseRows, 'valuePerDollar', 'desc', 2, 25)[0] || baseRows[0];
+  const defaultStrong = sortRows(baseRows, 'intelligenceIndex', 'desc')[0] || baseRows.at(-1);
   const next = {
-    rows,
-    releaseDates,
+    benchKey: key,
+    baseRows,
+    rows: baseRows,
+    releaseDates: [],
     xMetric: 'cost',
-    boundsByMetric: {cost: costBounds, time: timeBounds},
-    defaultViews: {cost: defaultCostView, time: defaultTimeView},
-    views: {cost: {...defaultCostView}, time: {...defaultTimeView}},
-    bounds: costBounds,
-    maxFloor,
+    yLens: '',
+    boundsByMetric: {},
+    defaultViews: {},
+    views: {},
+    bounds: null,
+    maxFloor: 60,
     defaultTasks,
-    defaultView: defaultCostView,
-    view: {...defaultCostView},
+    defaultView: null,
+    view: null,
     company: null,
     license: 'all',
     extraFilter: '',
@@ -365,7 +444,7 @@ function makeState(key, routeParams = null) {
     frontierOnly: false,
     effortCurves: false,
     historyMode: false,
-    historyIndex: Math.max(0, releaseDates.length - 1),
+    historyIndex: 0,
     isoCurve: false,
     subLine: false,
     ...DEFAULT_SETTINGS[key],
@@ -391,6 +470,8 @@ function makeState(key, routeParams = null) {
     curveRealRange: true,
     curveLogY: false
   };
+  applyYLens(next, '');
+  next.historyIndex = Math.max(0, next.releaseDates.length - 1);
   if (routeParams) applyRouteParams(next, routeParams);
   return next;
 }
@@ -398,6 +479,8 @@ function makeState(key, routeParams = null) {
 function applyRouteParams(target, params) {
   const view = params.get('view');
   if (['chart', 'table', 'curve', 'sub', 'compare'].includes(view)) target.mode = view;
+  const yl = params.get('ylens') || '';
+  if (yl !== target.yLens) applyYLens(target, yl);
   if (params.get('x') === 'time') syncMetricViewport(target, 'time');
   const lic = params.get('lic');
   if (['all', 'open', 'closed'].includes(lic)) target.license = lic;
@@ -450,6 +533,7 @@ function syncUrlHash() {
   if (!state) return;
   const params = new URLSearchParams();
   if (state.mode !== 'chart') params.set('view', state.mode);
+  if (state.yLens) params.set('ylens', state.yLens);
   if (state.xMetric === 'time') params.set('x', 'time');
   if (state.license !== 'all') params.set('lic', state.license);
   if (state.extraFilter) params.set('xf', state.extraFilter);
@@ -1057,6 +1141,21 @@ function renderLegend() {
   $('#legend').replaceChildren(fragment);
 }
 
+function syncYLensOptions() {
+  const wrap = $('#yLensWrap');
+  const sel = $('#yLensSelect');
+  const list = Y_LENSES[activeKey] || Y_LENSES.models;
+  wrap.hidden = list.length <= 1;
+  const frag = document.createDocumentFragment();
+  for (const lens of list) {
+    const opt = html('option', t(lens.zh, lens.en));
+    opt.value = lens.id;
+    frag.append(opt);
+  }
+  sel.replaceChildren(frag);
+  sel.value = state.yLens || '';
+}
+
 function syncExtraFilterOptions() {
   const sel = $('#extraFilter');
   const frag = document.createDocumentFragment();
@@ -1229,6 +1328,7 @@ function syncControls() {
   for (const btn of document.querySelectorAll('#licenseGroup [data-license]')) {
     btn.setAttribute('aria-pressed', String(btn.dataset.license === state.license));
   }
+  syncYLensOptions();
   syncExtraFilterOptions();
 
   $('#search').value = state.search;
@@ -1301,7 +1401,7 @@ function syncControls() {
   $('#curveScaleToggle').setAttribute('aria-pressed', String(state.curveLogY));
   $('#curveScaleToggle').textContent = state.curveLogY ? t('对数纵轴 ✓', 'Log Y ✓') : t('对数纵轴', 'Log Y');
 
-  const hasFocus = !!(state.company || state.license !== 'all' || state.extraFilter || state.search || state.frontierOnly || state.minScore > 0);
+  const hasFocus = !!(state.company || state.license !== 'all' || state.yLens || state.extraFilter || state.search || state.frontierOnly || state.minScore > 0);
   $('#clearFilters').hidden = false;
   $('#clearFilters').style.visibility = hasFocus ? 'visible' : 'hidden';
   $('#clearFilters').disabled = !hasFocus;
@@ -1315,7 +1415,7 @@ function syncPanelControls() {
   $('#controlsToggle').hidden = emptyDesktopPanel;
   $('#controlPanel').hidden = !controlsOpen || emptyDesktopPanel;
   const activeFilters = state && state.mode !== 'curve' && state.mode !== 'compare'
-    ? Number(!!state.company) + Number(state.license !== 'all') + Number(!!state.extraFilter) + Number(!!state.search) + Number(state.frontierOnly) + Number(state.minScore > 0)
+    ? Number(!!state.company) + Number(state.license !== 'all') + Number(!!state.yLens) + Number(!!state.extraFilter) + Number(!!state.search) + Number(state.frontierOnly) + Number(state.minScore > 0)
     : 0;
   $('#controlsToggle').setAttribute('aria-expanded', String(controlsOpen));
   $('#controlsToggle').textContent = controlsOpen
@@ -1659,7 +1759,7 @@ function buildPlot() {
   plot.append(quadrant, quadrantBorder, floorRect, floorGuide, paretoPath, paretoHistoryPath, effortLayer, isoPath, subGuide, connectors, points, labels);
   svg.replaceChildren(defs, node('g', {class: 'grid'}), plot, node('g', {class: 'axis'}), emphasis);
 
-  const axisName = t(BENCHMARKS[activeKey].zhAxis, BENCHMARKS[activeKey].enAxis);
+  const axisName = currentAxisLabel();
   nodes = rows.map(row => {
     const display = color(row.creator?.color);
     const metricText = state.xMetric === 'time' ? formatTime(row.timeSec) : money(row.cost);
@@ -1811,8 +1911,11 @@ function renderTable(rows = filteredRows()) {
     if (activeKey === 'frontier' && (row.rankDelta ?? 0) >= 3) {
       wrap.append(html('span', t(`硬核↑${row.rankDelta}`, `↑${row.rankDelta}`), 'row-tag tag-new'));
     }
-    if (activeKey === 'human-arena' && (row.arenaRaw?.designWebElo ?? 0) >= 1330) {
+    if (activeKey === 'human-arena' && (row.arenaRaw?.designWebElo ?? 0) >= 1330 && (row.arenaRaw?.designWebBattles ?? 0) >= 500) {
       wrap.append(html('span', t('高审美', 'Aesthetic'), 'row-tag tag-new'));
+    }
+    if (activeKey === 'human-arena' && (row.indexDelta ?? 0) >= 18) {
+      wrap.append(html('span', t(`体感↑+${Math.round(row.indexDelta)}`, `Vibe +${Math.round(row.indexDelta)}`), 'row-tag tag-top'));
     }
     if (row.isOpenWeights) {
       wrap.append(html('span', t('开源', 'Open'), 'row-tag tag-open'));
@@ -2508,13 +2611,21 @@ function renderRadarInfo() {
     );
     const p2 = html('p');
     p2.append(
-      html('strong', t('0–100 校准指数与原始 Elo 说明：', 'Calibrated 0–100 Scale & Raw Elo: ')),
+      html('strong', t('0–100 校准指数、去理工水分与样本置信度：', 'De-Contaminated Calibration & Sample Credibility: ')),
       document.createTextNode(t(
-        '不同竞技场的原始 Elo 量纲不同（如 LMArena 对话最高 ~1526、WebDev 最高 ~1826、Design Arena 最高 ~1375），系统按各池中位数与离散度通过 Logistic 胜率曲线统一校准为 0–100 分（中位 = 50，全球榜首 ≈ 85），并采用贝叶斯先验收缩防止单项偏科虚高；下方拆解图与对决表完整保留原始 Elo 与盲测场次。',
-        'Because raw Elo scales differ by pool (Chat ~1526, WebDev ~1826, Design ~1375), each dimension is calibrated via pool-specific logistic win odds onto 0–100 (median = 50, SOTA ≈ 85) with gentle Bayesian shrinkage; exact raw Elo & battle counts are shown in the matrix below.'
+        '本榜严格区分“视觉排版审美”与“代码逻辑”——总分与「体验六维」仅纳入 Website、UI 组件与 DataViz 纯视觉审美（剔除偏重物理碰撞代码的 GameDev 与几何坐标计算的 SVG，后两者仅在「视觉审美五维」中按各自标尺独立展示），并对低场次新模型（<400 场）施加经验贝叶斯样本量收缩。',
+        'To separate true visual taste from code math, headline UI/Visual scores strictly aggregate Website, UI Component & DataViz (excluding physics-heavy GameDev & coordinate-math SVG, which appear separately under Aesthetic 5D), with empirical Bayes shrinkage for low-sample (<400 battle) newcomers.'
       ))
     );
-    frag.append(p1, p2);
+    const p3 = html('p');
+    p3.append(
+      html('strong', t('为什么众包网页盲测（Design Arena）有时与个人主观设计品味存在温差？', 'Why Can Crowd HTML Arenas Diverge from Editorial Taste? ')),
+      document.createTextNode(t(
+        '在 15 秒众包双盲投票中，大众往往优先奖励「按钮交互全能点、信息密度高、不报错」的工业风 B 端卡片模板，而未必惩罚千篇一律的 AI 套路感；相比之下，44 职业人类专家深度审阅 Word/PPT/报告版式的 GDPval 与去长文水分的 LMArena 更能反映细腻审美与人味——您可随时用上方「纵轴切换」单独查看纯人味或专家交付榜。',
+        'In 15-second crowd HTML battles, voters heavily reward functional JS interactivity and dense SaaS dashboards even when typography feels generic. By contrast, expert-graded GDPval deliverables and style-controlled LMArena chat better capture editorial polish and natural tone — use the Y-axis lens selector to isolate each.'
+      ))
+    );
+    frag.append(p1, p2, p3);
   } else if (activeKey === 'coding-agents') {
     const p1 = html('p');
     p1.append(
@@ -2799,8 +2910,8 @@ function renderCompare() {
         {key: 'chatVibe', zh: '交流人味 (Chat)', en: 'Chat Vibe', srcZh: 'LMArena Text Style-Controlled · 剔除长篇堆砌与排版讨好后的纯人类对话偏好校准分', srcEn: 'LMArena Text Style-Controlled · Blind chat preference controlling for length/style bias', get: r => r.humanScores?.chatVibe ?? null},
         {key: 'webdev', zh: '全栈体感 (WebDev)', en: 'WebDev Arena', srcZh: 'LMArena WebDev · 真人实测构建可交互前端/全栈应用盲评校准分', srcEn: 'LMArena WebDev · Blind human battles on live interactive web apps', get: r => r.humanScores?.webdev ?? null},
         {key: 'designWeb', zh: '整站视觉审美', en: 'Website Taste', srcZh: 'Design Arena Website · 真人双盲视觉审美对决校准分（拒绝模板化 AI 味）', srcEn: 'Design Arena Website · Blind human aesthetic preference on full web pages', get: r => r.humanScores?.designWeb ?? null},
-        {key: 'uicomponent', zh: 'UI 组件质感', en: 'UI Component', srcZh: 'Design Arena UI Component · 交互控件细节、微动效与组件级视觉完成度盲测', srcEn: 'Design Arena UI Component · Blind human grading of component craft & micro-UX', get: r => r.designSub?.uicomponent ?? r.humanScores?.designUi ?? null},
-        {key: 'dataviz', zh: '图表与创意审美', en: 'DataViz & Craft', srcZh: 'Design Arena DataViz / Game / SVG · 数据可视化、交互创意与矢量造型盲测校准分', srcEn: 'Design Arena DataViz / GameDev / SVG · Blind preference on visual & interactive craft', get: r => r.designSub?.dataviz ?? r.humanScores?.designUi ?? null},
+        {key: 'uicomponent', zh: 'UI 组件质感', en: 'UI Component', srcZh: 'Design Arena UI Component · 交互控件细节、微动效与组件级视觉完成度盲测', srcEn: 'Design Arena UI Component · Blind human grading of component craft & micro-UX', get: r => r.designSub?.uicomponent ?? null},
+        {key: 'dataviz', zh: '数据图表审美', en: 'DataViz Taste', srcZh: 'Design Arena DataViz · 复杂仪表盘与数据可视化的可读性与色彩排版盲测', srcEn: 'Design Arena DataViz · Blind human preference on dashboards & data visualization', get: r => r.designSub?.dataviz ?? null},
         {key: 'deliverable', zh: '专家真实交付', en: 'Deliverables', srcZh: 'GDPval + Briefcase · 44 个职业领域人类专家盲评真实办公交付物质量', srcEn: 'GDPval + Briefcase · Blind human expert grading of real office deliverables', get: r => r.humanScores?.deliverable ?? null}
       ];
       barMetrics = [
@@ -3554,10 +3665,13 @@ function renderCompare() {
       false
     );
     addRow(
-      t('Design Arena 整站审美 Elo（胜率）', 'Design Arena Website Elo (Win%)'),
-      selectedRows.map(r => r.arenaRaw?.designWebElo != null
-        ? `${r.arenaRaw.designWebElo}${r.arenaRaw.designWebWinRate != null ? ' (' + format(r.arenaRaw.designWebWinRate, 1) + '%)' : ''}`
-        : '—'),
+      t('Design Arena 整站审美 Elo（胜率·场次）', 'Design Arena Website Elo (Win% · Battles)'),
+      selectedRows.map(r => {
+        if (r.arenaRaw?.designWebElo == null) return '—';
+        const b = r.arenaRaw.designWebBattles;
+        const bTxt = b ? ` · ${b < 400 ? b + t('场(小样本)', 'b(low-n)') : format(b / 1000, 1) + 'k' + t('场', 'b')}` : '';
+        return `${r.arenaRaw.designWebElo}${r.arenaRaw.designWebWinRate != null ? ' (' + format(r.arenaRaw.designWebWinRate, 1) + '%)' : ''}${bTxt}`;
+      }),
       selectedRows.map(r => r.arenaRaw?.designWebElo ?? null),
       false
     );
@@ -3690,7 +3804,7 @@ function drawCurve() {
 
   axis.append(
     node('text', {class: 'axis-title', x: left, y: 15}, t('能力效用 U(指数)', 'Capability Utility U(Index)')),
-    node('text', {class: 'axis-title', x: (left + right) / 2, y: height - 8, 'text-anchor': 'middle'}, t(`${BENCHMARKS[activeKey].zhAxis} (0–${xMax})`, `${BENCHMARKS[activeKey].enAxis} (0–${xMax})`))
+    node('text', {class: 'axis-title', x: (left + right) / 2, y: height - 8, 'text-anchor': 'middle'}, `${currentAxisLabel()} (0–${xMax})`)
   );
 
   const floorLayer = node('g');
@@ -4039,7 +4153,7 @@ function drawAxes(medianX, medianY) {
     class: 'axis-title y-title',
     'text-anchor': 'middle',
     y: 0
-  }, t(BENCHMARKS[activeKey].zhAxis, BENCHMARKS[activeKey].enAxis)));
+  }, currentAxisLabel()));
   axis.append(group);
 }
 
@@ -4347,7 +4461,7 @@ function showHover(item, event) {
   if (row.isRouter) subParts.push(t('路由变体', 'Router'));
   tip.append(html('span', subParts.join(' · '), 'tip-sub'));
 
-  const axisLabel = t(BENCHMARKS[activeKey].zhAxis, BENCHMARKS[activeKey].enAxis);
+  const axisLabel = currentAxisLabel();
   const valText = rankInfo
     ? `${valueLabel(rankInfo.value)} (#${rankInfo.rank}/${qualifiedCount})`
     : t('未达最低门槛', 'Below min score');
@@ -4502,6 +4616,7 @@ function updateSummary() {
   }
 
   if (state.mode !== 'curve' && state.mode !== 'compare') {
+    if (state.yLens) $('#viewStatus').append(document.createTextNode(` · ${currentAxisLabel()}`));
     if (state.license === 'open') $('#viewStatus').append(document.createTextNode(t(' · 仅开源', ' · Open only')));
     else if (state.license === 'closed') $('#viewStatus').append(document.createTextNode(t(' · 仅闭源', ' · Proprietary')));
     if (state.extraFilter) {
@@ -4583,6 +4698,17 @@ for (const btn of document.querySelectorAll('#licenseGroup [data-license]')) {
     buildPlot();
   });
 }
+
+$('#yLensSelect').addEventListener('change', () => {
+  if (!state) return;
+  stopHistoryPlay();
+  applyYLens(state, $('#yLensSelect').value);
+  state.selected = null;
+  renderLegend();
+  syncControls();
+  syncUrlHash();
+  buildPlot();
+});
 
 $('#extraFilter').addEventListener('change', () => {
   if (!state) return;
@@ -4821,6 +4947,7 @@ $('#compareClearBtn').addEventListener('click', () => {
 $('#clearFilters').addEventListener('click', () => {
   if (!state) return;
   stopHistoryPlay();
+  if (state.yLens) applyYLens(state, '');
   state.company = null;
   state.license = 'all';
   state.extraFilter = '';
@@ -5227,6 +5354,15 @@ document.addEventListener('pointerdown', event => {
 document.addEventListener('keydown', event => {
   const tag = event.target?.tagName;
   const typing = tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || event.target?.isContentEditable;
+  if (!typing && event.altKey && !event.ctrlKey && !event.metaKey && ['1', '2', '3', '4', '5'].includes(event.key)) {
+    const visibleTabs = [...document.querySelectorAll('[role=tab]')].filter(el => !el.hidden);
+    const targetTab = visibleTabs[Number(event.key) - 1];
+    if (targetTab && targetTab.dataset.chart !== activeKey) {
+      event.preventDefault();
+      chooseChart(targetTab.dataset.chart);
+    }
+    return;
+  }
   if (!typing && !event.ctrlKey && !event.metaKey && !event.altKey) {
     if (state && ['1', '2', '3', '4', '5'].includes(event.key)) {
       const modes = ['chart', 'table', 'curve', 'sub', 'compare'];
@@ -5335,6 +5471,19 @@ function showLoadError(error) {
   $('#status').textContent = error.message;
 }
 
+function hydrateDerivedModels(snap) {
+  if (!snap || !Array.isArray(snap.models)) return snap;
+  const baseById = new Map(snap.models.map(m => [m.id, m]));
+  for (const key of ['frontierModels', 'humanArenaModels', 'cyberModels']) {
+    if (!Array.isArray(snap[key])) continue;
+    snap[key] = snap[key].map(item => {
+      const base = baseById.get(item.id);
+      return base ? {...base, ...item} : item;
+    });
+  }
+  return snap;
+}
+
 async function loadData() {
   loadController?.abort();
   loadController = new AbortController();
@@ -5344,7 +5493,7 @@ async function loadData() {
   try {
     const response = await fetch('data/current.json', {cache: 'no-cache', signal: loadController.signal});
     if (!response.ok) throw new Error(t(`数据请求失败 (${response.status})`, `Request failed (${response.status})`));
-    const next = await response.json();
+    const next = hydrateDerivedModels(await response.json());
     if (generation !== loadGeneration) return;
     snapshot = next;
     states.clear();

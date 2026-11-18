@@ -26,8 +26,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261118-12">
-  <script type="module" src="app.js?v=20261118-12"></script>
+  <link rel="stylesheet" href="styles.css?v=20261118-13">
+  <script type="module" src="app.js?v=20261118-13"></script>
 </head>
 <body>
 <main class="app">
@@ -151,6 +151,10 @@
             <button type="button" data-license="open" aria-pressed="false">开源</button>
             <button type="button" data-license="closed" aria-pressed="false">闭源</button>
           </div>
+          <label id="yLensWrap" class="extra-filter-wrap">
+            <span id="yLensSr" class="sr-only">切换纵轴评估子项</span>
+            <select id="yLensSelect"><option value="">纵轴：综合指数</option></select>
+          </label>
           <label class="extra-filter-wrap">
             <span id="extraFilterSr" class="sr-only">按模态或客户端框架筛选</span>
             <select id="extraFilter"><option value="">全部模态</option></select>

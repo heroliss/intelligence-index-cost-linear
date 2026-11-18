@@ -673,10 +673,14 @@ kbd {
 }
 
 .extra-filter-wrap select {
-  max-width: 158px;
+  max-width: 214px;
+  height: 32px;
   min-height: 32px;
   padding: 3px 24px 3px 8px;
   font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .options-panel {
