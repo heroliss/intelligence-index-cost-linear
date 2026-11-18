@@ -4,7 +4,7 @@
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
   "hostsManifestPath": "/data/324ed05c14a0dc8b.txt",
-  "updatedAt": "2026-11-18T11:48:32.696Z",
+  "updatedAt": "2026-11-18T12:13:05.060Z",
   "updateIntervalHours": 2,
   "changelog": [
     {
@@ -21404,8 +21404,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -21466,8 +21466,8 @@
         "color": "#0089f4"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "Meta",
+        "color": "#0089f4"
       },
       "agentName": "Muse Code",
       "agentSlug": "muse-code",
@@ -21647,8 +21647,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -21709,8 +21709,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -21771,8 +21771,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -21833,8 +21833,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -21895,8 +21895,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -21957,8 +21957,8 @@
         "color": "#f32e02"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "Mistral",
+        "color": "#f32e02"
       },
       "agentName": "Mistral Vibe",
       "agentSlug": "mistral-vibe",
@@ -22019,8 +22019,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -22081,8 +22081,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -22205,8 +22205,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -22267,8 +22267,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -22329,8 +22329,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "Anthropic",
+        "color": "#cc785c"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -22391,8 +22391,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -22453,8 +22453,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "Anthropic",
+        "color": "#cc785c"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -22515,8 +22515,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "Anthropic",
+        "color": "#cc785c"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -22639,8 +22639,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -22701,8 +22701,8 @@
         "color": "#00F5E7"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "Anthropic",
+        "color": "#cc785c"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -22758,8 +22758,8 @@
         "color": "#ff7018"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "Anthropic",
+        "color": "#cc785c"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -22815,8 +22815,8 @@
         "color": "#0089f4"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "Meta",
+        "color": "#0089f4"
       },
       "agentName": "Muse Code",
       "agentSlug": "muse-code",
@@ -22877,8 +22877,8 @@
         "color": "#34A853"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "Google",
+        "color": "#34A853"
       },
       "agentName": "Antigravity CLI",
       "agentSlug": "antigravity-cli",
@@ -23063,8 +23063,8 @@
         "color": "#34A853"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "Google",
+        "color": "#34A853"
       },
       "agentName": "Antigravity CLI",
       "agentSlug": "antigravity-cli",
@@ -23113,6 +23113,68 @@
       ]
     },
     {
+      "id": "7814cb87040ea234c69eca79cd85486d",
+      "slug": "antigravity-cli",
+      "name": "Antigravity CLI - Gemini 4 Carbon (High)",
+      "shortName": "Antigravity CLI - Gemini 4 Carbon (high)",
+      "codingAgentIndex": 55.465927826653605,
+      "intelligenceIndex": 55.465927826653605,
+      "cost": 7.126967178108669,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "agentCreator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "agentName": "Antigravity CLI",
+      "agentSlug": "antigravity-cli",
+      "modelName": "Gemini 4 Carbon (High)",
+      "isReasoning": true,
+      "isOpenWeights": false,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Antigravity CLI:gemini-4-carbon",
+        "name": "Antigravity CLI - Gemini 4 Carbon"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 2015.47,
+      "agentStats": {
+        "steps": 186.2,
+        "totalTokens": 15431287,
+        "cacheHitRate": 94.81
+      },
+      "costPercentiles": {
+        "p05": 1.7346,
+        "p25": 3.4183,
+        "p50": 5.2811,
+        "p75": 8.8545,
+        "p95": 16.7971
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 38.04
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 63.71
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 64.65
+        }
+      ]
+    },
+    {
       "id": "37d7db5622db33bcc5c6824d564246e7",
       "slug": "claude-code",
       "name": "Claude Code - Claude Fable 5.2 (High, Default Fallback)",
@@ -23125,8 +23187,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "Anthropic",
+        "color": "#cc785c"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -23187,8 +23249,8 @@
         "color": "#0089f4"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "Meta",
+        "color": "#0089f4"
       },
       "agentName": "Muse Code",
       "agentSlug": "muse-code",
@@ -23249,8 +23311,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "OpenAI",
+        "color": "#1f1f1f"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -23307,7 +23369,7 @@
       "intelligenceIndex": 58.403088954056706,
       "cost": 8.75258496053315,
       "creator": {
-        "name": " + ",
+        "name": "Anthropic + OpenAI",
         "color": "#64748b"
       },
       "agentCreator": {
@@ -23352,68 +23414,6 @@
       ]
     },
     {
-      "id": "7814cb87040ea234c69eca79cd85486d",
-      "slug": "antigravity-cli",
-      "name": "Antigravity CLI - Gemini 4 Carbon (High)",
-      "shortName": "Antigravity CLI - Gemini 4 Carbon (high)",
-      "codingAgentIndex": 55.465927826653605,
-      "intelligenceIndex": 55.465927826653605,
-      "cost": 9.750051288560172,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "agentCreator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "agentName": "Antigravity CLI",
-      "agentSlug": "antigravity-cli",
-      "modelName": "Gemini 4 Carbon (High)",
-      "isReasoning": true,
-      "isOpenWeights": false,
-      "isDefault": true,
-      "isRouter": false,
-      "isUnavailable": false,
-      "benchmarkCount": 3,
-      "family": {
-        "slug": "Antigravity CLI:gemini-4-carbon",
-        "name": "Antigravity CLI - Gemini 4 Carbon"
-      },
-      "effort": {
-        "slug": "high",
-        "label": "high",
-        "level": 40
-      },
-      "timeSec": 2015.47,
-      "agentStats": {
-        "steps": 186.2,
-        "totalTokens": 15431287,
-        "cacheHitRate": 94.81
-      },
-      "costPercentiles": {
-        "p05": 2.4691,
-        "p25": 4.7161,
-        "p50": 7.3298,
-        "p75": 11.8779,
-        "p95": 22.5602
-      },
-      "evalScores": [
-        {
-          "name": "FrontierCode 2.0",
-          "score": 38.04
-        },
-        {
-          "name": "SWE-Atlas-QnA",
-          "score": 63.71
-        },
-        {
-          "name": "Terminal-Bench v4",
-          "score": 64.65
-        }
-      ]
-    },
-    {
       "id": "4d278d53a18fbdcb5138d11466ea0b1b",
       "slug": "claude-code",
       "name": "Claude Code - Claude Sonnet 5.5 (Max, Default Fallback)",
@@ -23426,8 +23426,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "Anthropic",
+        "color": "#cc785c"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -23488,8 +23488,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "Anthropic",
+        "color": "#cc785c"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -23550,8 +23550,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "Anthropic",
+        "color": "#cc785c"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -23736,8 +23736,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Other",
-        "color": "#777777"
+        "name": "Anthropic",
+        "color": "#cc785c"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
