@@ -20,7 +20,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261118-13';
+} from './chart-math.mjs?v=20261118-14';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -151,7 +151,8 @@ const Y_LENSES = {
   'human-arena': [
     {id: '', zh: '纵轴：人类与审美总分', en: 'Y: Human & Taste Index', axisZh: '人类审美与体感指数', axisEn: 'Human & Aesthetic Index', get: r => r._baseIndex},
     {id: 'chatVibe', zh: '纵轴：交流人味 (去水份)', en: 'Y: Chat Vibe (De-biased)', axisZh: 'LMArena 交流人味校准分', axisEn: 'LMArena Chat Vibe Score', get: r => r.humanScores?.chatVibe ?? null},
-    {id: 'pureVisual', zh: '纵轴：纯网页与UI审美', en: 'Y: Pure Web & UI Taste', axisZh: '网页与UI视觉审美分', axisEn: 'Web & UI Aesthetic Score', get: r => r.humanScores?.pureVisual ?? null},
+    {id: 'pureVisual', zh: '纵轴：视觉审美五维总分', en: 'Y: Design Arena 5D', axisZh: 'Design Arena 五维审美分', axisEn: 'Design Arena 5D Aesthetic', get: r => r.humanScores?.pureVisual ?? null},
+    {id: 'creativeCraft', zh: '纵轴：SVG 矢量与游戏创意', en: 'Y: SVG & GameDev Craft', axisZh: 'SVG与游戏交互创意分', axisEn: 'SVG & GameDev Craft Score', get: r => r.humanScores?.creativeCraft ?? null},
     {id: 'deliverable', zh: '纵轴：专家办公交付 (GDPval)', en: 'Y: Expert Deliverables', axisZh: '44职业真实交付盲评分', axisEn: 'Expert Deliverable Score', get: r => r.humanScores?.deliverable ?? null},
     {id: 'webdev', zh: '纵轴：Web全栈体感 (WebDev)', en: 'Y: WebDev Arena', axisZh: 'WebDev 全栈体感分', axisEn: 'WebDev Arena Score', get: r => r.humanScores?.webdev ?? null}
   ],
@@ -2611,10 +2612,10 @@ function renderRadarInfo() {
     );
     const p2 = html('p');
     p2.append(
-      html('strong', t('0–100 校准指数、去理工水分与样本置信度：', 'De-Contaminated Calibration & Sample Credibility: ')),
+      html('strong', t('全维度保留 + 分池独立标尺校准与样本置信度：', 'Full 5D Preservation, Per-Pool Calibration & Sample Credibility: ')),
       document.createTextNode(t(
-        '本榜严格区分“视觉排版审美”与“代码逻辑”——总分与「体验六维」仅纳入 Website、UI 组件与 DataViz 纯视觉审美（剔除偏重物理碰撞代码的 GameDev 与几何坐标计算的 SVG，后两者仅在「视觉审美五维」中按各自标尺独立展示），并对低场次新模型（<400 场）施加经验贝叶斯样本量收缩。',
-        'To separate true visual taste from code math, headline UI/Visual scores strictly aggregate Website, UI Component & DataViz (excluding physics-heavy GameDev & coordinate-math SVG, which appear separately under Aesthetic 5D), with empirical Bayes shrinkage for low-sample (<400 battle) newcomers.'
+        '完整保留 Design Arena 全部五大审美测试（Website、UI 组件、DataViz、GameDev 交互创意、SVG 矢量造型），在总分与「体验六维」中均衡归纳为「整站视觉审美」「UI 与图表美感」「SVG 与游戏创意」三大视觉支柱（与交流人味、WebDev、专家办公交付共同构成等权六维）。针对 GameDev（原始最高 1466）与 SVG（最高 1494）离散度远大于 Website（最高 1375）的统计特性，系统按各子池真实中位数与标准差分别校准至同一 0–100 标尺，并对低场次新模型（<400 场）施加经验贝叶斯样本量收缩，既保留 SVG/游戏创意权重，又消除跨池量纲膨胀。',
+        'All 5 Design Arena suites (Website, UI Component, DataViz, GameDev, SVG) are preserved across three balanced visual pillars (Website, UI & DataViz, SVG & GameDev) alongside Chat Vibe, WebDev, and Expert Deliverables. Each pool is calibrated by its own empirical Elo center and spread (preventing wider-spread GameDev/SVG Elos from inflating scores) with empirical Bayes shrinkage for low-sample (<400 battle) models.'
       ))
     );
     const p3 = html('p');
@@ -2905,19 +2906,16 @@ function renderCompare() {
       ];
       barMetrics = [...axes];
     } else {
-      $('#radarHeading').textContent = t('人类盲测六维体感雷达（交流人味 · 视觉审美 · 真实交付）', '6-Axis Human Preference Radar (Chat Vibe · Aesthetic Taste · Deliverables)');
+      $('#radarHeading').textContent = t('人类盲测六维体感雷达（交流人味 · 视觉创意 · 真实交付）', '6-Axis Human Preference Radar (Chat Vibe · Visual & Creative · Deliverables)');
       axes = [
-        {key: 'chatVibe', zh: '交流人味 (Chat)', en: 'Chat Vibe', srcZh: 'LMArena Text Style-Controlled · 剔除长篇堆砌与排版讨好后的纯人类对话偏好校准分', srcEn: 'LMArena Text Style-Controlled · Blind chat preference controlling for length/style bias', get: r => r.humanScores?.chatVibe ?? null},
+        {key: 'chatVibe', zh: '交流人味 (Chat)', en: 'Chat Vibe', srcZh: 'LMArena Text & Doc Style-Controlled · 剔除长篇堆砌与排版讨好后的纯人类对话与行文偏好', srcEn: 'LMArena Style-Controlled · Blind chat & writing preference controlling for verbosity bias', get: r => r.humanScores?.chatVibe ?? null},
         {key: 'webdev', zh: '全栈体感 (WebDev)', en: 'WebDev Arena', srcZh: 'LMArena WebDev · 真人实测构建可交互前端/全栈应用盲评校准分', srcEn: 'LMArena WebDev · Blind human battles on live interactive web apps', get: r => r.humanScores?.webdev ?? null},
-        {key: 'designWeb', zh: '整站视觉审美', en: 'Website Taste', srcZh: 'Design Arena Website · 真人双盲视觉审美对决校准分（拒绝模板化 AI 味）', srcEn: 'Design Arena Website · Blind human aesthetic preference on full web pages', get: r => r.humanScores?.designWeb ?? null},
-        {key: 'uicomponent', zh: 'UI 组件质感', en: 'UI Component', srcZh: 'Design Arena UI Component · 交互控件细节、微动效与组件级视觉完成度盲测', srcEn: 'Design Arena UI Component · Blind human grading of component craft & micro-UX', get: r => r.designSub?.uicomponent ?? null},
-        {key: 'dataviz', zh: '数据图表审美', en: 'DataViz Taste', srcZh: 'Design Arena DataViz · 复杂仪表盘与数据可视化的可读性与色彩排版盲测', srcEn: 'Design Arena DataViz · Blind human preference on dashboards & data visualization', get: r => r.designSub?.dataviz ?? null},
+        {key: 'designWeb', zh: '整站视觉审美', en: 'Website Taste', srcZh: 'Design Arena Website · 真人双盲视觉审美对决校准分（整站排版、配色与留白）', srcEn: 'Design Arena Website · Blind human aesthetic preference on full web pages', get: r => r.humanScores?.designWeb ?? null},
+        {key: 'designUi', zh: 'UI 与图表美感', en: 'UI & DataViz', srcZh: 'Design Arena UI Component + DataViz · 交互控件细节与数据可视化美感综合分', srcEn: 'Design Arena UI Component + DataViz · Component craft & dashboard visual clarity', get: r => r.humanScores?.designUi ?? null},
+        {key: 'creativeCraft', zh: 'SVG 与游戏创意', en: 'SVG & GameDev', srcZh: 'Design Arena SVG + GameDev · 矢量插画构图造型与可玩游戏动态交互审美（独立标尺校准）', srcEn: 'Design Arena SVG + GameDev · Vector illustration composition & interactive game feel', get: r => r.humanScores?.creativeCraft ?? null},
         {key: 'deliverable', zh: '专家真实交付', en: 'Deliverables', srcZh: 'GDPval + Briefcase · 44 个职业领域人类专家盲评真实办公交付物质量', srcEn: 'GDPval + Briefcase · Blind human expert grading of real office deliverables', get: r => r.humanScores?.deliverable ?? null}
       ];
-      barMetrics = [
-        ...axes,
-        {key: 'docCraft', zh: '文档写作 (Doc)', en: 'Doc Writing', srcZh: 'LMArena Document Style-Controlled · 长文结构、行文质感与写作盲测校准分', srcEn: 'LMArena Document Style-Controlled · Blind human preference on long-form writing', get: r => r.humanScores?.docCraft ?? null}
-      ];
+      barMetrics = [...axes];
     }
   } else if (activeKey === 'models' || activeKey === 'cyber') {
     if (state.radarMode === 'domain') {

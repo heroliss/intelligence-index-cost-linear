@@ -683,11 +683,17 @@ function buildHumanArenaModels(models, external = {}) {
     };
 
     const designWeb = designScore('website');
-    // Strictly visual UI & chart layout aesthetics — exclude GameDev JS physics and SVG coordinate math!
     const uiParts = ['uicomponent', 'dataviz']
       .map(designScore)
       .filter(v => typeof v === 'number' && Number.isFinite(v));
     const designUi = uiParts.length ? Number((uiParts.reduce((a, b) => a + b, 0) / uiParts.length).toFixed(2)) : null;
+
+    const creativeParts = ['gamedev', 'svg']
+      .map(designScore)
+      .filter(v => typeof v === 'number' && Number.isFinite(v));
+    const creativeCraft = creativeParts.length
+      ? Number((creativeParts.reduce((a, b) => a + b, 0) / creativeParts.length).toFixed(2))
+      : null;
 
     const expParts = [
       gdpvalElo !== null ? eloToWinPct(gdpvalElo, 1480, 480) : null,
@@ -695,21 +701,30 @@ function buildHumanArenaModels(models, external = {}) {
     ].filter(v => v !== null);
     const deliverable = expParts.length ? Number((expParts.reduce((a, b) => a + b, 0) / expParts.length).toFixed(2)) : null;
 
-    const pureVisualParts = [designWeb, designUi].filter(v => typeof v === 'number' && Number.isFinite(v));
-    const pureVisual = pureVisualParts.length
-      ? Number((pureVisualParts.reduce((a, b) => a + b, 0) / pureVisualParts.length).toFixed(2))
+    const allDesignParts = DESIGN_ARENA_CATEGORIES
+      .map(designScore)
+      .filter(v => typeof v === 'number' && Number.isFinite(v));
+    const pureVisual = allDesignParts.length
+      ? Number(((allDesignParts.reduce((a, b) => a + b, 0) + 0.5 * 54) / (allDesignParts.length + 0.5)).toFixed(2))
       : null;
 
+    const langParts = [chatVibe, docCraft].filter(v => typeof v === 'number' && Number.isFinite(v));
+    const langVibe = chatVibe !== null && docCraft !== null
+      ? Number((0.7 * chatVibe + 0.3 * docCraft).toFixed(2))
+      : (langParts[0] ?? null);
+
     const humanScores = {
-      chatVibe,
+      chatVibe: langVibe,
+      rawChatVibe: chatVibe,
       docCraft,
       webdev: webdevScore,
       designWeb,
       designUi,
+      creativeCraft,
       deliverable,
       pureVisual
     };
-    const headlineKeys = ['chatVibe', 'docCraft', 'webdev', 'designWeb', 'designUi', 'deliverable'];
+    const headlineKeys = ['chatVibe', 'webdev', 'designWeb', 'designUi', 'creativeCraft', 'deliverable'];
     const compositeParts = headlineKeys.map(k => humanScores[k]).filter(v => typeof v === 'number' && Number.isFinite(v));
     if (!compositeParts.length) continue;
     const rawSum = compositeParts.reduce((a, b) => a + b, 0);

@@ -285,9 +285,10 @@ test('buildHumanArenaModels matches effort-aware variants without cloning onto l
   assert.equal(mw.arenaRaw.designWebWinRate, 63.8);
   assert.equal(mw.arenaRaw.gdpvalElo, 1770.3);
   assert.ok(mw.humanIndex > 70 && mw.humanIndex < 90);
-  // GameDev must NOT contaminate headline designUi aesthetic score, and 80-battle low sample is shrunk!
+  // GameDev & SVG form the dedicated creativeCraft pillar (separate from designUi), with low-sample shrinkage!
   assert.equal(qw.humanScores.designUi, null);
-  assert.ok(qw.designSub.gamedev < 70, 'low-sample gamedev score is shrunk toward prior');
+  assert.ok(qw.humanScores.creativeCraft > 50 && qw.humanScores.creativeCraft < 70, 'creativeCraft preserves gamedev/svg with low-sample shrinkage');
+  assert.equal(qw.humanScores.creativeCraft, qw.designSub.gamedev);
 
   // Fault tolerance: network error falls back cleanly to previous snapshot
   const fallbackPrev = { humanArenaModels: arenaRows, lmArenaPublishDate: '2026-11-11' };
