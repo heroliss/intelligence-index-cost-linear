@@ -29,7 +29,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261119-02';
+} from './chart-math.mjs?v=20261119-03';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -987,6 +987,13 @@ function renderChangelog() {
   } else if (!diffs.length) {
     frag.append(html('li', t('每 2 小时自动检查 Artificial Analysis 上游榜单更新。', 'Checked every 2 hours against upstream Artificial Analysis releases.'), 'changelog-item'));
   }
+  const guideLi = html('li', null, 'changelog-item');
+  const guideAnchor = html('a', t('📖 查看四步上手教学与作品详情 · Liss Works ↗', '📖 Read 4-step quick-start guide · Liss Works ↗'));
+  guideAnchor.href = 'https://heroliss.github.io/liss-works/projects/intelligence-index-cost-linear/';
+  guideAnchor.target = '_blank';
+  guideAnchor.rel = 'noopener';
+  guideLi.append(guideAnchor);
+  frag.append(guideLi);
   list.replaceChildren(frag);
 }
 
@@ -1086,13 +1093,38 @@ function syncStaticText() {
   $('#tab-coding-agents').textContent = t('编程智能体', 'Coding Agents');
   $('#tab-cyber').textContent = t('网络安全', 'Cyber');
   $('#tab-media').textContent = t('多模态生成', 'Media Arena');
+  $('#guideLink').textContent = t('上手指南 ↗', 'Guide ↗');
+  $('#guideLink').title = t(
+    '查看一分钟上手教学、功能亮点与作者作品站 Liss Works',
+    'View 1-minute quick-start guide, feature tour & Liss Works portfolio'
+  );
+  $('#footerGuideLink').textContent = t('上手指南与介绍 ↗', 'Quick-Start Guide ↗');
+  $('#footerGuideLink').title = t('查看本作品详情页与选型入门指南', 'Read beginner guide & project overview on Liss Works');
+  $('#footerWorksLink').textContent = t('Liss Works 作品站 ↗', 'Liss Works Portfolio ↗');
+  $('#footerWorksLink').title = t('访问作者个人作品站 Liss Works', 'Visit author portfolio: Liss Works');
   $('#cmdPaletteBtn').replaceChildren(
     document.createTextNode(t('速查 ', 'Jump ')),
     html('kbd', 'Ctrl+K')
   );
   $('#cmdPaletteBtn').setAttribute('aria-label', t('打开全局模型速查面板 (Ctrl+K)', 'Open global model search palette (Ctrl+K)'));
   $('#cmdInput').placeholder = t('输入模型、厂商或生成引擎名速查全站排名…', 'Search any model, creator, or media generator across all tabs…');
-  $('#cmdFoot').textContent = t('↑↓ 选择 · Enter 跳转定位 · Shift+Enter 加入剖析对比 · ★ 收藏关注', '↑↓ Navigate · Enter locate on chart · Shift+Enter compare · ★ Star');
+  const cmdLinks = html('span', null, 'cmd-foot-links');
+  const mkExtLink = (txt, href) => {
+    const a = html('a', txt);
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    return a;
+  };
+  cmdLinks.append(
+    mkExtLink(t('上手指南 ↗', 'Guide ↗'), 'https://heroliss.github.io/liss-works/projects/intelligence-index-cost-linear/'),
+    html('span', '·', 'footer-sep'),
+    mkExtLink('Liss Works ↗', 'https://heroliss.github.io/liss-works/')
+  );
+  $('#cmdFoot').replaceChildren(
+    html('span', t('↑↓ 选择 · Enter 跳转定位 · Shift+Enter 加入剖析对比 · ★ 收藏关注', '↑↓ Navigate · Enter locate · Shift+Enter compare · ★ Star')),
+    cmdLinks
+  );
   $('#updateText').textContent = t('最新动态', 'Updates');
   if (changelogOpen) renderChangelog();
   if (!shareTimer) $('#shareBtn').textContent = t('分享', 'Share');

@@ -26,8 +26,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261119-02">
-  <script type="module" src="app.js?v=20261119-02"></script>
+  <link rel="stylesheet" href="styles.css?v=20261119-03">
+  <script type="module" src="app.js?v=20261119-03"></script>
 </head>
 <body>
 <main class="app">
@@ -55,6 +55,7 @@
     </nav>
 
     <div class="top-actions">
+      <a id="guideLink" class="guide-pill" href="https://heroliss.github.io/liss-works/projects/intelligence-index-cost-linear/" target="_blank" rel="noopener" title="查看一分钟上手教学、功能亮点与作者作品站 Liss Works">上手指南 ↗</a>
       <button id="cmdPaletteBtn" type="button" class="ghost-btn cmd-trigger-btn" aria-haspopup="dialog" aria-controls="cmdBackdrop">速查 <kbd>Ctrl+K</kbd></button>
       <div class="update-wrap">
         <button id="updateBadge" type="button" class="update-badge" aria-expanded="false" aria-controls="changelogPopover"><i aria-hidden="true"></i><span id="updateText">最新动态</span></button>
@@ -465,6 +466,11 @@
 
     <footer class="app-footer">
       <div id="status" role="status">数据来源：Artificial Analysis</div>
+      <div id="authorLinks" class="footer-links">
+        <a id="footerGuideLink" href="https://heroliss.github.io/liss-works/projects/intelligence-index-cost-linear/" target="_blank" rel="noopener" title="查看作品详情页与选型入门指南">上手指南与介绍 ↗</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a id="footerWorksLink" href="https://heroliss.github.io/liss-works/" target="_blank" rel="noopener" title="访问作者个人作品站 Liss Works">Liss Works 作品站 ↗</a>
+      </div>
       <div id="costNote">成本为每个基准任务的平均 API 费用</div>
     </footer>
   </section>

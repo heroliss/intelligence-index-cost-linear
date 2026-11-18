@@ -294,6 +294,30 @@ kbd {
   flex-shrink: 0;
 }
 
+.guide-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+  text-decoration: none;
+  color: var(--accent);
+  background: var(--active-bg);
+  border: 1px solid color-mix(in srgb, var(--accent) 36%, var(--border));
+  white-space: nowrap;
+  transition: background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out;
+}
+
+.guide-pill:hover {
+  color: var(--ink);
+  background: var(--hover);
+  border-color: var(--accent);
+}
+
 .update-wrap {
   position: relative;
 }
@@ -2780,6 +2804,29 @@ tbody tr.is-selected .locate-btn,
   text-underline-offset: 3px;
 }
 
+.footer-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  white-space: nowrap;
+}
+
+.footer-links a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-sep {
+  color: var(--muted);
+  opacity: 0.65;
+}
+
 .app-footer #costNote {
   text-align: right;
 }
@@ -2838,6 +2885,12 @@ tbody tr.is-selected .locate-btn,
 }
 
 /* Responsive Breakpoints */
+@media (max-width: 1480px) {
+  .brand-sub {
+    display: none;
+  }
+}
+
 @media (max-width: 1320px) {
   .subtitle-note {
     display: none;
@@ -3374,7 +3427,26 @@ tbody tr.is-selected .locate-btn,
   flex-wrap: wrap;
 }
 
+.cmd-foot-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cmd-foot-links a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.cmd-foot-links a:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 760px), (max-height: 500px) {
+  .guide-pill {
+    min-height: 34px;
+  }
   .cmd-trigger-btn kbd {
     display: none;
   }
