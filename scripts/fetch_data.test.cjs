@@ -248,6 +248,12 @@ test('buildHumanArenaModels matches effort-aware variants without cloning onto l
     effort: { slug: 'max', label: 'Max', level: 4 },
     gdpval: 1770.3, briefcaseElo: 1720.0
   });
+  const museHigh = simplifyModel({
+    id: 'mw-high', slug: 'muse-wonder-high', name: 'Muse Wonder (High)', shortName: 'Muse Wonder (high)',
+    intelligenceIndex: 41.2, intelligenceIndexCostPerTask: { total: 4.1 },
+    release: { slug: 'muse-wonder', name: 'Muse Wonder' },
+    effort: { slug: 'high', label: 'High', level: 3 }
+  });
   const museLow = simplifyModel({
     id: 'mw-low', slug: 'muse-wonder-low', name: 'Muse Wonder (Low)', shortName: 'Muse Wonder (low)',
     intelligenceIndex: 35.0, intelligenceIndexCostPerTask: { total: 1.2 },
@@ -261,9 +267,9 @@ test('buildHumanArenaModels matches effort-aware variants without cloning onto l
     effort: { slug: 'xhigh', label: 'xHigh', level: 3 }
   });
 
-  const arenaRows = buildHumanArenaModels([museMax, museLow, qwenMax], {
+  const arenaRows = buildHumanArenaModels([museMax, museHigh, museLow, qwenMax], {
     chatRows: [
-      { category: 'overall', model_name: 'Muse Wonder Full (Max)', rating: 1510.9, vote_count: 8400 },
+      { category: 'overall', model_name: 'Muse Wonder (High)', rating: 1510.9, vote_count: 8400 },
       { category: 'overall', model_name: 'Qwen3.8-Max (0902)', rating: 1465.2, vote_count: 12000 }
     ],
     webdevRows: [
@@ -276,7 +282,7 @@ test('buildHumanArenaModels matches effort-aware variants without cloning onto l
     }
   });
 
-  // museLow must NOT inherit un-suffixed muse-wonder-1.0 or (Max) ratings!
+  // museLow must NOT inherit un-suffixed muse-wonder-1.0 or (Max) ratings, and 1-slot museHigh consolidates onto museMax!
   assert.deepEqual(arenaRows.map(r => r.id).sort(), ['mw-max', 'qw-max']);
   const mw = arenaRows.find(r => r.id === 'mw-max');
   const qw = arenaRows.find(r => r.id === 'qw-max');

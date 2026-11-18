@@ -597,7 +597,7 @@ function buildModelArenaIndex(models) {
 
 function buildHumanArenaModels(models, external = {}) {
   if (!Array.isArray(models) || !models.length) return [];
-  const { resolve } = buildModelArenaIndex(models);
+  const { resolve, primaryByFamily } = buildModelArenaIndex(models);
   const accById = new Map();
 
   function ensureAcc(model) {
@@ -653,6 +653,45 @@ function buildHumanArenaModels(models, external = {}) {
         };
       }
       acc.sources.add('design-arena');
+    }
+  }
+
+  // Consolidate split high-effort arena submissions (e.g. Chat tested at High/xHigh while Design tested at Max)
+  // onto the family's flagship entry, without ever touching medium/low/minimal variants.
+  for (const [famSlug, primaryModel] of primaryByFamily.entries()) {
+    const highSibs = [...accById.values()]
+      .filter(a => {
+        const aFam = canonArenaSlug(a.model.family?.slug || a.model.slug || a.model.shortName || a.model.name);
+        const eff = a.model.effort?.slug || 'default';
+        return aFam === famSlug && a.model.id !== primaryModel.id && HIGH_EFFORTS.has(eff);
+      })
+      .sort((a, b) => (b.model.effort?.level || 0) - (a.model.effort?.level || 0) || b.model.intelligenceIndex - a.model.intelligenceIndex);
+    if (!highSibs.length) continue;
+
+    const primaryAcc = ensureAcc(primaryModel);
+    for (const sib of highSibs) {
+      let independentSlots = 0;
+      for (const slot of ['chat', 'doc', 'webdev']) {
+        if (!sib[slot]) continue;
+        if (!primaryAcc[slot]) {
+          primaryAcc[slot] = sib[slot];
+          primaryAcc.sources.add('lmarena');
+        } else {
+          independentSlots++;
+        }
+      }
+      for (const cat of DESIGN_ARENA_CATEGORIES) {
+        if (!sib.design[cat]) continue;
+        if (!primaryAcc.design[cat]) {
+          primaryAcc.design[cat] = sib.design[cat];
+          primaryAcc.sources.add('design-arena');
+        } else {
+          independentSlots++;
+        }
+      }
+      if (independentSlots === 0) {
+        accById.delete(sib.model.id);
+      }
     }
   }
 
@@ -795,9 +834,10 @@ async function fetchDesignArenaCategory(category, get) {
 
 async function fetchHumanArenas(models, previous, get = getBuffer) {
   try {
-    const [chat0, chat1, web0, doc0, ...designResults] = await Promise.allSettled([
+    const [chat0, chat1, chat2, web0, doc0, ...designResults] = await Promise.allSettled([
       fetchLmArenaSlice('text_style_control', 0, get),
       fetchLmArenaSlice('text_style_control', 100, get),
+      fetchLmArenaSlice('text_style_control', 200, get),
       fetchLmArenaSlice('webdev', 0, get),
       fetchLmArenaSlice('document_style_control', 0, get),
       ...DESIGN_ARENA_CATEGORIES.map(cat => fetchDesignArenaCategory(cat, get))
@@ -805,7 +845,8 @@ async function fetchHumanArenas(models, previous, get = getBuffer) {
 
     const chatRows = [
       ...(chat0.status === 'fulfilled' ? chat0.value.rows : []),
-      ...(chat1.status === 'fulfilled' ? chat1.value.rows : [])
+      ...(chat1.status === 'fulfilled' ? chat1.value.rows : []),
+      ...(chat2.status === 'fulfilled' ? chat2.value.rows : [])
     ];
     const webdevRows = web0.status === 'fulfilled' ? web0.value.rows : [];
     const docRows = doc0.status === 'fulfilled' ? doc0.value.rows : [];

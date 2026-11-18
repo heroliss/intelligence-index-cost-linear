@@ -20,6 +20,7 @@ import {
   subscriptionVerdict,
   VALUE_WEIGHT,
   MIN_SCORE,
+  MAX_COST_PRESETS,
   VALUE_PRESETS,
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE
@@ -295,7 +296,7 @@ test('expanded curve range traverses all capability tiers and preserves Pareto m
   }
 });
 
-test('minimum score threshold disqualifies lower-scoring entries and keeps them last in value sorts', () => {
+test('minimum score threshold and maximum cost budget cap disqualify out-of-range entries and place them last', () => {
   const rows = [
     row('cheap-toy', 0.005, 10),
     row('qualified-good', 0.8, 52),
@@ -305,6 +306,15 @@ test('minimum score threshold disqualifies lower-scoring entries and keeps them 
   assert.ok(valuePerDollar(rows[1], 1, 45) > 0);
   assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', 1, 45).map(d => d.id), ['qualified-good', 'qualified-pricey', 'cheap-toy']);
   assert.deepEqual(sortRows(rows, 'valuePerDollar', 'asc', 1, 45).map(d => d.id), ['qualified-pricey', 'qualified-good', 'cheap-toy']);
+
+  assert.ok(Object.isFrozen(MAX_COST_PRESETS) && MAX_COST_PRESETS[0] === 0 && MAX_COST_PRESETS.includes(1));
+  assert.equal(valuePerDollar(rows[2], 3, 0, 1), null, 'cost 5 > maxCost 1 should be disqualified');
+  assert.ok(valuePerDollar(rows[1], 3, 0, 1) > 0, 'cost 0.8 <= maxCost 1 remains qualified');
+  assert.deepEqual(sortRows(rows, 'valuePerDollar', 'desc', 20, 45, 1).map(d => d.id), ['qualified-good', 'cheap-toy', 'qualified-pricey']);
+  for (const badMaxCost of [-0.01, -1, NaN, Infinity, '1', null]) {
+    assert.throws(() => valuePerDollar(rows[1], 3, 0, badMaxCost), RangeError);
+    assert.throws(() => sortRows(rows, 'valuePerDollar', 'desc', 3, 0, badMaxCost), RangeError);
+  }
 });
 
 test('isoValueCost passes exactly through the champion point and bounds all other entries', () => {

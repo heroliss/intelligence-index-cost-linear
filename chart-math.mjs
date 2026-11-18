@@ -122,6 +122,8 @@ export const MIN_SCORE = Object.freeze({
   default: 0
 });
 
+export const MAX_COST_PRESETS = Object.freeze([0, 0.1, 0.25, 0.5, 1, 2, 5, 10]);
+
 export const VALUE_PRESETS = Object.freeze([
   Object.freeze({value: 0, id: 'cost', zh: '纯成本', en: 'Cost only'}),
   Object.freeze({value: 1, id: 'linear', zh: '线性', en: 'Linear'}),
@@ -166,6 +168,12 @@ function validateMinScore(minScore) {
   }
 }
 
+function validateMaxCost(maxCost) {
+  if (typeof maxCost !== 'number' || !Number.isFinite(maxCost) || maxCost < 0) {
+    throw new RangeError('Maximum cost cap must be a non-negative finite number');
+  }
+}
+
 export function capabilityUtility(score, weight = VALUE_WEIGHT.default) {
   validateValueWeight(weight);
   if (typeof score !== 'number' || !Number.isFinite(score) || score < 0) return null;
@@ -185,12 +193,14 @@ export function capabilityUtility(score, weight = VALUE_WEIGHT.default) {
   return Number.isFinite(utility) ? (utility === 0 ? 0 : utility) : null;
 }
 
-export function valuePerDollar(row, weight = VALUE_WEIGHT.default, minScore = MIN_SCORE.default) {
+export function valuePerDollar(row, weight = VALUE_WEIGHT.default, minScore = MIN_SCORE.default, maxCost = 0) {
   validateValueWeight(weight);
   validateMinScore(minScore);
+  validateMaxCost(maxCost);
   const score = row?.intelligenceIndex, cost = row?.cost;
   if (typeof score !== 'number' || !Number.isFinite(score) || score < 0 || typeof cost !== 'number' || !Number.isFinite(cost) || cost <= 0) return null;
   if (minScore > 0 && score < minScore) return null;
+  if (maxCost > 0 && cost > maxCost) return null;
   if (score === 0) return 0;
   // Preserve the original ratio bit-for-bit at weight 1.
   if (weight === 1) {
@@ -311,16 +321,17 @@ export function cascadingRouteSummary(fastRow, strongRow, fastShare = 0.8, month
   };
 }
 
-export function sortRows(rows, key, direction = 'asc', weight = VALUE_WEIGHT.default, minScore = MIN_SCORE.default) {
+export function sortRows(rows, key, direction = 'asc', weight = VALUE_WEIGHT.default, minScore = MIN_SCORE.default, maxCost = 0) {
   validateValueWeight(weight);
   validateMinScore(minScore);
+  validateMaxCost(maxCost);
   if (!['name', 'creator', 'intelligenceIndex', 'cost', 'timeSec', 'valuePerDollar'].includes(key)) throw new RangeError(`Unknown table sort key: ${key}`);
   if (direction !== 'asc' && direction !== 'desc') throw new RangeError(`Unknown table sort direction: ${direction}`);
   const sign = direction === 'asc' ? 1 : -1;
   return [...rows].sort((a, b) => {
     let primary;
     if (key === 'valuePerDollar') {
-      const aValue = valuePerDollar(a, weight, minScore), bValue = valuePerDollar(b, weight, minScore);
+      const aValue = valuePerDollar(a, weight, minScore, maxCost), bValue = valuePerDollar(b, weight, minScore, maxCost);
       // Disqualified or missing ratios are not infinite bargains; keep them last in either direction.
       if ((aValue === null) !== (bValue === null)) return aValue === null ? 1 : -1;
       primary = aValue === null ? 0 : aValue - bValue;

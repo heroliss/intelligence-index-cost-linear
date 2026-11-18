@@ -4,7 +4,7 @@
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
   "hostsManifestPath": "/data/324ed05c14a0dc8b.txt",
-  "updatedAt": "2026-11-18T11:38:56.334Z",
+  "updatedAt": "2026-11-18T11:48:32.696Z",
   "updateIntervalHours": 2,
   "changelog": [
     {
@@ -17300,8 +17300,77 @@
   "lmArenaSourceUrl": "https://lmarena.ai/leaderboard",
   "designArenaSourceUrl": "https://www.designarena.ai/leaderboard",
   "lmArenaPublishDate": "2026-11-11",
-  "humanArenaCount": 58,
+  "humanArenaCount": 54,
   "humanArenaModels": [
+    {
+      "id": "adfae555-f489-4f3e-9064-c6b7fcdd0783",
+      "slug": "granite-4-2-8b",
+      "name": "Granite 4.2 8B",
+      "shortName": "Granite 4.2 8B",
+      "cost": 0.0404628507686443,
+      "creator": {
+        "name": "IBM",
+        "color": "#0f62fe"
+      },
+      "isReasoning": true,
+      "isOpenWeights": true,
+      "deprecated": false,
+      "releaseDate": "2026-08-25",
+      "openLicense": "permissive",
+      "parametersB": 8,
+      "family": {
+        "slug": "granite-4-2-8b",
+        "name": "Granite 4.2 8B"
+      },
+      "timeSec": 691.81,
+      "humanIndex": 30.45,
+      "intelligenceIndex": 30.45,
+      "aaIndex": 5.1,
+      "indexDelta": 25.35,
+      "humanScores": {
+        "chatVibe": 35.73,
+        "rawChatVibe": 35.73,
+        "docCraft": null,
+        "webdev": null,
+        "designWeb": null,
+        "designUi": null,
+        "creativeCraft": null,
+        "deliverable": 0.63,
+        "pureVisual": null
+      },
+      "designSub": {
+        "website": null,
+        "uicomponent": null,
+        "dataviz": null,
+        "gamedev": null,
+        "svg": null
+      },
+      "arenaRaw": {
+        "chatElo": 1289.3,
+        "chatVotes": 3193,
+        "docElo": null,
+        "docVotes": null,
+        "webdevElo": null,
+        "webdevVotes": null,
+        "designWebElo": null,
+        "designWebWinRate": null,
+        "designWebBattles": null,
+        "designAvgCostUsd": null,
+        "designUiElo": null,
+        "designUiWinRate": null,
+        "designUiBattles": null,
+        "designDatavizElo": null,
+        "designGameElo": null,
+        "designSvgElo": null,
+        "gdpvalElo": 498.4,
+        "briefcaseElo": 310.5,
+        "dimensionCount": 2,
+        "sources": [
+          "lmarena",
+          "aa-expert"
+        ]
+      }
+    },
     {
       "id": "127de816-57d3-4037-8484-480a613cd413",
       "slug": "mimo-v2-6-flash",
@@ -17521,81 +17590,6 @@
         "sources": [
           "lmarena",
           "design-arena",
-          "aa-expert"
-        ]
-      }
-    },
-    {
-      "id": "20829974-af06-497e-9f42-77fb958d43b9",
-      "slug": "claude-haiku-5-5-high",
-      "name": "Claude Haiku 5.5 (High)",
-      "shortName": "Claude Haiku 5.5 (high)",
-      "cost": 0.15856031956679498,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "isOpenWeights": false,
-      "deprecated": false,
-      "releaseDate": "2026-10-07",
-      "modalities": [
-        "image"
-      ],
-      "family": {
-        "slug": "claude-haiku-5-5",
-        "name": "Claude Haiku 5.5"
-      },
-      "effort": {
-        "slug": "high",
-        "label": "high",
-        "level": 40
-      },
-      "timeSec": 387.66,
-      "humanIndex": 56.72,
-      "intelligenceIndex": 56.72,
-      "aaIndex": 29.87,
-      "indexDelta": 26.85,
-      "humanScores": {
-        "chatVibe": 65.01,
-        "rawChatVibe": 65.01,
-        "docCraft": null,
-        "webdev": 62.58,
-        "designWeb": null,
-        "designUi": null,
-        "creativeCraft": null,
-        "deliverable": 44.3,
-        "pureVisual": null
-      },
-      "designSub": {
-        "website": null,
-        "uicomponent": null,
-        "dataviz": null,
-        "gamedev": null,
-        "svg": null
-      },
-      "arenaRaw": {
-        "chatElo": 1421.2,
-        "chatVotes": 13894,
-        "docElo": null,
-        "docVotes": null,
-        "webdevElo": 1593.2,
-        "webdevVotes": 7147,
-        "designWebElo": null,
-        "designWebWinRate": null,
-        "designWebBattles": null,
-        "designAvgCostUsd": null,
-        "designUiElo": null,
-        "designUiWinRate": null,
-        "designUiBattles": null,
-        "designDatavizElo": null,
-        "designGameElo": null,
-        "designSvgElo": null,
-        "gdpvalElo": 1423.9,
-        "briefcaseElo": 1440.7,
-        "dimensionCount": 3,
-        "sources": [
-          "lmarena",
           "aa-expert"
         ]
       }
@@ -18004,13 +17998,13 @@
         "level": 40
       },
       "timeSec": 387.98,
-      "humanIndex": 24.18,
-      "intelligenceIndex": 24.18,
+      "humanIndex": 28.15,
+      "intelligenceIndex": 28.15,
       "aaIndex": 3.82,
-      "indexDelta": 20.36,
+      "indexDelta": 24.33,
       "humanScores": {
-        "chatVibe": null,
-        "rawChatVibe": null,
+        "chatVibe": 47.98,
+        "rawChatVibe": 47.98,
         "docCraft": null,
         "webdev": null,
         "designWeb": 6.7,
@@ -18027,8 +18021,8 @@
         "svg": null
       },
       "arenaRaw": {
-        "chatElo": null,
-        "chatVotes": null,
+        "chatElo": 1351.8,
+        "chatVotes": 30115,
         "docElo": null,
         "docVotes": null,
         "webdevElo": null,
@@ -18045,8 +18039,9 @@
         "designSvgElo": null,
         "gdpvalElo": 615.3,
         "briefcaseElo": null,
-        "dimensionCount": 4,
+        "dimensionCount": 5,
         "sources": [
+          "lmarena",
           "design-arena",
           "aa-expert"
         ]
@@ -18079,15 +18074,15 @@
         "level": 60
       },
       "timeSec": 884.99,
-      "humanIndex": 58.77,
-      "intelligenceIndex": 58.77,
+      "humanIndex": 60.2,
+      "intelligenceIndex": 60.2,
       "aaIndex": 36.48,
-      "indexDelta": 22.29,
+      "indexDelta": 23.72,
       "humanScores": {
-        "chatVibe": null,
-        "rawChatVibe": null,
+        "chatVibe": 65.01,
+        "rawChatVibe": 65.01,
         "docCraft": null,
-        "webdev": null,
+        "webdev": 62.58,
         "designWeb": 58.3,
         "designUi": 59.59,
         "creativeCraft": 56.93,
@@ -18102,12 +18097,12 @@
         "svg": 47.51
       },
       "arenaRaw": {
-        "chatElo": null,
-        "chatVotes": null,
+        "chatElo": 1421.2,
+        "chatVotes": 13894,
         "docElo": null,
         "docVotes": null,
-        "webdevElo": null,
-        "webdevVotes": null,
+        "webdevElo": 1593.2,
+        "webdevVotes": 7147,
         "designWebElo": 1249,
         "designWebWinRate": 48,
         "designWebBattles": 6366,
@@ -18120,9 +18115,10 @@
         "designSvgElo": 1198,
         "gdpvalElo": 1629,
         "briefcaseElo": 1572.2,
-        "dimensionCount": 4,
+        "dimensionCount": 6,
         "sources": [
           "design-arena",
+          "lmarena",
           "aa-expert"
         ]
       }
@@ -19333,83 +19329,6 @@
       }
     },
     {
-      "id": "dae0262d-26a4-44d1-925a-6f2731cbda6a",
-      "slug": "gemini-4-hydrogen-high",
-      "name": "Gemini 4 Hydrogen (High)",
-      "shortName": "Gemini 4 Hydrogen (high)",
-      "cost": 1.8733140062520008,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "isReasoning": true,
-      "isOpenWeights": false,
-      "deprecated": false,
-      "releaseDate": "2026-11-12",
-      "modalities": [
-        "image",
-        "speech",
-        "video"
-      ],
-      "family": {
-        "slug": "gemini-4-hydrogen",
-        "name": "Gemini 4 Hydrogen"
-      },
-      "effort": {
-        "slug": "high",
-        "label": "high",
-        "level": 40
-      },
-      "timeSec": 507.96,
-      "humanIndex": 63.74,
-      "intelligenceIndex": 63.74,
-      "aaIndex": 50.79,
-      "indexDelta": 12.95,
-      "humanScores": {
-        "chatVibe": 76.77,
-        "rawChatVibe": 76.77,
-        "docCraft": null,
-        "webdev": 71.19,
-        "designWeb": null,
-        "designUi": null,
-        "creativeCraft": null,
-        "deliverable": 52,
-        "pureVisual": null
-      },
-      "designSub": {
-        "website": null,
-        "uicomponent": null,
-        "dataviz": null,
-        "gamedev": null,
-        "svg": null
-      },
-      "arenaRaw": {
-        "chatElo": 1490.4,
-        "chatVotes": 4741,
-        "docElo": null,
-        "docVotes": null,
-        "webdevElo": 1703.9,
-        "webdevVotes": 2046,
-        "designWebElo": null,
-        "designWebWinRate": null,
-        "designWebBattles": null,
-        "designAvgCostUsd": null,
-        "designUiElo": null,
-        "designUiWinRate": null,
-        "designUiBattles": null,
-        "designDatavizElo": null,
-        "designGameElo": null,
-        "designSvgElo": null,
-        "gdpvalElo": null,
-        "briefcaseElo": 1496.7,
-        "dimensionCount": 3,
-        "sources": [
-          "lmarena",
-          "aa-expert"
-        ]
-      }
-    },
-    {
       "id": "3661c8fb-caf7-4118-aa18-65b84fea8e44",
       "slug": "muse-spark-open",
       "name": "Muse Spark Open (Xhigh)",
@@ -19966,15 +19885,15 @@
         "level": 50
       },
       "timeSec": 901.52,
-      "humanIndex": 65.56,
-      "intelligenceIndex": 65.56,
+      "humanIndex": 67.97,
+      "intelligenceIndex": 67.97,
       "aaIndex": 53.92,
-      "indexDelta": 11.64,
+      "indexDelta": 14.05,
       "humanScores": {
-        "chatVibe": null,
-        "rawChatVibe": null,
+        "chatVibe": 76.77,
+        "rawChatVibe": 76.77,
         "docCraft": null,
-        "webdev": null,
+        "webdev": 71.19,
         "designWeb": 75.08,
         "designUi": 67.17,
         "creativeCraft": 70.21,
@@ -19989,12 +19908,12 @@
         "svg": null
       },
       "arenaRaw": {
-        "chatElo": null,
-        "chatVotes": null,
+        "chatElo": 1490.4,
+        "chatVotes": 4741,
         "docElo": null,
         "docVotes": null,
-        "webdevElo": null,
-        "webdevVotes": null,
+        "webdevElo": 1703.9,
+        "webdevVotes": 2046,
         "designWebElo": 1331,
         "designWebWinRate": 59.6,
         "designWebBattles": 1318,
@@ -20007,9 +19926,10 @@
         "designSvgElo": null,
         "gdpvalElo": null,
         "briefcaseElo": 1567.5,
-        "dimensionCount": 4,
+        "dimensionCount": 6,
         "sources": [
           "design-arena",
+          "lmarena",
           "aa-expert"
         ]
       }
@@ -20083,81 +20003,6 @@
         "designSvgElo": null,
         "gdpvalElo": 1808.7,
         "briefcaseElo": 1686.1,
-        "dimensionCount": 2,
-        "sources": [
-          "lmarena",
-          "aa-expert"
-        ]
-      }
-    },
-    {
-      "id": "f314eade-2232-44bf-a3ab-9b326bc67de6",
-      "slug": "claude-opus-5-5-high",
-      "name": "Claude Opus 5.5 (High, Default Fallback)",
-      "shortName": "Claude Opus 5.5 (high)",
-      "cost": 3.4646622820973185,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "isOpenWeights": false,
-      "deprecated": false,
-      "releaseDate": "2026-09-22",
-      "modalities": [
-        "image"
-      ],
-      "family": {
-        "slug": "claude-opus-5-5",
-        "name": "Claude Opus 5.5"
-      },
-      "effort": {
-        "slug": "high",
-        "label": "high",
-        "level": 40
-      },
-      "timeSec": 557.36,
-      "humanIndex": 69.99,
-      "intelligenceIndex": 69.99,
-      "aaIndex": 51.84,
-      "indexDelta": 18.15,
-      "humanScores": {
-        "chatVibe": 81.25,
-        "rawChatVibe": 81.25,
-        "docCraft": null,
-        "webdev": null,
-        "designWeb": null,
-        "designUi": null,
-        "creativeCraft": null,
-        "deliverable": 73.73,
-        "pureVisual": null
-      },
-      "designSub": {
-        "website": null,
-        "uicomponent": null,
-        "dataviz": null,
-        "gamedev": null,
-        "svg": null
-      },
-      "arenaRaw": {
-        "chatElo": 1506.8,
-        "chatVotes": 15793,
-        "docElo": null,
-        "docVotes": null,
-        "webdevElo": null,
-        "webdevVotes": null,
-        "designWebElo": null,
-        "designWebWinRate": null,
-        "designWebBattles": null,
-        "designAvgCostUsd": null,
-        "designUiElo": null,
-        "designUiWinRate": null,
-        "designUiBattles": null,
-        "designDatavizElo": null,
-        "designGameElo": null,
-        "designSvgElo": null,
-        "gdpvalElo": 1708.6,
-        "briefcaseElo": 1682.2,
         "dimensionCount": 2,
         "sources": [
           "lmarena",
@@ -20468,81 +20313,6 @@
         "dimensionCount": 3,
         "sources": [
           "design-arena",
-          "aa-expert"
-        ]
-      }
-    },
-    {
-      "id": "975aeaef-50bd-4a65-9c73-f1015adcd4d4",
-      "slug": "claude-sonnet-5-5-xhigh",
-      "name": "Claude Sonnet 5.5 (Xhigh, Default Fallback)",
-      "shortName": "Claude Sonnet 5.5 (xhigh)",
-      "cost": 4.091984916321919,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "isOpenWeights": false,
-      "deprecated": false,
-      "releaseDate": "2026-09-28",
-      "modalities": [
-        "image"
-      ],
-      "family": {
-        "slug": "claude-sonnet-5-5",
-        "name": "Claude Sonnet 5.5"
-      },
-      "effort": {
-        "slug": "xhigh",
-        "label": "xhigh",
-        "level": 50
-      },
-      "timeSec": 850.36,
-      "humanIndex": 71.93,
-      "intelligenceIndex": 71.93,
-      "aaIndex": 49.92,
-      "indexDelta": 22.01,
-      "humanScores": {
-        "chatVibe": 75.62,
-        "rawChatVibe": 75.62,
-        "docCraft": null,
-        "webdev": 79.34,
-        "designWeb": null,
-        "designUi": null,
-        "creativeCraft": null,
-        "deliverable": 77.76,
-        "pureVisual": null
-      },
-      "designSub": {
-        "website": null,
-        "uicomponent": null,
-        "dataviz": null,
-        "gamedev": null,
-        "svg": null
-      },
-      "arenaRaw": {
-        "chatElo": 1472.9,
-        "chatVotes": 14355,
-        "docElo": null,
-        "docVotes": null,
-        "webdevElo": 1772.2,
-        "webdevVotes": 6120,
-        "designWebElo": null,
-        "designWebWinRate": null,
-        "designWebBattles": null,
-        "designAvgCostUsd": null,
-        "designUiElo": null,
-        "designUiWinRate": null,
-        "designUiBattles": null,
-        "designDatavizElo": null,
-        "designGameElo": null,
-        "designSvgElo": null,
-        "gdpvalElo": 1742.6,
-        "briefcaseElo": 1739.2,
-        "dimensionCount": 3,
-        "sources": [
-          "lmarena",
           "aa-expert"
         ]
       }
@@ -21185,15 +20955,15 @@
         "level": 60
       },
       "timeSec": 1933.71,
-      "humanIndex": 70.2,
-      "intelligenceIndex": 70.2,
+      "humanIndex": 72.28,
+      "intelligenceIndex": 72.28,
       "aaIndex": 54.54,
-      "indexDelta": 15.66,
+      "indexDelta": 17.74,
       "humanScores": {
-        "chatVibe": null,
-        "rawChatVibe": null,
+        "chatVibe": 75.62,
+        "rawChatVibe": 75.62,
         "docCraft": null,
-        "webdev": null,
+        "webdev": 79.34,
         "designWeb": 71.69,
         "designUi": 71.41,
         "creativeCraft": 68.84,
@@ -21208,12 +20978,12 @@
         "svg": 61.55
       },
       "arenaRaw": {
-        "chatElo": null,
-        "chatVotes": null,
+        "chatElo": 1472.9,
+        "chatVotes": 14355,
         "docElo": null,
         "docVotes": null,
-        "webdevElo": null,
-        "webdevVotes": null,
+        "webdevElo": 1772.2,
+        "webdevVotes": 6120,
         "designWebElo": 1304,
         "designWebWinRate": 53.2,
         "designWebBattles": 3250,
@@ -21226,9 +20996,10 @@
         "designSvgElo": 1299,
         "gdpvalElo": 1837.8,
         "briefcaseElo": 1815.1,
-        "dimensionCount": 4,
+        "dimensionCount": 6,
         "sources": [
           "design-arena",
+          "lmarena",
           "aa-expert"
         ]
       }
@@ -21336,13 +21107,13 @@
         "level": 60
       },
       "timeSec": 1475.17,
-      "humanIndex": 74.47,
-      "intelligenceIndex": 74.47,
+      "humanIndex": 75.44,
+      "intelligenceIndex": 75.44,
       "aaIndex": 59.11,
-      "indexDelta": 15.36,
+      "indexDelta": 16.33,
       "humanScores": {
-        "chatVibe": null,
-        "rawChatVibe": null,
+        "chatVibe": 81.25,
+        "rawChatVibe": 81.25,
         "docCraft": null,
         "webdev": 81.48,
         "designWeb": 75.9,
@@ -21359,8 +21130,8 @@
         "svg": 66.28
       },
       "arenaRaw": {
-        "chatElo": null,
-        "chatVotes": null,
+        "chatElo": 1506.8,
+        "chatVotes": 15793,
         "docElo": null,
         "docVotes": null,
         "webdevElo": 1815.6,
@@ -21377,7 +21148,7 @@
         "designSvgElo": 1321,
         "gdpvalElo": 1866.3,
         "briefcaseElo": 1799.9,
-        "dimensionCount": 5,
+        "dimensionCount": 6,
         "sources": [
           "lmarena",
           "design-arena",
@@ -21538,81 +21309,6 @@
       }
     },
     {
-      "id": "76942526-cc96-46b0-bc27-29561c53ed70",
-      "slug": "claude-fable-5-2-xhigh",
-      "name": "Claude Fable 5.2 (Xhigh, Default Fallback)",
-      "shortName": "Claude Fable 5.2 (xhigh)",
-      "cost": 14.828587632511116,
-      "creator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
-      },
-      "isReasoning": true,
-      "isOpenWeights": false,
-      "deprecated": false,
-      "releaseDate": "2026-11-09",
-      "modalities": [
-        "image"
-      ],
-      "family": {
-        "slug": "claude-fable-5-2",
-        "name": "Claude Fable 5.2"
-      },
-      "effort": {
-        "slug": "xhigh",
-        "label": "xhigh",
-        "level": 50
-      },
-      "timeSec": 1445.38,
-      "humanIndex": 70.09,
-      "intelligenceIndex": 70.09,
-      "aaIndex": 62.22,
-      "indexDelta": 7.87,
-      "humanScores": {
-        "chatVibe": null,
-        "rawChatVibe": null,
-        "docCraft": null,
-        "webdev": 77.25,
-        "designWeb": null,
-        "designUi": null,
-        "creativeCraft": null,
-        "deliverable": 78.02,
-        "pureVisual": null
-      },
-      "designSub": {
-        "website": null,
-        "uicomponent": null,
-        "dataviz": null,
-        "gamedev": null,
-        "svg": null
-      },
-      "arenaRaw": {
-        "chatElo": null,
-        "chatVotes": null,
-        "docElo": null,
-        "docVotes": null,
-        "webdevElo": 1826,
-        "webdevVotes": 1445,
-        "designWebElo": null,
-        "designWebWinRate": null,
-        "designWebBattles": null,
-        "designAvgCostUsd": null,
-        "designUiElo": null,
-        "designUiWinRate": null,
-        "designUiBattles": null,
-        "designDatavizElo": null,
-        "designGameElo": null,
-        "designSvgElo": null,
-        "gdpvalElo": 1750.9,
-        "briefcaseElo": 1737.3,
-        "dimensionCount": 2,
-        "sources": [
-          "lmarena",
-          "aa-expert"
-        ]
-      }
-    },
-    {
       "id": "593f2d23-247b-41c9-a679-cebd225f0a9a",
       "slug": "claude-fable-5-2",
       "name": "Claude Fable 5.2 (Max, Default Fallback)",
@@ -21639,15 +21335,15 @@
         "level": 60
       },
       "timeSec": 2466.54,
-      "humanIndex": 71.5,
-      "intelligenceIndex": 71.5,
+      "humanIndex": 72.46,
+      "intelligenceIndex": 72.46,
       "aaIndex": 64.56,
-      "indexDelta": 6.94,
+      "indexDelta": 7.9,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
-        "webdev": null,
+        "webdev": 77.25,
         "designWeb": 77.9,
         "designUi": 68.46,
         "creativeCraft": 73.39,
@@ -21666,8 +21362,8 @@
         "chatVotes": null,
         "docElo": null,
         "docVotes": null,
-        "webdevElo": null,
-        "webdevVotes": null,
+        "webdevElo": 1826,
+        "webdevVotes": 1445,
         "designWebElo": 1346,
         "designWebWinRate": 60.2,
         "designWebBattles": 1489,
@@ -21680,9 +21376,10 @@
         "designSvgElo": null,
         "gdpvalElo": 1831.1,
         "briefcaseElo": 1784.7,
-        "dimensionCount": 4,
+        "dimensionCount": 5,
         "sources": [
           "design-arena",
+          "lmarena",
           "aa-expert"
         ]
       }
@@ -21707,8 +21404,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -21769,8 +21466,8 @@
         "color": "#0089f4"
       },
       "agentCreator": {
-        "name": "Meta",
-        "color": "#0089f4"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Muse Code",
       "agentSlug": "muse-code",
@@ -21950,8 +21647,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -22012,8 +21709,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -22074,8 +21771,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -22136,8 +21833,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -22198,8 +21895,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -22260,8 +21957,8 @@
         "color": "#f32e02"
       },
       "agentCreator": {
-        "name": "Mistral",
-        "color": "#f32e02"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Mistral Vibe",
       "agentSlug": "mistral-vibe",
@@ -22322,8 +22019,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -22384,8 +22081,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -22508,8 +22205,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -22570,8 +22267,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -22632,8 +22329,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -22694,8 +22391,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -22756,8 +22453,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -22818,8 +22515,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -22942,8 +22639,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -23004,8 +22701,8 @@
         "color": "#00F5E7"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -23061,8 +22758,8 @@
         "color": "#ff7018"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -23118,8 +22815,8 @@
         "color": "#0089f4"
       },
       "agentCreator": {
-        "name": "Meta",
-        "color": "#0089f4"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Muse Code",
       "agentSlug": "muse-code",
@@ -23180,8 +22877,8 @@
         "color": "#34A853"
       },
       "agentCreator": {
-        "name": "Google",
-        "color": "#34A853"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Antigravity CLI",
       "agentSlug": "antigravity-cli",
@@ -23366,8 +23063,8 @@
         "color": "#34A853"
       },
       "agentCreator": {
-        "name": "Google",
-        "color": "#34A853"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Antigravity CLI",
       "agentSlug": "antigravity-cli",
@@ -23416,68 +23113,6 @@
       ]
     },
     {
-      "id": "7814cb87040ea234c69eca79cd85486d",
-      "slug": "antigravity-cli",
-      "name": "Antigravity CLI - Gemini 4 Carbon (High)",
-      "shortName": "Antigravity CLI - Gemini 4 Carbon (high)",
-      "codingAgentIndex": 55.465927826653605,
-      "intelligenceIndex": 55.465927826653605,
-      "cost": 7.126967178108669,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "agentCreator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "agentName": "Antigravity CLI",
-      "agentSlug": "antigravity-cli",
-      "modelName": "Gemini 4 Carbon (High)",
-      "isReasoning": true,
-      "isOpenWeights": false,
-      "isDefault": true,
-      "isRouter": false,
-      "isUnavailable": false,
-      "benchmarkCount": 3,
-      "family": {
-        "slug": "Antigravity CLI:gemini-4-carbon",
-        "name": "Antigravity CLI - Gemini 4 Carbon"
-      },
-      "effort": {
-        "slug": "high",
-        "label": "high",
-        "level": 40
-      },
-      "timeSec": 2015.47,
-      "agentStats": {
-        "steps": 186.2,
-        "totalTokens": 15431287,
-        "cacheHitRate": 94.81
-      },
-      "costPercentiles": {
-        "p05": 1.7346,
-        "p25": 3.4183,
-        "p50": 5.2811,
-        "p75": 8.8545,
-        "p95": 16.7971
-      },
-      "evalScores": [
-        {
-          "name": "FrontierCode 2.0",
-          "score": 38.04
-        },
-        {
-          "name": "SWE-Atlas-QnA",
-          "score": 63.71
-        },
-        {
-          "name": "Terminal-Bench v4",
-          "score": 64.65
-        }
-      ]
-    },
-    {
       "id": "37d7db5622db33bcc5c6824d564246e7",
       "slug": "claude-code",
       "name": "Claude Code - Claude Fable 5.2 (High, Default Fallback)",
@@ -23490,8 +23125,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -23552,8 +23187,8 @@
         "color": "#0089f4"
       },
       "agentCreator": {
-        "name": "Meta",
-        "color": "#0089f4"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Muse Code",
       "agentSlug": "muse-code",
@@ -23614,8 +23249,8 @@
         "color": "#1f1f1f"
       },
       "agentCreator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Codex",
       "agentSlug": "codex",
@@ -23672,7 +23307,7 @@
       "intelligenceIndex": 58.403088954056706,
       "cost": 8.75258496053315,
       "creator": {
-        "name": "Anthropic + OpenAI",
+        "name": " + ",
         "color": "#64748b"
       },
       "agentCreator": {
@@ -23717,6 +23352,68 @@
       ]
     },
     {
+      "id": "7814cb87040ea234c69eca79cd85486d",
+      "slug": "antigravity-cli",
+      "name": "Antigravity CLI - Gemini 4 Carbon (High)",
+      "shortName": "Antigravity CLI - Gemini 4 Carbon (high)",
+      "codingAgentIndex": 55.465927826653605,
+      "intelligenceIndex": 55.465927826653605,
+      "cost": 9.750051288560172,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "agentCreator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "agentName": "Antigravity CLI",
+      "agentSlug": "antigravity-cli",
+      "modelName": "Gemini 4 Carbon (High)",
+      "isReasoning": true,
+      "isOpenWeights": false,
+      "isDefault": true,
+      "isRouter": false,
+      "isUnavailable": false,
+      "benchmarkCount": 3,
+      "family": {
+        "slug": "Antigravity CLI:gemini-4-carbon",
+        "name": "Antigravity CLI - Gemini 4 Carbon"
+      },
+      "effort": {
+        "slug": "high",
+        "label": "high",
+        "level": 40
+      },
+      "timeSec": 2015.47,
+      "agentStats": {
+        "steps": 186.2,
+        "totalTokens": 15431287,
+        "cacheHitRate": 94.81
+      },
+      "costPercentiles": {
+        "p05": 2.4691,
+        "p25": 4.7161,
+        "p50": 7.3298,
+        "p75": 11.8779,
+        "p95": 22.5602
+      },
+      "evalScores": [
+        {
+          "name": "FrontierCode 2.0",
+          "score": 38.04
+        },
+        {
+          "name": "SWE-Atlas-QnA",
+          "score": 63.71
+        },
+        {
+          "name": "Terminal-Bench v4",
+          "score": 64.65
+        }
+      ]
+    },
+    {
       "id": "4d278d53a18fbdcb5138d11466ea0b1b",
       "slug": "claude-code",
       "name": "Claude Code - Claude Sonnet 5.5 (Max, Default Fallback)",
@@ -23729,8 +23426,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -23791,8 +23488,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -23853,8 +23550,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",
@@ -24039,8 +23736,8 @@
         "color": "#cc785c"
       },
       "agentCreator": {
-        "name": "Anthropic",
-        "color": "#cc785c"
+        "name": "Other",
+        "color": "#777777"
       },
       "agentName": "Claude Code",
       "agentSlug": "claude-code",

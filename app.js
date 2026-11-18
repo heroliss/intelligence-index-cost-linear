@@ -16,11 +16,12 @@ import {
   subscriptionVerdict,
   VALUE_WEIGHT,
   MIN_SCORE,
+  MAX_COST_PRESETS,
   VALUE_PRESETS,
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261118-14';
+} from './chart-math.mjs?v=20261118-16';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -193,6 +194,8 @@ function parseHash() {
 const initialRoute = parseHash();
 let snapshot, activeKey = initialRoute.chart;
 const states = new Map();
+let crossTabIndex = new Map();
+let lastModelCompareIds = null;
 let state, nodes = [], frame, pendingFrame = 0, hovered = null, suppressClick = false;
 let drag = null, pinch = null;
 const activePointers = new Map();
@@ -461,6 +464,7 @@ function makeState(key, routeParams = null) {
     subSortDirection: 'desc',
     valueWeight: VALUE_WEIGHT.default,
     minScore: MIN_SCORE.default,
+    maxCost: 0,
     monthlyTasks: defaultTasks,
     subFee: MONTHLY_USAGE.defaultFee,
     routerOpen: false,
@@ -495,6 +499,10 @@ function applyRouteParams(target, params) {
   const min = Number(params.get('min'));
   if (params.has('min') && Number.isFinite(min) && min >= MIN_SCORE.min && min <= target.maxFloor) {
     target.minScore = Math.round(min);
+  }
+  const maxc = Number(params.get('maxc'));
+  if (params.has('maxc') && Number.isFinite(maxc) && maxc > 0 && MAX_COST_PRESETS.includes(maxc)) {
+    target.maxCost = maxc;
   }
   const fee = Number(params.get('fee'));
   if (params.has('fee') && Number.isFinite(fee) && fee >= MONTHLY_USAGE.minFee && fee <= MONTHLY_USAGE.maxFee) {
@@ -541,6 +549,7 @@ function syncUrlHash() {
   if (state.mode === 'compare' && state.radarMode === 'domain') params.set('radar', 'domain');
   if (state.valueWeight !== VALUE_WEIGHT.default) params.set('w', state.valueWeight.toFixed(1));
   if (state.minScore > 0) params.set('min', String(state.minScore));
+  if (state.maxCost > 0) params.set('maxc', String(state.maxCost));
   if (state.subFee !== MONTHLY_USAGE.defaultFee) params.set('fee', String(state.subFee));
   if (state.monthlyTasks !== state.defaultTasks) params.set('tasks', String(state.monthlyTasks));
   if (state.company) params.set('focus', state.company);
@@ -651,13 +660,13 @@ function filteredRows() {
 function computeRankings(rows = licenseFilteredRows(state.rows)) {
   const defaultPool = licenseFilteredRows(state.rows);
   const useCache = rows === defaultPool;
-  const cacheKey = `${state.license}|${state.extraFilter}|${state.valueWeight}|${state.minScore}`;
+  const cacheKey = `${state.license}|${state.extraFilter}|${state.valueWeight}|${state.minScore}|${state.maxCost}`;
   if (useCache && state._rankCache?.key === cacheKey) return state._rankCache.val;
-  const ranked = sortRows(rows, 'valuePerDollar', 'desc', state.valueWeight, state.minScore);
+  const ranked = sortRows(rows, 'valuePerDollar', 'desc', state.valueWeight, state.minScore, state.maxCost);
   const rankMap = new Map();
   let qualifiedCount = 0, champion = null, championValue = null;
   for (const row of ranked) {
-    const val = valuePerDollar(row, state.valueWeight, state.minScore);
+    const val = valuePerDollar(row, state.valueWeight, state.minScore, state.maxCost);
     if (val !== null) {
       qualifiedCount++;
       rankMap.set(row.id, {rank: qualifiedCount, value: val});
@@ -862,6 +871,8 @@ function syncStaticText() {
     document.createTextNode(t('键盘：', 'Keys: ')),
     html('kbd', '1–5'),
     document.createTextNode(t(' 切视图 · ', ' views · ')),
+    html('kbd', 'Alt+1–5'),
+    document.createTextNode(t(' 切榜单 · ', ' tabs · ')),
     html('kbd', '/'),
     document.createTextNode(t(' 搜索 · ', ' search · ')),
     html('kbd', '[ ]'),
@@ -890,6 +901,7 @@ function syncStaticText() {
 
   $('#weightLabel').textContent = t('智能权重 α', 'Weight α');
   $('#minScoreLabel').textContent = t('最低门槛', 'Min score');
+  $('#maxCostLabel').textContent = t('预算上限', 'Max $/task');
   $('#resetValueInline').textContent = t('重置参数', 'Reset');
 
   $('#pinnedBadge').textContent = t('已锁定节点', 'Pinned');
@@ -944,6 +956,8 @@ function syncStaticText() {
 
   $('#compareSelectSr').textContent = t('搜索并添加条目到多维对比', 'Search and add entries to comparison');
   $('#compareSearchInput').placeholder = t('搜索模型或厂商（点击多选）…', 'Search models or creators (click to toggle)…');
+  $('#compareSyncBtn').textContent = t('同步跨榜选型', 'Sync selection');
+  $('#compareSyncBtn').title = t('将上一榜单自选的对比模型一键同步到当前榜单', 'Sync custom model selection from previous benchmark tab');
   $('#compareAutoBtn').textContent = t('推荐 4 项', 'Top 4');
   $('#compareAutoBtn').title = t('自动挑选榜首、高性价比与开源代表共 4 项', 'Auto-pick SOTA, best-value & top open-weights (4)');
   $('#compareFrontierBtn').textContent = t(`前沿全览 (${MAX_COMPARE})`, `Frontier (${MAX_COMPARE})`);
@@ -1060,6 +1074,7 @@ function chooseChart(key, {changeHash = true, routeParams = null} = {}) {
     const selected = tab.dataset.chart === key;
     tab.setAttribute('aria-selected', String(selected));
     tab.tabIndex = selected ? 0 : -1;
+    if (!selected && document.activeElement === tab) tab.blur();
   }
   $('#chart-panel').setAttribute('aria-labelledby', `tab-${key}`);
   $('#chartTitle').textContent = t(BENCHMARKS[key].zhTitle, BENCHMARKS[key].enTitle);
@@ -1385,7 +1400,7 @@ function syncControls() {
   $('#comparePanel').hidden = state.mode !== 'compare';
   host.hidden = state.mode !== 'chart';
   $('#curvePanel').hidden = state.mode !== 'curve';
-  $('#valueSettings').hidden = !(state.mode === 'table' || state.mode === 'curve' || (state.mode === 'chart' && state.isoCurve && !isTimeAxis));
+  $('#valueSettings').hidden = !(state.mode === 'table' || state.mode === 'curve' || (state.mode === 'chart' && (state.isoCurve || state.minScore > 0 || state.maxCost > 0) && !isTimeAxis));
   $('#subSettings').hidden = !(state.mode === 'sub' || (state.mode === 'chart' && state.subLine && !isTimeAxis));
   $('#interactionHelp').hidden = state.mode !== 'chart';
   $('#viewControls').hidden = state.mode !== 'chart';
@@ -1402,7 +1417,7 @@ function syncControls() {
   $('#curveScaleToggle').setAttribute('aria-pressed', String(state.curveLogY));
   $('#curveScaleToggle').textContent = state.curveLogY ? t('对数纵轴 ✓', 'Log Y ✓') : t('对数纵轴', 'Log Y');
 
-  const hasFocus = !!(state.company || state.license !== 'all' || state.yLens || state.extraFilter || state.search || state.frontierOnly || state.minScore > 0);
+  const hasFocus = !!(state.company || state.license !== 'all' || state.yLens || state.extraFilter || state.search || state.frontierOnly || state.minScore > 0 || state.maxCost > 0);
   $('#clearFilters').hidden = false;
   $('#clearFilters').style.visibility = hasFocus ? 'visible' : 'hidden';
   $('#clearFilters').disabled = !hasFocus;
@@ -1416,7 +1431,7 @@ function syncPanelControls() {
   $('#controlsToggle').hidden = emptyDesktopPanel;
   $('#controlPanel').hidden = !controlsOpen || emptyDesktopPanel;
   const activeFilters = state && state.mode !== 'curve' && state.mode !== 'compare'
-    ? Number(!!state.company) + Number(state.license !== 'all') + Number(!!state.yLens) + Number(!!state.extraFilter) + Number(!!state.search) + Number(state.frontierOnly) + Number(state.minScore > 0)
+    ? Number(!!state.company) + Number(state.license !== 'all') + Number(!!state.yLens) + Number(!!state.extraFilter) + Number(!!state.search) + Number(state.frontierOnly) + Number(state.minScore > 0) + Number(state.maxCost > 0)
     : 0;
   $('#controlsToggle').setAttribute('aria-expanded', String(controlsOpen));
   $('#controlsToggle').textContent = controlsOpen
@@ -1486,9 +1501,9 @@ function syncSettingsReset() {
 }
 
 function syncValueControls() {
-  const weight = state.valueWeight, minScore = state.minScore;
+  const weight = state.valueWeight, minScore = state.minScore, maxCost = state.maxCost;
   const linear = weight === 1, pureCost = weight === 0;
-  const restored = weight === VALUE_WEIGHT.default && minScore === MIN_SCORE.default;
+  const restored = weight === VALUE_WEIGHT.default && minScore === MIN_SCORE.default && maxCost === 0;
 
   const slider = $('#valueWeight');
   slider.min = VALUE_WEIGHT.min;
@@ -1508,6 +1523,16 @@ function syncValueControls() {
   floorInput.value = minScore;
   $('#minScoreValue').textContent = minScore > 0 ? `≥ ${minScore}` : t('不限', 'Any');
 
+  const maxCostSel = $('#maxCostSelect');
+  const mcFrag = document.createDocumentFragment();
+  for (const cap of MAX_COST_PRESETS) {
+    const opt = html('option', cap === 0 ? t('不限', 'Any') : `≤ $${cap}`);
+    opt.value = String(cap);
+    mcFrag.append(opt);
+  }
+  maxCostSel.replaceChildren(mcFrag);
+  maxCostSel.value = String(maxCost);
+
   for (const btn of document.querySelectorAll('#presetGroup button')) {
     btn.setAttribute('aria-pressed', String(Math.abs(Number(btn.dataset.preset) - weight) < 0.05));
   }
@@ -1516,7 +1541,7 @@ function syncValueControls() {
   $('#resetValueWeight').disabled = restored;
   $('#resetValueWeight').textContent = restored
     ? t('已是默认设置', 'At defaults')
-    : t('恢复默认 (α=3, 无门槛)', 'Reset (α=3, no min)');
+    : t('恢复默认 (α=3, 无限制)', 'Reset (α=3, no limits)');
 
   const formulaEl = $('#valueFormula');
   if (pureCost) {
@@ -1553,7 +1578,7 @@ function syncValueControls() {
       `当前参数榜首：${champion.name}（指数 ${format(champion.intelligenceIndex, 2)} · ${money(champion.cost)} · 性价比 ${valueLabel(championValue)}）`,
       `Current #1 leader: ${champion.name} (Index ${format(champion.intelligenceIndex, 2)} · ${money(champion.cost)} · Value ${valueLabel(championValue)})`
     )
-    : t('当前最低门槛过高，暂无达标条目', 'No entries meet the current minimum score threshold');
+    : t('当前门槛或预算限制过严，暂无达标条目', 'No entries meet the current score floor or budget cap');
 
   $('#valueHint').textContent = t(
     '说明：该曲线结合多步达标率幂次与 IRT 高分失误率压缩，反映主观质量偏好而非官方实测收益；仅限同一榜单、同一参数内横向比较。',
@@ -1740,6 +1765,8 @@ function buildPlot() {
   const quadrantBorder = node('path', {class: 'quadrant-border'});
   const floorRect = node('rect', {class: 'floor-rect'});
   const floorGuide = node('line', {class: 'floor-guide'});
+  const budgetRect = node('rect', {class: 'budget-rect'});
+  const budgetGuide = node('line', {class: 'budget-guide'});
   const paretoPath = node('path', {class: 'pareto'});
   const paretoHistoryPath = node('path', {class: 'pareto-history'});
   const effortLayer = node('g', {class: 'effort-layer'});
@@ -1757,7 +1784,7 @@ function buildPlot() {
     node('g', {class: 'active-layer'})
   );
 
-  plot.append(quadrant, quadrantBorder, floorRect, floorGuide, paretoPath, paretoHistoryPath, effortLayer, isoPath, subGuide, connectors, points, labels);
+  plot.append(quadrant, quadrantBorder, floorRect, floorGuide, budgetRect, budgetGuide, paretoPath, paretoHistoryPath, effortLayer, isoPath, subGuide, connectors, points, labels);
   svg.replaceChildren(defs, node('g', {class: 'grid'}), plot, node('g', {class: 'axis'}), emphasis);
 
   const axisName = currentAxisLabel();
@@ -1844,6 +1871,7 @@ function toggleCompareId(id, {evictOldest = true} = {}) {
     }
     state.compareIds.push(id);
   }
+  if (activeKey !== 'coding-agents') lastModelCompareIds = [...state.compareIds];
   syncUrlHash();
   if (state.mode === 'table') renderTable();
   else if (state.mode === 'sub') renderSubTable();
@@ -1867,12 +1895,12 @@ function makeCompareRowBtn(row) {
 function renderTable(rows = filteredRows()) {
   const pool = licenseFilteredRows(state.rows);
   const fragment = document.createDocumentFragment();
-  const scaleSource = state.frontierOnly || state.search.trim() || state.minScore > 0 ? rows : pool;
+  const scaleSource = state.frontierOnly || state.search.trim() || state.minScore > 0 || state.maxCost > 0 ? rows : pool;
   const fallbackRows = scaleSource.length ? scaleSource : state.rows;
   const maxCost = Math.max(...fallbackRows.map(row => row.cost), 0.001);
   const maxTime = Math.max(...fallbackRows.map(row => row.timeSec || 0), 1);
   const comparableValues = fallbackRows
-    .map(row => valuePerDollar(row, state.valueWeight, state.minScore))
+    .map(row => valuePerDollar(row, state.valueWeight, state.minScore, state.maxCost))
     .filter(value => value !== null);
   const maxValue = comparableValues.length ? Math.max(...comparableValues) : null;
   const valueRange = maxValue === null ? t('暂无', 'None') : `0–${valueLabel(maxValue)}`;
@@ -1885,11 +1913,12 @@ function renderTable(rows = filteredRows()) {
   const frontierIds = new Set(paretoFrontier(pool).map(row => row.id));
   const {champion} = computeRankings(pool);
 
-  for (const row of sortRows(rows, state.sortKey, state.sortDirection, state.valueWeight, state.minScore)) {
+  for (const row of sortRows(rows, state.sortKey, state.sortDirection, state.valueWeight, state.minScore, state.maxCost)) {
     const tr = html('tr');
     tr.dataset.id = row.id;
     const belowFloor = state.minScore > 0 && row.intelligenceIndex < state.minScore;
-    tr.classList.toggle('is-muted', (!!state.company && row.creator?.name !== state.company) || belowFloor);
+    const overBudget = state.maxCost > 0 && row.cost > state.maxCost;
+    tr.classList.toggle('is-muted', (!!state.company && row.creator?.name !== state.company) || belowFloor || overBudget);
     tr.classList.toggle('is-selected', state.selected === row.id);
 
     const nameTd = html('td', null, 'table-name');
@@ -1935,15 +1964,21 @@ function renderTable(rows = filteredRows()) {
     const timeCell = comparisonCell(formatTime(row.timeSec), hasTime ? row.timeSec / maxTime : 0, displayColor);
     if (!hasTime) timeCell.querySelector('.comparison-track').hidden = true;
 
-    const value = valuePerDollar(row, state.valueWeight, state.minScore);
-    const displayVal = belowFloor ? t('未达门槛', '< Min') : valueLabel(value);
+    const value = valuePerDollar(row, state.valueWeight, state.minScore, state.maxCost);
+    const displayVal = belowFloor
+      ? t('未达门槛', '< Min')
+      : overBudget
+        ? t('超出预算', '> Cap')
+        : valueLabel(value);
     const valueCell = comparisonCell(displayVal, value !== null && maxValue > 0 ? value / maxValue : 0, displayColor);
     valueCell.className = 'value-column';
     valueCell.title = belowFloor
       ? t(`低于最低门槛 ${state.minScore} 分`, `Below minimum score ${state.minScore}`)
-      : value === null
-        ? t('无有效性价比', 'No comparable value')
-        : `${t('原始精度性价比', 'Exact weighted value')}: ${value.toPrecision(8)}`;
+      : overBudget
+        ? t(`高于预算上限 $${state.maxCost}/任务`, `Exceeds budget cap $${state.maxCost}/task`)
+        : value === null
+          ? t('无有效性价比', 'No comparable value')
+          : `${t('原始精度性价比', 'Exact weighted value')}: ${value.toPrecision(8)}`;
     if (value === null) valueCell.querySelector('.comparison-track').hidden = true;
 
     tr.append(
@@ -2114,7 +2149,7 @@ function renderSubTable(rows = filteredRows()) {
 
 function exportCsv() {
   if (!state) return;
-  const rows = sortRows(filteredRows(), state.sortKey, state.sortDirection, state.valueWeight, state.minScore);
+  const rows = sortRows(filteredRows(), state.sortKey, state.sortDirection, state.valueWeight, state.minScore, state.maxCost);
   const escapeCsv = val => {
     if (val === null || val === undefined) return '';
     const str = String(val);
@@ -2139,7 +2174,7 @@ function exportCsv() {
   ];
   const lines = [headers.join(',')];
   for (const row of rows) {
-    const val = valuePerDollar(row, state.valueWeight, state.minScore);
+    const val = valuePerDollar(row, state.valueWeight, state.minScore, state.maxCost);
     const be = breakEvenTasks(row.cost, state.subFee);
     const verdict = subscriptionVerdict(row.cost, state.monthlyTasks, state.subFee);
     const verdictCode = !verdict
@@ -2213,8 +2248,9 @@ function exportChartPng(kind = state?.mode) {
     .axis .quadrant-note { fill: ${v('--muted')}; font-size: 11px; opacity: 0.78; }
     .quadrant { fill: ${v('--quadrant')}; }
     .quadrant-border { stroke: ${v('--quadrant-edge')}; stroke-width: 1; stroke-dasharray: 4 4; fill: none; }
-    .floor-rect { fill: ${v('--floor-shade')}; }
-    .floor-guide { stroke: ${v('--floor-line')}; stroke-width: 1.2; stroke-dasharray: 5 4; }
+    .floor-rect, .budget-rect { fill: ${v('--floor-shade')}; }
+    .floor-guide, .budget-guide { stroke: ${v('--floor-line')}; stroke-width: 1.2; stroke-dasharray: 5 4; }
+    .budget-guide-label { fill: ${v('--floor-line')}; font-size: 11px; font-weight: 600; }
     .pareto { stroke: ${v('--frontier')}; stroke-width: 1.6; stroke-dasharray: 2 5; fill: none; }
     .pareto-history { stroke: ${v('--accent')}; stroke-width: 2.3; fill: none; }
     .effort-line { fill: none; stroke-width: 1.6; stroke-dasharray: 4 3; opacity: 0.6; }
@@ -2848,6 +2884,10 @@ function renderCompare() {
     ? t(`已满 (${countStr})`, `Full (${countStr})`)
     : t(`+ 添加对比 (${countStr})`, `+ Add (${countStr})`);
   $('#compareClearBtn').disabled = selectedRows.length <= 1;
+  const syncCandidates = activeKey !== 'coding-agents' && Array.isArray(lastModelCompareIds)
+    ? lastModelCompareIds.filter(id => rowMap.has(id))
+    : [];
+  $('#compareSyncBtn').hidden = !(syncCandidates.length >= 1 && syncCandidates.join(',') !== state.compareIds.join(','));
   if (comparePickerOpen) renderComparePicker();
 
   // 2. Hero Centerpiece Capability Radar & Compact Score Strip
@@ -3562,13 +3602,35 @@ function renderCompare() {
     selectedRows.map(r => r.timeSec ?? null),
     true
   );
-  const vals = selectedRows.map(r => valuePerDollar(r, state.valueWeight, state.minScore));
+  const vals = selectedRows.map(r => valuePerDollar(r, state.valueWeight, state.minScore, state.maxCost));
   addRow(
-    t(`加权性价比 (α=${state.valueWeight.toFixed(1)})`, `Weighted Value (α=${state.valueWeight.toFixed(1)})`),
-    vals.map(v => valueLabel(v)),
+    t(
+      `加权性价比 (α=${state.valueWeight.toFixed(1)}${state.maxCost > 0 ? ', ≤$' + state.maxCost : ''})`,
+      `Weighted Value (α=${state.valueWeight.toFixed(1)}${state.maxCost > 0 ? ', ≤$' + state.maxCost : ''})`
+    ),
+    selectedRows.map((r, i) => state.minScore > 0 && r.intelligenceIndex < state.minScore
+      ? t('未达门槛', '< Min')
+      : state.maxCost > 0 && r.cost > state.maxCost
+        ? t('超出预算', '> Cap')
+        : valueLabel(vals[i])),
     vals,
     false
   );
+  if (activeKey !== 'coding-agents') {
+    addRow(
+      t('跨榜全站排名（综合 / 极限 / 审美 / 安全）', 'Cross-Tab Ranks (Intel / Hard / Taste / Cyber)'),
+      selectedRows.map(r => {
+        const info = crossTabIndex.get(r.id);
+        if (!info) return '—';
+        return [
+          info.models ? `${t('综', 'Int')} #${info.models.rank}` : null,
+          info.frontier ? `${t('极', 'Hard')} #${info.frontier.rank}` : null,
+          info['human-arena'] ? `${t('审', 'Taste')} #${info['human-arena'].rank}` : null,
+          info.cyber ? `${t('安', 'Cyb')} #${info.cyber.rank}` : null
+        ].filter(Boolean).join(' · ') || '—';
+      })
+    );
+  }
   addRow(
     t('开源属性 · 推理档位', 'License · Effort'),
     selectedRows.map(r => `${r.isOpenWeights ? t('开源权重', 'Open weights') : t('闭源专有', 'Proprietary')}${r.effort?.label ? ' · ' + r.effort.label : ''}`)
@@ -3840,6 +3902,7 @@ function drawCurve() {
     const util = capabilityUtility(row.intelligenceIndex, state.valueWeight) ?? 0;
     const cx = xx(row.intelligenceIndex), cy = mapY(util);
     const isChamp = champion && champion.id === row.id;
+    const disqualified = (state.minScore > 0 && row.intelligenceIndex < state.minScore) || (state.maxCost > 0 && row.cost > state.maxCost);
     const dot = node('circle', {
       class: 'curve-pareto-dot',
       cx,
@@ -3847,6 +3910,7 @@ function drawCurve() {
       r: isChamp ? 5.8 : 3.8,
       fill: color(row.creator?.color)
     });
+    if (disqualified) dot.style.opacity = '0.32';
     dot.append(node('title', {}, `${row.name} (${format(row.intelligenceIndex, 1)} · ${money(row.cost)})`));
     paretoLayer.append(dot);
     if (isChamp) {
@@ -3977,7 +4041,7 @@ function draw() {
     qWidth > 2 && qHeight > 2 ? `M${frame.left} ${qy}H${qx}V${frame.top}` : ''
   );
 
-  // Minimum score floor overlay
+  // Minimum score floor overlay & maximum cost ceiling overlay
   const floorRect = svg.querySelector('.floor-rect'), floorGuide = svg.querySelector('.floor-guide');
   if (state.minScore > 0) {
     const fy = Math.max(frame.top, Math.min(frame.bottom, y(state.minScore)));
@@ -3986,6 +4050,15 @@ function draw() {
     floorRect.style.display = floorGuide.style.display = '';
   } else {
     floorRect.style.display = floorGuide.style.display = 'none';
+  }
+  const budgetRect = svg.querySelector('.budget-rect'), budgetGuide = svg.querySelector('.budget-guide');
+  if (state.xMetric === 'cost' && state.maxCost > 0) {
+    const bx = Math.max(frame.left, Math.min(frame.right, x(state.maxCost)));
+    setAttrs(budgetRect, {x: bx, y: frame.top, width: Math.max(0, frame.right - bx), height: frame.height});
+    setAttrs(budgetGuide, {x1: bx, x2: bx, y1: frame.top, y2: frame.bottom});
+    budgetRect.style.display = budgetGuide.style.display = '';
+  } else {
+    budgetRect.style.display = budgetGuide.style.display = 'none';
   }
 
   // Active pool Pareto frontier (cost or time) + optional Historical Pareto evolution
@@ -4135,6 +4208,22 @@ function drawAxes(medianX, medianY) {
         )));
     }
   }
+  if (!isTime && state.maxCost > 0) {
+    const bx = x(state.maxCost);
+    if (bx > frame.left + 20 && bx < frame.right - 20) {
+      const alignRight = bx > frame.left + frame.width * 0.62;
+      const yOffset = state.subLine && state.monthlyTasks > 0 ? frame.top + 42 : frame.top + 27;
+      axis.append(node('text', {
+        class: 'budget-guide-label',
+        x: alignRight ? bx - 6 : bx + 6,
+        y: yOffset,
+        'text-anchor': alignRight ? 'end' : 'start'
+      }, t(
+        alignRight ? `← 预算内 (≤ $${state.maxCost})` : `超出预算 (> $${state.maxCost}) →`,
+        alignRight ? `← Within $${state.maxCost}` : `Over $${state.maxCost} cap →`
+      )));
+    }
+  }
 
   axis.append(node('path', {class: 'frame', d: `M${frame.left},${frame.top}V${frame.bottom}H${frame.right}`}));
   axis.append(node('text', {
@@ -4268,8 +4357,9 @@ function drawActive(champion) {
     const futureOut = isFutureHidden(item.row);
     const focused = !futureOut && !!state.company && item.row.creator?.name === state.company && !state.selected;
     const belowFloor = state.minScore > 0 && item.row.intelligenceIndex < state.minScore;
+    const overBudget = state.xMetric === 'cost' && state.maxCost > 0 && item.row.cost > state.maxCost;
     const emphasized = active || focused;
-    const muted = !active && (futureOut || belowFloor || (state.company && item.row.creator?.name !== state.company) || (state.selected && !selected));
+    const muted = !active && (futureOut || belowFloor || overBudget || (state.company && item.row.creator?.name !== state.company) || (state.selected && !selected));
 
     setAttrs(item.p, {
       r: active ? 6 : focused ? 5 : 4.4,
@@ -4397,8 +4487,51 @@ function renderPinned() {
   $('#pinnedScore').textContent = format(row.intelligenceIndex, 2);
   $('#pinnedCost').textContent = money(row.cost);
   $('#pinnedTime').textContent = formatTime(row.timeSec);
-  $('#pinnedValue').textContent = rankInfo ? valueLabel(rankInfo.value) : t('未达门槛', 'Below min');
+  $('#pinnedValue').textContent = rankInfo
+    ? valueLabel(rankInfo.value)
+    : state.minScore > 0 && row.intelligenceIndex < state.minScore
+      ? t('未达门槛', 'Below min')
+      : state.maxCost > 0 && row.cost > state.maxCost
+        ? t('超出预算', 'Over cap')
+        : '—';
   $('#pinnedSubNote').textContent = tierBreakevenText(row.cost);
+
+  const crossEl = $('#pinnedCrossTabs');
+  const crossInfo = activeKey !== 'coding-agents' ? crossTabIndex.get(row.id) : null;
+  const tabDefs = [
+    ['models', '综合', 'Intel'],
+    ['frontier', '极限', 'Hard'],
+    ['human-arena', '审美', 'Taste'],
+    ['cyber', '安全', 'Cyber']
+  ];
+  const crossEntries = crossInfo
+    ? tabDefs.filter(([k]) => crossInfo[k] && !$(`#tab-${k}`)?.hidden)
+    : [];
+  if (crossEntries.length >= 2) {
+    const cFrag = document.createDocumentFragment();
+    for (const [tabKey, zhLbl, enLbl] of crossEntries) {
+      const entry = crossInfo[tabKey];
+      const pill = html('button', `${t(zhLbl, enLbl)} ${format(entry.score, 1)} (#${entry.rank})`, 'cross-tab-pill');
+      pill.type = 'button';
+      if (tabKey === activeKey) {
+        pill.classList.add('is-current');
+        pill.title = t('当前所在榜单', 'Current benchmark tab');
+      } else {
+        pill.title = t(`跳转到「${BENCHMARKS[tabKey].zhTitle}」并定位该模型`, `Switch to ${BENCHMARKS[tabKey].enTitle} & locate model`);
+        pill.addEventListener('click', () => {
+          chooseChart(tabKey);
+          const targetRow = state?.rows.find(r => r.id === row.id);
+          if (targetRow) locateRowInChart(targetRow);
+        });
+      }
+      cFrag.append(pill);
+    }
+    crossEl.replaceChildren(cFrag);
+    crossEl.hidden = false;
+  } else {
+    crossEl.hidden = true;
+    crossEl.replaceChildren();
+  }
   const provEl = $('#pinnedProviders');
   if (row.providers?.length >= 2) {
     const cheapest = row.providers[0];
@@ -4462,7 +4595,11 @@ function showHover(item, event) {
   const axisLabel = currentAxisLabel();
   const valText = rankInfo
     ? `${valueLabel(rankInfo.value)} (#${rankInfo.rank}/${qualifiedCount})`
-    : t('未达最低门槛', 'Below min score');
+    : state.minScore > 0 && row.intelligenceIndex < state.minScore
+      ? t('未达最低门槛', 'Below min score')
+      : state.maxCost > 0 && row.cost > state.maxCost
+        ? t('超出预算上限', 'Exceeds budget cap')
+        : '—';
   const kvRows = [
     [axisLabel, format(row.intelligenceIndex, 2)],
     [t('每任务成本', 'Cost / task'), money(row.cost)]
@@ -4570,6 +4707,7 @@ $('#pinGoCompareBtn').addEventListener('click', () => {
     if (state.compareIds.length >= MAX_COMPARE) state.compareIds.shift();
     state.compareIds.push(state.selected);
   }
+  if (activeKey !== 'coding-agents') lastModelCompareIds = [...state.compareIds];
   showView('compare');
 });
 
@@ -4592,8 +4730,8 @@ function updateSummary() {
     );
   } else if (state.mode === 'table') {
     $('#viewStatus').textContent = t(
-      `共 ${rows.length} 项 · α = ${state.valueWeight.toFixed(1)}${state.minScore > 0 ? ' · 门槛 ≥' + state.minScore : ''}`,
-      `${rows.length} entries · α = ${state.valueWeight.toFixed(1)}${state.minScore > 0 ? ' · Min ≥' + state.minScore : ''}`
+      `共 ${rows.length} 项 · α = ${state.valueWeight.toFixed(1)}${state.minScore > 0 ? ' · 门槛 ≥' + state.minScore : ''}${state.maxCost > 0 ? ' · 预算 ≤$' + state.maxCost : ''}`,
+      `${rows.length} entries · α = ${state.valueWeight.toFixed(1)}${state.minScore > 0 ? ' · Min ≥' + state.minScore : ''}${state.maxCost > 0 ? ' · Cap ≤$' + state.maxCost : ''}`
     );
   } else if (state.mode === 'sub') {
     $('#viewStatus').textContent = t(
@@ -4608,8 +4746,8 @@ function updateSummary() {
     );
   } else {
     $('#viewStatus').textContent = t(
-      `当前视野 ${shown}/${rows.length} 项 · 成本区间 ${money(v.x)}–${money(v.x + v.width)}`,
-      `Showing ${shown}/${rows.length} · Cost ${money(v.x)}–${money(v.x + v.width)}`
+      `当前视野 ${shown}/${rows.length} 项 · 成本区间 ${money(v.x)}–${money(v.x + v.width)}${state.maxCost > 0 ? ' · 预算 ≤$' + state.maxCost : ''}`,
+      `Showing ${shown}/${rows.length} · Cost ${money(v.x)}–${money(v.x + v.width)}${state.maxCost > 0 ? ' · Cap ≤$' + state.maxCost : ''}`
     );
   }
 
@@ -4913,10 +5051,22 @@ $('#compareAddBtn').addEventListener('click', () => {
 });
 $('#compareSearchInput').addEventListener('input', renderComparePicker);
 
+$('#compareSyncBtn').addEventListener('click', () => {
+  if (!state || activeKey === 'coding-agents' || !Array.isArray(lastModelCompareIds)) return;
+  const valid = new Set(state.rows.map(r => r.id));
+  const synced = lastModelCompareIds.filter(id => valid.has(id)).slice(0, MAX_COMPARE);
+  if (!synced.length) return;
+  state.compareIds = synced;
+  syncUrlHash();
+  renderCompare();
+  updateSummary();
+});
+
 $('#compareAutoBtn').addEventListener('click', () => {
   if (!state) return;
   const pool = licenseFilteredRows(state.rows);
   state.compareIds = defaultCompareIds(pool.length >= 2 ? pool : state.rows);
+  if (activeKey !== 'coding-agents') lastModelCompareIds = [...state.compareIds];
   syncUrlHash();
   renderCompare();
   updateSummary();
@@ -4926,6 +5076,7 @@ $('#compareFrontierBtn').addEventListener('click', () => {
   if (!state) return;
   const pool = licenseFilteredRows(state.rows);
   state.compareIds = frontierCompareIds(pool.length >= 2 ? pool : state.rows, MAX_COMPARE);
+  if (activeKey !== 'coding-agents') lastModelCompareIds = [...state.compareIds];
   syncUrlHash();
   renderCompare();
   updateSummary();
@@ -4937,6 +5088,7 @@ $('#compareClearBtn').addEventListener('click', () => {
     ? state.radarPinnedId
     : state.compareIds[0];
   state.compareIds = [keepId];
+  if (activeKey !== 'coding-agents') lastModelCompareIds = [...state.compareIds];
   syncUrlHash();
   renderCompare();
   updateSummary();
@@ -4952,6 +5104,7 @@ $('#clearFilters').addEventListener('click', () => {
   state.search = '';
   state.frontierOnly = false;
   state.minScore = 0;
+  state.maxCost = 0;
   state.selected = null;
   syncControls();
   syncUrlHash();
@@ -5043,8 +5196,16 @@ function setMinScore(value) {
   scheduleValueRefresh();
 }
 
+function setMaxCost(value) {
+  if (!state || !Number.isFinite(value) || value < 0) return;
+  state.maxCost = MAX_COST_PRESETS.includes(value) ? value : 0;
+  syncControls();
+  scheduleValueRefresh();
+}
+
 $('#valueWeight').addEventListener('input', () => setValueWeight(Number($('#valueWeight').value)));
 $('#minScore').addEventListener('input', () => setMinScore(Number($('#minScore').value)));
+$('#maxCostSelect').addEventListener('change', () => setMaxCost(Number($('#maxCostSelect').value)));
 
 function commitValueWeight() {
   const value = $('#valueWeightValue').valueAsNumber;
@@ -5067,6 +5228,7 @@ function resetValuePreferences() {
   if (!state) return;
   state.valueWeight = VALUE_WEIGHT.default;
   state.minScore = MIN_SCORE.default;
+  state.maxCost = 0;
   syncControls();
   scheduleValueRefresh();
 }
@@ -5396,6 +5558,21 @@ document.addEventListener('keydown', event => {
     }
   }
   if (event.key !== 'Escape') return;
+  if (event.target === $('#search') && state?.search) {
+    event.preventDefault();
+    state.search = '';
+    $('#search').value = '';
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    return;
+  }
+  if (event.target === $('#compareSearchInput') && $('#compareSearchInput').value) {
+    event.preventDefault();
+    $('#compareSearchInput').value = '';
+    renderComparePicker();
+    return;
+  }
   if (changelogOpen) {
     setChangelogOpen(false);
     $('#updateBadge').focus({preventScroll: true});
@@ -5482,6 +5659,29 @@ function hydrateDerivedModels(snap) {
   return snap;
 }
 
+function buildCrossTabLookup(snap) {
+  const map = new Map();
+  if (!snap) return map;
+  for (const [tabKey, snapKey] of [
+    ['models', 'models'],
+    ['frontier', 'frontierModels'],
+    ['human-arena', 'humanArenaModels'],
+    ['cyber', 'cyberModels']
+  ]) {
+    const arr = Array.isArray(snap[snapKey]) ? validRows(snap[snapKey]) : [];
+    const sorted = sortRows(arr, 'intelligenceIndex', 'desc');
+    sorted.forEach((row, i) => {
+      let rec = map.get(row.id);
+      if (!rec) {
+        rec = {};
+        map.set(row.id, rec);
+      }
+      rec[tabKey] = {rank: i + 1, total: sorted.length, score: row.intelligenceIndex};
+    });
+  }
+  return map;
+}
+
 async function loadData() {
   loadController?.abort();
   loadController = new AbortController();
@@ -5494,6 +5694,7 @@ async function loadData() {
     const next = hydrateDerivedModels(await response.json());
     if (generation !== loadGeneration) return;
     snapshot = next;
+    crossTabIndex = buildCrossTabLookup(snapshot);
     states.clear();
     const hasFrontier = Array.isArray(snapshot.frontierModels) && snapshot.frontierModels.length > 0;
     const hasHumanArena = Array.isArray(snapshot.humanArenaModels) && snapshot.humanArenaModels.length > 0;

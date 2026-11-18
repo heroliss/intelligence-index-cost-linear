@@ -26,8 +26,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261118-14">
-  <script type="module" src="app.js?v=20261118-14"></script>
+  <link rel="stylesheet" href="styles.css?v=20261118-16">
+  <script type="module" src="app.js?v=20261118-16"></script>
 </head>
 <body>
 <main class="app">
@@ -200,6 +200,8 @@
           <label for="minScore" id="minScoreLabel" class="control-label">最低门槛</label>
           <input id="minScore" type="range" min="0" max="60" step="1" value="0">
           <output id="minScoreValue" class="floor-output">不限</output>
+          <label for="maxCostSelect" id="maxCostLabel" class="control-label budget-cap-label">预算上限</label>
+          <select id="maxCostSelect"><option value="0">不限</option></select>
         </div>
 
         <button id="resetValueInline" type="button" hidden>重置参数</button>
@@ -287,6 +289,7 @@
           <div><span id="pinValueLabel">性价比</span><b id="pinnedValue"></b></div>
         </div>
         <p id="pinnedSubNote" class="pin-sub-note"></p>
+        <div id="pinnedCrossTabs" class="pin-cross-tabs" hidden></div>
         <p id="pinnedProviders" class="pin-sub-note" hidden></p>
         <small id="pinnedOutside" class="pin-outside" hidden>该节点当前在可视范围外</small>
       </aside>
@@ -368,6 +371,7 @@
               <div id="comparePickerList" class="compare-picker-list" role="group" aria-label="可选对比条目"></div>
             </div>
           </div>
+          <button id="compareSyncBtn" type="button" hidden>同步跨榜</button>
           <button id="compareAutoBtn" type="button">推荐 4 项</button>
           <button id="compareFrontierBtn" type="button">前沿全览</button>
           <button id="compareClearBtn" type="button">精简</button>
