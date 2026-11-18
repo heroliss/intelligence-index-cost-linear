@@ -161,6 +161,8 @@ test('validRows accepts a true zero cost and rejects malformed or duplicated row
 test('all shipped datasets pass validation and fit inside their full-data view', async () => {
   const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
   const suites = [['models', snapshot.models], ['codingAgents', snapshot.codingAgents]];
+  if (snapshot.frontierModels?.length) suites.push(['frontierModels', snapshot.frontierModels]);
+  if (snapshot.humanArenaModels?.length) suites.push(['humanArenaModels', snapshot.humanArenaModels]);
   if (snapshot.cyberModels?.length) suites.push(['cyberModels', snapshot.cyberModels]);
   for (const [name, rows] of suites) {
     validRows(rows);
@@ -267,7 +269,13 @@ test('expanded curve range traverses all capability tiers and preserves Pareto m
 
   // Structural invariants that hold across any valid live snapshot update
   const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
-  const liveSuites = [snapshot.models, snapshot.codingAgents, ...(snapshot.cyberModels?.length ? [snapshot.cyberModels] : [])];
+  const liveSuites = [
+    snapshot.models,
+    snapshot.codingAgents,
+    ...(snapshot.frontierModels?.length ? [snapshot.frontierModels] : []),
+    ...(snapshot.humanArenaModels?.length ? [snapshot.humanArenaModels] : []),
+    ...(snapshot.cyberModels?.length ? [snapshot.cyberModels] : [])
+  ];
   for (const rows of liveSuites) {
     const frontierIds = new Set(paretoFrontier(rows).map(r => r.id));
     const minCost = Math.min(...rows.map(r => r.cost));

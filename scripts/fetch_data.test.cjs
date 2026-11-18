@@ -7,7 +7,7 @@ const crypto = require('node:crypto');
 const zlib = require('node:zlib');
 const http = require('node:http');
 const { spawn } = require('node:child_process');
-const { getBuffer, readCodingRows, readManifests, simplifyModel, simplifyCyberModel, simplifyChangelog, expectedCodingComponents, simplifyCodingAgent, fetchModels, validateRows, writeSnapshot } = require('./fetch_data.cjs');
+const { getBuffer, readCodingRows, readManifests, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildHumanArenaModels, fetchHumanArenas, expectedCodingComponents, simplifyCodingAgent, fetchModels, validateRows, writeSnapshot } = require('./fetch_data.cjs');
 
 const model = { id: 'model-1', slug: 'example-model', name: 'Example Model', intelligenceIndex: 50, intelligenceIndexCostPerTask: { total: 0.5 } };
 const agent = { id: 'agent-1', displayLabel: 'Example Agent - Model', indexScore: 0.53, mean: { costUsd: 7.6 }, indexComponentCount: 3, modelCreators: [{ name: 'Example', color: '#123456' }] };
@@ -206,4 +206,87 @@ test('unchanged snapshots keep their original timestamp and a failed refresh pre
     await fs.rm(out, { force: true });
     await fs.rmdir(directory);
   }
+});
+
+test('buildFrontierModels strips incomplete rows and computes unsaturated hard index and rank shift', () => {
+  const m1 = simplifyModel({
+    id: 'm1', slug: 'legacy-inflated', name: 'Legacy Inflated', intelligenceIndex: 62,
+    intelligenceIndexCostPerTask: { total: 5 },
+    gdpPdfAllPass: 0.2, frontierCode20: 0.35, terminalBench40: 0.5, critptAgenticHard: 0.55, automationBenchPartialScore: 0.6, hleDiamond: 0.5
+  });
+  const m2 = simplifyModel({
+    id: 'm2', slug: 'frontier-specialist', name: 'Frontier Specialist', intelligenceIndex: 60,
+    intelligenceIndexCostPerTask: { total: 3 },
+    gdpPdfAllPass: 0.32, frontierCode20: 0.48, terminalBench40: 0.65, critptAgenticHard: 0.74, automationBenchPartialScore: 0.76, hleDiamond: 0.77,
+    harveyLab: 0.185
+  });
+  const mIncomplete = simplifyModel({
+    id: 'm3', slug: 'incomplete', name: 'Incomplete', intelligenceIndex: 55,
+    intelligenceIndexCostPerTask: { total: 1 },
+    gdpPdfAllPass: 0.2, frontierCode20: 0.3
+  });
+  const frontier = buildFrontierModels([m1, m2, mIncomplete]);
+  assert.equal(frontier.length, 2);
+  const spec = frontier.find(r => r.id === 'm2');
+  const leg = frontier.find(r => r.id === 'm1');
+  assert.equal(spec.frontierIndex, 62);
+  assert.equal(spec.aaRank, 2);
+  assert.equal(spec.frontierRank, 1);
+  assert.equal(spec.rankDelta, 1);
+  assert.equal(spec.frontierScores.harveyLaw, 18.5);
+  assert.equal(leg.rankDelta, -1);
+});
+
+test('buildHumanArenaModels matches effort-aware variants without cloning onto low-effort siblings and falls back safely', async () => {
+  assert.equal(eloToWinPct(1360, 1360, 220), 50);
+  assert.ok(eloToWinPct(1526, 1360, 220) > 80);
+
+  const museMax = simplifyModel({
+    id: 'mw-max', slug: 'muse-wonder', name: 'Muse Wonder (Max)', shortName: 'Muse Wonder (max)',
+    intelligenceIndex: 43.6, intelligenceIndexCostPerTask: { total: 6.95 },
+    release: { slug: 'muse-wonder', name: 'Muse Wonder' },
+    effort: { slug: 'max', label: 'Max', level: 4 },
+    gdpval: 1770.3, briefcaseElo: 1720.0
+  });
+  const museLow = simplifyModel({
+    id: 'mw-low', slug: 'muse-wonder-low', name: 'Muse Wonder (Low)', shortName: 'Muse Wonder (low)',
+    intelligenceIndex: 35.0, intelligenceIndexCostPerTask: { total: 1.2 },
+    release: { slug: 'muse-wonder', name: 'Muse Wonder' },
+    effort: { slug: 'low', label: 'Low', level: 1 }
+  });
+  const qwenMax = simplifyModel({
+    id: 'qw-max', slug: 'qwen3-8-max', name: 'Qwen3.8 Max (0902)', shortName: 'Qwen3.8 Max (0902)',
+    intelligenceIndex: 52.0, intelligenceIndexCostPerTask: { total: 2.1 },
+    release: { slug: 'qwen3-8-max', name: 'Qwen3.8 Max' },
+    effort: { slug: 'xhigh', label: 'xHigh', level: 3 }
+  });
+
+  const arenaRows = buildHumanArenaModels([museMax, museLow, qwenMax], {
+    chatRows: [
+      { category: 'overall', model_name: 'Muse Wonder Full (Max)', rating: 1510.9, vote_count: 8400 },
+      { category: 'overall', model_name: 'Qwen3.8-Max (0902)', rating: 1465.2, vote_count: 12000 }
+    ],
+    webdevRows: [
+      { category: 'overall', model_name: 'Muse Wonder (Max)', rating: 1723.9, vote_count: 2064 }
+    ],
+    docRows: [],
+    designByCat: {
+      website: [{ modelId: 'muse-wonder-1.0', elo: 1375, winRate: 63.8, battles: 4960, avgCostUsd: 0.4279 }]
+    }
+  });
+
+  // museLow must NOT inherit un-suffixed muse-wonder-1.0 or (Max) ratings!
+  assert.deepEqual(arenaRows.map(r => r.id).sort(), ['mw-max', 'qw-max']);
+  const mw = arenaRows.find(r => r.id === 'mw-max');
+  assert.equal(mw.arenaRaw.chatElo, 1510.9);
+  assert.equal(mw.arenaRaw.designWebElo, 1375);
+  assert.equal(mw.arenaRaw.designWebWinRate, 63.8);
+  assert.equal(mw.arenaRaw.gdpvalElo, 1770.3);
+  assert.ok(mw.humanIndex > 70 && mw.humanIndex < 90);
+
+  // Fault tolerance: network error falls back cleanly to previous snapshot
+  const fallbackPrev = { humanArenaModels: arenaRows, lmArenaPublishDate: '2026-11-11' };
+  const degraded = await fetchHumanArenas([museMax], fallbackPrev, async () => { throw new Error('offline'); });
+  assert.equal(degraded.humanArenaModels.length, 2);
+  assert.equal(degraded.lmArenaPublishDate, '2026-11-11');
 });

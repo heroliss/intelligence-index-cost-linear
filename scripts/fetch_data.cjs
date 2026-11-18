@@ -213,6 +213,29 @@ function simplifyModel(model, capMap = null, hostMap = null) {
   };
   if (Object.values(subscores).some(v => v !== null)) entry.subscores = subscores;
 
+  const frontierScores = {
+    gdpPdf: pctOrNull(model.gdpPdfAllPass),
+    frontierCode: pctOrNull(model.frontierCode20 ?? model.frontierCode),
+    terminal4: pctOrNull(model.terminalBench40),
+    critptAgent: pctOrNull(model.critptAgenticHard),
+    automation: pctOrNull(model.automationBenchPartialScore),
+    hleDiamond: pctOrNull(model.hleDiamond ?? model.hle),
+    science: pctOrNull(model.terminalBenchScience ?? model.scicode),
+    critptClosed: pctOrNull(model.critpt),
+    harveyLaw: pctOrNull(model.harveyLab),
+    analystAgent: pctOrNull(model.analystAgent),
+    healthPro: pctOrNull(model.healthbenchProfessional ?? model.healthbench)
+  };
+  if (Object.values(frontierScores).some(v => v !== null)) entry.frontierScores = frontierScores;
+
+  const expertElo = {
+    gdpval: numOrNull(model.gdpval, 1),
+    briefcase: typeof model.briefcaseElo === 'number' && Number.isFinite(model.briefcaseElo) && model.briefcaseElo > 0
+      ? numOrNull(model.briefcaseElo, 1)
+      : null
+  };
+  if (expertElo.gdpval !== null || expertElo.briefcase !== null) entry.expertElo = expertElo;
+
   const caps = capMap?.get(model.id) ?? model.capabilities;
   if (caps && typeof caps === 'object') {
     const domainScores = {
@@ -384,9 +407,361 @@ function simplifyCyberModel(item, byId = null, bySlug = null) {
   if (base?.effort) entry.effort = base.effort;
   if (base?.timeSec) entry.timeSec = base.timeSec;
   if (base?.subscores) entry.subscores = base.subscores;
+  if (base?.frontierScores) entry.frontierScores = base.frontierScores;
   if (base?.domainScores) entry.domainScores = base.domainScores;
+  if (base?.expertElo) entry.expertElo = base.expertElo;
   if (base?.providers) entry.providers = base.providers;
   return entry;
+}
+
+const FRONTIER_CORE_KEYS = ['gdpPdf', 'frontierCode', 'terminal4', 'critptAgent', 'automation', 'hleDiamond'];
+const EFFORT_SLUGS = new Set(['minimal', 'low', 'medium', 'high', 'xhigh', 'max']);
+const HIGH_EFFORTS = new Set(['high', 'xhigh', 'max', 'default']);
+const LMARENA_DATASET_BASE = 'https://datasets-server.huggingface.co/rows?dataset=lmarena-ai%2Fleaderboard-dataset';
+const DESIGN_ARENA_API_BASE = 'https://www.designarena.ai/api/leaderboard?arenaType=models&category=';
+const DESIGN_ARENA_CATEGORIES = ['website', 'uicomponent', 'dataviz', 'gamedev', 'svg'];
+
+function buildFrontierModels(models) {
+  if (!Array.isArray(models)) return [];
+  const candidates = [];
+  for (const m of models) {
+    const fs = m?.frontierScores;
+    if (!fs || typeof fs !== 'object') continue;
+    const vals = FRONTIER_CORE_KEYS.map(k => fs[k]).filter(v => typeof v === 'number' && Number.isFinite(v));
+    if (vals.length < 4) continue;
+    const frontierIndex = Number((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2));
+    const aaIndex = Number(m.intelligenceIndex.toFixed(2));
+    candidates.push({
+      ...m,
+      frontierIndex,
+      intelligenceIndex: frontierIndex,
+      aaIndex,
+      indexDelta: Number((frontierIndex - aaIndex).toFixed(2)),
+      coreCount: vals.length
+    });
+  }
+  const byAa = [...candidates].sort((a, b) => b.aaIndex - a.aaIndex || a.cost - b.cost || a.id.localeCompare(b.id));
+  const byFrontier = [...candidates].sort((a, b) => b.frontierIndex - a.frontierIndex || a.cost - b.cost || a.id.localeCompare(b.id));
+  const aaRankMap = new Map(byAa.map((m, idx) => [m.id, idx + 1]));
+  const frontierRankMap = new Map(byFrontier.map((m, idx) => [m.id, idx + 1]));
+  for (const row of candidates) {
+    row.aaRank = aaRankMap.get(row.id);
+    row.frontierRank = frontierRankMap.get(row.id);
+    row.rankDelta = row.aaRank - row.frontierRank;
+  }
+  if (candidates.length) validateRows(candidates, 1, 'frontier-model');
+  return candidates;
+}
+
+function eloToWinPct(elo, baseline = 1380, scale = 400) {
+  if (typeof elo !== 'number' || !Number.isFinite(elo) || !Number.isFinite(scale) || scale <= 0) return null;
+  const pct = 100 / (1 + 10 ** ((baseline - elo) / scale));
+  return Number(pct.toFixed(2));
+}
+
+function canonArenaSlug(raw) {
+  if (!raw || typeof raw !== 'string') return '';
+  return raw
+    .toLowerCase()
+    .trim()
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(/\b202\d(\d{4})\b/g, '$1')
+    .replace(/\b(?:full|preview|latest|chat)\b/g, ' ')
+    .replace(/-1\.0\b/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function stripDateStamp(slug) {
+  return slug.replace(/-\d{4}$/, '');
+}
+
+function parseExternalIdentity(rawName, knownFamilies) {
+  if (!rawName || typeof rawName !== 'string') return { base: '', effort: null };
+  let effort = null;
+  const parenMatches = [...rawName.matchAll(/\(([^)]+)\)/g)];
+  for (const m of parenMatches) {
+    const tokens = m[1].toLowerCase().split(/[\s,/+-]+/).filter(Boolean);
+    const hit = tokens.find(t => EFFORT_SLUGS.has(t));
+    if (hit) { effort = hit; break; }
+  }
+  let base = canonArenaSlug(rawName);
+  if (!effort && !knownFamilies.has(base) && !knownFamilies.has(stripDateStamp(base))) {
+    const parts = base.split('-');
+    const tail = parts[parts.length - 1];
+    if (parts.length >= 2 && EFFORT_SLUGS.has(tail)) {
+      const prefix = parts.slice(0, -1).join('-');
+      if (knownFamilies.has(prefix) || knownFamilies.has(stripDateStamp(prefix)) || !prefix.startsWith('qwen')) {
+        base = prefix;
+        effort = tail;
+      }
+    }
+  }
+  return { base, effort };
+}
+
+function buildModelArenaIndex(models) {
+  const familyBuckets = new Map();
+  const knownFamilies = new Set();
+  for (const m of models) {
+    const famRaw = m.family?.slug || m.slug || m.shortName || m.name;
+    const famSlug = canonArenaSlug(famRaw);
+    if (!famSlug) continue;
+    knownFamilies.add(famSlug);
+    const stripped = stripDateStamp(famSlug);
+    if (stripped) knownFamilies.add(stripped);
+    if (!familyBuckets.has(famSlug)) familyBuckets.set(famSlug, []);
+    familyBuckets.get(famSlug).push(m);
+  }
+
+  const aliasToFamily = new Map();
+  const primaryByFamily = new Map();
+  const byFamilyEffort = new Map();
+
+  for (const [famSlug, list] of familyBuckets.entries()) {
+    aliasToFamily.set(famSlug, famSlug);
+    const stripped = stripDateStamp(famSlug);
+    if (stripped && !aliasToFamily.has(stripped)) aliasToFamily.set(stripped, famSlug);
+
+    // Primary model of a family: exact slug === family.slug, otherwise highest intelligenceIndex that isn't low/minimal
+    const exactPrimary = list.find(m => m.slug && m.family?.slug && m.slug === m.family.slug);
+    const nonLow = list.filter(m => !m.effort?.slug || !['low', 'minimal'].includes(m.effort.slug));
+    const pool = nonLow.length ? nonLow : list;
+    const best = exactPrimary || [...pool].sort((a, b) => b.intelligenceIndex - a.intelligenceIndex)[0];
+    if (best) primaryByFamily.set(famSlug, best);
+
+    for (const m of list) {
+      const eff = m.effort?.slug || 'default';
+      const key = `${famSlug}::${eff}`;
+      if (!byFamilyEffort.has(key) || m.intelligenceIndex > byFamilyEffort.get(key).intelligenceIndex) {
+        byFamilyEffort.set(key, m);
+      }
+      const nameAlias = canonArenaSlug(m.shortName || m.name);
+      if (nameAlias && !aliasToFamily.has(nameAlias) && !EFFORT_SLUGS.has(nameAlias.split('-').pop())) {
+        aliasToFamily.set(nameAlias, famSlug);
+      }
+    }
+  }
+
+  function resolve(rawName) {
+    const { base, effort } = parseExternalIdentity(rawName, knownFamilies);
+    if (!base) return null;
+    const famSlug = aliasToFamily.get(base) || aliasToFamily.get(stripDateStamp(base));
+    if (!famSlug) return null;
+    if (effort) {
+      const exact = byFamilyEffort.get(`${famSlug}::${effort}`);
+      if (exact) return exact;
+      const list = familyBuckets.get(famSlug) || [];
+      if (list.length === 1 && HIGH_EFFORTS.has(effort)) {
+        const only = list[0];
+        const onlyEff = only.effort?.slug || 'default';
+        if (HIGH_EFFORTS.has(onlyEff)) return only;
+      }
+      return null;
+    }
+    return primaryByFamily.get(famSlug) || null;
+  }
+
+  return { resolve, knownFamilies, primaryByFamily };
+}
+
+function buildHumanArenaModels(models, external = {}) {
+  if (!Array.isArray(models) || !models.length) return [];
+  const { resolve } = buildModelArenaIndex(models);
+  const accById = new Map();
+
+  function ensureAcc(model) {
+    if (!accById.has(model.id)) {
+      accById.set(model.id, {
+        model,
+        chat: null,
+        doc: null,
+        webdev: null,
+        design: {},
+        sources: new Set()
+      });
+    }
+    return accById.get(model.id);
+  }
+
+  for (const [slot, rows] of [['chat', external.chatRows], ['doc', external.docRows], ['webdev', external.webdevRows]]) {
+    if (!Array.isArray(rows)) continue;
+    for (const r of rows) {
+      if (!r || (r.category && r.category !== 'overall')) continue;
+      const rating = Number(r.rating);
+      if (!Number.isFinite(rating)) continue;
+      const matched = resolve(r.model_name || r.modelName || r.name);
+      if (!matched) continue;
+      const acc = ensureAcc(matched);
+      if (!acc[slot] || rating > acc[slot].elo) {
+        acc[slot] = {
+          elo: Number(rating.toFixed(1)),
+          votes: Number.isFinite(Number(r.vote_count ?? r.votes)) ? Math.round(Number(r.vote_count ?? r.votes)) : null
+        };
+      }
+      acc.sources.add('lmarena');
+    }
+  }
+
+  const designByCat = external.designByCat && typeof external.designByCat === 'object' ? external.designByCat : {};
+  for (const cat of DESIGN_ARENA_CATEGORIES) {
+    const items = designByCat[cat];
+    if (!Array.isArray(items)) continue;
+    for (const item of items) {
+      const elo = Number(item?.elo);
+      if (!Number.isFinite(elo)) continue;
+      const matched = resolve(item.modelId || item.name || item.displayName);
+      if (!matched) continue;
+      const acc = ensureAcc(matched);
+      const prev = acc.design[cat];
+      if (!prev || elo > prev.elo) {
+        acc.design[cat] = {
+          elo: Math.round(elo),
+          winRate: typeof item.winRate === 'number' && Number.isFinite(item.winRate) ? Number(item.winRate.toFixed(1)) : eloToWinPct(elo, 1280),
+          battles: Number.isFinite(Number(item.battles)) ? Math.round(Number(item.battles)) : null,
+          avgCostUsd: typeof item.avgCostUsd === 'number' && item.avgCostUsd > 0 ? Number(item.avgCostUsd.toFixed(4)) : null
+        };
+      }
+      acc.sources.add('design-arena');
+    }
+  }
+
+  const out = [];
+  for (const { model, chat, doc, webdev, design, sources } of accById.values()) {
+    if (!sources.size) continue;
+    const gdpvalElo = model.expertElo?.gdpval ?? null;
+    const briefcaseElo = model.expertElo?.briefcase ?? null;
+    if (gdpvalElo !== null || briefcaseElo !== null) sources.add('aa-expert');
+
+    const chatVibe = chat ? eloToWinPct(chat.elo, 1360, 220) : null;
+    const docCraft = doc ? eloToWinPct(doc.elo, 1360, 200) : null;
+    const webdevScore = webdev ? eloToWinPct(webdev.elo, 1490, 440) : null;
+    const designScore = cat => (design[cat] ? eloToWinPct(design[cat].elo, 1235, 190) : null);
+    const designWeb = designScore('website');
+    const uiParts = ['uicomponent', 'dataviz', 'gamedev', 'svg']
+      .map(designScore)
+      .filter(v => typeof v === 'number' && Number.isFinite(v));
+    const designUi = uiParts.length ? Number((uiParts.reduce((a, b) => a + b, 0) / uiParts.length).toFixed(2)) : null;
+
+    const expParts = [
+      gdpvalElo !== null ? eloToWinPct(gdpvalElo, 1480, 480) : null,
+      briefcaseElo !== null ? eloToWinPct(briefcaseElo, 1480, 480) : null
+    ].filter(v => v !== null);
+    const deliverable = expParts.length ? Number((expParts.reduce((a, b) => a + b, 0) / expParts.length).toFixed(2)) : null;
+
+    const humanScores = {
+      chatVibe,
+      docCraft,
+      webdev: webdevScore,
+      designWeb,
+      designUi,
+      deliverable
+    };
+    const compositeParts = Object.values(humanScores).filter(v => typeof v === 'number' && Number.isFinite(v));
+    if (!compositeParts.length) continue;
+    const rawSum = compositeParts.reduce((a, b) => a + b, 0);
+    const humanIndex = Number(((rawSum + 0.75 * 55) / (compositeParts.length + 0.75)).toFixed(2));
+    const aaIndex = Number(model.intelligenceIndex.toFixed(2));
+
+    const designSub = {
+      website: designScore('website'),
+      uicomponent: designScore('uicomponent'),
+      dataviz: designScore('dataviz'),
+      gamedev: designScore('gamedev'),
+      svg: designScore('svg')
+    };
+
+    const arenaRaw = {
+      chatElo: chat?.elo ?? null,
+      chatVotes: chat?.votes ?? null,
+      docElo: doc?.elo ?? null,
+      docVotes: doc?.votes ?? null,
+      webdevElo: webdev?.elo ?? null,
+      webdevVotes: webdev?.votes ?? null,
+      designWebElo: design.website?.elo ?? null,
+      designWebWinRate: design.website?.winRate ?? null,
+      designWebBattles: design.website?.battles ?? null,
+      designAvgCostUsd: design.website?.avgCostUsd ?? design.uicomponent?.avgCostUsd ?? null,
+      designUiElo: design.uicomponent?.elo ?? null,
+      designUiWinRate: design.uicomponent?.winRate ?? null,
+      designDatavizElo: design.dataviz?.elo ?? null,
+      designGameElo: design.gamedev?.elo ?? null,
+      designSvgElo: design.svg?.elo ?? null,
+      gdpvalElo,
+      briefcaseElo,
+      dimensionCount: compositeParts.length,
+      sources: [...sources]
+    };
+
+    out.push({
+      ...model,
+      humanIndex,
+      intelligenceIndex: humanIndex,
+      aaIndex,
+      indexDelta: Number((humanIndex - aaIndex).toFixed(2)),
+      humanScores,
+      designSub,
+      arenaRaw
+    });
+  }
+
+  if (out.length) validateRows(out, 1, 'human-arena-model');
+  return out;
+}
+
+async function fetchLmArenaSlice(config, offset, get) {
+  const url = `${LMARENA_DATASET_BASE}&config=${encodeURIComponent(config)}&split=latest&offset=${offset}&length=100`;
+  const payload = JSON.parse((await get(url)).toString('utf8'));
+  if (!Array.isArray(payload?.rows)) return { rows: [], date: null };
+  const rows = payload.rows.map(item => item?.row).filter(r => r && r.category === 'overall');
+  const date = rows[0]?.leaderboard_publish_date || null;
+  return { rows, date };
+}
+
+async function fetchDesignArenaCategory(category, get) {
+  const url = `${DESIGN_ARENA_API_BASE}${encodeURIComponent(category)}`;
+  const payload = JSON.parse((await get(url)).toString('utf8'));
+  return Array.isArray(payload?.data) ? payload.data : [];
+}
+
+async function fetchHumanArenas(models, previous, get = getBuffer) {
+  try {
+    const [chat0, chat1, web0, doc0, ...designResults] = await Promise.allSettled([
+      fetchLmArenaSlice('text_style_control', 0, get),
+      fetchLmArenaSlice('text_style_control', 100, get),
+      fetchLmArenaSlice('webdev', 0, get),
+      fetchLmArenaSlice('document_style_control', 0, get),
+      ...DESIGN_ARENA_CATEGORIES.map(cat => fetchDesignArenaCategory(cat, get))
+    ]);
+
+    const chatRows = [
+      ...(chat0.status === 'fulfilled' ? chat0.value.rows : []),
+      ...(chat1.status === 'fulfilled' ? chat1.value.rows : [])
+    ];
+    const webdevRows = web0.status === 'fulfilled' ? web0.value.rows : [];
+    const docRows = doc0.status === 'fulfilled' ? doc0.value.rows : [];
+    const designByCat = {};
+    DESIGN_ARENA_CATEGORIES.forEach((cat, idx) => {
+      const res = designResults[idx];
+      if (res.status === 'fulfilled') designByCat[cat] = res.value;
+    });
+
+    const humanArenaModels = buildHumanArenaModels(models, { chatRows, webdevRows, docRows, designByCat });
+    if (humanArenaModels.length >= 10) {
+      validateRows(humanArenaModels, 10, 'human-arena-model');
+      return {
+        humanArenaModels,
+        lmArenaPublishDate: (chat0.status === 'fulfilled' && chat0.value.date) || (web0.status === 'fulfilled' && web0.value.date) || null
+      };
+    }
+    console.warn(`External human arena matched ${humanArenaModels.length} models (< 10); falling back to previous snapshot if available.`);
+  } catch (error) {
+    console.warn(`External human arena refresh degraded gracefully: ${error.message}`);
+  }
+  return {
+    humanArenaModels: Array.isArray(previous?.humanArenaModels) ? previous.humanArenaModels : [],
+    lmArenaPublishDate: previous?.lmArenaPublishDate || null
+  };
 }
 
 function simplifyChangelog(items) {
@@ -513,6 +888,11 @@ async function main() {
   const codingPage = codingPageBuffer.toString('utf8');
   const rawCodingRows = readCodingRows(codingPage);
   const { models, cyberModels, changelog, manifestPath, hostsManifestPath } = await fetchModels(modelPage.toString('utf8'), sourceUrl, previous, getBuffer, { includeHosts: true });
+  const frontierModels = buildFrontierModels(models);
+  if (frontierModels.length >= 30) validateRows(frontierModels, 30, 'frontier-model');
+  const { humanArenaModels, lmArenaPublishDate } = process.env.DISABLE_EXTERNAL_ARENAS === '1'
+    ? { humanArenaModels: previous?.humanArenaModels || [], lmArenaPublishDate: previous?.lmArenaPublishDate || null }
+    : await fetchHumanArenas(models, previous, getBuffer);
   const openFamilyNames = new Set(
     models.filter(m => m.isOpenWeights && m.family?.name).map(m => m.family.name.toLowerCase())
   );
@@ -526,6 +906,18 @@ async function main() {
     ...(changelog.length ? { changelog } : {}),
     modelIndexVersion: modelPage.toString('utf8').match(/Artificial Analysis Intelligence Index v([\d.]+)/)?.[1] || null,
     modelCount: models.length, models,
+    ...(frontierModels.length ? {
+      frontierMethodologyUrl: 'https://artificialanalysis.ai/methodology/intelligence-benchmarking',
+      frontierModelCount: frontierModels.length,
+      frontierModels
+    } : {}),
+    ...(humanArenaModels.length ? {
+      lmArenaSourceUrl: 'https://lmarena.ai/leaderboard',
+      designArenaSourceUrl: 'https://www.designarena.ai/leaderboard',
+      ...(lmArenaPublishDate ? { lmArenaPublishDate } : {}),
+      humanArenaCount: humanArenaModels.length,
+      humanArenaModels
+    } : {}),
     codingAgentSourceUrl,
     codingAgentMethodologyUrl: 'https://artificialanalysis.ai/methodology/coding-agents-benchmarking',
     codingAgentIndexVersion: codingPage.match(/Coding Agent Index v([\d.]+)/)?.[1] || null,
@@ -539,11 +931,11 @@ async function main() {
     } : {})
   };
   const changed = await writeSnapshot(outPath, output, previous);
-  console.log(`${changed ? 'Wrote' : 'Unchanged:'} ${models.length} models, ${codingAgents.length} coding agents, ${cyberModels.length} cyber models; checked ${new Date().toISOString()}`);
+  console.log(`${changed ? 'Wrote' : 'Unchanged:'} ${models.length} models, ${frontierModels.length} frontier, ${humanArenaModels.length} human-arena, ${codingAgents.length} coding agents, ${cyberModels.length} cyber models; checked ${new Date().toISOString()}`);
   if (process.env.GITHUB_OUTPUT) await fs.appendFile(process.env.GITHUB_OUTPUT, `changed=${changed}\n`);
   if (process.env.GITHUB_STEP_SUMMARY) await fs.appendFile(process.env.GITHUB_STEP_SUMMARY,
-    `### Artificial Analysis data check\n- Checked: ${new Date().toISOString()}\n- Models: ${models.length}\n- Coding-agent variants: ${codingAgents.length}\n- Cyber-index models: ${cyberModels.length}\n- Excluded coding-agent rows without comparable score/cost: ${output.codingAgentExcludedCount}\n- Snapshot changed: ${changed}\n`);
+    `### Multi-source benchmark data check\n- Checked: ${new Date().toISOString()}\n- Models: ${models.length}\n- Frontier hard-eval models: ${frontierModels.length}\n- Human & Aesthetic Arena models: ${humanArenaModels.length}\n- Coding-agent variants: ${codingAgents.length}\n- Cyber-index models: ${cyberModels.length}\n- Excluded coding-agent rows without comparable score/cost: ${output.codingAgentExcludedCount}\n- Snapshot changed: ${changed}\n`);
 }
 
-module.exports = { getBuffer, readFlightRecords, readManifests, decryptPayload, simplifyModel, simplifyCyberModel, simplifyChangelog, resolveFlightReference, readCodingRows, expectedCodingComponents, simplifyCodingAgent, validateRows, fetchModels, writeSnapshot };
+module.exports = { getBuffer, readFlightRecords, readManifests, decryptPayload, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildHumanArenaModels, fetchHumanArenas, resolveFlightReference, readCodingRows, expectedCodingComponents, simplifyCodingAgent, validateRows, fetchModels, writeSnapshot };
 if (require.main === module) main().catch(error => { console.error(error.stack || error); process.exitCode = 1; });

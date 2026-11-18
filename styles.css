@@ -248,23 +248,31 @@ kbd {
 .tabs {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: var(--surface);
   padding: 3px;
   border-radius: 8px;
   border: 1px solid var(--border);
   flex-shrink: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .tabs button {
   background: transparent;
   border: 1px solid transparent;
   border-radius: 6px;
-  padding: 5px 14px;
+  padding: 5px 11px;
   min-height: 30px;
   font-size: 12.5px;
   font-weight: 500;
   color: var(--muted);
+  flex-shrink: 0;
 }
 
 .tabs button:hover {
@@ -2641,7 +2649,7 @@ tbody tr.is-selected .locate-btn,
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1260px) {
   .brand-sub,
   .subtitle-note,
   .key-note {
@@ -2672,10 +2680,13 @@ tbody tr.is-selected .locate-btn,
 
   .tabs {
     width: 100%;
+    gap: 3px;
   }
 
   .tabs button {
-    flex: 1;
+    flex: 1 0 auto;
+    padding: 4px 7px;
+    font-size: 12px;
     min-height: 36px;
   }
 

@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>智能水平与任务成本 · Intelligence vs. Cost</title>
-  <meta name="description" content="用线性美元与实测耗时坐标比较 Artificial Analysis 模型、编程智能体与网络安全基准，支持 IRT 性价比、大尺寸多维雷达对比、历史演进与订阅回本测算。">
+  <meta name="description" content="用线性美元与实测耗时坐标比较综合智能、未饱和前沿极限、LMArena 与 Design Arena 真人盲测审美、编程智能体及网络安全基准，支持 IRT 性价比、大尺寸多维雷达对比、历史演进与订阅回本测算。">
   <meta property="og:type" content="website">
   <meta property="og:title" content="智能水平与任务成本 · Intelligence vs. Cost">
-  <meta property="og:description" content="线性美元成本与耗时基准分析器：IRT 胜率性价比、大尺寸多维能力雷达、多云 API 比价、历史演进与订阅回本测算。">
+  <meta property="og:description" content="五大维度线性美元成本基准分析器：综合智能、前沿极限抗饱和测试、LMArena & Design Arena 人类盲测与视觉审美、编程智能体、网络安全。">
   <meta name="twitter:card" content="summary">
   <meta name="color-scheme" content="dark light">
   <meta name="darkreader-lock">
@@ -26,8 +26,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261118-11">
-  <script type="module" src="app.js?v=20261118-11"></script>
+  <link rel="stylesheet" href="styles.css?v=20261118-12">
+  <script type="module" src="app.js?v=20261118-12"></script>
 </head>
 <body>
 <main class="app">
@@ -46,9 +46,11 @@
     </div>
 
     <nav class="tabs" role="tablist" aria-label="选择基准 / Choose benchmark">
-      <button id="tab-models" type="button" role="tab" aria-selected="true" aria-controls="chart-panel" data-chart="models">模型智能指数</button>
+      <button id="tab-models" type="button" role="tab" aria-selected="true" aria-controls="chart-panel" data-chart="models">综合智能</button>
+      <button id="tab-frontier" type="button" role="tab" aria-selected="false" aria-controls="chart-panel" tabindex="-1" data-chart="frontier">前沿极限</button>
+      <button id="tab-human-arena" type="button" role="tab" aria-selected="false" aria-controls="chart-panel" tabindex="-1" data-chart="human-arena">人类与审美</button>
       <button id="tab-coding-agents" type="button" role="tab" aria-selected="false" aria-controls="chart-panel" tabindex="-1" data-chart="coding-agents">编程智能体</button>
-      <button id="tab-cyber" type="button" role="tab" aria-selected="false" aria-controls="chart-panel" tabindex="-1" data-chart="cyber">网络安全指数</button>
+      <button id="tab-cyber" type="button" role="tab" aria-selected="false" aria-controls="chart-panel" tabindex="-1" data-chart="cyber">网络安全</button>
     </nav>
 
     <div class="top-actions">

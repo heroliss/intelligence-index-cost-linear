@@ -20,7 +20,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261118-11';
+} from './chart-math.mjs?v=20261118-12';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -29,11 +29,11 @@ const NS = 'http://www.w3.org/2000/svg';
 const BENCHMARKS = {
   models: {
     key: 'models',
-    zhTitle: '模型智能指数与每任务成本',
+    zhTitle: '综合智能指数与每任务成本',
     enTitle: 'Intelligence Index vs. Cost per Task',
     zhSub: 'Artificial Analysis Intelligence Index · 线性美元成本与耗时',
     enSub: 'Artificial Analysis Intelligence Index · Linear USD cost & latency',
-    zhAxis: '模型智能指数',
+    zhAxis: '综合智能指数',
     enAxis: 'Intelligence Index',
     zhUnit: '个模型',
     enUnit: 'models',
@@ -41,6 +41,38 @@ const BENCHMARKS = {
     enCostNote: 'Weighted average API cost per Intelligence Index task',
     source: 'https://artificialanalysis.ai/',
     defaultX: 4.5,
+    defaultTimeMin: 25
+  },
+  frontier: {
+    key: 'frontierModels',
+    zhTitle: '未饱和前沿极限基准与每任务成本',
+    enTitle: 'Unsaturated Frontier Hard Index vs. Cost per Task',
+    zhSub: '剔除 90%+ 已饱和旧题集 · 聚焦 GDP-PDF 全过 / FrontierCode 2.0 / Terminal 4.0 / CritPt / HLE 六大高区分度测试',
+    enSub: 'Strips 90%+ saturated legacy tests · 6 high-spread suites (GDP-PDF / FrontierCode / Terminal 4 / CritPt / Automation / HLE)',
+    zhAxis: '未饱和前沿极限指数',
+    enAxis: 'Frontier Hard Index',
+    zhUnit: '个前沿实测模型',
+    enUnit: 'frontier models',
+    zhCostNote: '横轴对齐标准化单任务 API 成本；专门拉开顶尖旗舰真实硬实力差距',
+    enCostNote: 'Standardized API cost per task; isolates unsaturated SOTA capability spread',
+    source: 'https://artificialanalysis.ai/methodology/intelligence-benchmarking',
+    defaultX: 5,
+    defaultTimeMin: 25
+  },
+  'human-arena': {
+    key: 'humanArenaModels',
+    zhTitle: '人类体感、视觉审美与真实交付指数 vs. 成本',
+    enTitle: 'Human Blind Preference, Aesthetic Taste & Deliverable Arena vs. Cost',
+    zhSub: '融合 LMArena 去水份盲测人味 + Design Arena 网页/UI 视觉审美 + GDPval/Briefcase 44 职业真实交付盲评',
+    enSub: 'LMArena style-controlled blind votes + Design Arena UI/web aesthetics + GDPval/Briefcase expert deliverables',
+    zhAxis: '人类审美与体感指数',
+    enAxis: 'Human & Aesthetic Index',
+    zhUnit: '个真人盲测模型',
+    enUnit: 'blind-tested models',
+    zhCostNote: '横轴为统一单任务 API 成本；悬停与剖析对比可查看各竞技场原始 Elo 与对决胜率',
+    enCostNote: 'Standardized API cost/task on X-axis; hover & Compare show raw Elo & win rates',
+    source: 'https://lmarena.ai/leaderboard',
+    defaultX: 8,
     defaultTimeMin: 25
   },
   'coding-agents': {
@@ -92,6 +124,8 @@ function compareColor(index) {
 
 const DEFAULT_SETTINGS = {
   models: {labels: true, smartLabels: true, labelSize: 9.5, labelDistance: 4},
+  frontier: {labels: true, smartLabels: true, labelSize: 9.5, labelDistance: 5},
+  'human-arena': {labels: true, smartLabels: true, labelSize: 10, labelDistance: 7},
   'coding-agents': {labels: true, smartLabels: true, labelSize: 10, labelDistance: 12},
   cyber: {labels: true, smartLabels: true, labelSize: 10, labelDistance: 8}
 };
@@ -105,7 +139,7 @@ function parseHash() {
   const ampIndex = raw.indexOf('&');
   const chartPart = ampIndex === -1 ? raw : raw.slice(0, ampIndex);
   const queryPart = ampIndex === -1 ? '' : raw.slice(ampIndex + 1);
-  const chart = ['coding-agents', 'cyber'].includes(chartPart) ? chartPart : 'models';
+  const chart = ['frontier', 'human-arena', 'coding-agents', 'cyber'].includes(chartPart) ? chartPart : 'models';
   return {chart, params: new URLSearchParams(queryPart)};
 }
 
@@ -463,6 +497,22 @@ function licenseFilteredRows(rows = state.rows) {
       out = out.filter(row => Array.isArray(row.modalities) && row.modalities.includes(mod));
     } else if (state.extraFilter === 'lic:permissive') {
       out = out.filter(row => row.isOpenWeights && row.openLicense === 'permissive');
+    } else if (state.extraFilter === 'delta:up') {
+      out = out.filter(row => (row.rankDelta ?? 0) >= 2);
+    } else if (state.extraFilter === 'track:law') {
+      out = out.filter(row => row.frontierScores?.harveyLaw != null);
+    } else if (state.extraFilter === 'track:analyst') {
+      out = out.filter(row => row.frontierScores?.analystAgent != null);
+    } else if (state.extraFilter === 'track:health') {
+      out = out.filter(row => row.frontierScores?.healthPro != null);
+    } else if (state.extraFilter === 'src:both') {
+      out = out.filter(row => row.arenaRaw?.sources?.includes('lmarena') && row.arenaRaw?.sources?.includes('design-arena'));
+    } else if (state.extraFilter === 'vibe:top') {
+      out = out.filter(row => (row.arenaRaw?.chatElo ?? 0) >= 1470);
+    } else if (state.extraFilter === 'design:top') {
+      out = out.filter(row => (row.arenaRaw?.designWebElo ?? 0) >= 1300);
+    } else if (state.extraFilter === 'deliv:top') {
+      out = out.filter(row => (row.arenaRaw?.gdpvalElo ?? 0) >= 1700);
     } else if (state.extraFilter === 'refusal:zero') {
       out = out.filter(row => (row.refusalRate ?? 0) === 0);
     } else if (state.extraFilter === 'refusal:guarded') {
@@ -661,9 +711,11 @@ function syncStaticText() {
   document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
   $('#appTitle').textContent = t('智能水平与任务成本', 'Intelligence vs. Cost');
   $('#appSubtitle').textContent = t('Intelligence vs. Cost · 线性成本基准', 'Linear-cost AI benchmark explorer');
-  $('#tab-models').textContent = t('模型智能指数', 'Intelligence Index');
+  $('#tab-models').textContent = t('综合智能', 'Intelligence');
+  $('#tab-frontier').textContent = t('前沿极限', 'Frontier Hard');
+  $('#tab-human-arena').textContent = t('人类与审美', 'Human & Taste');
   $('#tab-coding-agents').textContent = t('编程智能体', 'Coding Agents');
-  $('#tab-cyber').textContent = t('网络安全指数', 'Cyber Index');
+  $('#tab-cyber').textContent = t('网络安全', 'Cyber');
   $('#updateText').textContent = t('最新动态', 'Updates');
   if (changelogOpen) renderChangelog();
   if (!shareTimer) $('#shareBtn').textContent = t('分享', 'Share');
@@ -909,8 +961,9 @@ function stopHistoryPlay() {
 
 function chooseChart(key, {changeHash = true, routeParams = null} = {}) {
   if (!BENCHMARKS[key]) return;
-  if (key === 'cyber' && snapshot && (!Array.isArray(snapshot.cyberModels) || !snapshot.cyberModels.length)) {
-    key = 'models';
+  if (snapshot) {
+    const arr = snapshot[BENCHMARKS[key].key];
+    if (!Array.isArray(arr) || !arr.length) key = 'models';
   }
   stopHistoryPlay();
   if (comparePickerOpen) setComparePickerOpen(false);
@@ -1020,6 +1073,34 @@ function syncExtraFilterOptions() {
       opt.value = val;
       frag.append(opt);
     }
+  } else if (activeKey === 'frontier') {
+    const opts = [
+      ['', t('全部前沿极限模型', 'All frontier models')],
+      ['delta:up', t('抗刷榜硬核跃升 (排名↑)', 'Hard-eval rank risers (↑)')],
+      ['track:law', t('含 Harvey 律所实测', 'With Harvey BigLaw eval')],
+      ['track:analyst', t('含金融分析代理实测', 'With Analyst Agent eval')],
+      ['track:health', t('含临床专科医疗实测', 'With HealthBench Pro eval')],
+      ['lic:permissive', t('宽松开源 (MIT/Apache)', 'Permissive open')]
+    ];
+    for (const [val, label] of opts) {
+      const opt = html('option', label);
+      opt.value = val;
+      frag.append(opt);
+    }
+  } else if (activeKey === 'human-arena') {
+    const opts = [
+      ['', t('全部真人盲测模型', 'All blind-tested models')],
+      ['src:both', t('双竞技场全覆盖 (LMArena + Design)', 'Both LMArena & Design Arena')],
+      ['vibe:top', t('高交流人味 (Chat Elo ≥ 1470)', 'Top Chat Vibe (Elo ≥ 1470)')],
+      ['design:top', t('高视觉审美 (Website Elo ≥ 1300)', 'Top Aesthetic (Web Elo ≥ 1300)')],
+      ['deliv:top', t('高专家交付 (GDPval ≥ 1700)', 'Top Deliverable (GDPval ≥ 1700)')],
+      ['lic:permissive', t('宽松开源 (MIT/Apache)', 'Permissive open')]
+    ];
+    for (const [val, label] of opts) {
+      const opt = html('option', label);
+      opt.value = val;
+      frag.append(opt);
+    }
   } else if (activeKey === 'cyber') {
     const opts = [
       ['', t('全部安全模型', 'All cyber models')],
@@ -1062,7 +1143,7 @@ function shiftMonthsIso(isoDate, deltaMonths) {
 }
 
 function canHistoryMode() {
-  return (activeKey === 'models' || activeKey === 'cyber') && state.xMetric === 'cost' && state.releaseDates.length > 1;
+  return ['models', 'frontier', 'human-arena', 'cyber'].includes(activeKey) && state.xMetric === 'cost' && state.releaseDates.length > 1;
 }
 
 function syncHistoryControls() {
@@ -1462,28 +1543,41 @@ function syncSubControls() {
 
 function renderStatus() {
   const cfg = BENCHMARKS[activeKey];
-  const version = activeKey === 'models'
+  const version = activeKey === 'models' || activeKey === 'frontier'
     ? snapshot.modelIndexVersion
     : activeKey === 'coding-agents'
       ? snapshot.codingAgentIndexVersion
       : null;
   $('#count').textContent = `${state.rows.length} ${t(cfg.zhUnit, cfg.enUnit)}${version ? ' · v' + version : ''}`;
 
-  const source = html('a', 'Artificial Analysis');
-  source.href = cfg.source;
-  source.target = '_blank';
-  source.rel = 'noopener';
+  const makeLink = (txt, href) => {
+    const a = html('a', txt);
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    return a;
+  };
 
   const time = new Date(snapshot.updatedAt);
   const label = Number.isFinite(time.getTime())
     ? time.toLocaleString(lang === 'en' ? 'en-US' : 'zh-CN', {hour12: false})
     : t('未知', 'Unknown');
 
-  $('#status').replaceChildren(
-    document.createTextNode(t('数据来源：', 'Source: ')),
-    source,
-    document.createTextNode(t(` · 快照更新：${label}`, ` · Snapshot: ${label}`))
-  );
+  const sourceFrag = document.createDocumentFragment();
+  sourceFrag.append(document.createTextNode(t('数据来源：', 'Source: ')));
+  if (activeKey === 'human-arena') {
+    sourceFrag.append(
+      makeLink('LMArena', snapshot.lmArenaSourceUrl || 'https://lmarena.ai/leaderboard'),
+      document.createTextNode(' + '),
+      makeLink('Design Arena', snapshot.designArenaSourceUrl || 'https://www.designarena.ai/leaderboard'),
+      document.createTextNode(' + '),
+      makeLink('Artificial Analysis', 'https://artificialanalysis.ai/evaluations/gdpval-aa')
+    );
+  } else {
+    sourceFrag.append(makeLink('Artificial Analysis', cfg.source));
+  }
+  sourceFrag.append(document.createTextNode(t(` · 快照更新：${label}`, ` · Snapshot: ${label}`)));
+  $('#status').replaceChildren(sourceFrag);
   if (Date.now() - time.getTime() > 8 * 60 * 60 * 1000) {
     $('#status').append(document.createTextNode(t(' · 快照较早', ' · Older snapshot')));
   }
@@ -1604,6 +1698,7 @@ function buildPlot() {
   if (state.mode === 'table') renderTable(rows);
   else if (state.mode === 'sub') renderSubTable(rows);
   else if (state.mode === 'compare') renderCompare();
+  updateSummary();
   scheduleDraw();
 }
 
@@ -1712,6 +1807,12 @@ function renderTable(rows = filteredRows()) {
     }
     if (frontierIds.has(row.id)) {
       wrap.append(html('span', t('前沿', 'Frontier'), 'row-tag'));
+    }
+    if (activeKey === 'frontier' && (row.rankDelta ?? 0) >= 3) {
+      wrap.append(html('span', t(`硬核↑${row.rankDelta}`, `↑${row.rankDelta}`), 'row-tag tag-new'));
+    }
+    if (activeKey === 'human-arena' && (row.arenaRaw?.designWebElo ?? 0) >= 1330) {
+      wrap.append(html('span', t('高审美', 'Aesthetic'), 'row-tag tag-new'));
     }
     if (row.isOpenWeights) {
       wrap.append(html('span', t('开源', 'Open'), 'row-tag tag-open'));
@@ -1924,6 +2025,8 @@ function exportCsv() {
     'IntelligenceIndex',
     'CostPerTaskUSD',
     'MeanTimeSec',
+    ...(activeKey === 'frontier' ? ['AA_OverallIndex', 'HardRankDelta'] : []),
+    ...(activeKey === 'human-arena' ? ['LMArena_ChatElo', 'LMArena_WebDevElo', 'DesignArena_WebElo', 'AA_GDPvalElo'] : []),
     ...(activeKey === 'cyber' ? ['SafetyRefusalPct'] : []),
     `WeightedValue_w${state.valueWeight.toFixed(1)}`,
     `BreakEvenTasks_$${state.subFee}`,
@@ -1951,6 +2054,13 @@ function exportCsv() {
       row.intelligenceIndex.toFixed(4),
       row.cost.toFixed(6),
       row.timeSec ?? '',
+      ...(activeKey === 'frontier' ? [row.aaIndex ?? '', row.rankDelta ?? ''] : []),
+      ...(activeKey === 'human-arena' ? [
+        row.arenaRaw?.chatElo ?? '',
+        row.arenaRaw?.webdevElo ?? '',
+        row.arenaRaw?.designWebElo ?? '',
+        row.arenaRaw?.gdpvalElo ?? ''
+      ] : []),
       ...(activeKey === 'cyber' ? [row.refusalRate ?? ''] : []),
       val !== null ? val.toFixed(4) : '',
       be !== null ? be.toFixed(2) : '',
@@ -2174,10 +2284,11 @@ function hitTestRadar(sx, sy) {
   // 2. Polygon outline edge proximity (pierces straight through overlapping fills!)
   let bestEdgeDist = 10.5, bestEdgeSeries = -1;
   verticesBySeries.forEach((verts, sIdx) => {
-    const N = verts.length;
-    for (let i = 0; i < N; i++) {
-      const a = verts[i], b = verts[(i + 1) % N];
-      if (a.val === null && b.val === null) continue;
+    const present = verts.filter(v => v.val !== null);
+    if (present.length < 2) return;
+    const edgeCount = present.length === 2 ? 1 : present.length;
+    for (let i = 0; i < edgeCount; i++) {
+      const a = present[i], b = present[(i + 1) % present.length];
       const d = distToSegment(sx, sy, a.x, a.y, b.x, b.y);
       if (d < bestEdgeDist) {
         bestEdgeDist = d;
@@ -2351,7 +2462,60 @@ function renderRadarInfo() {
   };
 
   const frag = document.createDocumentFragment();
-  if (activeKey === 'coding-agents') {
+  if (activeKey === 'frontier') {
+    const p1 = html('p');
+    p1.append(
+      html('strong', t('为什么要单独设立「未饱和前沿极限」榜？', 'Why Strip Saturated Legacy Benchmarks? ')),
+      document.createTextNode(t(
+        '传统基准如 MMLU、GPQA Diamond（最高 96.3%）、AIME 2025（最高 99.0%）、TAU2（最高 99.1%）及 LiveCodeBench（最高 91.7%）对当前顶尖 AI 已严重“天花板饱和”，前十名差距甚至在噪声误差之内。本榜完全剔除 90%+ 饱和旧题集，仅聚合 6 项当前最高分仍仅在 30%–80% 之间、能大幅拉开真实差距的硬核测试。详见 ',
+        'Legacy suites like GPQA (96.3%), AIME 25 (99.0%), TAU2 (99.1%) and LiveCodeBench (91.7%) are ceiling-saturated across frontier models. This index strips saturated tests and aggregates 6 unsaturated suites where SOTA remains 30%–80% with wide spread. See '
+      )),
+      extLink('AA Intelligence v5 Methodology', 'https://artificialanalysis.ai/methodology/intelligence-benchmarking'),
+      document.createTextNode('。')
+    );
+    const p2 = html('p');
+    p2.append(
+      html('strong', t('未饱和六维与专项实验室口径：', 'Hard Suites & Specialist Labs: ')),
+      document.createTextNode(t(
+        'GDP-PDF 一次全过（复杂长篇文档与图表端到端零差错交付率，目前全球最高仅 ~32.8%）；FrontierCode 2.0（防污染多语言软件工程，尚无模型破 50%）；Terminal-Bench 4.0（真实容器系统工程）；CritPt Agentic Hard（长链路深度研究）；Automation Bench（多步业务流自动化）；HLE Diamond（人类终极考）。切换到「专项实验室」还可查看 Harvey 顶尖律所（最高仅 ~20.8%）、CritPt 闭卷物理、金融分析代理与临床专科医疗实测。',
+        'GDP-PDF All-Pass (zero-defect end-to-end document deliverables, SOTA ~32.8%); FrontierCode 2.0 (SOTA <50%); Terminal-Bench 4.0; CritPt Agentic Hard; Automation Bench; HLE Diamond. Switch to "Lab Suites" for Harvey BigLaw (~20.8% max), CritPt closed-book physics, Analyst Agent, and HealthBench Pro.'
+      ))
+    );
+    frag.append(p1, p2);
+  } else if (activeKey === 'human-arena') {
+    const p1 = html('p');
+    p1.append(
+      html('strong', t('跨三大权威真人盲测源融合：', '3-Source Blind Human Evaluation Fusion: ')),
+      document.createTextNode(t(
+        '自动化考试高分不代表模型“好聊、有审美、交付物能直接用”。本页实时融合：(1) ',
+        'High automated exam scores do not guarantee natural conversation, visual taste, or polished deliverables. This arena fuses: (1) '
+      )),
+      extLink('LMArena Style-Controlled & WebDev', 'https://lmarena.ai/leaderboard'),
+      document.createTextNode(t(
+        '（剥离长篇废话与排版偏见的纯盲测交流人味、文档写作及 Web 全栈体感）；(2) ',
+        ' (blind human chat preference controlling for length/markdown verbosity, plus WebDev & Document arenas); (2) '
+      )),
+      extLink('Design Arena', 'https://www.designarena.ai/leaderboard'),
+      document.createTextNode(t(
+        '（真人双盲投票评测整站网页审美、UI 组件质感、数据可视化、游戏交互与 SVG 造型）；(3) ',
+        ' (blind human aesthetic battles across Websites, UI Components, DataViz, GameDev & SVG); and (3) '
+      )),
+      extLink('GDPval & Briefcase', 'https://artificialanalysis.ai/evaluations/gdpval-aa'),
+      document.createTextNode(t(
+        '（44 个真实白领职业专家盲评 Word/PPT/Excel 实际交付质量）。',
+        ' (blind human expert grading of real Word/PPT/Excel deliverables across 44 occupations).'
+      ))
+    );
+    const p2 = html('p');
+    p2.append(
+      html('strong', t('0–100 校准指数与原始 Elo 说明：', 'Calibrated 0–100 Scale & Raw Elo: ')),
+      document.createTextNode(t(
+        '不同竞技场的原始 Elo 量纲不同（如 LMArena 对话最高 ~1526、WebDev 最高 ~1826、Design Arena 最高 ~1375），系统按各池中位数与离散度通过 Logistic 胜率曲线统一校准为 0–100 分（中位 = 50，全球榜首 ≈ 85），并采用贝叶斯先验收缩防止单项偏科虚高；下方拆解图与对决表完整保留原始 Elo 与盲测场次。',
+        'Because raw Elo scales differ by pool (Chat ~1526, WebDev ~1826, Design ~1375), each dimension is calibrated via pool-specific logistic win odds onto 0–100 (median = 50, SOTA ≈ 85) with gentle Bayesian shrinkage; exact raw Elo & battle counts are shown in the matrix below.'
+      ))
+    );
+    frag.append(p1, p2);
+  } else if (activeKey === 'coding-agents') {
     const p1 = html('p');
     p1.append(
       html('strong', t('数据来源与权威性：', 'Source & Reliability: ')),
@@ -2576,12 +2740,75 @@ function renderCompare() {
 
   // 2. Hero Centerpiece Capability Radar & Compact Score Strip
   $('#radarModeSwitch').hidden = activeKey === 'coding-agents';
+  if (activeKey === 'frontier') {
+    $('#radarModeBench').textContent = t('未饱和六维', 'Hard 6D');
+    $('#radarModeDomain').textContent = t('专项实验室', 'Lab Suites');
+  } else if (activeKey === 'human-arena') {
+    $('#radarModeBench').textContent = t('体验六维', 'Human 6D');
+    $('#radarModeDomain').textContent = t('视觉审美五维', 'Aesthetic 5D');
+  } else {
+    $('#radarModeBench').textContent = t('基准六维', 'Benchmarks');
+    $('#radarModeDomain').textContent = t('行业六维', 'Domains');
+  }
   $('#radarModeBench').setAttribute('aria-pressed', String(state.radarMode !== 'domain'));
   $('#radarModeDomain').setAttribute('aria-pressed', String(state.radarMode === 'domain'));
   renderRadarInfo();
 
   let axes, barMetrics;
-  if (activeKey === 'models' || activeKey === 'cyber') {
+  if (activeKey === 'frontier') {
+    if (state.radarMode === 'domain') {
+      $('#radarHeading').textContent = t('前沿专项实验室（律所 / 闭卷物理 / 金融代理 / 专科医疗）', 'Specialist Frontier Labs (BigLaw / Physics / Analyst / Clinical)');
+      axes = [
+        {key: 'critptClosed', zh: 'CritPt 闭卷物理', en: 'CritPt Physics', srcZh: 'CritPt 闭卷前沿物理研究题集（禁止工具纯推理，最高仅 ~35.7%）', srcEn: 'CritPt closed-book frontier physics research (~35.7% SOTA)', get: r => r.frontierScores?.critptClosed ?? null},
+        {key: 'harveyLaw', zh: 'Harvey 顶尖律所', en: 'Harvey BigLaw', srcZh: 'Harvey Law 真实顶尖商事律所复杂合同与尽调评测（最高仅 ~20.8%）', srcEn: 'Harvey BigLaw complex commercial legal workflows (~20.8% SOTA)', get: r => r.frontierScores?.harveyLaw ?? null},
+        {key: 'analystAgent', zh: '金融分析代理', en: 'Analyst Agent', srcZh: 'Analyst Agent 真实多表财务建模与投研数据代理实测', srcEn: 'Analyst Agent multi-sheet financial modeling & research', get: r => r.frontierScores?.analystAgent ?? null},
+        {key: 'healthPro', zh: '临床专科医疗', en: 'HealthBench Pro', srcZh: 'HealthBench Professional 专科医师审定的高难临床诊疗评测', srcEn: 'HealthBench Professional physician-graded clinical reasoning', get: r => r.frontierScores?.healthPro ?? null},
+        {key: 'science', zh: 'Terminal 科学', en: 'Terminal Science', srcZh: 'Terminal-Bench Science 容器环境计算科学与科研实操', srcEn: 'Terminal-Bench Science sandboxed scientific computing', get: r => r.frontierScores?.science ?? null},
+        {key: 'gdpPdf', zh: 'GDP-PDF 全过', en: 'GDP-PDF AllPass', srcZh: 'GDP-PDF All-Pass 复杂版式文档与图表端到端零差错一次全过率', srcEn: 'GDP-PDF All-Pass zero-defect complex document workflows', get: r => r.frontierScores?.gdpPdf ?? null}
+      ];
+      barMetrics = [...axes];
+    } else {
+      $('#radarHeading').textContent = t('未饱和前沿极限六维能力雷达（剔除 90%+ 已饱和旧测试）', 'Unsaturated 6-Pillar Frontier Hard Radar (90%+ Legacy Suites Stripped)');
+      axes = [
+        {key: 'gdpPdf', zh: 'GDP-PDF 全过', en: 'GDP-PDF AllPass', srcZh: '复杂长篇 PDF/报告/图表端到端一次全过率（SOTA 最高仅 ~32.8%，极强区分度）', srcEn: 'End-to-end complex PDF/deliverable all-pass rate (SOTA ~32.8%)', get: r => r.frontierScores?.gdpPdf ?? null},
+        {key: 'frontierCode', zh: 'FrontierCode 2', en: 'FrontierCode 2', srcZh: 'FrontierCode 2.0 防污染多语言高难软件工程（目前尚无模型突破 50%）', srcEn: 'FrontierCode 2.0 contamination-resistant SWE (no model >50% yet)', get: r => r.frontierScores?.frontierCode ?? null},
+        {key: 'terminal4', zh: 'Terminal 4.0', en: 'Terminal 4.0', srcZh: 'Terminal-Bench 4.0 真实 Linux 容器编译、排障与系统运维代理', srcEn: 'Terminal-Bench 4.0 sandboxed Linux CLI & systems engineering', get: r => r.frontierScores?.terminal4 ?? null},
+        {key: 'critptAgent', zh: 'CritPt 深度研究', en: 'CritPt Agent', srcZh: 'CritPt Agentic Hard 博士级多步工具调用与长链路研究代理', srcEn: 'CritPt Agentic Hard PhD-level multi-step research agent', get: r => r.frontierScores?.critptAgent ?? null},
+        {key: 'automation', zh: '业务流自动化', en: 'Automation', srcZh: 'Automation Bench 跨系统多步复杂工作流自动编排与执行得分', srcEn: 'Automation Bench multi-step workflow orchestration score', get: r => r.frontierScores?.automation ?? null},
+        {key: 'hleDiamond', zh: 'HLE 人类终极考', en: 'HLE Diamond', srcZh: 'Humanity’s Last Exam (Diamond) 跨学科前沿学术极限推理（前十名分差超 24%）', srcEn: 'Humanity’s Last Exam (Diamond) frontier academic reasoning', get: r => r.frontierScores?.hleDiamond ?? null}
+      ];
+      barMetrics = [
+        ...axes,
+        {key: 'science', zh: 'Terminal 科学', en: 'Terminal Science', srcZh: 'Terminal-Bench Science 科研计算与数理实验代码实测', srcEn: 'Terminal-Bench Science scientific computing', get: r => r.frontierScores?.science ?? null}
+      ];
+    }
+  } else if (activeKey === 'human-arena') {
+    if (state.radarMode === 'domain') {
+      $('#radarHeading').textContent = t('Design Arena 视觉审美与交互创意五维盲测雷达', 'Design Arena 5-Axis Blind Visual Aesthetic & UX Taste Radar');
+      axes = [
+        {key: 'website', zh: '整站网页审美', en: 'Website Design', srcZh: 'Design Arena Website · 真人双盲对决评测整站排版、配色、留白与现代设计感', srcEn: 'Design Arena Website · Blind human battles on layout, typography & visual polish', get: r => r.designSub?.website ?? null},
+        {key: 'uicomponent', zh: 'UI 组件质感', en: 'UI Component', srcZh: 'Design Arena UI Component · 交互控件细节、微动效与组件级视觉完成度盲测', srcEn: 'Design Arena UI Component · Blind human grading of component craft & micro-UX', get: r => r.designSub?.uicomponent ?? null},
+        {key: 'dataviz', zh: '数据图表审美', en: 'DataViz Taste', srcZh: 'Design Arena DataViz · 复杂仪表盘与数据可视化的可读性与审美盲测', srcEn: 'Design Arena DataViz · Blind human preference on dashboards & data visualization', get: r => r.designSub?.dataviz ?? null},
+        {key: 'gamedev', zh: '游戏交互创意', en: 'GameDev UX', srcZh: 'Design Arena GameDev · 可玩性、交互反馈与视觉创意真人盲测', srcEn: 'Design Arena GameDev · Blind human testing of playable mini-games & feel', get: r => r.designSub?.gamedev ?? null},
+        {key: 'svg', zh: 'SVG 矢量造型', en: 'SVG Craft', srcZh: 'Design Arena SVG · 纯代码生成矢量插画、构图美感与几何造型盲测', srcEn: 'Design Arena SVG · Blind human preference on vector illustration & geometry', get: r => r.designSub?.svg ?? null}
+      ];
+      barMetrics = [...axes];
+    } else {
+      $('#radarHeading').textContent = t('人类盲测六维体感雷达（交流人味 · 视觉审美 · 真实交付）', '6-Axis Human Preference Radar (Chat Vibe · Aesthetic Taste · Deliverables)');
+      axes = [
+        {key: 'chatVibe', zh: '交流人味 (Chat)', en: 'Chat Vibe', srcZh: 'LMArena Text Style-Controlled · 剔除长篇堆砌与排版讨好后的纯人类对话偏好校准分', srcEn: 'LMArena Text Style-Controlled · Blind chat preference controlling for length/style bias', get: r => r.humanScores?.chatVibe ?? null},
+        {key: 'webdev', zh: '全栈体感 (WebDev)', en: 'WebDev Arena', srcZh: 'LMArena WebDev · 真人实测构建可交互前端/全栈应用盲评校准分', srcEn: 'LMArena WebDev · Blind human battles on live interactive web apps', get: r => r.humanScores?.webdev ?? null},
+        {key: 'designWeb', zh: '整站视觉审美', en: 'Website Taste', srcZh: 'Design Arena Website · 真人双盲视觉审美对决校准分（拒绝模板化 AI 味）', srcEn: 'Design Arena Website · Blind human aesthetic preference on full web pages', get: r => r.humanScores?.designWeb ?? null},
+        {key: 'uicomponent', zh: 'UI 组件质感', en: 'UI Component', srcZh: 'Design Arena UI Component · 交互控件细节、微动效与组件级视觉完成度盲测', srcEn: 'Design Arena UI Component · Blind human grading of component craft & micro-UX', get: r => r.designSub?.uicomponent ?? r.humanScores?.designUi ?? null},
+        {key: 'dataviz', zh: '图表与创意审美', en: 'DataViz & Craft', srcZh: 'Design Arena DataViz / Game / SVG · 数据可视化、交互创意与矢量造型盲测校准分', srcEn: 'Design Arena DataViz / GameDev / SVG · Blind preference on visual & interactive craft', get: r => r.designSub?.dataviz ?? r.humanScores?.designUi ?? null},
+        {key: 'deliverable', zh: '专家真实交付', en: 'Deliverables', srcZh: 'GDPval + Briefcase · 44 个职业领域人类专家盲评真实办公交付物质量', srcEn: 'GDPval + Briefcase · Blind human expert grading of real office deliverables', get: r => r.humanScores?.deliverable ?? null}
+      ];
+      barMetrics = [
+        ...axes,
+        {key: 'docCraft', zh: '文档写作 (Doc)', en: 'Doc Writing', srcZh: 'LMArena Document Style-Controlled · 长文结构、行文质感与写作盲测校准分', srcEn: 'LMArena Document Style-Controlled · Blind human preference on long-form writing', get: r => r.humanScores?.docCraft ?? null}
+      ];
+    }
+  } else if (activeKey === 'models' || activeKey === 'cyber') {
     if (state.radarMode === 'domain') {
       $('#radarHeading').textContent = t('六大行业专业能力评估雷达', '6-Sector Professional Domain Capability Radar');
       axes = [
@@ -2755,14 +2982,27 @@ function renderCompare() {
 
     const baseFillOpacity = selectedRows.length <= 4 ? 0.15 : Math.max(0.06, 0.21 - selectedRows.length * 0.018);
     const baseStrokeW = selectedRows.length <= 5 ? 2.5 : 2.1;
-    seriesG.append(node('polygon', {
-      points: verts.map(v => `${v.x},${v.y}`).join(' '),
-      fill: sc,
-      'fill-opacity': baseFillOpacity,
-      stroke: sc,
-      'stroke-width': baseStrokeW,
-      'stroke-linejoin': 'round'
-    }));
+    const presentVerts = verts.filter(v => v.val !== null);
+    if (presentVerts.length >= 3) {
+      seriesG.append(node('polygon', {
+        points: presentVerts.map(v => `${v.x},${v.y}`).join(' '),
+        fill: sc,
+        'fill-opacity': baseFillOpacity,
+        stroke: sc,
+        'stroke-width': baseStrokeW,
+        'stroke-linejoin': 'round'
+      }));
+    } else if (presentVerts.length === 2) {
+      seriesG.append(node('line', {
+        x1: presentVerts[0].x,
+        y1: presentVerts[0].y,
+        x2: presentVerts[1].x,
+        y2: presentVerts[1].y,
+        stroke: sc,
+        'stroke-width': baseStrokeW,
+        'stroke-linecap': 'round'
+      }));
+    }
     verts.forEach(v => {
       if (v.val === null) return;
       seriesG.append(node('circle', {
@@ -2848,8 +3088,31 @@ function renderCompare() {
 
   // 3. Cost Structure, Tail Risk, Multi-Provider Arbitrage & Latency Anatomy
   const anatomyFrag = document.createDocumentFragment();
-  if (activeKey === 'models') {
-    $('#anatomyHeading').textContent = t('单任务成本构成、多云比价与耗时', 'Per-Task Cost Composition, Cloud Hosts & Latency');
+  if (activeKey === 'models' || activeKey === 'frontier') {
+    $('#anatomyHeading').textContent = activeKey === 'frontier'
+      ? t('硬核排名跃升、单任务成本构成与多云比价', 'Hard-Eval Rank Shift, Per-Task Cost Anatomy & Cloud Hosts')
+      : t('单任务成本构成、多云比价与耗时', 'Per-Task Cost Composition, Cloud Hosts & Latency');
+    if (activeKey === 'frontier') {
+      const deltaBlock = html('div', null, 'metric-block');
+      deltaBlock.append(html('div', t('剔除饱和旧题集后的硬核排名变化（对比综合智能总榜）', 'Rank Shift vs. Overall Intelligence Index (Saturated Tests Removed)'), 'metric-title'));
+      selectedRows.forEach((row, idx) => {
+        const dRank = row.rankDelta ?? 0;
+        const signStr = dRank > 0 ? `↑ +${dRank}` : dRank < 0 ? `↓ ${dRank}` : '—';
+        const pillRow = html('div', null, 'mini-bar-row');
+        const track = html('span', null, 'comparison-track');
+        const fill = html('i');
+        fill.style.width = `${Math.max(4, Math.min(100, row.intelligenceIndex * 1.4))}%`;
+        fill.style.background = compareColor(idx);
+        track.append(fill);
+        pillRow.append(
+          html('span', row.shortName || row.name, 'mini-bar-name'),
+          track,
+          html('span', `#${row.frontierRank ?? '—'} (${signStr})`, 'mini-bar-val')
+        );
+        deltaBlock.append(pillRow);
+      });
+      anatomyFrag.append(deltaBlock);
+    }
     const legend = html('div', null, 'stack-legend');
     for (const [col, zhL, enL] of [
       ['#38bdf8', '输入 Prompt', 'Input'],
@@ -2909,6 +3172,95 @@ function renderCompare() {
     anatomyFrag.append(timeBlock);
 
     // Multi-provider API cloud arbitrage block when available
+    const multiHostRows = selectedRows.filter(r => r.providers?.length >= 2);
+    if (multiHostRows.length) {
+      const provGroup = html('div', null, 'provider-group');
+      provGroup.append(html('div', t('同模型多云 API 托管商实测比价与耗时', 'Multi-Cloud API Provider Cost & Latency'), 'metric-title'));
+      for (const row of multiHostRows) {
+        const sub = html('div', null, 'metric-block');
+        sub.append(html('span', `${row.shortName || row.name} (${row.providers.length} ${t('家服务商', 'hosts')})`, 'anatomy-note'));
+        const list = html('div', null, 'provider-chips');
+        row.providers.slice(0, 6).forEach((p, pIdx) => {
+          const pill = html('span', `${p.host}: ${money(p.cost)}${p.timeSec ? ' · ' + formatTime(p.timeSec) : ''}`, pIdx === 0 ? 'provider-pill is-cheapest' : 'provider-pill');
+          list.append(pill);
+        });
+        sub.append(list);
+        provGroup.append(sub);
+      }
+      anatomyFrag.append(provGroup);
+    }
+  } else if (activeKey === 'human-arena') {
+    $('#anatomyHeading').textContent = t('跨平台真人盲测原始 Elo、视觉胜率与耗时剖析', 'Cross-Arena Raw Human Elo, Aesthetic Win Rate & Latency');
+    const rawMetrics = [
+      {
+        titleZh: 'LMArena 交流人味 Elo（Style-Controlled 去长文水分）',
+        titleEn: 'LMArena Style-Controlled Chat Elo (De-biased)',
+        min: 1250,
+        max: 1550,
+        getVal: r => r.arenaRaw?.chatElo ?? null,
+        fmt: r => r.arenaRaw?.chatElo != null
+          ? `${format(r.arenaRaw.chatElo, 1)}${r.arenaRaw.chatVotes ? ' · ' + format(r.arenaRaw.chatVotes / 1000, 1) + 'k' + t('票', 'v') : ''}`
+          : '—'
+      },
+      {
+        titleZh: 'Design Arena 整站网页审美 Elo（附真人对决胜率）',
+        titleEn: 'Design Arena Website Aesthetic Elo (& Blind Win Rate)',
+        min: 1100,
+        max: 1400,
+        getVal: r => r.arenaRaw?.designWebElo ?? null,
+        fmt: r => r.arenaRaw?.designWebElo != null
+          ? `${r.arenaRaw.designWebElo}${r.arenaRaw.designWebWinRate != null ? ' (' + format(r.arenaRaw.designWebWinRate, 1) + '%)' : ''}`
+          : '—'
+      },
+      {
+        titleZh: '专家办公实际交付 Elo（GDPval 44 职业盲评）',
+        titleEn: 'Expert Real-World Deliverable Elo (GDPval 44 Occupations)',
+        min: 1200,
+        max: 1900,
+        getVal: r => r.arenaRaw?.gdpvalElo ?? r.arenaRaw?.briefcaseElo ?? null,
+        fmt: r => {
+          const g = r.arenaRaw?.gdpvalElo, b = r.arenaRaw?.briefcaseElo;
+          if (g != null) return `${format(g, 0)}${b != null ? ' / ' + format(b, 0) : ''}`;
+          return b != null ? `Briefcase ${format(b, 0)}` : '—';
+        }
+      }
+    ];
+
+    for (const rm of rawMetrics) {
+      if (!selectedRows.some(r => rm.getVal(r) !== null)) continue;
+      const block = html('div', null, 'metric-block');
+      block.append(html('div', t(rm.titleZh, rm.titleEn), 'metric-title'));
+      selectedRows.forEach((row, idx) => {
+        const v = rm.getVal(row);
+        const mini = html('div', null, 'mini-bar-row');
+        const track = html('span', null, 'comparison-track');
+        const fill = html('i');
+        const pct = v !== null ? Math.max(4, Math.min(100, ((v - rm.min) / (rm.max - rm.min)) * 100)) : 0;
+        fill.style.width = `${pct}%`;
+        fill.style.background = compareColor(idx);
+        track.append(fill);
+        mini.append(html('span', row.shortName || row.name, 'mini-bar-name'), track, html('span', rm.fmt(row), 'mini-bar-val'));
+        block.append(mini);
+      });
+      anatomyFrag.append(block);
+    }
+
+    const maxTime = Math.max(1, ...selectedRows.map(r => r.timeSec || 0));
+    const timeBlock = html('div', null, 'metric-block');
+    timeBlock.style.marginTop = '4px';
+    timeBlock.append(html('div', t('单任务平均端到端耗时', 'Mean End-to-End Task Time'), 'metric-title'));
+    selectedRows.forEach((row, idx) => {
+      const mini = html('div', null, 'mini-bar-row');
+      const track = html('span', null, 'comparison-track');
+      const fill = html('i');
+      fill.style.width = row.timeSec ? `${Math.max(2, (row.timeSec / maxTime) * 100)}%` : '0%';
+      fill.style.background = compareColor(idx);
+      track.append(fill);
+      mini.append(html('span', row.shortName || row.name, 'mini-bar-name'), track, html('span', formatTime(row.timeSec), 'mini-bar-val'));
+      timeBlock.append(mini);
+    });
+    anatomyFrag.append(timeBlock);
+
     const multiHostRows = selectedRows.filter(r => r.providers?.length >= 2);
     if (multiHostRows.length) {
       const provGroup = html('div', null, 'provider-group');
@@ -3146,6 +3498,101 @@ function renderCompare() {
     addRow(
       t('发布日期', 'Release Date'),
       selectedRows.map(r => r.releaseDate || '—')
+    );
+  } else if (activeKey === 'frontier') {
+    addRow(
+      t('综合智能总分 · 硬核排名变化', 'Overall AA Index · Hard Rank Δ'),
+      selectedRows.map(r => {
+        const d = r.rankDelta ?? 0;
+        const deltaTxt = d > 0 ? `↑+${d}` : d < 0 ? `↓${d}` : '—';
+        return `${format(r.aaIndex ?? r.intelligenceIndex, 2)} (${deltaTxt})`;
+      }),
+      selectedRows.map(r => r.rankDelta ?? null),
+      false
+    );
+    addRow(
+      t('Harvey 律所 / 金融代理 / 临床医疗', 'Harvey Law / Analyst / Health Pro'),
+      selectedRows.map(r => {
+        const fs = r.frontierScores || {};
+        const p = [
+          fs.harveyLaw != null ? `${t('律', 'Law')} ${format(fs.harveyLaw, 1)}%` : null,
+          fs.analystAgent != null ? `${t('金', 'Fin')} ${format(fs.analystAgent, 1)}%` : null,
+          fs.healthPro != null ? `${t('医', 'Med')} ${format(fs.healthPro, 1)}%` : null
+        ].filter(Boolean);
+        return p.length ? p.join(' · ') : '—';
+      })
+    );
+    addRow(
+      t('输出总 Token（思考占比）', 'Output Tokens (Reasoning %)'),
+      selectedRows.map(r => r.outTokens
+        ? `${format(r.outTokens.total / 1000, 1)}k (${Math.round((r.outTokens.reasoning / Math.max(1, r.outTokens.total)) * 100)}%)`
+        : '—'),
+      selectedRows.map(r => r.outTokens?.total ?? null),
+      true
+    );
+    addRow(
+      t('发布日期', 'Release Date'),
+      selectedRows.map(r => r.releaseDate || '—')
+    );
+  } else if (activeKey === 'human-arena') {
+    addRow(
+      t('LMArena 交流人味 Elo（去水份）', 'LMArena Style-Ctrl Chat Elo'),
+      selectedRows.map(r => r.arenaRaw?.chatElo != null
+        ? `${format(r.arenaRaw.chatElo, 1)}${r.arenaRaw.chatVotes ? ' (' + format(r.arenaRaw.chatVotes / 1000, 1) + 'k' + t('票', 'v') + ')' : ''}`
+        : '—'),
+      selectedRows.map(r => r.arenaRaw?.chatElo ?? null),
+      false
+    );
+    addRow(
+      t('LMArena WebDev / 文档盲测 Elo', 'LMArena WebDev / Doc Elo'),
+      selectedRows.map(r => {
+        const w = r.arenaRaw?.webdevElo, d = r.arenaRaw?.docElo;
+        if (w == null && d == null) return '—';
+        return `${w != null ? 'Web ' + format(w, 0) : '—'} / ${d != null ? 'Doc ' + format(d, 0) : '—'}`;
+      }),
+      selectedRows.map(r => r.arenaRaw?.webdevElo ?? r.arenaRaw?.docElo ?? null),
+      false
+    );
+    addRow(
+      t('Design Arena 整站审美 Elo（胜率）', 'Design Arena Website Elo (Win%)'),
+      selectedRows.map(r => r.arenaRaw?.designWebElo != null
+        ? `${r.arenaRaw.designWebElo}${r.arenaRaw.designWebWinRate != null ? ' (' + format(r.arenaRaw.designWebWinRate, 1) + '%)' : ''}`
+        : '—'),
+      selectedRows.map(r => r.arenaRaw?.designWebElo ?? null),
+      false
+    );
+    addRow(
+      t('Design Arena UI / 图表 / SVG Elo', 'Design Arena UI / Viz / SVG Elo'),
+      selectedRows.map(r => {
+        const ar = r.arenaRaw || {};
+        const p = [
+          ar.designUiElo ? `UI ${ar.designUiElo}` : null,
+          ar.designDatavizElo ? `Viz ${ar.designDatavizElo}` : null,
+          ar.designSvgElo ? `SVG ${ar.designSvgElo}` : null
+        ].filter(Boolean);
+        return p.length ? p.join(' · ') : '—';
+      }),
+      selectedRows.map(r => r.arenaRaw?.designUiElo ?? null),
+      false
+    );
+    addRow(
+      t('专家真实交付 Elo (GDPval / Briefcase)', 'Expert Deliverable Elo (GDPval / Briefcase)'),
+      selectedRows.map(r => {
+        const g = r.arenaRaw?.gdpvalElo, b = r.arenaRaw?.briefcaseElo;
+        if (g == null && b == null) return '—';
+        return `${g != null ? format(g, 0) : '—'} / ${b != null ? format(b, 0) : '—'}`;
+      }),
+      selectedRows.map(r => r.arenaRaw?.gdpvalElo ?? r.arenaRaw?.briefcaseElo ?? null),
+      false
+    );
+    addRow(
+      t('对比自动化综合指数（体感分差 Δ）', 'vs. Automated AA Index (Δ)'),
+      selectedRows.map(r => {
+        const d = r.indexDelta ?? 0;
+        return `${format(r.aaIndex ?? 0, 1)} (${d >= 0 ? '+' : ''}${format(d, 1)})`;
+      }),
+      selectedRows.map(r => r.indexDelta ?? null),
+      false
     );
   } else if (activeKey === 'cyber') {
     addRow(
@@ -3824,6 +4271,13 @@ function renderPinned() {
   if (row.effort?.label) metaParts.push(row.effort.label);
   if (row.modalities?.length) metaParts.push(modalitySummary(row));
   if (row.refusalRate != null) metaParts.push(t(`拒答 ${format(row.refusalRate, 1)}%`, `Refusal ${format(row.refusalRate, 1)}%`));
+  if (activeKey === 'frontier' && row.rankDelta != null && row.rankDelta !== 0) {
+    metaParts.push(row.rankDelta > 0 ? t(`硬核排名 ↑+${row.rankDelta}`, `Hard rank ↑+${row.rankDelta}`) : t(`硬核排名 ↓${row.rankDelta}`, `Hard rank ↓${row.rankDelta}`));
+  }
+  if (activeKey === 'human-arena' && row.arenaRaw) {
+    if (row.arenaRaw.chatElo != null) metaParts.push(`Chat Elo ${format(row.arenaRaw.chatElo, 0)}`);
+    if (row.arenaRaw.designWebElo != null) metaParts.push(`Design Elo ${row.arenaRaw.designWebElo}`);
+  }
   if (frontierIds.has(row.id)) metaParts.push(t('帕累托前沿', 'Pareto frontier'));
   if (rankInfo) metaParts.push(t(`性价比 #${rankInfo.rank}/${qualifiedCount}`, `Value #${rankInfo.rank}/${qualifiedCount}`));
   $('#pinnedMeta').textContent = metaParts.join(' · ');
@@ -3902,6 +4356,29 @@ function showHover(item, event) {
     [t('每任务成本', 'Cost / task'), money(row.cost)]
   ];
   if (row.timeSec > 0) kvRows.push([t('平均耗时', 'Mean time'), formatTime(row.timeSec)]);
+  if (activeKey === 'frontier') {
+    const d = row.rankDelta ?? 0;
+    const dStr = d > 0 ? `↑+${d}` : d < 0 ? `↓${d}` : '—';
+    kvRows.push([t('综合智能分 · 排名变化', 'Overall Index · Rank Δ'), `${format(row.aaIndex ?? row.intelligenceIndex, 2)} (${dStr})`]);
+    if (row.frontierScores?.gdpPdf != null || row.frontierScores?.frontierCode != null) {
+      const fParts = [];
+      if (row.frontierScores.gdpPdf != null) fParts.push(`PDF ${format(row.frontierScores.gdpPdf, 1)}%`);
+      if (row.frontierScores.frontierCode != null) fParts.push(`Code ${format(row.frontierScores.frontierCode, 1)}%`);
+      kvRows.push([t('极难分项 (全过/编程)', 'Hard Suites (PDF/Code)'), fParts.join(' · ')]);
+    }
+  }
+  if (activeKey === 'human-arena' && row.arenaRaw) {
+    const ar = row.arenaRaw;
+    if (ar.chatElo != null) kvRows.push([t('LMArena 交流人味 Elo', 'LMArena Chat Elo'), format(ar.chatElo, 1)]);
+    if (ar.designWebElo != null) {
+      kvRows.push([
+        t('Design Arena 网页审美', 'Design Arena Web'),
+        `${ar.designWebElo} Elo${ar.designWebWinRate != null ? ' (' + format(ar.designWebWinRate, 1) + '%)' : ''}`
+      ]);
+    }
+    if (ar.webdevElo != null) kvRows.push([t('LMArena WebDev Elo', 'LMArena WebDev Elo'), format(ar.webdevElo, 0)]);
+    if (ar.gdpvalElo != null) kvRows.push([t('专家交付 GDPval Elo', 'Expert GDPval Elo'), format(ar.gdpvalElo, 0)]);
+  }
   if (row.refusalRate != null) kvRows.push([t('安全拒答率', 'Safety refusal'), `${format(row.refusalRate, 1)}%`]);
   if (row.costPercentiles) {
     kvRows.push([t('成本 P50 / P95', 'Cost P50 / P95'), `${money(row.costPercentiles.p50 || 0)} / ${money(row.costPercentiles.p95 || 0)}`]);
@@ -4871,11 +5348,15 @@ async function loadData() {
     if (generation !== loadGeneration) return;
     snapshot = next;
     states.clear();
+    const hasFrontier = Array.isArray(snapshot.frontierModels) && snapshot.frontierModels.length > 0;
+    const hasHumanArena = Array.isArray(snapshot.humanArenaModels) && snapshot.humanArenaModels.length > 0;
     const hasCyber = Array.isArray(snapshot.cyberModels) && snapshot.cyberModels.length > 0;
+    $('#tab-frontier').hidden = !hasFrontier;
+    $('#tab-human-arena').hidden = !hasHumanArena;
     $('#tab-cyber').hidden = !hasCyber;
     if (changelogOpen) renderChangelog();
     const parsed = parseHash();
-    chooseChart(parsed.chart === 'cyber' && !hasCyber ? 'models' : parsed.chart, {changeHash: false, routeParams: parsed.params});
+    chooseChart(parsed.chart, {changeHash: false, routeParams: parsed.params});
   } catch (error) {
     if (generation === loadGeneration) {
       showLoadError(error.name === 'AbortError' ? new Error(t('请求超时，请重试', 'Request timed out')) : error);
