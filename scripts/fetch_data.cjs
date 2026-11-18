@@ -146,7 +146,7 @@ function pctOrNull(value) {
   return typeof value === 'number' && Number.isFinite(value) ? Number((value * 100).toFixed(2)) : null;
 }
 
-function simplifyModel(model) {
+function simplifyModel(model, capMap = null, hostMap = null) {
   const costObj = model.intelligenceIndexCostPerTask?.cost ?? model.intelligenceIndexCostPerTask;
   const cost = costObj?.total;
   const score = model.intelligenceIndex;
@@ -162,6 +162,18 @@ function simplifyModel(model) {
   };
 
   if (typeof model.releaseDate === 'string' && model.releaseDate) entry.releaseDate = model.releaseDate;
+  if (entry.isOpenWeights && typeof model.openSourceCategorization === 'string' && model.openSourceCategorization) {
+    entry.openLicense = model.openSourceCategorization;
+  }
+  if (typeof model.parameters === 'number' && Number.isFinite(model.parameters) && model.parameters > 0) {
+    entry.parametersB = Number(model.parameters.toFixed(1));
+  }
+  const modalities = [];
+  if (model.inputModalityImage) modalities.push('image');
+  if (model.inputModalitySpeech) modalities.push('speech');
+  if (model.inputModalityVideo) modalities.push('video');
+  if (modalities.length) entry.modalities = modalities;
+
   if (model.release?.slug) {
     entry.family = { slug: model.release.slug, name: model.release.name || model.shortName || model.name };
   }
@@ -200,6 +212,45 @@ function simplifyModel(model) {
     hallucination: pctOrNull(model.omniscienceHallucinationRate)
   };
   if (Object.values(subscores).some(v => v !== null)) entry.subscores = subscores;
+
+  const caps = capMap?.get(model.id) ?? model.capabilities;
+  if (caps && typeof caps === 'object') {
+    const domainScores = {
+      finance: numOrNull(caps.financeAndAccounting, 2),
+      strategy: numOrNull(caps.strategyAndOps, 2),
+      legal: numOrNull(caps.legal, 2),
+      healthcare: numOrNull(caps.healthcareAndMedical, 2),
+      engineering: numOrNull(caps.engineering, 2),
+      economics: numOrNull(caps.economics, 2)
+    };
+    if (Object.values(domainScores).some(v => v !== null)) entry.domainScores = domainScores;
+  }
+
+  const rawHosts = hostMap?.get(model.slug);
+  if (Array.isArray(rawHosts) && rawHosts.length >= 2) {
+    const dedup = new Map();
+    const baseShort = (entry.shortName || '').toLowerCase();
+    for (const h of rawHosts) {
+      const hCost = h?.intelligenceIndexCostPerTask?.total;
+      if (!Number.isFinite(hCost) || hCost <= 0 || !h?.host?.name) continue;
+      let label = h.host.name;
+      const prefix = String(h.shortName || h.name || '').split(',')[0].trim();
+      if (prefix && baseShort && prefix.toLowerCase().startsWith(baseShort) && prefix.length > baseShort.length) {
+        const qual = prefix.slice(baseShort.length).trim().replace(/^\(|\)$/g, '').trim();
+        if (qual && qual.length <= 16) label = `${label} (${qual})`;
+      }
+      const timeSec = Number.isFinite(h.intelligenceIndexTimePerTask) && h.intelligenceIndexTimePerTask > 0
+        ? Number(h.intelligenceIndexTimePerTask.toFixed(1))
+        : null;
+      const existing = dedup.get(label);
+      if (!existing || hCost < existing.cost) {
+        dedup.set(label, { host: label, cost: Number(hCost.toFixed(5)), timeSec });
+      }
+    }
+    if (dedup.size >= 2) {
+      entry.providers = [...dedup.values()].sort((a, b) => a.cost - b.cost).slice(0, 8);
+    }
+  }
   return entry;
 }
 
@@ -308,23 +359,65 @@ function validateRows(rows, minimum, name) {
   rows.sort((a, b) => a.cost - b.cost || b.intelligenceIndex - a.intelligenceIndex || a.id.localeCompare(b.id));
 }
 
-async function fetchModels(page, sourceUrl, previous, get = getBuffer) {
+async function fetchModels(page, sourceUrl, previous, get = getBuffer, { includeHosts = false } = {}) {
   const manifests = readManifests(page);
   // Reuse the previous model manifest as first choice, avoiding unrelated media downloads.
   manifests.sort((a, b) => Number(b.path === previous?.manifestPath) - Number(a.path === previous?.manifestPath));
   const errors = [];
+  let modelPayload = null, modelManifestPath = null;
+  const cachedPayloads = new Map();
+
   for (const manifest of manifests) {
     const url = new URL(manifest.path, sourceUrl);
     if (url.origin !== new URL(sourceUrl).origin || !url.pathname.startsWith('/data/')) throw new Error('Unexpected manifest URL');
     try {
       const payload = JSON.parse(decryptPayload(await get(url.href), manifest.key));
-      if (!Array.isArray(payload.models)) continue;
-      const models = payload.models.map(simplifyModel).filter(Boolean);
-      validateRows(models, 50, 'model');
-      return { models, manifestPath: manifest.path };
+      cachedPayloads.set(manifest.path, payload);
+      if (!Array.isArray(payload?.models)) continue;
+      modelPayload = payload;
+      modelManifestPath = manifest.path;
+      break;
     } catch (error) { errors.push(error.message); }
   }
-  throw new Error(`No valid model manifest: ${errors.join('; ')}`);
+  if (!modelPayload) throw new Error(`No valid model manifest: ${errors.join('; ')}`);
+
+  let hostMap = null, hostsManifestPath = null;
+  if (includeHosts) {
+    const candidates = manifests
+      .filter(m => m.path !== modelManifestPath)
+      .sort((a, b) => Number(b.path === previous?.hostsManifestPath) - Number(a.path === previous?.hostsManifestPath));
+    for (const cand of candidates) {
+      try {
+        let payload = cachedPayloads.get(cand.path);
+        if (!payload) {
+          const url = new URL(cand.path, sourceUrl);
+          if (url.origin !== new URL(sourceUrl).origin || !url.pathname.startsWith('/data/')) continue;
+          payload = JSON.parse(decryptPayload(await get(url.href), cand.key));
+        }
+        if (Array.isArray(payload) && payload.some(item => item?.modelSlug && item?.host?.name)) {
+          hostMap = new Map();
+          for (const item of payload) {
+            if (!item?.modelSlug) continue;
+            if (!hostMap.has(item.modelSlug)) hostMap.set(item.modelSlug, []);
+            hostMap.get(item.modelSlug).push(item);
+          }
+          hostsManifestPath = cand.path;
+          break;
+        }
+      } catch { /* Optional provider manifest; never fail core refresh. */ }
+    }
+  }
+
+  const capMap = new Map();
+  if (Array.isArray(modelPayload.capabilityModels)) {
+    for (const capItem of modelPayload.capabilityModels) {
+      if (capItem?.id && capItem?.capabilities) capMap.set(capItem.id, capItem.capabilities);
+    }
+  }
+
+  const models = modelPayload.models.map(m => simplifyModel(m, capMap, hostMap)).filter(Boolean);
+  validateRows(models, 50, 'model');
+  return { models, manifestPath: modelManifestPath, hostsManifestPath };
 }
 
 function comparable(snapshot) {
@@ -356,7 +449,7 @@ async function main() {
   const [modelPage, codingPageBuffer] = await Promise.all([getBuffer(sourceUrl), getBuffer(codingAgentSourceUrl)]);
   const codingPage = codingPageBuffer.toString('utf8');
   const rawCodingRows = readCodingRows(codingPage);
-  const { models, manifestPath } = await fetchModels(modelPage.toString('utf8'), sourceUrl, previous);
+  const { models, manifestPath, hostsManifestPath } = await fetchModels(modelPage.toString('utf8'), sourceUrl, previous, getBuffer, { includeHosts: true });
   const openFamilyNames = new Set(
     models.filter(m => m.isOpenWeights && m.family?.name).map(m => m.family.name.toLowerCase())
   );
@@ -365,6 +458,7 @@ async function main() {
   validateRows(codingAgents, 5, 'coding-agent');
   const output = {
     schemaVersion: 2, source: 'Artificial Analysis', sourceUrl, manifestPath,
+    ...(hostsManifestPath ? { hostsManifestPath } : {}),
     updatedAt: new Date().toISOString(), updateIntervalHours: 2,
     modelIndexVersion: modelPage.toString('utf8').match(/Artificial Analysis Intelligence Index v([\d.]+)/)?.[1] || null,
     modelCount: models.length, models,

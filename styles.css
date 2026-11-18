@@ -465,6 +465,11 @@ kbd {
   border-top: 2px solid var(--frontier);
 }
 
+.history-swatch {
+  width: 18px;
+  border-top: 2.2px solid var(--accent);
+}
+
 /* Creator Legend */
 .legend {
   display: flex;
@@ -570,6 +575,13 @@ kbd {
 
 .search input::placeholder {
   color: var(--muted);
+}
+
+.extra-filter-wrap select {
+  max-width: 158px;
+  min-height: 32px;
+  padding: 3px 24px 3px 8px;
+  font-size: 12px;
 }
 
 .options-panel {
@@ -889,6 +901,112 @@ kbd {
   font-size: 12px;
 }
 
+.router-panel {
+  display: flex;
+  align-items: center;
+  gap: 8px 12px;
+  flex-wrap: wrap;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.router-field,
+.router-share-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.router-field select {
+  max-width: 185px;
+  min-height: 28px;
+  padding: 2px 22px 2px 7px;
+  font-size: 12px;
+}
+
+.router-share-field input[type="range"] {
+  width: 84px;
+  cursor: pointer;
+}
+
+.router-share-field output {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--accent);
+  min-width: 72px;
+}
+
+.router-readout {
+  color: var(--ink);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  margin-left: auto;
+}
+
+/* Historical Pareto Evolution Bar */
+.history-settings {
+  flex-shrink: 0;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.history-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.history-play-btn {
+  min-height: 30px;
+  padding: 3px 10px;
+  font-weight: 600;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.history-slider-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 260px;
+  min-width: 210px;
+  max-width: 440px;
+}
+
+.history-slider-wrap input[type="range"] {
+  flex: 1;
+  min-width: 90px;
+  height: 30px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.history-date-badge {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.history-summary-strip {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
 /* Interactive Scatter Chart */
 .chart {
   flex: 1;
@@ -971,6 +1089,14 @@ kbd {
   stroke-width: 1.6;
   stroke-dasharray: 2 5;
   stroke-linecap: round;
+  fill: none;
+}
+
+.pareto-history {
+  stroke: var(--accent);
+  stroke-width: 2.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   fill: none;
 }
 
@@ -1443,8 +1569,9 @@ th[aria-sort="descending"] .sub-sort-button {
 
 .compare-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr);
+  gap: 12px;
+  align-items: start;
 }
 
 .compare-section {
@@ -1464,34 +1591,160 @@ th[aria-sort="descending"] .sub-sort-button {
   font-weight: 600;
 }
 
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.section-head h3 {
+  margin: 0;
+}
+
+.provider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+
+.provider-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.provider-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--chart);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.provider-pill.is-cheapest {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 .radar-layout {
-  display: grid;
-  grid-template-columns: 260px minmax(0, 1fr);
-  gap: 12px;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
 }
 
 .radar-svg {
   width: 100%;
-  max-width: 265px;
+  max-width: 580px;
   height: auto;
-  margin: 4px auto 0;
+  margin: 0 auto;
   display: block;
 }
 
 .radar-grid {
   fill: none;
   stroke: var(--border-strong);
-  stroke-width: 0.9;
-  opacity: 0.65;
+  stroke-width: 1;
+  opacity: 0.72;
+}
+
+.radar-ring-fill {
+  fill: var(--chart);
+  opacity: 0.42;
+}
+
+.radar-scale-tick {
+  fill: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
 }
 
 .radar-axis-label {
-  fill: var(--muted);
-  font-size: 11.5px;
+  fill: var(--ink);
+  font-size: 12.5px;
+  font-weight: 600;
 }
 
-.subscore-bars,
+.radar-axis-sub {
+  fill: var(--accent);
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.radar-series {
+  transition: opacity 140ms ease-out;
+  cursor: pointer;
+}
+
+.radar-svg.has-focus .radar-series:not(.is-focused) {
+  opacity: 0.24;
+}
+
+.radar-series.is-focused polygon {
+  stroke-width: 3.4;
+  fill-opacity: 0.26;
+}
+
+.radar-score-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 6px;
+  width: 100%;
+}
+
+.radar-dim-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: var(--chart);
+  border: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.radar-dim-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.radar-dim-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.radar-dim-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  color: var(--muted);
+}
+
+.radar-dim-name span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .anatomy-body {
   display: flex;
   flex-direction: column;
@@ -2064,8 +2317,7 @@ tbody tr.is-selected .locate-btn,
 }
 
 @media (max-width: 1020px) {
-  .compare-grid,
-  .radar-layout {
+  .compare-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 }

@@ -3,6 +3,8 @@ import {
   paretoFrontier,
   dataBounds,
   effortTrajectories,
+  historicalFrontierSummary,
+  cascadingRouteSummary,
   clampView,
   pointerZoomView,
   validRows,
@@ -18,7 +20,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261118-5';
+} from './chart-math.mjs?v=20261118-6';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -268,8 +270,12 @@ function makeState(key, routeParams = null) {
   const defaultTimeView = {...timeBounds, width: BENCHMARKS[key].defaultTimeMin ? Math.min(timeBounds.width, BENCHMARKS[key].defaultTimeMin) : timeBounds.width};
   const defaultTasks = key === 'coding-agents' ? MONTHLY_USAGE.defaultAgentTasks : MONTHLY_USAGE.defaultModelTasks;
   const defaultCmp = defaultCompareIds(rows);
+  const releaseDates = [...new Set(rows.map(r => r.releaseDate).filter(Boolean))].sort();
+  const defaultFast = sortRows(rows, 'valuePerDollar', 'desc', 2, 25)[0] || rows[0];
+  const defaultStrong = sortRows(rows, 'intelligenceIndex', 'desc')[0] || rows.at(-1);
   const next = {
     rows,
+    releaseDates,
     xMetric: 'cost',
     boundsByMetric: {cost: costBounds, time: timeBounds},
     defaultViews: {cost: defaultCostView, time: defaultTimeView},
@@ -281,13 +287,17 @@ function makeState(key, routeParams = null) {
     view: {...defaultCostView},
     company: null,
     license: 'all',
+    extraFilter: '',
     search: '',
     frontierOnly: false,
     effortCurves: false,
+    historyMode: false,
+    historyIndex: Math.max(0, releaseDates.length - 1),
     isoCurve: false,
     subLine: false,
     ...DEFAULT_SETTINGS[key],
     mode: 'chart',
+    radarMode: 'bench',
     selected: null,
     defaultCompareKey: defaultCmp.join(','),
     compareIds: [...defaultCmp],
@@ -299,6 +309,10 @@ function makeState(key, routeParams = null) {
     minScore: MIN_SCORE.default,
     monthlyTasks: defaultTasks,
     subFee: MONTHLY_USAGE.defaultFee,
+    routerOpen: false,
+    routerFastId: defaultFast.id,
+    routerStrongId: defaultStrong.id,
+    routerShare: 80,
     curveProbe: 50,
     curveRealRange: true,
     curveLogY: false
@@ -313,6 +327,9 @@ function applyRouteParams(target, params) {
   if (params.get('x') === 'time') syncMetricViewport(target, 'time');
   const lic = params.get('lic');
   if (['all', 'open', 'closed'].includes(lic)) target.license = lic;
+  const xf = params.get('xf');
+  if (xf) target.extraFilter = xf;
+  if (params.get('radar') === 'domain') target.radarMode = 'domain';
   const w = Number(params.get('w'));
   if (params.has('w') && Number.isFinite(w) && w >= VALUE_WEIGHT.min && w <= VALUE_WEIGHT.max) {
     target.valueWeight = Math.round(w * 10) / 10;
@@ -335,6 +352,12 @@ function applyRouteParams(target, params) {
   if (q) target.search = q;
   if (params.get('pf') === '1') target.frontierOnly = true;
   if (params.get('effort') === '1') target.effortCurves = true;
+  if (params.get('hist') && target.releaseDates.length) {
+    target.historyMode = true;
+    const d = params.get('hist');
+    const idx = target.releaseDates.findIndex(x => x >= d);
+    target.historyIndex = idx === -1 ? target.releaseDates.length - 1 : idx;
+  }
   if (params.get('iso') === '1') target.isoCurve = true;
   if (params.get('subline') === '1') target.subLine = true;
   const cmp = params.get('cmp');
@@ -351,6 +374,8 @@ function syncUrlHash() {
   if (state.mode !== 'chart') params.set('view', state.mode);
   if (state.xMetric === 'time') params.set('x', 'time');
   if (state.license !== 'all') params.set('lic', state.license);
+  if (state.extraFilter) params.set('xf', state.extraFilter);
+  if (state.mode === 'compare' && state.radarMode === 'domain') params.set('radar', 'domain');
   if (state.valueWeight !== VALUE_WEIGHT.default) params.set('w', state.valueWeight.toFixed(1));
   if (state.minScore > 0) params.set('min', String(state.minScore));
   if (state.subFee !== MONTHLY_USAGE.defaultFee) params.set('fee', String(state.subFee));
@@ -359,6 +384,9 @@ function syncUrlHash() {
   if (state.search.trim()) params.set('q', state.search.trim());
   if (state.frontierOnly) params.set('pf', '1');
   if (state.effortCurves) params.set('effort', '1');
+  if (state.historyMode && state.releaseDates[state.historyIndex]) {
+    params.set('hist', state.releaseDates[state.historyIndex]);
+  }
   if (state.isoCurve) params.set('iso', '1');
   if (state.subLine) params.set('subline', '1');
   if (state.compareIds.join(',') !== state.defaultCompareKey) {
@@ -373,9 +401,21 @@ function syncUrlHash() {
 }
 
 function licenseFilteredRows(rows = state.rows) {
-  if (state.license === 'open') return rows.filter(row => row.isOpenWeights);
-  if (state.license === 'closed') return rows.filter(row => !row.isOpenWeights);
-  return rows;
+  let out = rows;
+  if (state.license === 'open') out = out.filter(row => row.isOpenWeights);
+  else if (state.license === 'closed') out = out.filter(row => !row.isOpenWeights);
+  if (state.extraFilter) {
+    if (state.extraFilter.startsWith('mod:')) {
+      const mod = state.extraFilter.slice(4);
+      out = out.filter(row => Array.isArray(row.modalities) && row.modalities.includes(mod));
+    } else if (state.extraFilter === 'lic:permissive') {
+      out = out.filter(row => row.isOpenWeights && row.openLicense === 'permissive');
+    } else if (state.extraFilter.startsWith('agent:')) {
+      const ag = state.extraFilter.slice(6);
+      out = out.filter(row => row.agentName === ag);
+    }
+  }
+  return out;
 }
 
 function currentXOf() {
@@ -501,6 +541,7 @@ function syncStaticText() {
   $('#keyIso').textContent = t('最优等性价比切线', 'Best-value iso-curve');
   $('#keySub').textContent = t('订阅回本成本线', 'Subscription break-even');
   $('#keyEffort').textContent = t('同系列推理轨迹', 'Reasoning effort trajectory');
+  $('#keyHistory').textContent = t('历史帕累托前沿（虚线为今日）', 'Historical Pareto (dashed = today)');
   $('#keyBetter').textContent = t('越靠左上越理想', 'Upper-left is better');
 
   $('#xMetricSwitch').setAttribute('aria-label', t('横轴维度', 'Horizontal axis metric'));
@@ -520,6 +561,9 @@ function syncStaticText() {
   $('[data-license="all"]').textContent = t('全部', 'All');
   $('[data-license="open"]').textContent = t('开源', 'Open');
   $('[data-license="closed"]').textContent = t('闭源', 'Closed');
+  $('#extraFilterSr').textContent = t('按模态或客户端框架筛选', 'Filter by modality or agent harness');
+  $('#exportPng').textContent = t('导图 PNG', 'Export PNG');
+  $('#curveExportPng').textContent = t('导图 PNG', 'Export PNG');
   $('#exportCsv').textContent = t('导出 CSV', 'Export CSV');
   $('#clearFilters').textContent = t('清除筛选', 'Clear filters');
 
@@ -535,12 +579,14 @@ function syncStaticText() {
   );
   $('#helpKeyboard').replaceChildren(
     document.createTextNode(t('键盘：', 'Keys: ')),
+    html('kbd', '/'),
+    document.createTextNode(t(' 搜索 · ', ' search · ')),
+    html('kbd', '[ ]'),
+    document.createTextNode(t(' 前沿巡航 · ', ' tour frontier · ')),
     html('kbd', '← ↑ ↓ →'),
     document.createTextNode(t(' 平移 · ', ' pan · ')),
     html('kbd', '+ −'),
     document.createTextNode(t(' 缩放 · ', ' zoom · ')),
-    html('kbd', 'Home'),
-    document.createTextNode(t(' 重置 · ', ' reset · ')),
     html('kbd', 'Esc'),
     document.createTextNode(t(' 解锁', ' unpin'))
   );
@@ -593,6 +639,9 @@ function syncStaticText() {
   $('#subFeeValue').setAttribute('aria-label', t('自定义月订阅美元价格', 'Custom monthly subscription USD price'));
   $('#monthlyTasksLabel').textContent = t('预计月任务量', 'Tasks / mo');
   $('#monthlyTasksValue').setAttribute('aria-label', t('输入预计每月任务次数', 'Enter estimated monthly tasks'));
+  $('#routerFastLabel').textContent = t('日常主力', 'Routine');
+  $('#routerStrongLabel').textContent = t('疑难旗舰', 'Flagship');
+  $('#routerShareLabel').textContent = t('主力分流', 'Fast %');
   $('#resetSubInline').textContent = t('重置测算', 'Reset');
   $('#subDisclaimer').textContent = t(
     '基于实测 API 单任务均价精确换算；官方订阅含 5 小时/周动态限流且不公开配额，超线代表“配额够用时订阅划算”。',
@@ -605,8 +654,15 @@ function syncStaticText() {
   $('#subThBreakeven').textContent = t('回本任务数', 'Break-even');
   $('#subThBill').textContent = t('预计月 API 账单', 'Est. Monthly API');
 
+  $('#historySettings').setAttribute('aria-label', t('历史帕累托演进与 AI 降本时间轴', 'Historical Pareto evolution & AI cost deflation timeline'));
+  $('#historyLabel').textContent = t('发布时间轴', 'Timeline');
+
   $('#compareSelectSr').textContent = t('添加条目到多维对比', 'Add entry to comparison');
   $('#compareAutoBtn').textContent = t('推荐代表组合', 'Auto-pick top set');
+  $('#compareExportPng').textContent = t('导图 PNG', 'Export PNG');
+  $('#radarModeSwitch').setAttribute('aria-label', t('雷达图维度切换', 'Radar dimension mode'));
+  $('#radarModeBench').textContent = t('基准六维', 'Benchmarks');
+  $('#radarModeDomain').textContent = t('行业六维', 'Domains');
   $('#radarHeading').textContent = t('细分基准能力雷达与分项对比', 'Sub-benchmark Capability Radar & Breakdown');
   $('#anatomyHeading').textContent = t('单任务成本结构拆解与耗时剖析', 'Per-Task Cost Anatomy & Latency Profile');
   $('#matrixHeading').textContent = t('核心指标并排对决表', 'Head-to-Head Metrics Matrix');
@@ -653,8 +709,18 @@ $('#langToggle').addEventListener('click', () => {
   syncStaticText();
 });
 
+let historyTimer = 0;
+function stopHistoryPlay() {
+  if (historyTimer) {
+    clearInterval(historyTimer);
+    historyTimer = 0;
+    if (state) syncHistoryControls();
+  }
+}
+
 function chooseChart(key, {changeHash = true, routeParams = null} = {}) {
   if (!BENCHMARKS[key]) return;
+  stopHistoryPlay();
   const previousMode = state?.mode;
   endPointerInteractions();
   clearHover();
@@ -737,6 +803,119 @@ function renderLegend() {
   $('#legend').replaceChildren(fragment);
 }
 
+function syncExtraFilterOptions() {
+  const sel = $('#extraFilter');
+  const frag = document.createDocumentFragment();
+  if (activeKey === 'models') {
+    const opts = [
+      ['', t('全部模态 / 协议', 'All modalities')],
+      ['mod:image', t('支持图像输入', 'Image input')],
+      ['mod:speech', t('支持语音输入', 'Speech input')],
+      ['mod:video', t('支持视频输入', 'Video input')],
+      ['lic:permissive', t('宽松开源 (MIT/Apache)', 'Permissive open')]
+    ];
+    for (const [val, label] of opts) {
+      const opt = html('option', label);
+      opt.value = val;
+      frag.append(opt);
+    }
+  } else {
+    const counts = new Map();
+    for (const r of state.rows) {
+      if (!r.agentName) continue;
+      counts.set(r.agentName, (counts.get(r.agentName) || 0) + 1);
+    }
+    const first = html('option', t('全部智能体框架', 'All harnesses'));
+    first.value = '';
+    frag.append(first);
+    for (const [ag, cnt] of [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))) {
+      const opt = html('option', `${ag} (${cnt})`);
+      opt.value = `agent:${ag}`;
+      frag.append(opt);
+    }
+  }
+  sel.replaceChildren(frag);
+  if (![...sel.options].some(o => o.value === state.extraFilter)) {
+    state.extraFilter = '';
+  }
+  sel.value = state.extraFilter;
+}
+
+function shiftMonthsIso(isoDate, deltaMonths) {
+  const dt = new Date(isoDate + 'T00:00:00Z');
+  dt.setUTCMonth(dt.getUTCMonth() + deltaMonths);
+  return dt.toISOString().slice(0, 10);
+}
+
+function syncHistoryControls() {
+  const canHist = activeKey === 'models' && state.xMetric === 'cost' && state.releaseDates.length > 1;
+  $('#historyToggle').hidden = state.mode !== 'chart' || !canHist;
+  $('#historyToggle').setAttribute('aria-pressed', String(state.historyMode && canHist));
+  $('#historyToggle').textContent = state.historyMode && canHist
+    ? t('历史演进 ✓', 'History ✓')
+    : t('历史演进', 'History');
+  const showBar = state.mode === 'chart' && canHist && state.historyMode;
+  $('#historySettings').hidden = !showBar;
+  $('#keyHistoryWrap').hidden = !showBar;
+  if (!showBar) return;
+
+  $('#historyPlayBtn').textContent = historyTimer
+    ? t('⏸ 暂停', '⏸ Pause')
+    : t('▶ 回放演进', '▶ Play');
+
+  const dates = state.releaseDates;
+  const maxIdx = dates.length - 1;
+  state.historyIndex = Math.max(0, Math.min(maxIdx, state.historyIndex));
+  $('#historySlider').max = maxIdx;
+  $('#historySlider').value = state.historyIndex;
+  const cutoff = dates[state.historyIndex];
+  $('#historyDateOut').textContent = cutoff;
+
+  const latest = dates[maxIdx];
+  const findIdxNear = targetIso => {
+    const idx = dates.findIndex(d => d >= targetIso);
+    return idx === -1 ? maxIdx : Math.max(0, idx);
+  };
+  const milestones = [
+    {idx: 0, zh: '起点', en: 'Start'},
+    {idx: findIdxNear(shiftMonthsIso(latest, -6)), zh: '6 个月前', en: '−6 mo'},
+    {idx: findIdxNear(shiftMonthsIso(latest, -3)), zh: '3 个月前', en: '−3 mo'},
+    {idx: maxIdx, zh: '最新全榜', en: 'Today'}
+  ];
+  const pFrag = document.createDocumentFragment();
+  const seenIdx = new Set();
+  for (const ms of milestones) {
+    if (seenIdx.has(ms.idx)) continue;
+    seenIdx.add(ms.idx);
+    const btn = html('button', t(ms.zh, ms.en));
+    btn.type = 'button';
+    btn.setAttribute('aria-pressed', String(state.historyIndex === ms.idx));
+    btn.addEventListener('click', () => {
+      stopHistoryPlay();
+      state.historyIndex = ms.idx;
+      syncHistoryControls();
+      syncUrlHash();
+      scheduleDraw();
+    });
+    pFrag.append(btn);
+  }
+  $('#historyPresetGroup').replaceChildren(pFrag);
+
+  const summary = historicalFrontierSummary(licenseFilteredRows(state.rows), cutoff);
+  if (summary && summary.pastCount > 0) {
+    const defStr = summary.deflationFactor && summary.deflationFactor >= 1.05
+      ? t(
+        ` · 达 ≥${summary.milestone} 分最低成本 ${money(summary.pastMinCost)} → 今日 ${money(summary.currentMinCost)}（AI 降本 ×${format(summary.deflationFactor, 1)}）`,
+        ` · Min cost for ≥${summary.milestone}: ${money(summary.pastMinCost)} → ${money(summary.currentMinCost)} today (${format(summary.deflationFactor, 1)}× cheaper)`
+      )
+      : '';
+    $('#historySummary').textContent = t(
+      `截至 ${cutoff}：已发布 ${summary.pastCount}/${summary.totalCount} 款 · 当时最高 ${format(summary.pastMaxScore, 1)} 分（今日 ${format(summary.currentMaxScore, 1)}）${defStr}`,
+      `As of ${cutoff}: ${summary.pastCount}/${summary.totalCount} released · Peak ${format(summary.pastMaxScore, 1)} vs ${format(summary.currentMaxScore, 1)} today${defStr}`
+    );
+  }
+}
+
 function syncControls() {
   const isTimeAxis = state.xMetric === 'time';
   $('#xMetricCost').setAttribute('aria-pressed', String(!isTimeAxis));
@@ -751,6 +930,7 @@ function syncControls() {
   for (const btn of document.querySelectorAll('#licenseGroup [data-license]')) {
     btn.setAttribute('aria-pressed', String(btn.dataset.license === state.license));
   }
+  syncExtraFilterOptions();
 
   $('#search').value = state.search;
   $('#frontier').setAttribute('aria-pressed', String(state.frontierOnly));
@@ -771,6 +951,7 @@ function syncControls() {
   $('#subLineToggle').textContent = state.subLine ? t('回本线 ✓', 'Sub line ✓') : t('回本线', 'Sub line');
   $('#keySubWrap').hidden = !(state.subLine && !isTimeAxis);
 
+  $('#exportPng').hidden = state.mode !== 'chart';
   $('#exportCsv').hidden = !(state.mode === 'table' || state.mode === 'sub');
 
   $('#labels').setAttribute('aria-pressed', String(state.labels));
@@ -792,6 +973,7 @@ function syncControls() {
   syncSettingsReset();
   syncValueControls();
   syncSubControls();
+  syncHistoryControls();
 
   const hideFilterChrome = state.mode === 'curve' || state.mode === 'compare';
   $('#optionsPanel').hidden = state.mode !== 'chart';
@@ -820,7 +1002,7 @@ function syncControls() {
   $('#curveScaleToggle').setAttribute('aria-pressed', String(state.curveLogY));
   $('#curveScaleToggle').textContent = state.curveLogY ? t('对数纵轴 ✓', 'Log Y ✓') : t('对数纵轴', 'Log Y');
 
-  const hasFocus = !!(state.company || state.license !== 'all' || state.search || state.frontierOnly || state.minScore > 0);
+  const hasFocus = !!(state.company || state.license !== 'all' || state.extraFilter || state.search || state.frontierOnly || state.minScore > 0);
   $('#clearFilters').hidden = false;
   $('#clearFilters').style.visibility = hasFocus ? 'visible' : 'hidden';
   $('#clearFilters').disabled = !hasFocus;
@@ -834,7 +1016,7 @@ function syncPanelControls() {
   $('#controlsToggle').hidden = emptyDesktopPanel;
   $('#controlPanel').hidden = !controlsOpen || emptyDesktopPanel;
   const activeFilters = state && state.mode !== 'curve' && state.mode !== 'compare'
-    ? Number(!!state.company) + Number(state.license !== 'all') + Number(!!state.search) + Number(state.frontierOnly) + Number(state.minScore > 0)
+    ? Number(!!state.company) + Number(state.license !== 'all') + Number(!!state.extraFilter) + Number(!!state.search) + Number(state.frontierOnly) + Number(state.minScore > 0)
     : 0;
   $('#controlsToggle').setAttribute('aria-expanded', String(controlsOpen));
   $('#controlsToggle').textContent = controlsOpen
@@ -982,6 +1164,49 @@ function syncValueControls() {
   $('#valueUnit').textContent = pureCost ? t('50/USD', '50/USD') : linear ? t('指数/USD', 'Index/USD') : t('加权/USD', 'Weighted/USD');
 }
 
+function syncRouterControls() {
+  const open = !!state.routerOpen;
+  $('#routerToggle').setAttribute('aria-pressed', String(open));
+  $('#routerToggle').textContent = open
+    ? t('混合路由 ✓', 'Router ✓')
+    : t('混合路由模拟', 'Router sim');
+  $('#routerPanel').hidden = !open;
+  if (!open) return;
+
+  const sorted = sortRows(state.rows, 'intelligenceIndex', 'desc');
+  for (const [selId, key] of [['#routerFastSelect', 'routerFastId'], ['#routerStrongSelect', 'routerStrongId']]) {
+    const sel = $(selId);
+    if (sel.dataset.bench !== activeKey || sel.options.length !== sorted.length) {
+      const frag = document.createDocumentFragment();
+      for (const r of sorted) {
+        const opt = html('option', `${r.shortName || r.name} (${format(r.intelligenceIndex, 1)} · ${money(r.cost)})`);
+        opt.value = r.id;
+        frag.append(opt);
+      }
+      sel.replaceChildren(frag);
+      sel.dataset.bench = activeKey;
+    }
+    if (!state.rows.some(r => r.id === state[key])) state[key] = sorted[0].id;
+    sel.value = state[key];
+  }
+
+  $('#routerShare').value = state.routerShare;
+  $('#routerShareOut').textContent = `${state.routerShare}% / ${100 - state.routerShare}%`;
+
+  const fastRow = state.rows.find(r => r.id === state.routerFastId) || sorted.at(-1);
+  const strongRow = state.rows.find(r => r.id === state.routerStrongId) || sorted[0];
+  const res = cascadingRouteSummary(fastRow, strongRow, state.routerShare / 100, state.monthlyTasks);
+  if (res) {
+    const subCmp = res.monthlyBlendedBill < state.subFee
+      ? t(`较 $${state.subFee} 订阅省 ${compactMoney(state.subFee - res.monthlyBlendedBill)}/月`, `saves ${compactMoney(state.subFee - res.monthlyBlendedBill)} vs $${state.subFee}/mo`)
+      : t(`超 $${state.subFee} 订阅线 +${compactMoney(res.monthlyBlendedBill - state.subFee)}`, `+${compactMoney(res.monthlyBlendedBill - state.subFee)} over $${state.subFee}/mo`);
+    $('#routerReadout').textContent = t(
+      `混合均价 ${money(res.blendedCost)}/次（较纯旗舰省 ${Math.round(Math.max(0, res.savingsVsStrong) * 100)}%）· 月账单 ${compactMoney(res.monthlyBlendedBill)}（${subCmp}）`,
+      `Blended ${money(res.blendedCost)}/task (−${Math.round(Math.max(0, res.savingsVsStrong) * 100)}% vs flagship) · ${compactMoney(res.monthlyBlendedBill)}/mo (${subCmp})`
+    );
+  }
+}
+
 function syncSubControls() {
   const fee = state.subFee, tasks = state.monthlyTasks;
   const restored = fee === MONTHLY_USAGE.defaultFee && tasks === state.defaultTasks;
@@ -1014,6 +1239,7 @@ function syncSubControls() {
     `盈亏平衡单价：${money(thresholdCost)}/任务 · 当前 ${apiCount} 项 API 按量更省，${subCount} 项超 $${fee}/月订阅线`,
     `Break-even cost: ${money(thresholdCost)}/task · ${apiCount} cheaper via API, ${subCount} exceed $${fee}/mo line`
   );
+  syncRouterControls();
 }
 
 function renderStatus() {
@@ -1098,6 +1324,7 @@ function buildPlot() {
   const floorRect = node('rect', {class: 'floor-rect'});
   const floorGuide = node('line', {class: 'floor-guide'});
   const paretoPath = node('path', {class: 'pareto'});
+  const paretoHistoryPath = node('path', {class: 'pareto-history'});
   const effortLayer = node('g', {class: 'effort-layer'});
   const isoPath = node('path', {class: 'iso-curve'});
   const subGuide = node('line', {class: 'sub-guide'});
@@ -1113,7 +1340,7 @@ function buildPlot() {
     node('g', {class: 'active-layer'})
   );
 
-  plot.append(quadrant, quadrantBorder, floorRect, floorGuide, paretoPath, effortLayer, isoPath, subGuide, connectors, points, labels);
+  plot.append(quadrant, quadrantBorder, floorRect, floorGuide, paretoPath, paretoHistoryPath, effortLayer, isoPath, subGuide, connectors, points, labels);
   svg.replaceChildren(defs, node('g', {class: 'grid'}), plot, node('g', {class: 'axis'}), emphasis);
 
   const axisName = t(BENCHMARKS[activeKey].zhAxis, BENCHMARKS[activeKey].enAxis);
@@ -1493,6 +1720,144 @@ function shortEvalLabel(name) {
   return name.length > 14 ? name.slice(0, 13) + '…' : name;
 }
 
+function exportChartPng(kind = state?.mode) {
+  if (!state) return;
+  const targetSvg = kind === 'curve' ? $('#curveSvg') : kind === 'compare' ? $('#radarSvg') : $('#svg');
+  const vb = targetSvg.getAttribute('viewBox')?.split(/\s+/).map(Number);
+  if (!vb || vb.length !== 4 || !(vb[2] > 0 && vb[3] > 0)) return;
+  const [, , svgW, svgH] = vb;
+
+  const cs = getComputedStyle(document.documentElement);
+  const v = name => cs.getPropertyValue(name).trim() || '#888';
+  const clone = targetSvg.cloneNode(true);
+  clone.setAttribute('xmlns', NS);
+  clone.setAttribute('width', String(svgW));
+  clone.setAttribute('height', String(svgH));
+
+  const styleText = `
+    svg { font-family: "IBM Plex Sans", "Segoe UI", "Microsoft YaHei UI", sans-serif; }
+    .grid line, .curve-grid line { stroke: ${v('--grid')}; stroke-width: 1; }
+    .frame { stroke: ${v('--frame')}; stroke-width: 1; fill: none; }
+    .axis text, .curve-axis text, .radar-scale-tick { fill: ${v('--muted')}; font-size: 11px; }
+    .axis .axis-title, .curve-axis .axis-title { fill: ${v('--ink')}; font-size: 11.5px; font-weight: 500; }
+    .axis .quadrant-note { fill: ${v('--muted')}; font-size: 11px; opacity: 0.78; }
+    .quadrant { fill: ${v('--quadrant')}; }
+    .quadrant-border { stroke: ${v('--quadrant-edge')}; stroke-width: 1; stroke-dasharray: 4 4; fill: none; }
+    .floor-rect { fill: ${v('--floor-shade')}; }
+    .floor-guide { stroke: ${v('--floor-line')}; stroke-width: 1.2; stroke-dasharray: 5 4; }
+    .pareto { stroke: ${v('--frontier')}; stroke-width: 1.6; stroke-dasharray: 2 5; fill: none; }
+    .pareto-history { stroke: ${v('--accent')}; stroke-width: 2.3; fill: none; }
+    .effort-line { fill: none; stroke-width: 1.6; stroke-dasharray: 4 3; opacity: 0.6; }
+    .effort-line.is-highlighted { stroke-width: 2.3; stroke-dasharray: none; opacity: 0.95; }
+    .iso-curve { stroke: ${v('--accent')}; stroke-width: 1.75; stroke-dasharray: 6 4; fill: none; }
+    .sub-guide { stroke: ${v('--amber')}; stroke-width: 1.65; stroke-dasharray: 6 4; }
+    .sub-guide-label { fill: ${v('--amber')}; font-size: 11.5px; font-weight: 600; }
+    .point, .curve-pareto-dot { stroke: ${v('--halo')}; stroke-width: 1.2; }
+    .label { stroke: ${v('--halo')}; stroke-width: 2.2; paint-order: stroke; }
+    .connector { stroke-width: 0.75; opacity: 0.6; }
+    .champion-ring { stroke: ${v('--accent')}; stroke-width: 2; stroke-dasharray: 3 2; fill: none; }
+    .curve-champion-label { fill: ${v('--accent')}; font-size: 11.5px; font-weight: 600; }
+    .utility-line { fill: none; stroke: ${v('--accent')}; stroke-width: 2.5; }
+    .utility-reference { fill: none; stroke: ${v('--muted')}; stroke-width: 1.5; stroke-dasharray: 6 5; }
+    .utility-area { fill: ${v('--accent')}; opacity: 0.08; }
+    .curve-probe path { stroke: ${v('--accent')}; stroke-width: 1; stroke-dasharray: 3 4; }
+    .curve-probe circle { fill: ${v('--accent')}; stroke: ${v('--chart')}; stroke-width: 2; }
+    .radar-grid { fill: none; stroke: ${v('--border-strong')}; stroke-width: 1; opacity: 0.72; }
+    .radar-ring-fill { fill: ${v('--chart')}; opacity: 0.42; }
+    .radar-axis-label { fill: ${v('--ink')}; font-size: 12.5px; font-weight: 600; }
+    .radar-axis-sub { fill: ${v('--accent')}; font-size: 11px; font-weight: 500; }
+  `;
+  const styleNode = node('style', {}, styleText);
+  clone.prepend(styleNode);
+
+  let serialized = new XMLSerializer().serializeToString(clone);
+  serialized = serialized.replace(/var\((--[a-z0-9-]+)\)/gi, (_, name) => v(name));
+  const svgBlob = new Blob([serialized], {type: 'image/svg+xml;charset=utf-8'});
+  const url = URL.createObjectURL(svgBlob);
+  const img = new Image();
+  img.onload = () => {
+    const scale = 2;
+    const padX = 24, headH = kind === 'compare' ? 76 : 54, footH = 32;
+    const outW = Math.max(640, svgW + padX * 2);
+    const outH = svgH + headH + footH;
+    const canvas = document.createElement('canvas');
+    canvas.width = outW * scale;
+    canvas.height = outH * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(scale, scale);
+
+    ctx.fillStyle = v('--chart');
+    ctx.fillRect(0, 0, outW, outH);
+
+    ctx.fillStyle = v('--ink');
+    ctx.font = '600 16px "IBM Plex Sans", "Segoe UI", sans-serif';
+    const titleStr = kind === 'compare' ? $('#radarHeading').textContent : $('#chartTitle').textContent;
+    ctx.fillText(titleStr, padX, 28);
+
+    ctx.fillStyle = v('--muted');
+    ctx.font = '400 12px "IBM Plex Sans", "Segoe UI", sans-serif';
+    ctx.fillText($('#viewStatus').textContent || '', padX, 46);
+
+    if (kind === 'compare') {
+      let lx = padX;
+      const rowMap = new Map(state.rows.map(r => [r.id, r]));
+      state.compareIds.map(id => rowMap.get(id)).filter(Boolean).forEach((r, idx) => {
+        ctx.fillStyle = compareColor(idx);
+        ctx.beginPath();
+        ctx.arc(lx + 4, 62, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = v('--ink');
+        ctx.font = '500 12px "IBM Plex Sans", "Segoe UI", sans-serif';
+        const nameTxt = r.shortName || r.name;
+        ctx.fillText(nameTxt, lx + 12, 66);
+        lx += ctx.measureText(nameTxt).width + 28;
+      });
+    }
+
+    ctx.drawImage(img, (outW - svgW) / 2, headH, svgW, svgH);
+
+    ctx.fillStyle = v('--muted');
+    ctx.font = '400 11.5px "IBM Plex Sans", "Segoe UI", sans-serif';
+    ctx.fillText(`Artificial Analysis · Intelligence vs. Cost (${new Date().toISOString().slice(0, 10)})`, padX, outH - 11);
+
+    canvas.toBlob(pngBlob => {
+      URL.revokeObjectURL(url);
+      if (!pngBlob) return;
+      const dlUrl = URL.createObjectURL(pngBlob);
+      const a = document.createElement('a');
+      a.href = dlUrl;
+      a.download = `intelligence-vs-cost-${activeKey}-${kind}.png`;
+      document.body.append(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(dlUrl), 1000);
+    }, 'image/png');
+  };
+  img.onerror = () => URL.revokeObjectURL(url);
+  img.src = url;
+}
+
+function modalitySummary(row) {
+  const parts = [t('文本', 'Text')];
+  if (row.modalities?.includes('image')) parts.push(t('图像', 'Img'));
+  if (row.modalities?.includes('speech')) parts.push(t('语音', 'Aud'));
+  if (row.modalities?.includes('video')) parts.push(t('视频', 'Vid'));
+  return parts.join('+');
+}
+
+function focusRadarSeries(idxOrNull) {
+  const radarSvg = $('#radarSvg');
+  if (!radarSvg) return;
+  const groups = radarSvg.querySelectorAll('.radar-series');
+  if (idxOrNull === null || idxOrNull < 0) {
+    radarSvg.classList.remove('has-focus');
+    groups.forEach(g => g.classList.remove('is-focused'));
+  } else {
+    radarSvg.classList.add('has-focus');
+    groups.forEach(g => g.classList.toggle('is-focused', Number(g.dataset.seriesIdx) === idxOrNull));
+  }
+}
+
 function renderCompare() {
   if (!state) return;
   const rowMap = new Map(state.rows.map(r => [r.id, r]));
@@ -1502,7 +1867,7 @@ function renderCompare() {
     selectedRows = state.compareIds.map(id => rowMap.get(id)).filter(Boolean);
   }
 
-  // 1. Selected Chips & Selector
+  // 1. Selected Chips & Selector (hovering a chip highlights its radar polygon!)
   const chipsFrag = document.createDocumentFragment();
   selectedRows.forEach((row, idx) => {
     const sc = compareColor(idx);
@@ -1516,6 +1881,8 @@ function renderCompare() {
     rmBtn.disabled = selectedRows.length <= 1;
     rmBtn.setAttribute('aria-label', t(`移除 ${row.name}`, `Remove ${row.name}`));
     rmBtn.addEventListener('click', () => toggleCompareId(row.id));
+    chip.addEventListener('pointerenter', () => focusRadarSeries(idx));
+    chip.addEventListener('pointerleave', () => focusRadarSeries(null));
     chip.append(dot, html('span', row.shortName || row.name), rmBtn);
     chipsFrag.append(chip);
   });
@@ -1538,24 +1905,41 @@ function renderCompare() {
   select.value = '';
   select.disabled = selectedRows.length >= 4;
 
-  // 2. Radar & Sub-score Bars
+  // 2. Hero Centerpiece Capability Radar & Compact Score Strip
+  $('#radarModeSwitch').hidden = activeKey !== 'models';
+  $('#radarModeBench').setAttribute('aria-pressed', String(state.radarMode !== 'domain'));
+  $('#radarModeDomain').setAttribute('aria-pressed', String(state.radarMode === 'domain'));
+
   let axes, barMetrics;
   if (activeKey === 'models') {
-    $('#radarHeading').textContent = t('Intelligence Index v5 六维能力雷达与幻觉率', 'Intelligence Index v5 6-Pillar Radar & Hallucination');
-    axes = [
-      {key: 'frontierCode', zh: '前沿编程', en: 'FrontierCode', get: r => r.subscores?.frontierCode ?? null},
-      {key: 'terminalBench', zh: '终端代理', en: 'Terminal 4.0', get: r => r.subscores?.terminalBench ?? null},
-      {key: 'hleDiamond', zh: '人类终极考', en: 'HLE Diamond', get: r => r.subscores?.hleDiamond ?? null},
-      {key: 'critptAgentic', zh: '复杂研究', en: 'CritPt Agent', get: r => r.subscores?.critptAgentic ?? null},
-      {key: 'science', zh: '科学推理', en: 'Science', get: r => r.subscores?.science ?? null},
-      {key: 'omniscience', zh: '全科知识', en: 'Omniscience', get: r => r.subscores?.omniscience ?? null}
-    ];
-    barMetrics = [
-      ...axes,
-      {key: 'hallucination', zh: '全科幻觉率（越低越好 ↓）', en: 'Hallucination Rate (lower ↓)', lowerBetter: true, get: r => r.subscores?.hallucination ?? null}
-    ];
+    if (state.radarMode === 'domain') {
+      $('#radarHeading').textContent = t('六大行业专业能力评估雷达', '6-Sector Professional Domain Capability Radar');
+      axes = [
+        {key: 'finance', zh: '金融财务', en: 'Finance', get: r => r.domainScores?.finance ?? null},
+        {key: 'strategy', zh: '战略运营', en: 'Strategy & Ops', get: r => r.domainScores?.strategy ?? null},
+        {key: 'legal', zh: '法律合规', en: 'Legal', get: r => r.domainScores?.legal ?? null},
+        {key: 'healthcare', zh: '医疗健康', en: 'Healthcare', get: r => r.domainScores?.healthcare ?? null},
+        {key: 'engineering', zh: '工程研发', en: 'Engineering', get: r => r.domainScores?.engineering ?? null},
+        {key: 'economics', zh: '宏观经济', en: 'Economics', get: r => r.domainScores?.economics ?? null}
+      ];
+      barMetrics = [...axes];
+    } else {
+      $('#radarHeading').textContent = t('Intelligence Index v5 六维核心能力雷达', 'Intelligence Index v5 6-Pillar Capability Radar');
+      axes = [
+        {key: 'frontierCode', zh: '前沿编程', en: 'FrontierCode', get: r => r.subscores?.frontierCode ?? null},
+        {key: 'terminalBench', zh: '终端代理', en: 'Terminal 4.0', get: r => r.subscores?.terminalBench ?? null},
+        {key: 'hleDiamond', zh: '人类终极考', en: 'HLE Diamond', get: r => r.subscores?.hleDiamond ?? null},
+        {key: 'critptAgentic', zh: '复杂研究', en: 'CritPt Agent', get: r => r.subscores?.critptAgentic ?? null},
+        {key: 'science', zh: '科学推理', en: 'Science', get: r => r.subscores?.science ?? null},
+        {key: 'omniscience', zh: '全科知识', en: 'Omniscience', get: r => r.subscores?.omniscience ?? null}
+      ];
+      barMetrics = [
+        ...axes,
+        {key: 'hallucination', zh: '全科幻觉率 ↓', en: 'Hallucination ↓', lowerBetter: true, get: r => r.subscores?.hallucination ?? null}
+      ];
+    }
   } else {
-    $('#radarHeading').textContent = t('编程智能体分项基准雷达与缓存效率', 'Coding Agent Sub-Benchmark Radar & Cache Efficiency');
+    $('#radarHeading').textContent = t('编程智能体四维基准能力雷达', 'Coding Agent 4-Axis Capability Radar');
     const evalNames = [];
     for (const r of state.rows) {
       for (const ev of r.evalScores || []) {
@@ -1573,31 +1957,35 @@ function renderCompare() {
       ...evalAxes
     ];
     barMetrics = [
-      ...evalAxes,
-      {key: 'cache', zh: 'Prompt 缓存命中率', en: 'Prompt Cache Hit %', get: r => r.agentStats?.cacheHitRate ?? null}
+      ...axes,
+      {key: 'cache', zh: '缓存命中率', en: 'Cache Hit %', get: r => r.agentStats?.cacheHitRate ?? null}
     ];
   }
 
   const radarSvg = $('#radarSvg');
-  radarSvg.setAttribute('viewBox', '0 0 370 264');
+  radarSvg.setAttribute('viewBox', '0 0 580 410');
+  radarSvg.classList.remove('has-focus');
   radarSvg.replaceChildren();
-  const cx = 185, cy = 132, R = 76, N = Math.max(3, axes.length);
+  const cx = 290, cy = 205, R = 142, N = Math.max(3, axes.length);
   const obsValues = selectedRows.flatMap(r => axes.map(a => a.get(r))).filter(v => v !== null);
   const scaleMax = Math.min(100, Math.max(60, Math.ceil(Math.max(40, ...obsValues) / 20) * 20));
 
-  for (const frac of [0.25, 0.5, 0.75, 1]) {
+  for (const [ringIdx, frac] of [1, 0.75, 0.5, 0.25].entries()) {
     const pts = axes.map((_, i) => {
       const ang = -Math.PI / 2 + (i * 2 * Math.PI) / N;
       return `${cx + Math.cos(ang) * R * frac},${cy + Math.sin(ang) * R * frac}`;
     }).join(' ');
+    if (ringIdx % 2 === 0) {
+      radarSvg.append(node('polygon', {class: 'radar-ring-fill', points: pts}));
+    }
     radarSvg.append(node('polygon', {class: 'radar-grid', points: pts}));
   }
-  for (const frac of [0.5, 1]) {
+
+  for (const frac of [0.25, 0.5, 0.75, 1]) {
     radarSvg.append(node('text', {
-      class: 'radar-axis-label',
-      x: cx + 4,
-      y: cy - R * frac + 10,
-      'font-size': '10.5'
+      class: 'radar-scale-tick',
+      x: cx + 5,
+      y: cy - R * frac + 11
     }, String(Math.round(scaleMax * frac))));
   }
 
@@ -1612,29 +2000,46 @@ function renderCompare() {
       y2: cy + sin * R
     }));
     const anchor = Math.abs(cos) < 0.18 ? 'middle' : cos > 0 ? 'start' : 'end';
-    const dy = sin < -0.5 ? -3 : sin > 0.5 ? 10 : 4;
+    const labelR = R + 16;
+    const lx = cx + cos * labelR;
+    const ly = cy + sin * labelR + (sin < -0.5 ? -8 : sin > 0.5 ? 12 : 1);
     radarSvg.append(node('text', {
       class: 'radar-axis-label',
-      x: cx + cos * (R + 13),
-      y: cy + sin * (R + 13) + dy,
+      x: lx,
+      y: ly,
       'text-anchor': anchor
     }, t(ax.zh, ax.en)));
+
+    const vals = selectedRows.map(r => ax.get(r)).filter(v => v !== null);
+    if (vals.length) {
+      const topVal = Math.max(...vals);
+      radarSvg.append(node('text', {
+        class: 'radar-axis-sub',
+        x: lx,
+        y: ly + 14,
+        'text-anchor': anchor
+      }, `${t('最高', 'Max')} ${format(topVal, 1)}%`));
+    }
   });
 
   selectedRows.forEach((row, idx) => {
     const sc = compareColor(idx);
+    const seriesG = node('g', {class: 'radar-series', 'data-series-idx': idx});
+    seriesG.addEventListener('pointerenter', () => focusRadarSeries(idx));
+    seriesG.addEventListener('pointerleave', () => focusRadarSeries(null));
+
     const pts = axes.map((ax, i) => {
       const val = ax.get(row);
       const ratio = val === null ? 0 : Math.max(0, Math.min(1, val / scaleMax));
       const ang = -Math.PI / 2 + (i * 2 * Math.PI) / N;
       return `${cx + Math.cos(ang) * R * ratio},${cy + Math.sin(ang) * R * ratio}`;
     }).join(' ');
-    radarSvg.append(node('polygon', {
+    seriesG.append(node('polygon', {
       points: pts,
       fill: sc,
-      'fill-opacity': 0.13,
+      'fill-opacity': 0.16,
       stroke: sc,
-      'stroke-width': 2,
+      'stroke-width': 2.6,
       'stroke-linejoin': 'round'
     }));
     axes.forEach((ax, i) => {
@@ -1645,48 +2050,48 @@ function renderCompare() {
       const dot = node('circle', {
         cx: cx + Math.cos(ang) * R * ratio,
         cy: cy + Math.sin(ang) * R * ratio,
-        r: 3.3,
-        fill: sc
+        r: 4.5,
+        fill: sc,
+        stroke: 'var(--halo)',
+        'stroke-width': 1.4
       });
       dot.append(node('title', {}, `${row.name} · ${t(ax.zh, ax.en)}: ${format(val, 1)}%`));
-      radarSvg.append(dot);
+      seriesG.append(dot);
     });
+    radarSvg.append(seriesG);
   });
 
+  // Compact score summary grid directly beneath the Hero Radar
   const barsFrag = document.createDocumentFragment();
   for (const m of barMetrics) {
     const validNums = selectedRows.map(r => m.get(r)).filter(v => v !== null);
     if (!validNums.length) continue;
     const bestVal = m.lowerBetter ? Math.min(...validNums) : Math.max(...validNums);
-    const block = html('div', null, 'metric-block');
-    const title = html('div', null, 'metric-title');
-    title.append(html('span', t(m.zh, m.en)));
-    block.append(title);
+    const card = html('div', null, 'radar-dim-card');
+    card.append(html('div', t(m.zh, m.en), 'radar-dim-title'));
     selectedRows.forEach((row, idx) => {
       const val = m.get(row);
-      const sc = compareColor(idx);
-      const mini = html('div', null, 'mini-bar-row');
-      const track = html('span', null, 'comparison-track');
-      const fill = html('i');
-      fill.style.width = val === null ? '0%' : `${Math.max(2, Math.min(100, val))}%`;
-      fill.style.background = sc;
-      track.append(fill);
-      const valEl = html('span', val === null ? '—' : `${format(val, 1)}%`, 'mini-bar-val');
+      const item = html('div', null, 'radar-dim-item');
+      const nameWrap = html('span', null, 'radar-dim-name');
+      const dot = html('i', null, 'creator-dot');
+      dot.style.background = compareColor(idx);
+      const short = (row.shortName || row.name).replace(/^Claude Code - |^Codex - /i, '');
+      nameWrap.append(dot, html('span', short));
+      const valEl = html('b', val === null ? '—' : `${format(val, 1)}%`);
       if (val !== null && selectedRows.length > 1 && Math.abs(val - bestVal) < 1e-6) {
         valEl.style.color = 'var(--accent)';
-        valEl.style.fontWeight = '600';
       }
-      mini.append(html('span', row.shortName || row.name, 'mini-bar-name'), track, valEl);
-      block.append(mini);
+      item.append(nameWrap, valEl);
+      card.append(item);
     });
-    barsFrag.append(block);
+    barsFrag.append(card);
   }
   $('#subscoreBars').replaceChildren(barsFrag);
 
-  // 3. Cost Structure, Tail Risk & Latency Anatomy
+  // 3. Cost Structure, Tail Risk, Multi-Provider Arbitrage & Latency Anatomy
   const anatomyFrag = document.createDocumentFragment();
   if (activeKey === 'models') {
-    $('#anatomyHeading').textContent = t('单任务成本构成、输出 Token 与平均耗时', 'Per-Task Cost Composition, Output Tokens & Latency');
+    $('#anatomyHeading').textContent = t('单任务成本构成、多云比价与耗时', 'Per-Task Cost Composition, Cloud Hosts & Latency');
     const legend = html('div', null, 'stack-legend');
     for (const [col, zhL, enL] of [
       ['#38bdf8', '输入 Prompt', 'Input'],
@@ -1731,7 +2136,7 @@ function renderCompare() {
 
     const maxTime = Math.max(1, ...selectedRows.map(r => r.timeSec || 0));
     const timeBlock = html('div', null, 'metric-block');
-    timeBlock.style.marginTop = '6px';
+    timeBlock.style.marginTop = '4px';
     timeBlock.append(html('div', t('单任务平均端到端耗时', 'Mean End-to-End Task Time'), 'metric-title'));
     selectedRows.forEach((row, idx) => {
       const mini = html('div', null, 'mini-bar-row');
@@ -1744,6 +2149,25 @@ function renderCompare() {
       timeBlock.append(mini);
     });
     anatomyFrag.append(timeBlock);
+
+    // Multi-provider API cloud arbitrage block when available
+    const multiHostRows = selectedRows.filter(r => r.providers?.length >= 2);
+    if (multiHostRows.length) {
+      const provGroup = html('div', null, 'provider-group');
+      provGroup.append(html('div', t('同模型多云 API 托管商实测比价与耗时', 'Multi-Cloud API Provider Cost & Latency'), 'metric-title'));
+      for (const row of multiHostRows) {
+        const sub = html('div', null, 'metric-block');
+        sub.append(html('span', `${row.shortName || row.name} (${row.providers.length} ${t('家服务商', 'hosts')})`, 'anatomy-note'));
+        const list = html('div', null, 'provider-chips');
+        row.providers.slice(0, 6).forEach((p, pIdx) => {
+          const pill = html('span', `${p.host}: ${money(p.cost)}${p.timeSec ? ' · ' + formatTime(p.timeSec) : ''}`, pIdx === 0 ? 'provider-pill is-cheapest' : 'provider-pill');
+          list.append(pill);
+        });
+        sub.append(list);
+        provGroup.append(sub);
+      }
+      anatomyFrag.append(provGroup);
+    }
   } else {
     $('#anatomyHeading').textContent = t('单任务成本分位箱线图（尾部风险）与执行耗时', 'Task Cost Distribution (P05–P50–P95 Tail Risk) & Wall Time');
     const maxDollar = Math.max(1, ...selectedRows.map(r => Math.max(r.costPercentiles?.p95 || 0, r.cost))) * 1.06;
@@ -1880,6 +2304,10 @@ function renderCompare() {
   );
 
   if (activeKey === 'models') {
+    addRow(
+      t('参数规模 · 输入模态', 'Parameters · Modalities'),
+      selectedRows.map(r => `${r.parametersB ? r.parametersB + 'B' : t('未公开', 'Undisclosed')} · ${modalitySummary(r)}`)
+    );
     addRow(
       t('输出总 Token（思考占比）', 'Output Tokens (Reasoning %)'),
       selectedRows.map(r => r.outTokens
@@ -2163,9 +2591,21 @@ function draw() {
     floorRect.style.display = floorGuide.style.display = 'none';
   }
 
-  // Active pool Pareto frontier (cost or time)
+  // Active pool Pareto frontier (cost or time) + optional Historical Pareto evolution
   const frontier = paretoFrontier(pool, xOf);
-  svg.querySelector('.pareto').setAttribute('d', frontier.map((row, i) => `${i ? 'L' : 'M'}${xCoord(row)},${y(row.intelligenceIndex)}`).join(' '));
+  const paretoEl = svg.querySelector('.pareto');
+  const histEl = svg.querySelector('.pareto-history');
+  paretoEl.setAttribute('d', frontier.map((row, i) => `${i ? 'L' : 'M'}${xCoord(row)},${y(row.intelligenceIndex)}`).join(' '));
+  const inHist = activeKey === 'models' && state.historyMode && state.xMetric === 'cost' && state.releaseDates.length > 1;
+  if (inHist) {
+    const cutoff = state.releaseDates[state.historyIndex];
+    const pastFront = paretoFrontier(pool.filter(r => r.releaseDate && r.releaseDate <= cutoff), xOf);
+    histEl.setAttribute('d', pastFront.map((row, i) => `${i ? 'L' : 'M'}${xCoord(row)},${y(row.intelligenceIndex)}`).join(' '));
+    paretoEl.style.opacity = '0.42';
+  } else {
+    histEl.setAttribute('d', '');
+    paretoEl.style.opacity = '';
+  }
 
   // Optional reasoning effort trajectories across multi-effort families
   const effortLayer = svg.querySelector('.effort-layer');
@@ -2322,9 +2762,19 @@ function overlapArea(a, b) {
   return Math.max(0, Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x)) * Math.max(0, Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y));
 }
 
+function isFutureHidden(row) {
+  if (!(activeKey === 'models' && state.historyMode && state.xMetric === 'cost' && state.releaseDates.length > 1)) return false;
+  const cutoff = state.releaseDates[state.historyIndex];
+  return !!(row.releaseDate && row.releaseDate > cutoff);
+}
+
 function layoutLabels(championId) {
-  const placed = [], visible = nodes.filter(item => inView(item.row));
-  const frontier = new Set(paretoFrontier(activePool(), currentXOf()).map(row => row.id));
+  const placed = [], visible = nodes.filter(item => inView(item.row) && !isFutureHidden(item.row));
+  const pool = activePool();
+  const activeHistPool = activeKey === 'models' && state.historyMode && state.xMetric === 'cost' && state.releaseDates.length > 1
+    ? pool.filter(r => r.releaseDate && r.releaseDate <= state.releaseDates[state.historyIndex])
+    : pool;
+  const frontier = new Set(paretoFrontier(activeHistPool, currentXOf()).map(row => row.id));
   const baseDist = state.labelDistance;
   const radii = [3, baseDist * 0.55, baseDist * 0.85, Math.max(6, baseDist)].filter((v, i, arr) => v >= 2 && arr.indexOf(v) === i);
   measure.font = `500 ${state.labelSize}px "IBM Plex Sans", "Segoe UI", "Microsoft YaHei UI", sans-serif`;
@@ -2342,7 +2792,8 @@ function layoutLabels(championId) {
 
   for (const item of ordered) {
     item.label.setAttribute('font-size', state.labelSize);
-    if (!state.labels || !inView(item.row)) {
+    const forceActive = item.row.id === state.selected || item === hovered;
+    if (!state.labels || !inView(item.row) || (isFutureHidden(item.row) && !forceActive)) {
       item.label.style.visibility = item.line.style.visibility = 'hidden';
       continue;
     }
@@ -2417,14 +2868,15 @@ function drawActive(champion) {
 
   for (const item of nodes) {
     const selected = item.row.id === state.selected, active = selected || item === hovered;
-    const focused = !!state.company && item.row.creator?.name === state.company && !state.selected;
+    const futureOut = isFutureHidden(item.row);
+    const focused = !futureOut && !!state.company && item.row.creator?.name === state.company && !state.selected;
     const belowFloor = state.minScore > 0 && item.row.intelligenceIndex < state.minScore;
     const emphasized = active || focused;
-    const muted = !active && (belowFloor || (state.company && item.row.creator?.name !== state.company) || (state.selected && !selected));
+    const muted = !active && (futureOut || belowFloor || (state.company && item.row.creator?.name !== state.company) || (state.selected && !selected));
 
     setAttrs(item.p, {
       r: active ? 6 : focused ? 5 : 4.4,
-      opacity: emphasized ? 0 : muted ? 0.3 : 1,
+      opacity: emphasized ? 0 : futureOut ? 0.1 : muted ? 0.3 : 1,
       'aria-pressed': selected
     });
     item.p.classList.toggle('is-active', active);
@@ -2530,8 +2982,9 @@ function renderPinned() {
 
   $('#pinnedName').textContent = row.name;
   const metaParts = [row.creator?.name || 'Other'];
-  if (row.isOpenWeights) metaParts.push(t('开源', 'Open'));
+  if (row.isOpenWeights) metaParts.push(row.parametersB ? `${t('开源', 'Open')} ${row.parametersB}B` : t('开源', 'Open'));
   if (row.effort?.label) metaParts.push(row.effort.label);
+  if (row.modalities?.length) metaParts.push(modalitySummary(row));
   if (frontierIds.has(row.id)) metaParts.push(t('帕累托前沿', 'Pareto frontier'));
   if (rankInfo) metaParts.push(t(`性价比 #${rankInfo.rank}/${qualifiedCount}`, `Value #${rankInfo.rank}/${qualifiedCount}`));
   $('#pinnedMeta').textContent = metaParts.join(' · ');
@@ -2541,6 +2994,19 @@ function renderPinned() {
   $('#pinnedTime').textContent = formatTime(row.timeSec);
   $('#pinnedValue').textContent = rankInfo ? valueLabel(rankInfo.value) : t('未达门槛', 'Below min');
   $('#pinnedSubNote').textContent = tierBreakevenText(row.cost);
+  const provEl = $('#pinnedProviders');
+  if (row.providers?.length >= 2) {
+    const cheapest = row.providers[0];
+    const fastest = [...row.providers].filter(p => p.timeSec > 0).sort((a, b) => a.timeSec - b.timeSec)[0];
+    provEl.hidden = false;
+    provEl.textContent = t(
+      `多云比价（${row.providers.length} 家）：最低 ${money(cheapest.cost)} (${cheapest.host})${fastest ? ' · 最快 ' + formatTime(fastest.timeSec) + ' (' + fastest.host + ')' : ''}`,
+      `Cloud hosts (${row.providers.length}): Low ${money(cheapest.cost)} (${cheapest.host})${fastest ? ' · Fast ' + formatTime(fastest.timeSec) + ' (' + fastest.host + ')' : ''}`
+    );
+  } else {
+    provEl.hidden = true;
+    provEl.textContent = '';
+  }
   $('#pinnedOutside').hidden = !frame || inView(row);
 
   const inCmp = state.compareIds.includes(row.id);
@@ -2579,8 +3045,10 @@ function showHover(item, event) {
 
   tip.replaceChildren(html('strong', row.name));
   const subParts = [row.creator?.name || 'Other'];
-  if (row.isOpenWeights) subParts.push(t('开源权重', 'Open weights'));
+  if (row.isOpenWeights) subParts.push(row.parametersB ? `${t('开源权重', 'Open')} ${row.parametersB}B` : t('开源权重', 'Open weights'));
   if (row.effort?.label) subParts.push(`${t('推理', 'Effort')}: ${row.effort.label}`);
+  if (row.modalities?.length) subParts.push(modalitySummary(row));
+  if (row.releaseDate) subParts.push(row.releaseDate);
   if (row.agentName && row.modelName) subParts.push(`${row.agentName} · ${row.modelName}`);
   if (frontierIds.has(row.id)) subParts.push(t('帕累托前沿', 'Pareto frontier'));
   if (row.isRouter) subParts.push(t('路由变体', 'Router'));
@@ -2706,6 +3174,10 @@ function updateSummary() {
   if (state.mode !== 'curve' && state.mode !== 'compare') {
     if (state.license === 'open') $('#viewStatus').append(document.createTextNode(t(' · 仅开源', ' · Open only')));
     else if (state.license === 'closed') $('#viewStatus').append(document.createTextNode(t(' · 仅闭源', ' · Proprietary')));
+    if (state.extraFilter) {
+      const xfLabel = $('#extraFilter')?.selectedOptions?.[0]?.textContent;
+      if (xfLabel) $('#viewStatus').append(document.createTextNode(` · ${xfLabel}`));
+    }
     if (state.company) $('#viewStatus').append(document.createTextNode(t(` · 聚焦：${state.company}`, ` · Focus: ${state.company}`)));
     if (state.search) $('#viewStatus').append(document.createTextNode(t(` · 搜索：${state.search}`, ` · Search: ${state.search}`)));
     if (state.frontierOnly) $('#viewStatus').append(document.createTextNode(t(' · 仅前沿', ' · Frontier')));
@@ -2782,6 +3254,16 @@ for (const btn of document.querySelectorAll('#licenseGroup [data-license]')) {
   });
 }
 
+$('#extraFilter').addEventListener('change', () => {
+  if (!state) return;
+  state.extraFilter = $('#extraFilter').value;
+  state.selected = null;
+  renderLegend();
+  syncControls();
+  syncUrlHash();
+  buildPlot();
+});
+
 $('#frontier').addEventListener('click', () => {
   if (!state) return;
   state.frontierOnly = !state.frontierOnly;
@@ -2799,6 +3281,84 @@ $('#effortToggle').addEventListener('click', () => {
   scheduleDraw();
 });
 
+$('#historyToggle').addEventListener('click', () => {
+  if (!state || !state.releaseDates.length) return;
+  stopHistoryPlay();
+  state.historyMode = !state.historyMode;
+  if (state.historyMode && state.historyIndex >= state.releaseDates.length - 1) {
+    const sixMo = shiftMonthsIso(state.releaseDates.at(-1), -6);
+    const idx = state.releaseDates.findIndex(d => d >= sixMo);
+    state.historyIndex = idx === -1 ? Math.floor(state.releaseDates.length * 0.45) : idx;
+  }
+  syncControls();
+  syncUrlHash();
+  scheduleDraw();
+});
+
+$('#historySlider').addEventListener('input', () => {
+  if (!state) return;
+  stopHistoryPlay();
+  state.historyIndex = Number($('#historySlider').value);
+  syncHistoryControls();
+  syncUrlHash();
+  scheduleDraw();
+});
+
+$('#historyPlayBtn').addEventListener('click', () => {
+  if (!state || !state.releaseDates.length) return;
+  if (historyTimer) {
+    stopHistoryPlay();
+    return;
+  }
+  if (state.historyIndex >= state.releaseDates.length - 1) {
+    state.historyIndex = 0;
+  }
+  historyTimer = setInterval(() => {
+    if (!state || !state.historyMode || state.mode !== 'chart') {
+      stopHistoryPlay();
+      return;
+    }
+    if (state.historyIndex < state.releaseDates.length - 1) {
+      state.historyIndex++;
+      syncHistoryControls();
+      syncUrlHash();
+      scheduleDraw();
+    } else {
+      stopHistoryPlay();
+    }
+  }, 150);
+  syncHistoryControls();
+});
+
+$('#routerToggle').addEventListener('click', () => {
+  if (!state) return;
+  state.routerOpen = !state.routerOpen;
+  syncRouterControls();
+});
+
+for (const [selId, key] of [['#routerFastSelect', 'routerFastId'], ['#routerStrongSelect', 'routerStrongId']]) {
+  $(selId).addEventListener('change', () => {
+    if (!state) return;
+    state[key] = $(selId).value;
+    syncRouterControls();
+  });
+}
+
+$('#routerShare').addEventListener('input', () => {
+  if (!state) return;
+  state.routerShare = Number($('#routerShare').value);
+  syncRouterControls();
+});
+
+for (const [btnId, mode] of [['#radarModeBench', 'bench'], ['#radarModeDomain', 'domain']]) {
+  $(btnId).addEventListener('click', () => {
+    if (!state || state.radarMode === mode) return;
+    state.radarMode = mode;
+    syncUrlHash();
+    renderCompare();
+  });
+}
+
 $('#isoToggle').addEventListener('click', () => {
   if (!state) return;
   state.isoCurve = !state.isoCurve;
@@ -2815,6 +3375,9 @@ $('#subLineToggle').addEventListener('click', () => {
   scheduleDraw();
 });
 
+$('#exportPng').addEventListener('click', () => exportChartPng('chart'));
+$('#curveExportPng').addEventListener('click', () => exportChartPng('curve'));
+$('#compareExportPng').addEventListener('click', () => exportChartPng('compare'));
 $('#exportCsv').addEventListener('click', exportCsv);
 
 $('#compareSelect').addEventListener('change', () => {
@@ -2840,8 +3403,10 @@ $('#compareAutoBtn').addEventListener('click', () => {
 
 $('#clearFilters').addEventListener('click', () => {
   if (!state) return;
+  stopHistoryPlay();
   state.company = null;
   state.license = 'all';
+  state.extraFilter = '';
   state.search = '';
   state.frontierOnly = false;
   state.minScore = 0;
@@ -2887,6 +3452,7 @@ $('#resetSettings').addEventListener('click', () => {
 
 function showView(mode) {
   if (!state || !['chart', 'table', 'curve', 'sub', 'compare'].includes(mode)) return;
+  stopHistoryPlay();
   endPointerInteractions();
   clearHover();
   state.mode = mode;
@@ -3226,6 +3792,29 @@ document.addEventListener('pointerdown', event => {
 });
 
 document.addEventListener('keydown', event => {
+  const tag = event.target?.tagName;
+  const typing = tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || event.target?.isContentEditable;
+  if (!typing && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    if (event.key === '/' && state && state.mode !== 'curve' && state.mode !== 'compare') {
+      event.preventDefault();
+      if (!controlsOpen) setControlsOpen(true);
+      $('#search').focus();
+      $('#search').select();
+      return;
+    }
+    if ((event.key === '[' || event.key === ']') && state && state.mode === 'chart') {
+      const frontier = paretoFrontier(activePool(), currentXOf());
+      if (frontier.length) {
+        event.preventDefault();
+        const curIdx = frontier.findIndex(r => r.id === state.selected);
+        const nextIdx = curIdx === -1
+          ? (event.key === ']' ? 0 : frontier.length - 1)
+          : (curIdx + (event.key === ']' ? 1 : -1) + frontier.length) % frontier.length;
+        locateRowInChart(frontier[nextIdx]);
+      }
+      return;
+    }
+  }
   if (event.key !== 'Escape') return;
   if (valueDetailsOpen) {
     valueDetailsOpen = false;
@@ -3258,6 +3847,7 @@ function showLoadError(error) {
   $('#curvePanel').hidden = true;
   $('#valueSettings').hidden = true;
   $('#subSettings').hidden = true;
+  $('#historySettings').hidden = true;
   for (const button of document.querySelectorAll('[data-view]')) {
     button.setAttribute('aria-pressed', String(button.dataset.view === 'chart'));
   }

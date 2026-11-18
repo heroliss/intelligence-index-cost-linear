@@ -19,8 +19,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261118-5">
-  <script type="module" src="app.js?v=20261118-5"></script>
+  <link rel="stylesheet" href="styles.css?v=20261118-6">
+  <script type="module" src="app.js?v=20261118-6"></script>
 </head>
 <body>
 <main class="app">
@@ -100,6 +100,7 @@
         <span id="keyIsoWrap" hidden><i class="iso-swatch" aria-hidden="true"></i><span id="keyIso">最优等性价比切线</span></span>
         <span id="keySubWrap" hidden><i class="sub-swatch" aria-hidden="true"></i><span id="keySub">订阅回本成本线</span></span>
         <span id="keyEffortWrap" hidden><i class="effort-swatch" aria-hidden="true"></i><span id="keyEffort">同系列推理轨迹</span></span>
+        <span id="keyHistoryWrap" hidden><i class="history-swatch" aria-hidden="true"></i><span id="keyHistory">历史演进前沿（虚线为今日）</span></span>
         <span id="keyBetter" class="key-note">越靠左上越理想</span>
       </div>
 
@@ -133,10 +134,16 @@
             <button type="button" data-license="open" aria-pressed="false">开源</button>
             <button type="button" data-license="closed" aria-pressed="false">闭源</button>
           </div>
+          <label class="extra-filter-wrap">
+            <span id="extraFilterSr" class="sr-only">按模态或客户端框架筛选</span>
+            <select id="extraFilter"><option value="">全部模态</option></select>
+          </label>
           <button id="frontier" type="button" aria-pressed="false">仅前沿</button>
           <button id="effortToggle" type="button" aria-pressed="false">推理轨迹</button>
+          <button id="historyToggle" type="button" aria-pressed="false">历史演进</button>
           <button id="isoToggle" type="button" aria-pressed="false">等值线</button>
           <button id="subLineToggle" type="button" aria-pressed="false">回本线</button>
+          <button id="exportPng" type="button">导图 PNG</button>
           <button id="exportCsv" type="button" hidden>导出 CSV</button>
           <button id="clearFilters" type="button" hidden>清除</button>
         </div>
@@ -208,11 +215,33 @@
         </div>
 
         <div id="taskPresetGroup" class="preset-group" role="group" aria-label="月任务量预设"></div>
+        <button id="routerToggle" type="button" aria-pressed="false">混合路由模拟</button>
         <button id="resetSubInline" type="button" hidden>重置测算</button>
+      </div>
+      <div id="routerPanel" class="router-panel" hidden>
+        <label class="router-field"><span id="routerFastLabel">日常主力</span><select id="routerFastSelect"></select></label>
+        <label class="router-field"><span id="routerStrongLabel">疑难旗舰</span><select id="routerStrongSelect"></select></label>
+        <label class="router-share-field"><span id="routerShareLabel">主力分流</span><input id="routerShare" type="range" min="50" max="95" step="5" value="80"><output id="routerShareOut">80% / 20%</output></label>
+        <span id="routerReadout" class="router-readout"></span>
       </div>
       <div class="sub-summary-strip">
         <span id="subBreakevenSummary" class="sub-kpi"></span>
         <span id="subDisclaimer" class="sub-note">基于实测 API 单任务均价换算；各厂订阅含动态限流且不公开配额，超线代表“配额够用时订阅更划算”。</span>
+      </div>
+    </div>
+
+    <div id="historySettings" class="history-settings" role="group" aria-label="历史帕累托演进与 AI 降本时间轴" hidden>
+      <div class="history-controls">
+        <button id="historyPlayBtn" type="button" class="history-play-btn">▶ 回放演进</button>
+        <label class="history-slider-wrap">
+          <span id="historyLabel" class="control-label">发布时间轴</span>
+          <input id="historySlider" type="range" min="0" max="100" step="1" value="100">
+          <output id="historyDateOut" class="history-date-badge"></output>
+        </label>
+        <div id="historyPresetGroup" class="preset-group" role="group" aria-label="历史时间节点"></div>
+      </div>
+      <div class="history-summary-strip">
+        <span id="historySummary" class="sub-kpi"></span>
       </div>
     </div>
 
@@ -236,6 +265,7 @@
           <div><span id="pinValueLabel">性价比</span><b id="pinnedValue"></b></div>
         </div>
         <p id="pinnedSubNote" class="pin-sub-note"></p>
+        <p id="pinnedProviders" class="pin-sub-note" hidden></p>
         <small id="pinnedOutside" class="pin-outside" hidden>该节点当前在可视范围外</small>
       </aside>
     </div>
@@ -271,6 +301,7 @@
         <div class="curve-toggles">
           <button id="curveRangeToggle" type="button" aria-pressed="true">真实分数段</button>
           <button id="curveScaleToggle" type="button" aria-pressed="false">对数纵轴</button>
+          <button id="curveExportPng" type="button">导图 PNG</button>
         </div>
       </div>
       <div id="curveHost" class="curve-host" tabindex="0" role="group" aria-label="能力效用曲线：点击或按左右方向键探查各分数效用" aria-describedby="curveNote curveReadout">
@@ -309,15 +340,22 @@
             <select id="compareSelect"><option value="">+ 添加对比条目…</option></select>
           </label>
           <button id="compareAutoBtn" type="button">推荐代表组合</button>
+          <button id="compareExportPng" type="button">导图 PNG</button>
         </div>
       </div>
       <div class="compare-scroll">
         <div class="compare-grid">
-          <section class="compare-section" aria-labelledby="radarHeading">
-            <h3 id="radarHeading">细分基准能力雷达与分项对比</h3>
+          <section class="compare-section radar-hero-section" aria-labelledby="radarHeading">
+            <div class="section-head">
+              <h3 id="radarHeading">细分基准能力雷达与分项对比</h3>
+              <div id="radarModeSwitch" class="axis-controls" role="group" aria-label="雷达图维度切换">
+                <button id="radarModeBench" type="button" aria-pressed="true">基准六维</button>
+                <button id="radarModeDomain" type="button" aria-pressed="false">行业六维</button>
+              </div>
+            </div>
             <div class="radar-layout">
-              <svg id="radarSvg" class="radar-svg" viewBox="0 0 370 264" role="img" aria-label="多模型细分能力雷达图"></svg>
-              <div id="subscoreBars" class="subscore-bars"></div>
+              <svg id="radarSvg" class="radar-svg" viewBox="0 0 580 410" role="img" aria-label="多模型细分能力雷达图"></svg>
+              <div id="subscoreBars" class="radar-score-grid"></div>
             </div>
           </section>
           <section class="compare-section" aria-labelledby="anatomyHeading">

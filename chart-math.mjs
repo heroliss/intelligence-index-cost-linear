@@ -240,6 +240,77 @@ export function subscriptionVerdict(costPerTask, monthlyTasks, monthlyFee = MONT
   return {apiBill, monthlyFee, breakeven, delta, ratio, status};
 }
 
+export function historicalFrontierSummary(rows, cutoffDate, xOf = d => d.cost) {
+  if (typeof cutoffDate !== 'string' || !cutoffDate) return null;
+  const datedRows = rows.filter(r => typeof r?.releaseDate === 'string' && r.releaseDate);
+  const pastRows = datedRows.filter(r => r.releaseDate <= cutoffDate);
+  const pastFrontier = paretoFrontier(pastRows, xOf);
+  const currentFrontier = paretoFrontier(rows, xOf);
+  const currentMaxScore = rows.length ? Math.max(...rows.map(r => r.intelligenceIndex)) : null;
+  if (!pastRows.length) {
+    return {
+      cutoffDate,
+      pastCount: 0,
+      totalCount: rows.length,
+      pastFrontier: [],
+      currentFrontier,
+      pastMaxScore: null,
+      currentMaxScore,
+      milestone: null,
+      pastMinCost: null,
+      currentMinCost: null,
+      deflationFactor: null
+    };
+  }
+  const pastMaxScore = Math.max(...pastRows.map(r => r.intelligenceIndex));
+  const thresholds = [55, 50, 45, 40, 35, 30, 20];
+  const milestone = thresholds.find(t => pastRows.some(r => r.intelligenceIndex >= t && r.cost > 0))
+    ?? Math.max(1, Math.floor(pastMaxScore));
+  const pastQualified = pastRows.filter(r => r.intelligenceIndex >= milestone && r.cost > 0);
+  const curQualified = rows.filter(r => r.intelligenceIndex >= milestone && r.cost > 0);
+  const pastMinCost = pastQualified.length ? Math.min(...pastQualified.map(r => r.cost)) : null;
+  const currentMinCost = curQualified.length ? Math.min(...curQualified.map(r => r.cost)) : null;
+  const deflationFactor = pastMinCost && currentMinCost ? pastMinCost / currentMinCost : null;
+  return {
+    cutoffDate,
+    pastCount: pastRows.length,
+    totalCount: rows.length,
+    pastFrontier,
+    currentFrontier,
+    pastMaxScore,
+    currentMaxScore,
+    milestone,
+    pastMinCost,
+    currentMinCost,
+    deflationFactor
+  };
+}
+
+export function cascadingRouteSummary(fastRow, strongRow, fastShare = 0.8, monthlyTasks = MONTHLY_USAGE.defaultModelTasks) {
+  if (typeof fastShare !== 'number' || !Number.isFinite(fastShare) || fastShare < 0 || fastShare > 1) {
+    throw new RangeError('Fast model share must be between 0 and 1');
+  }
+  if (typeof monthlyTasks !== 'number' || !Number.isFinite(monthlyTasks) || monthlyTasks < 0) {
+    throw new RangeError('Monthly task count must be non-negative');
+  }
+  if (!fastRow || !strongRow || !Number.isFinite(fastRow.cost) || fastRow.cost < 0 || !Number.isFinite(strongRow.cost) || strongRow.cost < 0) {
+    return null;
+  }
+  const strongShare = 1 - fastShare;
+  const blendedCost = fastRow.cost * fastShare + strongRow.cost * strongShare;
+  const blendedScore = fastRow.intelligenceIndex * fastShare + strongRow.intelligenceIndex * strongShare;
+  const savingsVsStrong = strongRow.cost > 0 ? (strongRow.cost - blendedCost) / strongRow.cost : 0;
+  return {
+    fastShare,
+    strongShare,
+    blendedCost,
+    blendedScore,
+    savingsVsStrong,
+    monthlyBlendedBill: blendedCost * monthlyTasks,
+    monthlyStrongBill: strongRow.cost * monthlyTasks
+  };
+}
+
 export function sortRows(rows, key, direction = 'asc', weight = VALUE_WEIGHT.default, minScore = MIN_SCORE.default) {
   validateValueWeight(weight);
   validateMinScore(minScore);

@@ -39,9 +39,18 @@ test('coding score is converted from a fraction once; absent telemetry is not ze
 });
 
 test('enriched model and coding-agent telemetry preserves open weights, subscores, cost breakdown, and percentiles', () => {
+  const capMap = new Map([['model-1', { financeAndAccounting: 54.321, legal: 48.9 }]]);
+  const hostMap = new Map([['example-model', [
+    { shortName: 'Example Model, CloudB', host: { name: 'CloudB' }, intelligenceIndexCostPerTask: { total: 0.9 }, intelligenceIndexTimePerTask: 100 },
+    { shortName: 'Example Model (FP4), CloudA', host: { name: 'CloudA' }, intelligenceIndexCostPerTask: { total: 0.35 }, intelligenceIndexTimePerTask: 62.44 }
+  ]]]);
   const richModel = simplifyModel({
     ...model,
     isOpenWeights: true,
+    openSourceCategorization: 'permissive',
+    parameters: 320,
+    inputModalityImage: true,
+    inputModalityVideo: true,
     releaseDate: '2026-09-01',
     release: { slug: 'example-family', name: 'Example Family' },
     effort: { slug: 'high', label: 'High', level: 3 },
@@ -50,8 +59,17 @@ test('enriched model and coding-agent telemetry preserves open weights, subscore
     intelligenceIndexOutputTokensPerTask: { output: 18400.4, reasoning: 15200.2, answer: 3200.2 },
     frontierCode20: 0.625,
     omniscienceHallucinationRate: 0.312
-  });
+  }, capMap, hostMap);
   assert.equal(richModel.isOpenWeights, true);
+  assert.equal(richModel.openLicense, 'permissive');
+  assert.equal(richModel.parametersB, 320);
+  assert.deepEqual(richModel.modalities, ['image', 'video']);
+  assert.equal(richModel.domainScores.finance, 54.32);
+  assert.equal(richModel.domainScores.legal, 48.9);
+  assert.deepEqual(richModel.providers, [
+    { host: 'CloudA (FP4)', cost: 0.35, timeSec: 62.4 },
+    { host: 'CloudB', cost: 0.9, timeSec: 100 }
+  ]);
   assert.equal(richModel.releaseDate, '2026-09-01');
   assert.deepEqual(richModel.family, { slug: 'example-family', name: 'Example Family' });
   assert.deepEqual(richModel.effort, { slug: 'high', label: 'High', level: 3 });

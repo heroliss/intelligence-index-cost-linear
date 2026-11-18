@@ -4,6 +4,8 @@ import {readFile} from 'node:fs/promises';
 import {
   dataBounds,
   effortTrajectories,
+  historicalFrontierSummary,
+  cascadingRouteSummary,
   clampView,
   pointerZoomView,
   paretoFrontier,
@@ -384,6 +386,30 @@ test('custom xOf accessor supports speed-intelligence Pareto frontier, time boun
   const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
   assert.ok(effortTrajectories(snapshot.models).length >= 5, 'live models include multi-effort trajectories');
   assert.ok(effortTrajectories(snapshot.codingAgents).length >= 3, 'live coding agents include multi-effort trajectories');
+});
+
+test('historicalFrontierSummary and cascadingRouteSummary compute exact AI cost deflation and blended routing', () => {
+  const historyRows = [
+    {id: 'old-mid', name: 'Old Mid', cost: 2.0, intelligenceIndex: 51, releaseDate: '2025-10-01'},
+    {id: 'old-budget', name: 'Old Budget', cost: 0.4, intelligenceIndex: 38, releaseDate: '2025-11-01'},
+    {id: 'new-fast', name: 'New Fast', cost: 0.2, intelligenceIndex: 53, releaseDate: '2026-08-01'},
+    {id: 'new-sota', name: 'New SOTA', cost: 10.0, intelligenceIndex: 63, releaseDate: '2026-10-01'}
+  ];
+  const hist = historicalFrontierSummary(historyRows, '2025-12-31');
+  assert.equal(hist.pastCount, 2);
+  assert.equal(hist.totalCount, 4);
+  assert.equal(hist.milestone, 50);
+  assert.equal(hist.pastMinCost, 2.0);
+  assert.equal(hist.currentMinCost, 0.2);
+  assert.equal(hist.deflationFactor, 10);
+  assert.deepEqual(hist.pastFrontier.map(r => r.id), ['old-budget', 'old-mid']);
+  assert.equal(historicalFrontierSummary(historyRows, '2024-01-01').pastCount, 0);
+
+  const route = cascadingRouteSummary(historyRows[2], historyRows[3], 0.8, 100);
+  assert.ok(Math.abs(route.blendedCost - 2.16) < 1e-12);
+  assert.ok(Math.abs(route.monthlyBlendedBill - 216) < 1e-9);
+  assert.ok(Math.abs(route.savingsVsStrong - 0.784) < 1e-12);
+  assert.throws(() => cascadingRouteSummary(historyRows[2], historyRows[3], 1.2, 60), RangeError);
 });
 
 test('cache-busting version query strings match across index.html and app.js', async () => {
