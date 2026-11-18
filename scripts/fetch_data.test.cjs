@@ -7,7 +7,7 @@ const crypto = require('node:crypto');
 const zlib = require('node:zlib');
 const http = require('node:http');
 const { spawn } = require('node:child_process');
-const { getBuffer, readCodingRows, readManifests, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildHumanArenaModels, fetchHumanArenas, expectedCodingComponents, simplifyCodingAgent, fetchModels, validateRows, writeSnapshot } = require('./fetch_data.cjs');
+const { getBuffer, readCodingRows, readManifests, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildHumanArenaModels, fetchHumanArenas, buildMediaModels, buildSnapshotDiff, expectedCodingComponents, simplifyCodingAgent, fetchModels, validateRows, writeSnapshot } = require('./fetch_data.cjs');
 
 const model = { id: 'model-1', slug: 'example-model', name: 'Example Model', intelligenceIndex: 50, intelligenceIndexCostPerTask: { total: 0.5 } };
 const agent = { id: 'agent-1', displayLabel: 'Example Agent - Model', indexScore: 0.53, mean: { costUsd: 7.6 }, indexComponentCount: 3, modelCreators: [{ name: 'Example', color: '#123456' }] };
@@ -301,4 +301,65 @@ test('buildHumanArenaModels matches effort-aware variants without cloning onto l
   const degraded = await fetchHumanArenas([museMax], fallbackPrev, async () => { throw new Error('offline'); });
   assert.equal(degraded.humanArenaModels.length, 2);
   assert.equal(degraded.lmArenaPublishDate, '2026-11-11');
+});
+
+test('new hard benchmarks (MLCR, MMMU-Pro, SRE), 3D/Video/Slop, buildMediaModels, and buildSnapshotDiff work accurately', () => {
+  const m = simplifyModel({
+    id: 'm-full', slug: 'flagship-v6', name: 'Flagship v6', intelligenceIndex: 59.1,
+    intelligenceIndexCostPerTask: { total: 4.5, input: 2.0, nonCacheInput: 0.2, cacheRead: 1.5, cacheWrite: 0.3, output: 2.5, reasoning: 1.8, answer: 0.7 },
+    mlcrOverall: 0.2778, mmmuPro: 0.8769, itBenchSre: 0.3823, ifbench: 0.812,
+    aa3dElo: 1202.4, code2videoElo: 1535.6,
+    personalityBench: { indexScores: { slop: 20.0, warmth: 84.8, imagination: 94.3, expressiveness: 90.5 } }
+  });
+  assert.equal(m.subscores.mlcr, 27.78);
+  assert.equal(m.subscores.mmmuPro, 87.69);
+  assert.equal(m.frontierScores.itBenchSre, 38.23);
+  assert.equal(m.expertElo.aa3d, 1202.4);
+  assert.equal(m.expertElo.code2video, 1535.6);
+  assert.equal(m.personality.slop, 20);
+  assert.equal(m.costBreakdown.cacheRead, 1.5);
+
+  const media = buildMediaModels({
+    imagePayload: {
+      imageLeaderboards: { textToImage: [{ id: 'i1', releaseDate: '2026-11-01', openWeightsUrl: 'https://hf.co/flux' }] },
+      media: {
+        textToImage: [{ id: 'i1', slug: 'flux-pro', name: 'Flux Open', elo: 1200, price: 40, creator: { name: 'BFL', color: '#112233' } }],
+        imageEditing: [{ id: 'i1', slug: 'flux-pro', name: 'Flux Open', elo: 1180, price: 40, creator: { name: 'BFL', color: '#112233' } }]
+      }
+    },
+    videoPayload: {
+      media: {
+        textToVideo: [{ id: 'v1', slug: 'wan-3', name: 'Wan 3.0', elo: 1174, price: 12, creator: { name: 'Alibaba', color: '#ff7018' } }]
+      }
+    },
+    ttsRows: [{
+      isRepresentative: true,
+      pricePer1mCharacters: 15,
+      model: { id: 't1', slug: 'tts-1', name: 'TTS One', qualityElo: 1212.7, isOpenWeights: false, creator: { name: 'AssemblyAI', color: '#5A70EC' } },
+      performance: { medianGenerationTimeSeconds: 10.45, medianCharactersPerSecond: 162.9 },
+      latencyPerformance: { medianTimeToFirstAudioMs: 218 }
+    }]
+  });
+  assert.equal(media.length, 3);
+  const img = media.find(x => x.mediaKind === 'image');
+  const vid = media.find(x => x.mediaKind === 'video');
+  const tts = media.find(x => x.mediaKind === 'tts');
+  assert.equal(img.cost, 0.04);
+  assert.equal(img.isOpenWeights, true);
+  assert.ok(img.mediaScores.t2i > 60 && img.mediaScores.imgEdit > 55);
+  assert.equal(vid.cost, 1);
+  assert.equal(tts.cost, 0.015);
+  assert.equal(tts.mediaRaw.ttfaMs, 218);
+
+  const prevSnap = { models: [{ id: 'a', name: 'Model A', intelligenceIndex: 55, cost: 2.0 }] };
+  const nextSnap = {
+    models: [
+      { id: 'a', name: 'Model A', intelligenceIndex: 56.2, cost: 1.5 },
+      { id: 'b', name: 'Model B', intelligenceIndex: 60.0, cost: 3.0, releaseDate: '2026-11-18' }
+    ]
+  };
+  const diffs = buildSnapshotDiff(nextSnap, prevSnap, '2026-11-18');
+  assert.ok(diffs.some(d => d.id === 'b' && d.kind === 'new'));
+  assert.ok(diffs.some(d => d.id === 'a' && d.kind === 'price-drop' && d.pct === -25));
+  assert.ok(diffs.some(d => d.id === 'a' && d.kind === 'score'));
 });

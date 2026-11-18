@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>智能水平与任务成本 · Intelligence vs. Cost</title>
-  <meta name="description" content="用线性美元与实测耗时坐标比较综合智能、未饱和前沿极限、LMArena 与 Design Arena 真人盲测审美、编程智能体及网络安全基准，支持 IRT 性价比、大尺寸多维雷达对比、历史演进与订阅回本测算。">
+  <meta name="description" content="用线性美元与实测耗时坐标比较综合智能、未饱和前沿极限、LMArena 与 Design Arena 真人盲测审美、编程智能体、网络安全及多模态生成（图/视频/TTS），支持自定义工作流场景配方、业务成本换算、框选对比与 Ctrl+K 全局速查。">
   <meta property="og:type" content="website">
   <meta property="og:title" content="智能水平与任务成本 · Intelligence vs. Cost">
-  <meta property="og:description" content="五大维度线性美元成本基准分析器：综合智能、前沿极限抗饱和测试、LMArena & Design Arena 人类盲测与视觉审美、编程智能体、网络安全。">
+  <meta property="og:description" content="六大维度线性美元成本基准分析器：综合智能、前沿极限抗饱和测试、LMArena & Design Arena 人类盲测审美、编程智能体、网络安全与多模态图像/视频/语音生成。">
   <meta name="twitter:card" content="summary">
   <meta name="color-scheme" content="dark light">
   <meta name="darkreader-lock">
@@ -26,8 +26,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261118-18">
-  <script type="module" src="app.js?v=20261118-18"></script>
+  <link rel="stylesheet" href="styles.css?v=20261119-01">
+  <script type="module" src="app.js?v=20261119-01"></script>
 </head>
 <body>
 <main class="app">
@@ -51,9 +51,11 @@
       <button id="tab-human-arena" type="button" role="tab" aria-selected="false" aria-controls="chart-panel" tabindex="-1" data-chart="human-arena">人类与审美</button>
       <button id="tab-coding-agents" type="button" role="tab" aria-selected="false" aria-controls="chart-panel" tabindex="-1" data-chart="coding-agents">编程智能体</button>
       <button id="tab-cyber" type="button" role="tab" aria-selected="false" aria-controls="chart-panel" tabindex="-1" data-chart="cyber">网络安全</button>
+      <button id="tab-media" type="button" role="tab" aria-selected="false" aria-controls="chart-panel" tabindex="-1" data-chart="media">多模态生成</button>
     </nav>
 
     <div class="top-actions">
+      <button id="cmdPaletteBtn" type="button" class="ghost-btn cmd-trigger-btn" aria-haspopup="dialog" aria-controls="cmdBackdrop">速查 <kbd>Ctrl+K</kbd></button>
       <div class="update-wrap">
         <button id="updateBadge" type="button" class="update-badge" aria-expanded="false" aria-controls="changelogPopover"><i aria-hidden="true"></i><span id="updateText">最新动态</span></button>
         <div id="changelogPopover" class="changelog-popover" hidden>
@@ -131,6 +133,7 @@
           </div>
           <button id="reset" type="button">重置</button>
           <button id="fit" type="button">全部</button>
+          <button id="boxSelectBtn" type="button" aria-pressed="false">框选</button>
           <div class="axis-controls" role="group" aria-label="横轴缩放">
             <button id="xminus" type="button" aria-label="缩小横轴">X−</button>
             <button id="xplus" type="button" aria-label="放大横轴">X+</button>
@@ -155,10 +158,27 @@
             <span id="yLensSr" class="sr-only">切换纵轴评估子项</span>
             <select id="yLensSelect"><option value="">纵轴：综合指数</option></select>
           </label>
+          <div id="scenarioWrap" class="scenario-wrap">
+            <button id="scenarioBtn" type="button" aria-expanded="false" aria-controls="scenarioPopover">场景配方</button>
+            <div id="scenarioPopover" class="scenario-popover" hidden>
+              <div class="scenario-pop-head">
+                <strong id="scenarioTitle">自定义工作流场景配方</strong>
+                <button id="scenarioResetBtn" type="button" class="ghost-btn">恢复官方</button>
+              </div>
+              <div id="scenarioPresetGroup" class="scenario-presets" role="group" aria-label="工作流场景预设"></div>
+              <div id="scenarioSliders" class="scenario-sliders"></div>
+              <p id="scenarioNote" class="scenario-note"></p>
+            </div>
+          </div>
+          <label id="costProfileWrap" class="extra-filter-wrap">
+            <span id="costProfileSr" class="sr-only">切换单次成本业务形态</span>
+            <select id="costProfileSelect"></select>
+          </label>
           <label class="extra-filter-wrap">
             <span id="extraFilterSr" class="sr-only">按模态或客户端框架筛选</span>
             <select id="extraFilter"><option value="">全部模态</option></select>
           </label>
+          <button id="starFilterBtn" type="button" aria-pressed="false">★ 关注</button>
           <button id="frontier" type="button" aria-pressed="false">仅前沿</button>
           <button id="effortToggle" type="button" aria-pressed="false">推理轨迹</button>
           <button id="historyToggle" type="button" aria-pressed="false">历史演进</button>
@@ -271,10 +291,17 @@
     <div id="chart" class="chart" tabindex="0" aria-label="交互散点图：方向键平移，加减键缩放，Home 重置；也可切换到数据表查看" aria-describedby="interactionHelp" aria-busy="true">
       <svg id="svg" role="group" aria-labelledby="chartTitle chartSubtitle"></svg>
       <div id="loading" class="loading" role="status">正在加载基准快照…</div>
+      <div id="lassoMenu" class="lasso-menu" hidden>
+        <span id="lassoCount" class="lasso-count"></span>
+        <button id="lassoZoomBtn" type="button">放大此区</button>
+        <button id="lassoCompareBtn" type="button">框内前沿对比</button>
+        <button id="lassoCancelBtn" type="button" aria-label="取消框选">×</button>
+      </div>
       <aside id="pinnedCard" class="pinned-card" hidden aria-label="锁定节点详情" aria-live="polite">
         <div class="pin-heading">
           <span id="pinnedBadge" class="pin-badge">已锁定节点</span>
           <div class="pin-actions">
+            <button id="pinStarBtn" type="button" aria-pressed="false">★</button>
             <button id="pinCompareBtn" type="button">+ 对比</button>
             <button id="pinGoCompareBtn" type="button">去剖析 →</button>
             <button id="unpin" type="button">取消 · Esc</button>
@@ -442,6 +469,17 @@
     </footer>
   </section>
 </main>
+<div id="cmdBackdrop" class="cmd-backdrop" hidden>
+  <div id="cmdDialog" class="cmd-dialog" role="dialog" aria-modal="true" aria-labelledby="cmdDialogTitle">
+    <div class="cmd-head">
+      <span id="cmdDialogTitle" class="sr-only">全局模型与生成引擎速查</span>
+      <input id="cmdInput" type="search" placeholder="输入模型、厂商或测试名速查全站排名…" autocomplete="off">
+      <button id="cmdCloseBtn" type="button" class="ghost-btn">Esc</button>
+    </div>
+    <div id="cmdList" class="cmd-list" role="listbox" aria-label="速查匹配结果"></div>
+    <div id="cmdFoot" class="cmd-foot"></div>
+  </div>
+</div>
 <div id="tip" class="tip" role="tooltip" hidden></div>
 </body>
 </html>

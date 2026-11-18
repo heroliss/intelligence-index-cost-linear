@@ -190,6 +190,9 @@ function simplifyModel(model, capMap = null, hostMap = null) {
   if (costObj && Number.isFinite(costObj.input) && Number.isFinite(costObj.output)) {
     entry.costBreakdown = {
       input: numOrNull(costObj.input, 5),
+      ...(Number.isFinite(costObj.nonCacheInput) ? { nonCacheInput: numOrNull(costObj.nonCacheInput, 5) } : {}),
+      ...(Number.isFinite(costObj.cacheRead) ? { cacheRead: numOrNull(costObj.cacheRead, 5) } : {}),
+      ...(Number.isFinite(costObj.cacheWrite) ? { cacheWrite: numOrNull(costObj.cacheWrite, 5) } : {}),
       reasoning: numOrNull(costObj.reasoning ?? 0, 5),
       answer: numOrNull(costObj.answer ?? costObj.output, 5)
     };
@@ -209,7 +212,10 @@ function simplifyModel(model, capMap = null, hostMap = null) {
     critptAgentic: pctOrNull(model.critptAgenticHard),
     science: pctOrNull(model.terminalBenchScience ?? model.scicode),
     omniscience: pctOrNull(model.omniscienceAccuracy),
-    hallucination: pctOrNull(model.omniscienceHallucinationRate)
+    hallucination: pctOrNull(model.omniscienceHallucinationRate),
+    mlcr: pctOrNull(model.mlcrOverall),
+    mmmuPro: pctOrNull(model.mmmuPro),
+    ifbench: pctOrNull(model.ifbench)
   };
   if (Object.values(subscores).some(v => v !== null)) entry.subscores = subscores;
 
@@ -221,6 +227,8 @@ function simplifyModel(model, capMap = null, hostMap = null) {
     automation: pctOrNull(model.automationBenchPartialScore),
     hleDiamond: pctOrNull(model.hleDiamond ?? model.hle),
     science: pctOrNull(model.terminalBenchScience ?? model.scicode),
+    mlcr: pctOrNull(model.mlcrOverall),
+    itBenchSre: pctOrNull(model.itBenchSre),
     critptClosed: pctOrNull(model.critpt),
     harveyLaw: pctOrNull(model.harveyLab),
     analystAgent: pctOrNull(model.analystAgent),
@@ -232,9 +240,26 @@ function simplifyModel(model, capMap = null, hostMap = null) {
     gdpval: numOrNull(model.gdpval, 1),
     briefcase: typeof model.briefcaseElo === 'number' && Number.isFinite(model.briefcaseElo) && model.briefcaseElo > 0
       ? numOrNull(model.briefcaseElo, 1)
+      : null,
+    aa3d: typeof model.aa3dElo === 'number' && Number.isFinite(model.aa3dElo) && model.aa3dElo > 0
+      ? numOrNull(model.aa3dElo, 1)
+      : null,
+    code2video: typeof model.code2videoElo === 'number' && Number.isFinite(model.code2videoElo) && model.code2videoElo > 0
+      ? numOrNull(model.code2videoElo, 1)
       : null
   };
-  if (expertElo.gdpval !== null || expertElo.briefcase !== null) entry.expertElo = expertElo;
+  if (Object.values(expertElo).some(v => v !== null)) entry.expertElo = expertElo;
+
+  const pb = model.personalityBench?.indexScores;
+  if (pb && typeof pb === 'object') {
+    const personality = {
+      slop: numOrNull(pb.slop, 1),
+      warmth: numOrNull(pb.warmth, 1),
+      imagination: numOrNull(pb.imagination, 1),
+      expressiveness: numOrNull(pb.expressiveness, 1)
+    };
+    if (Object.values(personality).some(v => v !== null)) entry.personality = personality;
+  }
 
   const caps = capMap?.get(model.id) ?? model.capabilities;
   if (caps && typeof caps === 'object') {
@@ -752,6 +777,18 @@ function buildHumanArenaModels(models, external = {}) {
       ? Number((0.7 * chatVibe + 0.3 * docCraft).toFixed(2))
       : (langParts[0] ?? null);
 
+    const aa3dElo = model.expertElo?.aa3d ?? null;
+    const code2videoElo = model.expertElo?.code2video ?? null;
+    const spatialParts = [
+      aa3dElo !== null ? eloToWinPct(aa3dElo, 1120, 175) : null,
+      code2videoElo !== null ? eloToWinPct(code2videoElo, 1340, 220) : null
+    ].filter(v => v !== null);
+    const spatialMotion = spatialParts.length
+      ? Number((spatialParts.reduce((a, b) => a + b, 0) / spatialParts.length).toFixed(2))
+      : null;
+    const slopVal = model.personality?.slop ?? null;
+    const antiSlop = slopVal !== null ? Number(Math.max(0, Math.min(100, 100 - slopVal)).toFixed(2)) : null;
+
     const humanScores = {
       chatVibe: langVibe,
       rawChatVibe: chatVibe,
@@ -761,7 +798,9 @@ function buildHumanArenaModels(models, external = {}) {
       designUi,
       creativeCraft,
       deliverable,
-      pureVisual
+      pureVisual,
+      spatialMotion,
+      antiSlop
     };
     const headlineKeys = ['chatVibe', 'webdev', 'designWeb', 'designUi', 'creativeCraft', 'deliverable'];
     const compositeParts = headlineKeys.map(k => humanScores[k]).filter(v => typeof v === 'number' && Number.isFinite(v));
@@ -797,6 +836,9 @@ function buildHumanArenaModels(models, external = {}) {
       designSvgElo: design.svg?.elo ?? null,
       gdpvalElo,
       briefcaseElo,
+      aa3dElo,
+      code2videoElo,
+      slop: slopVal,
       dimensionCount: compositeParts.length,
       sources: [...sources]
     };
@@ -874,6 +916,293 @@ async function fetchHumanArenas(models, previous, get = getBuffer) {
   };
 }
 
+function readTtsHostRows(pageHtml) {
+  const records = readFlightRecords(pageHtml);
+  let best = [];
+  for (const record of records.values()) {
+    walk(record, value => {
+      if (Array.isArray(value.hostModels) && value.hostModels.length > best.length && value.hostModels.some(h => h?.pricePer1mCharacters != null)) {
+        best = value.hostModels;
+      }
+    });
+  }
+  return best;
+}
+
+function buildMediaModels({ imagePayload = null, videoPayload = null, ttsRows = [] } = {}) {
+  const out = [];
+
+  if (imagePayload?.media) {
+    const lbMeta = new Map();
+    for (const arr of Object.values(imagePayload.imageLeaderboards || {})) {
+      if (!Array.isArray(arr)) continue;
+      for (const item of arr) {
+        if (item?.id && !lbMeta.has(item.id)) lbMeta.set(item.id, item);
+      }
+    }
+    const byId = new Map();
+    const ingestImg = (arr, field) => {
+      if (!Array.isArray(arr)) return;
+      for (const item of arr) {
+        if (!item?.id || typeof item.name !== 'string' || !Number.isFinite(item.price) || item.price <= 0 || !Number.isFinite(item.elo)) continue;
+        let rec = byId.get(item.id);
+        if (!rec) {
+          rec = { item, t2iElo: null, editElo: null, pricePer1k: item.price };
+          byId.set(item.id, rec);
+        }
+        rec[field] = Number(item.elo.toFixed(2));
+        if (item.price < rec.pricePer1k) rec.pricePer1k = item.price;
+      }
+    };
+    ingestImg(imagePayload.media.textToImage, 't2iElo');
+    ingestImg(imagePayload.media.imageEditing, 'editElo');
+
+    for (const [rawId, rec] of byId.entries()) {
+      const meta = lbMeta.get(rawId);
+      const t2i = rec.t2iElo !== null ? eloToWinPct(rec.t2iElo, 1080, 155) : null;
+      const imgEdit = rec.editElo !== null ? eloToWinPct(rec.editElo, 1095, 155) : null;
+      const parts = [t2i, imgEdit].filter(v => v !== null);
+      if (!parts.length) continue;
+      const idxScore = Number((parts.reduce((a, b) => a + b, 0) / parts.length).toFixed(2));
+      const isOpen = !!(meta?.openWeightsUrl || /\b(flux\.1\s*\[?(?:dev|schnell)|stable diffusion|sdxl|sd\s*3\.5|qwen-image|hidream|hunyuan|cogview|sana)\b/i.test(rec.item.name));
+      const entry = {
+        id: `img:${rawId}`,
+        slug: rec.item.slug || rawId,
+        name: rec.item.name,
+        shortName: rec.item.name,
+        mediaKind: 'image',
+        intelligenceIndex: idxScore,
+        cost: Number((rec.pricePer1k / 1000).toFixed(6)),
+        creator: creator(rec.item.creator || meta?.creator),
+        isReasoning: false,
+        isOpenWeights: isOpen,
+        mediaScores: { t2i, imgEdit, t2v: null, i2v: null, vidEdit: null, tts: null },
+        mediaRaw: {
+          kind: 'image',
+          unitZh: '每张图',
+          unitEn: '/ image',
+          t2iElo: rec.t2iElo,
+          imgEditElo: rec.editElo,
+          pricePer1k: Number(rec.pricePer1k.toFixed(2))
+        }
+      };
+      if (meta?.releaseDate) entry.releaseDate = meta.releaseDate;
+      out.push(entry);
+    }
+  }
+
+  if (videoPayload?.media) {
+    const lbMeta = new Map();
+    for (const arr of Object.values(videoPayload.videoLeaderboards || {})) {
+      if (!Array.isArray(arr)) continue;
+      for (const item of arr) {
+        if (item?.id && !lbMeta.has(item.id)) lbMeta.set(item.id, item);
+      }
+    }
+    const byId = new Map();
+    const ingestVid = (arr, field) => {
+      if (!Array.isArray(arr)) return;
+      for (const item of arr) {
+        if (!item?.id || typeof item.name !== 'string' || !Number.isFinite(item.price) || item.price <= 0 || !Number.isFinite(item.elo)) continue;
+        let rec = byId.get(item.id);
+        if (!rec) {
+          rec = { item, t2vElo: null, i2vElo: null, vidEditElo: null, pricePerMin: item.price };
+          byId.set(item.id, rec);
+        }
+        rec[field] = Number(item.elo.toFixed(2));
+        if (item.price < rec.pricePerMin) rec.pricePerMin = item.price;
+      }
+    };
+    ingestVid(videoPayload.media.textToVideo, 't2vElo');
+    ingestVid(videoPayload.media.imageToVideo, 'i2vElo');
+    ingestVid(videoPayload.media.videoEditing, 'vidEditElo');
+
+    for (const [rawId, rec] of byId.entries()) {
+      const meta = lbMeta.get(rawId);
+      const t2v = rec.t2vElo !== null ? eloToWinPct(rec.t2vElo, 1075, 140) : null;
+      const i2v = rec.i2vElo !== null ? eloToWinPct(rec.i2vElo, 1075, 140) : null;
+      const vidEdit = rec.vidEditElo !== null ? eloToWinPct(rec.vidEditElo, 1075, 140) : null;
+      const parts = [t2v, i2v, vidEdit].filter(v => v !== null);
+      if (!parts.length) continue;
+      const idxScore = Number((parts.reduce((a, b) => a + b, 0) / parts.length).toFixed(2));
+      const isOpen = !!(meta?.openWeightsUrl || /\b(wan\s*2|hunyuanvideo|cogvideo|mochi|ltx-video|skyreels|step-video)\b/i.test(rec.item.name));
+      const entry = {
+        id: `vid:${rawId}`,
+        slug: rec.item.slug || rawId,
+        name: rec.item.name,
+        shortName: rec.item.name,
+        mediaKind: 'video',
+        intelligenceIndex: idxScore,
+        cost: Number((rec.pricePerMin / 12).toFixed(5)),
+        creator: creator(rec.item.creator || meta?.creator),
+        isReasoning: false,
+        isOpenWeights: isOpen,
+        mediaScores: { t2i: null, imgEdit: null, t2v, i2v, vidEdit, tts: null },
+        mediaRaw: {
+          kind: 'video',
+          unitZh: '每 5 秒视频',
+          unitEn: '/ 5s clip',
+          t2vElo: rec.t2vElo,
+          i2vElo: rec.i2vElo,
+          vidEditElo: rec.vidEditElo,
+          pricePerMin: Number(rec.pricePerMin.toFixed(2))
+        }
+      };
+      if (meta?.releaseDate) entry.releaseDate = meta.releaseDate;
+      out.push(entry);
+    }
+  }
+
+  if (Array.isArray(ttsRows) && ttsRows.length) {
+    const byModelId = new Map();
+    for (const h of ttsRows) {
+      const m = h?.model;
+      if (!h?.isRepresentative || !m?.id || typeof m.name !== 'string') continue;
+      if (!Number.isFinite(h.pricePer1mCharacters) || h.pricePer1mCharacters <= 0) continue;
+      if (!Number.isFinite(m.qualityElo) || m.qualityElo <= 0) continue;
+      const prev = byModelId.get(m.id);
+      if (!prev || h.pricePer1mCharacters < prev.pricePer1mCharacters) byModelId.set(m.id, h);
+    }
+    for (const [mId, h] of byModelId.entries()) {
+      const m = h.model;
+      const ttsScore = eloToWinPct(m.qualityElo, 1080, 140);
+      const timeSec = Number.isFinite(h.performance?.medianGenerationTimeSeconds) && h.performance.medianGenerationTimeSeconds > 0
+        ? Number(h.performance.medianGenerationTimeSeconds.toFixed(2))
+        : null;
+      const ttfaMs = Number.isFinite(h.latencyPerformance?.medianTimeToFirstAudioMs) && h.latencyPerformance.medianTimeToFirstAudioMs > 0
+        ? Math.round(h.latencyPerformance.medianTimeToFirstAudioMs)
+        : null;
+      const entry = {
+        id: `tts:${mId}`,
+        slug: m.slug || mId,
+        name: m.name,
+        shortName: m.shortName || m.name,
+        mediaKind: 'tts',
+        intelligenceIndex: ttsScore,
+        cost: Number((h.pricePer1mCharacters / 1000).toFixed(6)),
+        creator: creator(m.creator || h.host),
+        isReasoning: false,
+        isOpenWeights: !!m.isOpenWeights,
+        ...(timeSec ? { timeSec } : {}),
+        mediaScores: { t2i: null, imgEdit: null, t2v: null, i2v: null, vidEdit: null, tts: ttsScore },
+        mediaRaw: {
+          kind: 'tts',
+          unitZh: '每千字语音',
+          unitEn: '/ 1k chars',
+          ttsElo: Number(m.qualityElo.toFixed(1)),
+          pricePer1mChars: Number(h.pricePer1mCharacters.toFixed(2)),
+          ttfaMs,
+          cps: numOrNull(h.performance?.medianCharactersPerSecond, 1)
+        }
+      };
+      if (m.releaseDate) entry.releaseDate = m.releaseDate;
+      out.push(entry);
+    }
+  }
+
+  if (out.length) validateRows(out, 1, 'media-model');
+  return out;
+}
+
+function buildSnapshotDiff(output, previous, dateStr = new Date().toISOString().slice(0, 10)) {
+  const events = [];
+  const compareSuite = (nextArr, prevArr, tab) => {
+    if (!Array.isArray(nextArr) || !Array.isArray(prevArr) || !prevArr.length) return;
+    const prevMap = new Map(prevArr.map(r => [r.id, r]));
+    for (const cur of nextArr) {
+      const old = prevMap.get(cur.id);
+      if (!old) {
+        events.push({
+          date: cur.releaseDate || dateStr,
+          kind: 'new',
+          tab,
+          id: cur.id,
+          name: cur.shortName || cur.name,
+          score: Number(cur.intelligenceIndex.toFixed(1)),
+          cost: Number(cur.cost.toFixed(4))
+        });
+        continue;
+      }
+      if (old.cost > 0) {
+        const relCost = (cur.cost - old.cost) / old.cost;
+        if (Math.abs(relCost) >= 0.03 && Math.abs(cur.cost - old.cost) >= 0.0005) {
+          events.push({
+            date: dateStr,
+            kind: relCost < 0 ? 'price-drop' : 'price-up',
+            tab,
+            id: cur.id,
+            name: cur.shortName || cur.name,
+            oldCost: Number(old.cost.toFixed(4)),
+            cost: Number(cur.cost.toFixed(4)),
+            pct: Math.round(relCost * 100)
+          });
+        }
+      }
+      const dScore = cur.intelligenceIndex - old.intelligenceIndex;
+      if (Math.abs(dScore) >= 0.5) {
+        events.push({
+          date: dateStr,
+          kind: 'score',
+          tab,
+          id: cur.id,
+          name: cur.shortName || cur.name,
+          oldScore: Number(old.intelligenceIndex.toFixed(1)),
+          score: Number(cur.intelligenceIndex.toFixed(1)),
+          delta: Number(dScore.toFixed(1))
+        });
+      }
+    }
+  };
+
+  if (previous) {
+    compareSuite(output.models, previous.models, 'models');
+    compareSuite(output.codingAgents, previous.codingAgents, 'coding-agents');
+    compareSuite(output.mediaModels, previous.mediaModels, 'media');
+  }
+
+  const priorEvents = Array.isArray(previous?.diffEvents) ? previous.diffEvents : [];
+  const merged = [];
+  const seen = new Set();
+  for (const ev of [...events, ...priorEvents]) {
+    if (!ev?.id || !ev?.kind) continue;
+    const key = `${ev.date}:${ev.tab}:${ev.id}:${ev.kind}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push(ev);
+    if (merged.length >= 20) break;
+  }
+
+  if (merged.length < 5 && Array.isArray(output.models) && output.models.length) {
+    const dated = output.models.filter(m => m.releaseDate).sort((a, b) => b.releaseDate.localeCompare(a.releaseDate) || b.intelligenceIndex - a.intelligenceIndex);
+    if (dated.length) {
+      const latestMs = Date.parse(dated[0].releaseDate + 'T00:00:00Z');
+      const seenFamilies = new Set();
+      for (const m of dated) {
+        const ms = Date.parse(m.releaseDate + 'T00:00:00Z');
+        if (!Number.isFinite(ms) || (latestMs - ms) > 21 * 86400 * 1000) break;
+        const famKey = m.family?.slug || m.id;
+        if (seenFamilies.has(famKey)) continue;
+        seenFamilies.add(famKey);
+        const key = `${m.releaseDate}:models:${m.id}:new`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        merged.push({
+          date: m.releaseDate,
+          kind: 'new',
+          tab: 'models',
+          id: m.id,
+          name: m.shortName || m.name,
+          score: Number(m.intelligenceIndex.toFixed(1)),
+          cost: Number(m.cost.toFixed(4))
+        });
+        if (merged.length >= 8) break;
+      }
+    }
+  }
+
+  return merged;
+}
+
 function simplifyChangelog(items) {
   if (!Array.isArray(items)) return [];
   const out = [];
@@ -896,7 +1225,7 @@ function validateRows(rows, minimum, name) {
   rows.sort((a, b) => a.cost - b.cost || b.intelligenceIndex - a.intelligenceIndex || a.id.localeCompare(b.id));
 }
 
-async function fetchModels(page, sourceUrl, previous, get = getBuffer, { includeHosts = false } = {}) {
+async function fetchModels(page, sourceUrl, previous, get = getBuffer, { includeHosts = false, includeMedia = false } = {}) {
   const manifests = readManifests(page);
   // Reuse the previous model manifest as first choice, avoiding unrelated media downloads.
   manifests.sort((a, b) => Number(b.path === previous?.manifestPath) - Number(a.path === previous?.manifestPath));
@@ -919,19 +1248,22 @@ async function fetchModels(page, sourceUrl, previous, get = getBuffer, { include
   if (!modelPayload) throw new Error(`No valid model manifest: ${errors.join('; ')}`);
 
   let hostMap = null, hostsManifestPath = null;
-  if (includeHosts) {
+  let imagePayload = null, videoPayload = null;
+  if (includeHosts || includeMedia) {
     const candidates = manifests
       .filter(m => m.path !== modelManifestPath)
       .sort((a, b) => Number(b.path === previous?.hostsManifestPath) - Number(a.path === previous?.hostsManifestPath));
     for (const cand of candidates) {
+      if ((!includeHosts || hostMap) && (!includeMedia || (imagePayload && videoPayload))) break;
       try {
         let payload = cachedPayloads.get(cand.path);
         if (!payload) {
           const url = new URL(cand.path, sourceUrl);
           if (url.origin !== new URL(sourceUrl).origin || !url.pathname.startsWith('/data/')) continue;
           payload = JSON.parse(decryptPayload(await get(url.href), cand.key));
+          cachedPayloads.set(cand.path, payload);
         }
-        if (Array.isArray(payload) && payload.some(item => item?.modelSlug && item?.host?.name)) {
+        if (includeHosts && !hostMap && Array.isArray(payload) && payload.some(item => item?.modelSlug && item?.host?.name)) {
           hostMap = new Map();
           for (const item of payload) {
             if (!item?.modelSlug) continue;
@@ -939,9 +1271,28 @@ async function fetchModels(page, sourceUrl, previous, get = getBuffer, { include
             hostMap.get(item.modelSlug).push(item);
           }
           hostsManifestPath = cand.path;
-          break;
+        } else if (includeMedia && !imagePayload && payload?.media?.textToImage) {
+          imagePayload = payload;
+        } else if (includeMedia && !videoPayload && payload?.media?.textToVideo) {
+          videoPayload = payload;
         }
-      } catch { /* Optional provider manifest; never fail core refresh. */ }
+      } catch { /* Optional provider/media manifest; never fail core refresh. */ }
+    }
+  }
+
+  let mediaModels = [];
+  if (includeMedia) {
+    let ttsRows = [];
+    try {
+      const ttsUrl = new URL('/text-to-speech', sourceUrl).href;
+      const ttsHtml = (await get(ttsUrl)).toString('utf8');
+      ttsRows = readTtsHostRows(ttsHtml);
+    } catch { /* Optional TTS page; degrade gracefully. */ }
+    try {
+      mediaModels = buildMediaModels({ imagePayload, videoPayload, ttsRows });
+    } catch { mediaModels = []; }
+    if (mediaModels.length < 10 && Array.isArray(previous?.mediaModels)) {
+      mediaModels = previous.mediaModels;
     }
   }
 
@@ -965,11 +1316,11 @@ async function fetchModels(page, sourceUrl, previous, get = getBuffer, { include
   }
   const changelog = simplifyChangelog(modelPayload.changelog);
 
-  return { models, cyberModels, changelog, manifestPath: modelManifestPath, hostsManifestPath };
+  return { models, cyberModels, mediaModels, changelog, manifestPath: modelManifestPath, hostsManifestPath };
 }
 
 function comparable(snapshot) {
-  const { updatedAt, ...data } = snapshot;
+  const { updatedAt, diffEvents, ...data } = snapshot;
   return JSON.stringify(data);
 }
 
@@ -997,7 +1348,7 @@ async function main() {
   const [modelPage, codingPageBuffer] = await Promise.all([getBuffer(sourceUrl), getBuffer(codingAgentSourceUrl)]);
   const codingPage = codingPageBuffer.toString('utf8');
   const rawCodingRows = readCodingRows(codingPage);
-  const { models, cyberModels, changelog, manifestPath, hostsManifestPath } = await fetchModels(modelPage.toString('utf8'), sourceUrl, previous, getBuffer, { includeHosts: true });
+  const { models, cyberModels, mediaModels, changelog, manifestPath, hostsManifestPath } = await fetchModels(modelPage.toString('utf8'), sourceUrl, previous, getBuffer, { includeHosts: true, includeMedia: true });
   const frontierModels = buildFrontierModels(models);
   if (frontierModels.length >= 30) validateRows(frontierModels, 30, 'frontier-model');
   const { humanArenaModels, lmArenaPublishDate } = process.env.DISABLE_EXTERNAL_ARENAS === '1'
@@ -1038,14 +1389,21 @@ async function main() {
       cyberSourceUrl: 'https://artificialanalysis.ai/cyber',
       cyberModelCount: cyberModels.length,
       cyberModels
+    } : {}),
+    ...(mediaModels.length ? {
+      mediaSourceUrl: 'https://artificialanalysis.ai/image',
+      mediaModelCount: mediaModels.length,
+      mediaModels
     } : {})
   };
+  const diffEvents = buildSnapshotDiff(output, previous);
+  if (diffEvents.length) output.diffEvents = diffEvents;
   const changed = await writeSnapshot(outPath, output, previous);
-  console.log(`${changed ? 'Wrote' : 'Unchanged:'} ${models.length} models, ${frontierModels.length} frontier, ${humanArenaModels.length} human-arena, ${codingAgents.length} coding agents, ${cyberModels.length} cyber models; checked ${new Date().toISOString()}`);
+  console.log(`${changed ? 'Wrote' : 'Unchanged:'} ${models.length} models, ${frontierModels.length} frontier, ${humanArenaModels.length} human-arena, ${codingAgents.length} coding agents, ${cyberModels.length} cyber, ${mediaModels.length} media; checked ${new Date().toISOString()}`);
   if (process.env.GITHUB_OUTPUT) await fs.appendFile(process.env.GITHUB_OUTPUT, `changed=${changed}\n`);
   if (process.env.GITHUB_STEP_SUMMARY) await fs.appendFile(process.env.GITHUB_STEP_SUMMARY,
-    `### Multi-source benchmark data check\n- Checked: ${new Date().toISOString()}\n- Models: ${models.length}\n- Frontier hard-eval models: ${frontierModels.length}\n- Human & Aesthetic Arena models: ${humanArenaModels.length}\n- Coding-agent variants: ${codingAgents.length}\n- Cyber-index models: ${cyberModels.length}\n- Excluded coding-agent rows without comparable score/cost: ${output.codingAgentExcludedCount}\n- Snapshot changed: ${changed}\n`);
+    `### Multi-source benchmark data check\n- Checked: ${new Date().toISOString()}\n- Models: ${models.length}\n- Frontier hard-eval models: ${frontierModels.length}\n- Human & Aesthetic Arena models: ${humanArenaModels.length}\n- Coding-agent variants: ${codingAgents.length}\n- Cyber-index models: ${cyberModels.length}\n- Multimodal generation models (Image/Video/TTS): ${mediaModels.length}\n- Excluded coding-agent rows without comparable score/cost: ${output.codingAgentExcludedCount}\n- Snapshot changed: ${changed}\n`);
 }
 
-module.exports = { getBuffer, readFlightRecords, readManifests, decryptPayload, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildHumanArenaModels, fetchHumanArenas, resolveFlightReference, readCodingRows, expectedCodingComponents, simplifyCodingAgent, validateRows, fetchModels, writeSnapshot };
+module.exports = { getBuffer, readFlightRecords, readManifests, decryptPayload, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildHumanArenaModels, fetchHumanArenas, readTtsHostRows, buildMediaModels, buildSnapshotDiff, resolveFlightReference, readCodingRows, expectedCodingComponents, simplifyCodingAgent, validateRows, fetchModels, writeSnapshot };
 if (require.main === module) main().catch(error => { console.error(error.stack || error); process.exitCode = 1; });

@@ -370,6 +370,127 @@ export function radarRadiusRatio(val, scaleMin = 0, scaleMax = 100, innerRatio =
   return 0.04 + (innerRatio - 0.04) * Math.max(0, val / scaleMin);
 }
 
+export const SCENARIO_PILLARS = Object.freeze([
+  Object.freeze({key: 'coding', zh: '工程编程与终端', en: 'Coding & CLI'}),
+  Object.freeze({key: 'reasoning', zh: '复杂推理与超长文', en: 'Reasoning & Long-Doc'}),
+  Object.freeze({key: 'visual', zh: '视觉审美与多模态', en: 'Visual & Multimodal'}),
+  Object.freeze({key: 'vibe', zh: '交流人味与去套话', en: 'Chat Vibe & Anti-Slop'}),
+  Object.freeze({key: 'rigor', zh: '专业交付与低幻觉', en: 'Deliverables & Rigor'})
+]);
+
+export const SCENARIO_PRESETS = Object.freeze([
+  Object.freeze({id: 'default', zh: '官方默认基准', en: 'Official Default', weights: null}),
+  Object.freeze({id: 'fullstack', zh: '💻 全栈研发与终端', en: '💻 Full-Stack & CLI', weights: Object.freeze({coding: 5, reasoning: 3, visual: 2, vibe: 1, rigor: 2})}),
+  Object.freeze({id: 'aesthetic', zh: '🎨 审美设计与前端', en: '🎨 Design & UI Craft', weights: Object.freeze({coding: 2, reasoning: 1, visual: 5, vibe: 3, rigor: 1})}),
+  Object.freeze({id: 'research', zh: '📊 严肃投研与办公', en: '📊 Research & Docs', weights: Object.freeze({coding: 1, reasoning: 4, visual: 1, vibe: 1, rigor: 5})}),
+  Object.freeze({id: 'assistant', zh: '💬 高人味去套话助理', en: '💬 Natural Chat', weights: Object.freeze({coding: 1, reasoning: 2, visual: 2, vibe: 5, rigor: 2})}),
+  Object.freeze({id: 'longvision', zh: '👁️ 长文档与图文全能', en: '👁️ Long-Doc & Vision', weights: Object.freeze({coding: 1, reasoning: 5, visual: 4, vibe: 1, rigor: 3})})
+]);
+
+export const COST_PROFILES = Object.freeze([
+  Object.freeze({id: 'benchmark', zh: '成本：基准实测均价', en: 'Cost: Benchmark Avg'}),
+  Object.freeze({id: 'chat', zh: '成本：日常轻量问答', en: 'Cost: Light Q&A'}),
+  Object.freeze({id: 'longdoc', zh: '成本：长文档重输入', en: 'Cost: Long-Context Input'}),
+  Object.freeze({id: 'reasoning', zh: '成本：重度推理攻坚', en: 'Cost: Heavy Reasoning'})
+]);
+
+function eloPct(elo, center, scale) {
+  return typeof elo === 'number' && Number.isFinite(elo)
+    ? 100 / (1 + Math.pow(10, (center - elo) / scale))
+    : null;
+}
+
+function meanFinite(arr) {
+  const valid = arr.filter(v => typeof v === 'number' && Number.isFinite(v));
+  return valid.length ? valid.reduce((a, b) => a + b, 0) / valid.length : null;
+}
+
+export function computeScenarioScore(row, weights) {
+  const baseScore = row?._baseIndex ?? row?.intelligenceIndex ?? 0;
+  if (!row || !weights || typeof weights !== 'object') return baseScore;
+  const wEntries = SCENARIO_PILLARS.map(p => [p.key, Number(weights[p.key]) || 0]).filter(([, w]) => w > 0);
+  if (!wEntries.length) return baseScore;
+
+  const sub = row.subscores || {};
+  const fr = row.frontierScores || {};
+  const hs = row.humanScores || {};
+  const dm = row.domainScores || {};
+  const exp = row.expertElo || {};
+  const pb = row.personality || {};
+
+  const pillarVals = {
+    coding: meanFinite([
+      sub.frontierCode ?? fr.frontierCode,
+      sub.terminalBench ?? fr.terminal4,
+      fr.itBenchSre != null ? Math.min(100, fr.itBenchSre * 1.45) : null,
+      hs.webdev
+    ]),
+    reasoning: meanFinite([
+      sub.hleDiamond ?? fr.hleDiamond,
+      sub.critptAgentic ?? fr.critptAgent,
+      sub.science ?? fr.science,
+      (sub.mlcr ?? fr.mlcr) != null ? Math.min(100, (sub.mlcr ?? fr.mlcr) * 1.8) : null,
+      fr.automation
+    ]),
+    visual: meanFinite([
+      hs.designWeb,
+      hs.designUi,
+      hs.creativeCraft,
+      hs.spatialMotion ?? meanFinite([eloPct(exp.aa3d, 1120, 175), eloPct(exp.code2video, 1340, 220)]),
+      sub.mmmuPro
+    ]),
+    vibe: meanFinite([
+      hs.chatVibe,
+      hs.antiSlop ?? (pb.slop != null ? Math.max(0, 100 - pb.slop) : null),
+      pb.warmth,
+      pb.expressiveness
+    ]),
+    rigor: meanFinite([
+      fr.gdpPdf != null ? Math.min(100, fr.gdpPdf * 2.1) : null,
+      hs.deliverable ?? meanFinite([eloPct(exp.gdpval, 1480, 480), eloPct(exp.briefcase, 1480, 480)]),
+      sub.omniscience,
+      sub.hallucination != null ? Math.max(0, 100 - sub.hallucination) : null,
+      meanFinite([dm.finance, dm.legal, dm.healthcare, dm.strategy])
+    ])
+  };
+
+  const fallback = 0.65 * baseScore + 0.35 * 45;
+  let weightedSum = 0, totalW = 0;
+  for (const [k, w] of wEntries) {
+    const val = pillarVals[k] ?? fallback;
+    weightedSum += w * val;
+    totalW += w;
+  }
+  return Number(Math.max(0, Math.min(100, weightedSum / totalW)).toFixed(4));
+}
+
+export function simulateWorkloadCost(row, profileId = 'benchmark') {
+  const baseCost = row?._baseCost ?? row?.cost ?? 0;
+  if (!row || !profileId || profileId === 'benchmark') return baseCost;
+  const cb = row.costBreakdown;
+  if (cb && Number.isFinite(cb.input)) {
+    const inp = Math.max(0, cb.input || 0);
+    const rsn = Math.max(0, cb.reasoning || 0);
+    const ans = Math.max(0, cb.answer || 0);
+    if (profileId === 'chat') {
+      return Number(Math.max(0.0001, inp * 0.15 + rsn * 0.10 + ans * 0.45).toFixed(6));
+    }
+    if (profileId === 'longdoc') {
+      return Number(Math.max(0.0001, inp * 2.20 + rsn * 0.25 + ans * 0.40).toFixed(6));
+    }
+    if (profileId === 'reasoning') {
+      return Number(Math.max(0.0001, inp * 1.15 + rsn * 1.75 + ans * 1.05).toFixed(6));
+    }
+  }
+  const pct = row.costPercentiles;
+  if (pct && Number.isFinite(pct.p50) && pct.p50 > 0) {
+    if (profileId === 'chat') return Number(Math.max(0.0001, pct.p25 || pct.p50 * 0.6).toFixed(6));
+    if (profileId === 'longdoc') return Number(Math.max(0.0001, pct.p50).toFixed(6));
+    if (profileId === 'reasoning') return Number(Math.max(0.0001, pct.p75 || pct.p95 || baseCost * 1.35).toFixed(6));
+  }
+  return baseCost;
+}
+
 export function sortRows(rows, key, direction = 'asc', weight = VALUE_WEIGHT.default, minScore = MIN_SCORE.default, maxCost = 0) {
   validateValueWeight(weight);
   validateMinScore(minScore);

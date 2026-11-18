@@ -17,6 +17,11 @@ import {
   zoomedAxisScale,
   zoomedRadarBounds,
   radarRadiusRatio,
+  SCENARIO_PILLARS,
+  SCENARIO_PRESETS,
+  COST_PROFILES,
+  computeScenarioScore,
+  simulateWorkloadCost,
   VALUE_WEIGHT,
   MIN_SCORE,
   MAX_COST_PRESETS,
@@ -24,7 +29,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261118-18';
+} from './chart-math.mjs?v=20261119-01';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -110,6 +115,22 @@ const BENCHMARKS = {
     source: 'https://artificialanalysis.ai/cyber',
     defaultX: 5,
     defaultTimeMin: 30
+  },
+  media: {
+    key: 'mediaModels',
+    zhTitle: '多模态生成盲测（图像 / 视频 / 语音）与单次成本',
+    enTitle: 'Multimodal Generation Arena (Image / Video / Speech) vs. Cost',
+    zhSub: '真人双盲竞技场校准分 · 文生图/修图($/张) · 视频生成($/5秒) · 语音合成 TTS($/千字)',
+    enSub: 'Blind human Elo calibrated to 0–100 · Image ($/img) · Video ($/5s clip) · TTS ($/1k chars)',
+    zhAxis: '多模态盲测指数',
+    enAxis: 'Multimodal Arena Index',
+    zhUnit: '个生成引擎',
+    enUnit: 'generative models',
+    zhCostNote: '横轴为单次生成成本：图像按每张图、视频按每 5 秒短片、语音按每千字符（约 1 分钟播音）',
+    enCostNote: 'Unit cost per generation: 1 image, 5s video clip, or 1,000 TTS characters (~1 min audio)',
+    source: 'https://artificialanalysis.ai/image',
+    defaultX: 0.35,
+    defaultTimeMin: 1
   }
 };
 
@@ -131,12 +152,15 @@ const DEFAULT_SETTINGS = {
   frontier: {labels: true, smartLabels: true, labelSize: 9.5, labelDistance: 5},
   'human-arena': {labels: true, smartLabels: true, labelSize: 10, labelDistance: 7},
   'coding-agents': {labels: true, smartLabels: true, labelSize: 10, labelDistance: 12},
-  cyber: {labels: true, smartLabels: true, labelSize: 10, labelDistance: 8}
+  cyber: {labels: true, smartLabels: true, labelSize: 10, labelDistance: 8},
+  media: {labels: true, smartLabels: true, labelSize: 9.5, labelDistance: 5}
 };
 
 const Y_LENSES = {
   models: [
     {id: '', zh: '纵轴：综合智能总分', en: 'Y: Overall Index', axisZh: '综合智能指数', axisEn: 'Intelligence Index', get: r => r._baseIndex},
+    {id: 'mmmuPro', zh: '纵轴：视觉多模态 (MMMU-Pro)', en: 'Y: Vision MMMU-Pro', axisZh: 'MMMU-Pro 视觉推理 (%)', axisEn: 'MMMU-Pro Vision (%)', get: r => r.subscores?.mmmuPro ?? null},
+    {id: 'mlcr', zh: '纵轴：百万长上下文 (MLCR)', en: 'Y: Million-Ctx MLCR', axisZh: 'MLCR 超长上下文 (%)', axisEn: 'MLCR Long-Context (%)', get: r => r.subscores?.mlcr ?? null},
     {id: 'omniscience', zh: '纵轴：全科闭卷准确率', en: 'Y: Omniscience Acc.', axisZh: '全科闭卷准确率 (%)', axisEn: 'Omniscience Accuracy (%)', get: r => r.subscores?.omniscience ?? null},
     {id: 'finance', zh: '纵轴：金融财务 (GDPval)', en: 'Y: Finance (GDPval)', axisZh: '金融财务专业分', axisEn: 'Finance & Accounting', get: r => r.domainScores?.finance ?? null},
     {id: 'legal', zh: '纵轴：法律合规 (GDPval)', en: 'Y: Legal (GDPval)', axisZh: '法律合规专业分', axisEn: 'Legal Domain', get: r => r.domainScores?.legal ?? null},
@@ -147,6 +171,8 @@ const Y_LENSES = {
     {id: '', zh: '纵轴：未饱和硬核总分', en: 'Y: Frontier Hard Index', axisZh: '未饱和前沿极限指数', axisEn: 'Frontier Hard Index', get: r => r._baseIndex},
     {id: 'gdpPdf', zh: '纵轴：GDP-PDF 一次全过', en: 'Y: GDP-PDF All-Pass', axisZh: 'GDP-PDF 全过率 (%)', axisEn: 'GDP-PDF All-Pass (%)', get: r => r.frontierScores?.gdpPdf ?? null},
     {id: 'frontierCode', zh: '纵轴：FrontierCode 2.0', en: 'Y: FrontierCode 2.0', axisZh: 'FrontierCode 2.0 (%)', axisEn: 'FrontierCode 2.0 (%)', get: r => r.frontierScores?.frontierCode ?? null},
+    {id: 'mlcr', zh: '纵轴：MLCR 百万长上下文', en: 'Y: MLCR Long-Context', axisZh: 'MLCR 百万长上下文 (%)', axisEn: 'MLCR Long-Context (%)', get: r => r.frontierScores?.mlcr ?? null},
+    {id: 'itBenchSre', zh: '纵轴：IT-Bench SRE 故障排障', en: 'Y: IT-Bench SRE', axisZh: 'IT-Bench SRE (%)', axisEn: 'IT-Bench SRE (%)', get: r => r.frontierScores?.itBenchSre ?? null},
     {id: 'terminal4', zh: '纵轴：Terminal-Bench 4.0', en: 'Y: Terminal-Bench 4.0', axisZh: 'Terminal-Bench 4.0 (%)', axisEn: 'Terminal-Bench 4.0 (%)', get: r => r.frontierScores?.terminal4 ?? null},
     {id: 'critptAgent', zh: '纵轴：CritPt 深度研究', en: 'Y: CritPt Research', axisZh: 'CritPt 深度研究 (%)', axisEn: 'CritPt Agentic Hard (%)', get: r => r.frontierScores?.critptAgent ?? null},
     {id: 'hleDiamond', zh: '纵轴：HLE 人类终极考', en: 'Y: HLE Diamond', axisZh: 'HLE 人类终极考 (%)', axisEn: 'HLE Diamond (%)', get: r => r.frontierScores?.hleDiamond ?? null},
@@ -155,8 +181,10 @@ const Y_LENSES = {
   'human-arena': [
     {id: '', zh: '纵轴：人类与审美总分', en: 'Y: Human & Taste Index', axisZh: '人类审美与体感指数', axisEn: 'Human & Aesthetic Index', get: r => r._baseIndex},
     {id: 'chatVibe', zh: '纵轴：交流人味 (去水份)', en: 'Y: Chat Vibe (De-biased)', axisZh: 'LMArena 交流人味校准分', axisEn: 'LMArena Chat Vibe Score', get: r => r.humanScores?.chatVibe ?? null},
+    {id: 'antiSlop', zh: '纵轴：去 AI 套话自然度', en: 'Y: Anti-Slop Naturalness', axisZh: '去 AI 套话自然度 (%)', axisEn: 'Anti-Slop Score (%)', get: r => r.humanScores?.antiSlop ?? null},
     {id: 'pureVisual', zh: '纵轴：视觉审美五维总分', en: 'Y: Design Arena 5D', axisZh: 'Design Arena 五维审美分', axisEn: 'Design Arena 5D Aesthetic', get: r => r.humanScores?.pureVisual ?? null},
     {id: 'creativeCraft', zh: '纵轴：SVG 矢量与游戏创意', en: 'Y: SVG & GameDev Craft', axisZh: 'SVG与游戏交互创意分', axisEn: 'SVG & GameDev Craft Score', get: r => r.humanScores?.creativeCraft ?? null},
+    {id: 'spatialMotion', zh: '纵轴：3D 造型与代码动效', en: 'Y: 3D & Code2Video', axisZh: '3D与代码动效盲测分', axisEn: '3D & Code2Video Score', get: r => r.humanScores?.spatialMotion ?? null},
     {id: 'deliverable', zh: '纵轴：专家办公交付 (GDPval)', en: 'Y: Expert Deliverables', axisZh: '44职业真实交付盲评分', axisEn: 'Expert Deliverable Score', get: r => r.humanScores?.deliverable ?? null},
     {id: 'webdev', zh: '纵轴：Web全栈体感 (WebDev)', en: 'Y: WebDev Arena', axisZh: 'WebDev 全栈体感分', axisEn: 'WebDev Arena Score', get: r => r.humanScores?.webdev ?? null}
   ],
@@ -168,6 +196,14 @@ const Y_LENSES = {
   ],
   cyber: [
     {id: '', zh: '纵轴：网络安全总指数', en: 'Y: Cyber Index', axisZh: '网络安全指数', axisEn: 'Cyber Index', get: r => r._baseIndex}
+  ],
+  media: [
+    {id: '', zh: '纵轴：多模态生成总览', en: 'Y: All Generative Media', axisZh: '多模态盲测指数', axisEn: 'Multimodal Arena Index', get: r => r._baseIndex},
+    {id: 't2i', zh: '纵轴：文生图 ($/张)', en: 'Y: Text-to-Image ($/img)', axisZh: '文生图盲测胜率分', axisEn: 'Text-to-Image Arena Score', get: r => r.mediaScores?.t2i ?? null},
+    {id: 'imgEdit', zh: '纵轴：图像编辑 ($/次)', en: 'Y: Image Editing ($/edit)', axisZh: '图像编辑盲测胜率分', axisEn: 'Image Editing Arena Score', get: r => r.mediaScores?.imgEdit ?? null},
+    {id: 't2v', zh: '纵轴：文生视频 ($/5秒)', en: 'Y: Text-to-Video ($/5s)', axisZh: '文生视频盲测胜率分', axisEn: 'Text-to-Video Arena Score', get: r => r.mediaScores?.t2v ?? null},
+    {id: 'i2v', zh: '纵轴：图生视频 ($/5秒)', en: 'Y: Image-to-Video ($/5s)', axisZh: '图生视频盲测胜率分', axisEn: 'Image-to-Video Arena Score', get: r => r.mediaScores?.i2v ?? null},
+    {id: 'tts', zh: '纵轴：语音合成 TTS ($/千字)', en: 'Y: Speech TTS ($/1k ch)', axisZh: 'TTS 语音自然度盲测分', axisEn: 'Speech TTS Arena Score', get: r => r.mediaScores?.tts ?? null}
   ]
 };
 
@@ -177,6 +213,11 @@ function currentLensObj(target = state, key = activeKey) {
 }
 
 function currentAxisLabel(target = state, key = activeKey) {
+  if (target?.scenarioId && target.scenarioId !== 'default' && !['coding-agents', 'media'].includes(key)) {
+    const preset = SCENARIO_PRESETS.find(p => p.id === target.scenarioId);
+    if (preset) return `${t('场景', 'Scenario')} · ${t(preset.zh, preset.en)}`;
+    return t('自定义工作流场景得分', 'Custom Workload Score');
+  }
   const lens = currentLensObj(target, key);
   return t(lens.axisZh, lens.axisEn);
 }
@@ -190,7 +231,7 @@ function parseHash() {
   const ampIndex = raw.indexOf('&');
   const chartPart = ampIndex === -1 ? raw : raw.slice(0, ampIndex);
   const queryPart = ampIndex === -1 ? '' : raw.slice(ampIndex + 1);
-  const chart = ['frontier', 'human-arena', 'coding-agents', 'cyber'].includes(chartPart) ? chartPart : 'models';
+  const chart = ['frontier', 'human-arena', 'coding-agents', 'cyber', 'media'].includes(chartPart) ? chartPart : 'models';
   return {chart, params: new URLSearchParams(queryPart)};
 }
 
@@ -198,16 +239,36 @@ const initialRoute = parseHash();
 let snapshot, activeKey = initialRoute.chart;
 const states = new Map();
 let crossTabIndex = new Map();
+let globalCatalog = [];
 let lastModelCompareIds = null;
+const starredKeys = new Set((() => {
+  try {
+    const raw = JSON.parse(localStorage.getItem('intelligence-cost-stars') || '[]');
+    return Array.isArray(raw) ? raw.filter(x => typeof x === 'string') : [];
+  } catch { return []; }
+})());
 let state, nodes = [], frame, pendingFrame = 0, hovered = null, suppressClick = false;
-let drag = null, pinch = null;
+let drag = null, pinch = null, lasso = null, lassoSelection = null, boxSelectMode = false;
 const activePointers = new Map();
 let loadController, loadGeneration = 0;
 
 const measure = document.createElement('canvas').getContext('2d');
 const colorCache = new Map();
 const mobileLayout = matchMedia('(max-width:760px), (max-height:500px)');
-let controlsOpen = !mobileLayout.matches, controlsTouched = false, valueDetailsOpen = false, changelogOpen = false, radarInfoOpen = false, comparePickerOpen = false, radarCtx = null, shareTimer = 0, copyMdTimer = 0, curveFrame;
+let controlsOpen = !mobileLayout.matches, controlsTouched = false, valueDetailsOpen = false, changelogOpen = false, scenarioOpen = false, radarInfoOpen = false, comparePickerOpen = false, cmdOpen = false, cmdIndex = 0, radarCtx = null, shareTimer = 0, copyMdTimer = 0, curveFrame;
+
+function starKeyOf(row) {
+  if (!row) return '';
+  return row.mediaKind ? String(row.id) : String(row.slug || row.id);
+}
+
+function isStarred(row) {
+  return starredKeys.has(starKeyOf(row));
+}
+
+function saveStars() {
+  try { localStorage.setItem('intelligence-cost-stars', JSON.stringify([...starredKeys])); } catch {}
+}
 
 const node = (tag, attrs = {}, content) => {
   const element = document.createElementNS(NS, tag);
@@ -387,16 +448,18 @@ function syncMetricViewport(target, nextMetric) {
   target.view = {...target.views[target.xMetric]};
 }
 
-function applyYLens(target, lensId = '') {
+function reprojectRows(target) {
   const list = Y_LENSES[target.benchKey] || Y_LENSES.models;
-  const lens = list.find(l => l.id === lensId) || list[0];
+  const lens = list.find(l => l.id === target.yLens) || list[0];
   target.yLens = lens.id;
+  const useScenario = target.scenarioId && target.scenarioId !== 'default' && target.scenarioWeights && !['coding-agents', 'media'].includes(target.benchKey);
+  const profileId = target.costProfile || 'benchmark';
   const projected = target.baseRows
     .map(r => {
-      const val = lens.get(r);
-      return typeof val === 'number' && Number.isFinite(val) && val >= 0
-        ? {...r, intelligenceIndex: Number(val.toFixed(4))}
-        : null;
+      const val = useScenario ? computeScenarioScore(r, target.scenarioWeights) : lens.get(r);
+      if (typeof val !== 'number' || !Number.isFinite(val) || val < 0) return null;
+      const simCost = simulateWorkloadCost(r, profileId);
+      return {...r, intelligenceIndex: Number(val.toFixed(4)), cost: simCost};
     })
     .filter(Boolean);
   const rows = projected.length ? projected : target.baseRows;
@@ -405,7 +468,9 @@ function applyYLens(target, lensId = '') {
   const timeBounds = dataBounds(timeRows.length ? timeRows : rows, r => (r.timeSec > 0 ? r.timeSec / 60 : 0));
   const maxFloor = Math.min(MIN_SCORE.max, Math.max(15, Math.floor(Math.max(...rows.map(d => d.intelligenceIndex)))));
   const cfg = BENCHMARKS[target.benchKey];
-  const defaultCostView = {...costBounds, width: cfg.defaultX ? Math.min(costBounds.width, cfg.defaultX) : costBounds.width};
+  const costMultiplier = profileId === 'chat' ? 0.35 : profileId === 'longdoc' ? 1.8 : profileId === 'reasoning' ? 1.5 : 1;
+  const defCostSpan = cfg.defaultX ? cfg.defaultX * costMultiplier : costBounds.width;
+  const defaultCostView = {...costBounds, width: Math.min(costBounds.width, defCostSpan)};
   const defaultTimeView = {...timeBounds, width: cfg.defaultTimeMin ? Math.min(timeBounds.width, cfg.defaultTimeMin) : timeBounds.width};
   target.rows = rows;
   target.releaseDates = [...new Set(rows.map(r => r.releaseDate).filter(Boolean))].sort();
@@ -424,8 +489,17 @@ function applyYLens(target, lensId = '') {
   target._rankCache = null;
 }
 
+function applyYLens(target, lensId = '') {
+  target.yLens = lensId;
+  if (lensId) {
+    target.scenarioId = 'default';
+    target.scenarioWeights = null;
+  }
+  reprojectRows(target);
+}
+
 function makeState(key, routeParams = null) {
-  const baseRows = validRows(snapshot[BENCHMARKS[key].key]).map(r => ({...r, _baseIndex: r.intelligenceIndex}));
+  const baseRows = validRows(snapshot[BENCHMARKS[key].key]).map(r => ({...r, _baseIndex: r.intelligenceIndex, _baseCost: r.cost}));
   const defaultTasks = key === 'coding-agents' ? MONTHLY_USAGE.defaultAgentTasks : MONTHLY_USAGE.defaultModelTasks;
   const defaultCmp = defaultCompareIds(baseRows);
   const defaultFast = sortRows(baseRows, 'valuePerDollar', 'desc', 2, 25)[0] || baseRows[0];
@@ -437,6 +511,9 @@ function makeState(key, routeParams = null) {
     releaseDates: [],
     xMetric: 'cost',
     yLens: '',
+    scenarioId: 'default',
+    scenarioWeights: null,
+    costProfile: 'benchmark',
     boundsByMetric: {},
     defaultViews: {},
     views: {},
@@ -449,6 +526,7 @@ function makeState(key, routeParams = null) {
     license: 'all',
     extraFilter: '',
     search: '',
+    starredOnly: false,
     frontierOnly: false,
     effortCurves: false,
     historyMode: false,
@@ -493,7 +571,35 @@ function applyRouteParams(target, params) {
   const view = params.get('view');
   if (['chart', 'table', 'curve', 'sub', 'compare'].includes(view)) target.mode = view;
   const yl = params.get('ylens') || '';
-  if (yl !== target.yLens) applyYLens(target, yl);
+  const scen = params.get('scen') || '';
+  const cprof = params.get('cprof') || '';
+  let needsReproject = false;
+  if (COST_PROFILES.some(c => c.id === cprof) && cprof !== target.costProfile) {
+    target.costProfile = cprof;
+    needsReproject = true;
+  }
+  if (scen && SCENARIO_PRESETS.some(p => p.id === scen && p.id !== 'default')) {
+    const p = SCENARIO_PRESETS.find(x => x.id === scen);
+    target.scenarioId = p.id;
+    target.scenarioWeights = {...p.weights};
+    target.yLens = '';
+    needsReproject = true;
+  } else if (params.has('sw')) {
+    const parts = params.get('sw').split(',').map(Number);
+    if (parts.length === SCENARIO_PILLARS.length && parts.every(n => Number.isFinite(n) && n >= 0 && n <= 5) && parts.some(n => n > 0)) {
+      target.scenarioId = 'custom';
+      target.scenarioWeights = Object.fromEntries(SCENARIO_PILLARS.map((p, i) => [p.key, parts[i]]));
+      target.yLens = '';
+      needsReproject = true;
+    }
+  } else if (yl !== target.yLens) {
+    target.yLens = yl;
+    target.scenarioId = 'default';
+    target.scenarioWeights = null;
+    needsReproject = true;
+  }
+  if (needsReproject) reprojectRows(target);
+  if (params.get('star') === '1') target.starredOnly = true;
   if (params.get('x') === 'time') syncMetricViewport(target, 'time');
   const lic = params.get('lic');
   if (['all', 'open', 'closed'].includes(lic)) target.license = lic;
@@ -557,7 +663,17 @@ function syncUrlHash() {
   if (!state) return;
   const params = new URLSearchParams();
   if (state.mode !== 'chart') params.set('view', state.mode);
-  if (state.yLens) params.set('ylens', state.yLens);
+  if (state.scenarioId && state.scenarioId !== 'default') {
+    if (state.scenarioId === 'custom' && state.scenarioWeights) {
+      params.set('sw', SCENARIO_PILLARS.map(p => state.scenarioWeights[p.key] ?? 0).join(','));
+    } else {
+      params.set('scen', state.scenarioId);
+    }
+  } else if (state.yLens) {
+    params.set('ylens', state.yLens);
+  }
+  if (state.costProfile && state.costProfile !== 'benchmark') params.set('cprof', state.costProfile);
+  if (state.starredOnly) params.set('star', '1');
   if (state.xMetric === 'time') params.set('x', 'time');
   if (state.license !== 'all') params.set('lic', state.license);
   if (state.extraFilter) params.set('xf', state.extraFilter);
@@ -632,6 +748,9 @@ function licenseFilteredRows(rows = state.rows) {
       out = out.filter(row => (row.refusalRate ?? 0) === 0);
     } else if (state.extraFilter === 'refusal:guarded') {
       out = out.filter(row => (row.refusalRate ?? 0) > 0);
+    } else if (state.extraFilter.startsWith('media:')) {
+      const mk = state.extraFilter.slice(6);
+      out = out.filter(row => row.mediaKind === mk);
     } else if (state.extraFilter.startsWith('agent:')) {
       const ag = state.extraFilter.slice(6);
       out = out.filter(row => row.agentName === ag);
@@ -671,6 +790,9 @@ function filteredRows() {
   const query = state.search.trim().toLocaleLowerCase();
   const pool = activePool();
   let rows = pool.filter(row => !query || [row.name, row.shortName, row.creator?.name, row.agentName, row.modelName, row.family?.name].filter(Boolean).join(' ').toLocaleLowerCase().includes(query));
+  if (state.starredOnly) {
+    rows = rows.filter(isStarred);
+  }
   if (state.frontierOnly) {
     const {idSet} = activeFrontierSet();
     rows = rows.filter(row => idSet.has(row.id));
@@ -710,10 +832,41 @@ function isRecentRelease(row) {
 }
 
 function renderChangelog() {
-  $('#changelogTitle').textContent = t('Artificial Analysis 最新动态', 'Latest Upstream Updates');
+  $('#changelogTitle').textContent = t('实况变动与上游动态', 'Live Snapshot Diff & Updates');
   $('#changelogTime').textContent = t('每 2 小时检查', '2h auto-sync');
   const list = $('#changelogList');
   const frag = document.createDocumentFragment();
+  const diffs = Array.isArray(snapshot?.diffEvents) ? snapshot.diffEvents : [];
+  if (diffs.length) {
+    frag.append(html('li', t('⚡ 自动监测：新上榜 / 价格调整 / 跑分刷新', '⚡ Live Tracker: New Arrivals & Price Shifts'), 'diff-section-label'));
+    for (const ev of diffs.slice(0, 8)) {
+      const li = html('li', null, 'changelog-item');
+      const btn = html('button', null, 'diff-jump-btn');
+      btn.type = 'button';
+      const left = html('span', `${ev.date.slice(5)} · ${ev.name}`, 'diff-jump-name');
+      let badgeTxt = '', badgeCls = 'diff-badge is-good';
+      if (ev.kind === 'new') {
+        badgeTxt = `${t('新上榜', 'NEW')} ${ev.score}`;
+      } else if (ev.kind === 'price-drop') {
+        badgeTxt = `${t('降价', 'Drop')} ${ev.pct}%`;
+      } else if (ev.kind === 'price-up') {
+        badgeTxt = `${t('调价', 'Price')} +${ev.pct}%`;
+        badgeCls = 'diff-badge is-warn';
+      } else {
+        badgeTxt = `${ev.delta > 0 ? '+' : ''}${ev.delta} ${t('分', 'pt')}`;
+      }
+      btn.append(left, html('span', badgeTxt, badgeCls));
+      btn.addEventListener('click', () => {
+        setChangelogOpen(false);
+        const targetTab = BENCHMARKS[ev.tab] ? ev.tab : 'models';
+        chooseChart(targetTab);
+        const found = state?.rows.find(r => r.id === ev.id);
+        if (found) locateRowInChart(found);
+      });
+      li.append(btn);
+      frag.append(li);
+    }
+  }
   const items = Array.isArray(snapshot?.changelog) ? snapshot.changelog : [];
   const typeLabelOf = raw => {
     if (raw === 'model') return t('新模型', 'Model');
@@ -722,7 +875,10 @@ function renderChangelog() {
     return t('动态', 'Update');
   };
   if (items.length) {
-    for (const item of items.slice(0, 10)) {
+    if (diffs.length) {
+      frag.append(html('li', t('📰 Artificial Analysis 官方评测公告', '📰 Official Artificial Analysis Announcements'), 'diff-section-label'));
+    }
+    for (const item of items.slice(0, 8)) {
       const li = html('li', null, 'changelog-item');
       const meta = html('div', null, 'changelog-meta');
       meta.append(html('span', item.date), html('span', typeLabelOf(item.type), 'row-tag'));
@@ -737,7 +893,7 @@ function renderChangelog() {
       }
       frag.append(li);
     }
-  } else {
+  } else if (!diffs.length) {
     frag.append(html('li', t('每 2 小时自动检查 Artificial Analysis 上游榜单更新。', 'Checked every 2 hours against upstream Artificial Analysis releases.'), 'changelog-item'));
   }
   list.replaceChildren(frag);
@@ -831,6 +987,14 @@ function syncStaticText() {
   $('#tab-human-arena').textContent = t('人类与审美', 'Human & Taste');
   $('#tab-coding-agents').textContent = t('编程智能体', 'Coding Agents');
   $('#tab-cyber').textContent = t('网络安全', 'Cyber');
+  $('#tab-media').textContent = t('多模态生成', 'Media Arena');
+  $('#cmdPaletteBtn').replaceChildren(
+    document.createTextNode(t('速查 ', 'Jump ')),
+    html('kbd', 'Ctrl+K')
+  );
+  $('#cmdPaletteBtn').setAttribute('aria-label', t('打开全局模型速查面板 (Ctrl+K)', 'Open global model search palette (Ctrl+K)'));
+  $('#cmdInput').placeholder = t('输入模型、厂商或生成引擎名速查全站排名…', 'Search any model, creator, or media generator across all tabs…');
+  $('#cmdFoot').textContent = t('↑↓ 选择 · Enter 跳转定位 · Shift+Enter 加入剖析对比 · ★ 收藏关注', '↑↓ Navigate · Enter locate on chart · Shift+Enter compare · ★ Star');
   $('#updateText').textContent = t('最新动态', 'Updates');
   if (changelogOpen) renderChangelog();
   if (!shareTimer) $('#shareBtn').textContent = t('分享', 'Share');
@@ -859,6 +1023,12 @@ function syncStaticText() {
 
   $('#reset').textContent = t('重置视图', 'Reset view');
   $('#fit').textContent = t('显示全部', 'Fit all');
+  $('#boxSelectBtn').textContent = boxSelectMode ? t('⬚ 框选 ✓', '⬚ Box ✓') : t('⬚ 框选', '⬚ Box');
+  $('#boxSelectBtn').title = t('开启拉框模式（或按住 Shift 在图中拖拽）框选局部放大或批量加入对比', 'Toggle box-select mode (or Shift+drag on chart) to zoom or batch-compare');
+  $('#lassoZoomBtn').textContent = t('🔍 放大此区', '🔍 Zoom here');
+  $('#lassoCompareBtn').textContent = t('⚖️ 框内前沿对比', '⚖️ Compare frontier');
+  $('#scenarioTitle').textContent = t('自定义工作流场景配方', 'Custom Workload Scenario');
+  $('#scenarioResetBtn').textContent = t('恢复官方', 'Official');
   $('#xminus').setAttribute('aria-label', t('缩小横轴', 'Zoom X out'));
   $('#xplus').setAttribute('aria-label', t('放大横轴', 'Zoom X in'));
   $('#yminus').setAttribute('aria-label', t('缩小纵轴', 'Zoom Y out'));
@@ -886,13 +1056,15 @@ function syncStaticText() {
     html('kbd', 'Ctrl'),
     document.createTextNode(t('+滚轮双向 · 拖动平移 · 单击锁定 · ', '+wheel XY · Drag · Click pin · ')),
     html('kbd', 'Shift'),
-    document.createTextNode(t('+单击加入对比', '+click compare'))
+    document.createTextNode(t('+拖拽拉框放大/批量对比', '+drag box-zoom/compare'))
   );
   $('#helpKeyboard').replaceChildren(
     document.createTextNode(t('键盘：', 'Keys: ')),
+    html('kbd', 'Ctrl+K'),
+    document.createTextNode(t(' 速查 · ', ' jump · ')),
     html('kbd', '1–5'),
     document.createTextNode(t(' 切视图 · ', ' views · ')),
-    html('kbd', 'Alt+1–5'),
+    html('kbd', 'Alt+1–6'),
     document.createTextNode(t(' 切榜单 · ', ' tabs · ')),
     html('kbd', '/'),
     document.createTextNode(t(' 搜索 · ', ' search · ')),
@@ -1208,6 +1380,113 @@ function syncYLensOptions() {
   sel.value = state.yLens || '';
 }
 
+function syncScenarioControls() {
+  const wrap = $('#scenarioWrap');
+  const supported = !['coding-agents', 'media'].includes(activeKey);
+  wrap.hidden = !supported;
+  if (!supported) {
+    if (scenarioOpen) setScenarioOpen(false);
+    return;
+  }
+  const activeScen = state.scenarioId && state.scenarioId !== 'default';
+  const presetObj = SCENARIO_PRESETS.find(p => p.id === state.scenarioId);
+  const btn = $('#scenarioBtn');
+  btn.classList.toggle('is-active', !!activeScen);
+  btn.textContent = activeScen
+    ? (presetObj ? `${t(presetObj.zh, presetObj.en)} ✓` : t('⚡ 自定义配方 ✓', '⚡ Custom ✓'))
+    : t('⚡ 场景配方', '⚡ Scenarios');
+  btn.setAttribute('aria-expanded', String(scenarioOpen));
+  if (!scenarioOpen) return;
+
+  $('#scenarioResetBtn').disabled = !activeScen;
+  const pFrag = document.createDocumentFragment();
+  for (const p of SCENARIO_PRESETS) {
+    const b = html('button', t(p.zh, p.en));
+    b.type = 'button';
+    b.setAttribute('aria-pressed', String((state.scenarioId || 'default') === p.id));
+    b.addEventListener('click', () => {
+      stopHistoryPlay();
+      state.scenarioId = p.id;
+      state.scenarioWeights = p.weights ? {...p.weights} : null;
+      if (p.weights) state.yLens = '';
+      state.selected = null;
+      reprojectRows(state);
+      syncControls();
+      syncUrlHash();
+      buildPlot();
+    });
+    pFrag.append(b);
+  }
+  $('#scenarioPresetGroup').replaceChildren(pFrag);
+
+  const curWeights = state.scenarioWeights || {coding: 2, reasoning: 2, visual: 2, vibe: 2, rigor: 2};
+  const sFrag = document.createDocumentFragment();
+  for (const pil of SCENARIO_PILLARS) {
+    const rowEl = html('label', null, 'scenario-slider-row');
+    const lbl = html('span', t(pil.zh, pil.en));
+    const inp = html('input');
+    inp.type = 'range';
+    inp.min = '0';
+    inp.max = '5';
+    inp.step = '1';
+    inp.value = String(state.scenarioId === 'default' ? 2 : (curWeights[pil.key] ?? 0));
+    const out = html('output', inp.value);
+    inp.addEventListener('input', () => {
+      stopHistoryPlay();
+      const nextW = state.scenarioWeights ? {...state.scenarioWeights} : {coding: 2, reasoning: 2, visual: 2, vibe: 2, rigor: 2};
+      nextW[pil.key] = Number(inp.value);
+      if (Object.values(nextW).every(v => v === 0)) nextW[pil.key] = 1;
+      inp.value = String(nextW[pil.key]);
+      out.textContent = inp.value;
+      state.scenarioId = 'custom';
+      state.scenarioWeights = nextW;
+      state.yLens = '';
+      state.selected = null;
+      reprojectRows(state);
+      syncYLensOptions();
+      syncUrlHash();
+      buildPlot();
+      btn.classList.add('is-active');
+      btn.textContent = t('⚡ 自定义配方 ✓', '⚡ Custom ✓');
+      $('#scenarioResetBtn').disabled = false;
+      for (const pb of document.querySelectorAll('#scenarioPresetGroup button')) {
+        pb.setAttribute('aria-pressed', 'false');
+      }
+    });
+    rowEl.append(lbl, inp, out);
+    sFrag.append(rowEl);
+  }
+  $('#scenarioSliders').replaceChildren(sFrag);
+  $('#scenarioNote').textContent = t(
+    '融合代码终端、复杂长文本推理、Design Arena 审美、LMArena 人味去套话与办公防幻觉五维实测，实时重算专属于您的帕累托前沿与性价比榜首。',
+    'Blends Coding, Long-Doc Reasoning, Visual Taste, Chat Vibe & Low-Hallucination Rigor to recompute your custom Pareto frontier live.'
+  );
+}
+
+function setScenarioOpen(open) {
+  scenarioOpen = open;
+  $('#scenarioBtn').setAttribute('aria-expanded', String(open));
+  $('#scenarioPopover').hidden = !open;
+  if (open) {
+    syncScenarioControls();
+    clampAnchoredPopover($('#scenarioPopover'), $('#scenarioBtn'), 340);
+  }
+}
+
+function syncCostProfileOptions() {
+  const wrap = $('#costProfileWrap');
+  const sel = $('#costProfileSelect');
+  wrap.hidden = activeKey === 'media';
+  const frag = document.createDocumentFragment();
+  for (const cp of COST_PROFILES) {
+    const opt = html('option', t(cp.zh, cp.en));
+    opt.value = cp.id;
+    frag.append(opt);
+  }
+  sel.replaceChildren(frag);
+  sel.value = state.costProfile || 'benchmark';
+}
+
 function syncExtraFilterOptions() {
   const sel = $('#extraFilter');
   const frag = document.createDocumentFragment();
@@ -1265,6 +1544,18 @@ function syncExtraFilterOptions() {
       opt.value = val;
       frag.append(opt);
     }
+  } else if (activeKey === 'media') {
+    const opts = [
+      ['', t('全部生成引擎 (图/视频/语音)', 'All media (Image/Video/TTS)')],
+      ['media:image', t('仅图像生成与编辑 ($/张)', 'Image Gen & Edit ($/img)')],
+      ['media:video', t('仅视频生成与编辑 ($/5秒)', 'Video Gen & Edit ($/5s)')],
+      ['media:tts', t('仅语音合成 TTS ($/千字)', 'Speech TTS ($/1k chars)')]
+    ];
+    for (const [val, label] of opts) {
+      const opt = html('option', label);
+      opt.value = val;
+      frag.append(opt);
+    }
   } else {
     const counts = new Map();
     for (const r of state.rows) {
@@ -1294,7 +1585,7 @@ function shiftMonthsIso(isoDate, deltaMonths) {
 }
 
 function canHistoryMode() {
-  return ['models', 'frontier', 'human-arena', 'cyber'].includes(activeKey) && state.xMetric === 'cost' && state.releaseDates.length > 1;
+  return ['models', 'frontier', 'human-arena', 'cyber', 'media'].includes(activeKey) && state.xMetric === 'cost' && state.releaseDates.length > 1;
 }
 
 function syncHistoryControls() {
@@ -1367,6 +1658,10 @@ function syncHistoryControls() {
 }
 
 function syncControls() {
+  syncExtraFilterOptions();
+  const hasAnyTime = licenseFilteredRows(state.rows).some(r => xValOf(r, 'time') !== null);
+  if (!hasAnyTime && state.xMetric === 'time') syncMetricViewport(state, 'cost');
+  $('#xMetricTime').disabled = !hasAnyTime;
   const isTimeAxis = state.xMetric === 'time';
   $('#xMetricCost').setAttribute('aria-pressed', String(!isTimeAxis));
   $('#xMetricTime').setAttribute('aria-pressed', String(isTimeAxis));
@@ -1381,13 +1676,28 @@ function syncControls() {
     btn.setAttribute('aria-pressed', String(btn.dataset.license === state.license));
   }
   syncYLensOptions();
-  syncExtraFilterOptions();
+  syncScenarioControls();
+  syncCostProfileOptions();
+
+  $('#boxSelectBtn').setAttribute('aria-pressed', String(boxSelectMode));
+  $('#boxSelectBtn').textContent = boxSelectMode ? t('⬚ 框选 ✓', '⬚ Box ✓') : t('⬚ 框选', '⬚ Box');
+  host.classList.toggle('box-mode', boxSelectMode);
+
+  const starCountOnTab = state.rows.filter(isStarred).length;
+  $('#starFilterBtn').setAttribute('aria-pressed', String(!!state.starredOnly));
+  $('#starFilterBtn').textContent = starCountOnTab > 0
+    ? t(`★ 关注 (${starCountOnTab})${state.starredOnly ? ' ✓' : ''}`, `★ Stars (${starCountOnTab})${state.starredOnly ? ' ✓' : ''}`)
+    : t('★ 关注', '★ Stars');
+  $('#starFilterBtn').disabled = !state.starredOnly && starCountOnTab === 0;
+  $('#starFilterBtn').title = starCountOnTab === 0
+    ? t('点击任意模型的 ★ 即可收藏常驻关注（保存在浏览器本地）', 'Click ★ on any model card or table row to star it locally')
+    : t('仅筛选显示您收藏关注的常驻模型', 'Filter to your starred watchlist models');
 
   $('#search').value = state.search;
   $('#frontier').setAttribute('aria-pressed', String(state.frontierOnly));
   $('#frontier').textContent = state.frontierOnly ? t('仅看前沿 ✓', 'Frontier ✓') : t('仅看前沿', 'Frontier only');
 
-  $('#effortToggle').hidden = state.mode !== 'chart';
+  $('#effortToggle').hidden = state.mode !== 'chart' || activeKey === 'media';
   $('#effortToggle').setAttribute('aria-pressed', String(state.effortCurves));
   $('#effortToggle').textContent = state.effortCurves ? t('推理轨迹 ✓', 'Effort paths ✓') : t('推理轨迹', 'Effort paths');
   $('#keyEffortWrap').hidden = !state.effortCurves;
@@ -1453,7 +1763,9 @@ function syncControls() {
   $('#curveScaleToggle').setAttribute('aria-pressed', String(state.curveLogY));
   $('#curveScaleToggle').textContent = state.curveLogY ? t('对数纵轴 ✓', 'Log Y ✓') : t('对数纵轴', 'Log Y');
 
-  const hasFocus = !!(state.company || state.license !== 'all' || state.yLens || state.extraFilter || state.search || state.frontierOnly || state.minScore > 0 || state.maxCost > 0);
+  const hasScenario = !!(state.scenarioId && state.scenarioId !== 'default');
+  const hasCostProf = !!(state.costProfile && state.costProfile !== 'benchmark');
+  const hasFocus = !!(state.company || state.license !== 'all' || state.yLens || hasScenario || hasCostProf || state.extraFilter || state.search || state.starredOnly || state.frontierOnly || state.minScore > 0 || state.maxCost > 0);
   $('#clearFilters').hidden = false;
   $('#clearFilters').style.visibility = hasFocus ? 'visible' : 'hidden';
   $('#clearFilters').disabled = !hasFocus;
@@ -1467,7 +1779,7 @@ function syncPanelControls() {
   $('#controlsToggle').hidden = emptyDesktopPanel;
   $('#controlPanel').hidden = !controlsOpen || emptyDesktopPanel;
   const activeFilters = state && state.mode !== 'curve' && state.mode !== 'compare'
-    ? Number(!!state.company) + Number(state.license !== 'all') + Number(!!state.yLens) + Number(!!state.extraFilter) + Number(!!state.search) + Number(state.frontierOnly) + Number(state.minScore > 0) + Number(state.maxCost > 0)
+    ? Number(!!state.company) + Number(state.license !== 'all') + Number(!!state.yLens) + Number(!!(state.scenarioId && state.scenarioId !== 'default')) + Number(!!(state.costProfile && state.costProfile !== 'benchmark')) + Number(!!state.extraFilter) + Number(!!state.search) + Number(!!state.starredOnly) + Number(state.frontierOnly) + Number(state.minScore > 0) + Number(state.maxCost > 0)
     : 0;
   $('#controlsToggle').setAttribute('aria-expanded', String(controlsOpen));
   $('#controlsToggle').textContent = controlsOpen
@@ -1735,6 +2047,14 @@ function renderStatus() {
       document.createTextNode(' + '),
       makeLink('Artificial Analysis', 'https://artificialanalysis.ai/evaluations/gdpval-aa')
     );
+  } else if (activeKey === 'media') {
+    sourceFrag.append(
+      makeLink('AA Image Arena', 'https://artificialanalysis.ai/image'),
+      document.createTextNode(' + '),
+      makeLink('Video Arena', 'https://artificialanalysis.ai/video'),
+      document.createTextNode(' + '),
+      makeLink('Speech TTS', 'https://artificialanalysis.ai/text-to-speech')
+    );
   } else {
     sourceFrag.append(makeLink('Artificial Analysis', cfg.source));
   }
@@ -1780,6 +2100,7 @@ function glowId(display) {
 
 function buildPlot() {
   clearHover();
+  clearLasso();
   const rows = filteredRows();
   const defs = node('defs');
   const clip = node('clipPath', {id: 'plot-clip'});
@@ -1817,7 +2138,8 @@ function buildPlot() {
     node('g', {class: 'active-effort-layer'}),
     node('g', {class: 'glow-layer'}),
     node('g', {class: 'company-layer'}),
-    node('g', {class: 'active-layer'})
+    node('g', {class: 'active-layer'}),
+    node('rect', {class: 'lasso-rect', style: 'display:none'})
   );
 
   plot.append(quadrant, quadrantBorder, floorRect, floorGuide, budgetRect, budgetGuide, paretoPath, paretoHistoryPath, effortLayer, isoPath, subGuide, connectors, points, labels);
@@ -1907,13 +2229,53 @@ function toggleCompareId(id, {evictOldest = true} = {}) {
     }
     state.compareIds.push(id);
   }
-  if (activeKey !== 'coding-agents') lastModelCompareIds = [...state.compareIds];
+  if (!['coding-agents', 'media'].includes(activeKey)) lastModelCompareIds = [...state.compareIds];
   syncUrlHash();
   if (state.mode === 'table') renderTable();
   else if (state.mode === 'sub') renderSubTable();
   else if (state.mode === 'compare') renderCompare();
   renderPinned();
   updateSummary();
+}
+
+function toggleStar(row) {
+  if (!row) return;
+  const key = starKeyOf(row);
+  if (!key) return;
+  if (starredKeys.has(key)) starredKeys.delete(key);
+  else starredKeys.add(key);
+  saveStars();
+  if (state?.starredOnly && !state.rows.some(isStarred)) {
+    state.starredOnly = false;
+    syncUrlHash();
+  }
+  if (state) {
+    syncControls();
+    if (state.starredOnly) {
+      buildPlot();
+    } else {
+      if (state.mode === 'table') renderTable();
+      else if (state.mode === 'sub') renderSubTable();
+      else if (state.mode === 'chart') scheduleDraw();
+      renderPinned();
+      updateSummary();
+    }
+  }
+  if (cmdOpen) renderCmdList();
+}
+
+function makeStarRowBtn(row) {
+  const on = isStarred(row);
+  const btn = html('button', on ? '★' : '☆', 'locate-btn star-row-btn');
+  btn.type = 'button';
+  btn.setAttribute('aria-pressed', String(on));
+  btn.setAttribute('aria-label', on ? t(`取消关注 ${row.name}`, `Unstar ${row.name}`) : t(`收藏关注 ${row.name}`, `Star ${row.name}`));
+  btn.title = on ? t('已收藏常驻关注（点击取消）', 'Starred in watchlist (click to remove)') : t('加入本地 ★ 常驻关注', 'Add to local ★ watchlist');
+  btn.addEventListener('click', event => {
+    event.stopPropagation();
+    toggleStar(row);
+  });
+  return btn;
 }
 
 function makeCompareRowBtn(row) {
@@ -1983,6 +2345,9 @@ function renderTable(rows = filteredRows()) {
     if (activeKey === 'human-arena' && (row.indexDelta ?? 0) >= 18) {
       wrap.append(html('span', t(`体感↑+${Math.round(row.indexDelta)}`, `Vibe +${Math.round(row.indexDelta)}`), 'row-tag tag-top'));
     }
+    if (activeKey === 'media' && row.mediaRaw) {
+      wrap.append(html('span', t(row.mediaRaw.unitZh, row.mediaRaw.unitEn.replace(/^\/\s*/, '')), 'row-tag'));
+    }
     if (row.isOpenWeights) {
       wrap.append(html('span', t('开源', 'Open'), 'row-tag tag-open'));
     }
@@ -1993,7 +2358,7 @@ function renderTable(rows = filteredRows()) {
       event.stopPropagation();
       locateRowInChart(row);
     });
-    wrap.append(locateBtn, makeCompareRowBtn(row));
+    wrap.append(locateBtn, makeCompareRowBtn(row), makeStarRowBtn(row));
     nameTd.append(wrap);
 
     const hasTime = typeof row.timeSec === 'number' && Number.isFinite(row.timeSec) && row.timeSec > 0;
@@ -2113,7 +2478,7 @@ function renderSubTable(rows = filteredRows()) {
       event.stopPropagation();
       locateRowInChart(row);
     });
-    wrap.append(locateBtn, makeCompareRowBtn(row));
+    wrap.append(locateBtn, makeCompareRowBtn(row), makeStarRowBtn(row));
     nameTd.append(wrap);
 
     const costTd = html('td', money(row.cost));
@@ -2818,6 +3183,33 @@ function renderRadarInfo() {
       ))
     );
     frag.append(p1, p2, p3);
+  } else if (activeKey === 'media') {
+    const p1 = html('p');
+    p1.append(
+      html('strong', t('三大生成式多模态双盲竞技场来源：', '3 Blind Generative Media Arenas: ')),
+      document.createTextNode(t(
+        '100% 同步自 Artificial Analysis 独立运营的真人双盲投票竞技场，包含 ',
+        '100% sourced from Artificial Analysis blind human preference arenas across '
+      )),
+      extLink('Image Arena', 'https://artificialanalysis.ai/image'),
+      document.createTextNode('（文生图 & 指令修图）、'),
+      extLink('Video Arena', 'https://artificialanalysis.ai/video'),
+      document.createTextNode('（文生视频 & 图生视频 & 视频编辑）以及 '),
+      extLink('Speech TTS Arena', 'https://artificialanalysis.ai/text-to-speech'),
+      document.createTextNode(t(
+        '（语音自然度与情感盲听），按各模态真实盲测 Elo 标尺校准至统一 0–100 胜率指数。',
+        ' (blind listening Elo), calibrated per modality onto a unified 0–100 win-percentage scale.'
+      ))
+    );
+    const p2 = html('p');
+    p2.append(
+      html('strong', t('直观单次生成成本折算口径：', 'Single-Task Unit Cost Normalization: ')),
+      document.createTextNode(t(
+        '为方便直接衡量日常创作开销，横轴将官方批发 API 报价统一换算为单次单位：图像按「每张图」($/千张 ÷ 1000)，视频按「每 5 秒短片」($/分钟 ÷ 12)，语音合成按「每千字符」(约 1 分钟播音，$/百万字符 ÷ 1000)。可用顶部筛选器单独锁定图像、视频或语音赛道。',
+        'Wholesale API rates are normalized to intuitive per-task units: $/image (per-1k ÷ 1000), $/5s video clip (per-min ÷ 12), and $/1k TTS characters (~1 min audio, per-1M ÷ 1000). Use the modality filter to isolate Image, Video, or Speech.'
+      ))
+    );
+    frag.append(p1, p2);
   } else if (activeKey === 'coding-agents') {
     const p1 = html('p');
     p1.append(
@@ -3039,14 +3431,14 @@ function renderCompare() {
     ? t(`已满 (${countStr})`, `Full (${countStr})`)
     : t(`+ 添加对比 (${countStr})`, `+ Add (${countStr})`);
   $('#compareClearBtn').disabled = selectedRows.length <= 1;
-  const syncCandidates = activeKey !== 'coding-agents' && Array.isArray(lastModelCompareIds)
+  const syncCandidates = !['coding-agents', 'media'].includes(activeKey) && Array.isArray(lastModelCompareIds)
     ? lastModelCompareIds.filter(id => rowMap.has(id))
     : [];
   $('#compareSyncBtn').hidden = !(syncCandidates.length >= 1 && syncCandidates.join(',') !== state.compareIds.join(','));
   if (comparePickerOpen) renderComparePicker();
 
   // 2. Hero Centerpiece Capability Radar & Compact Score Strip
-  $('#radarModeSwitch').hidden = activeKey === 'coding-agents';
+  $('#radarModeSwitch').hidden = activeKey === 'coding-agents' || activeKey === 'media';
   if (activeKey === 'frontier') {
     $('#radarModeBench').textContent = t('未饱和六维', 'Hard 6D');
     $('#radarModeDomain').textContent = t('专项实验室', 'Lab Suites');
@@ -3073,7 +3465,11 @@ function renderCompare() {
         {key: 'science', zh: 'Terminal 科学', en: 'Terminal Science', srcZh: 'Terminal-Bench Science 容器环境计算科学与科研实操', srcEn: 'Terminal-Bench Science sandboxed scientific computing', get: r => r.frontierScores?.science ?? null},
         {key: 'gdpPdf', zh: 'GDP-PDF 全过', en: 'GDP-PDF AllPass', srcZh: 'GDP-PDF All-Pass 复杂版式文档与图表端到端零差错一次全过率', srcEn: 'GDP-PDF All-Pass zero-defect complex document workflows', get: r => r.frontierScores?.gdpPdf ?? null}
       ];
-      barMetrics = [...axes];
+      barMetrics = [
+        ...axes,
+        {key: 'itBenchSre', zh: 'SRE 故障排障', en: 'IT-Bench SRE', srcZh: 'IT-Bench SRE 云原生集群真实故障定位与自愈排障实测', srcEn: 'IT-Bench SRE cloud-native incident root-cause & remediation', get: r => r.frontierScores?.itBenchSre ?? null},
+        {key: 'mlcr', zh: '百万长上下文', en: 'MLCR Long-Ctx', srcZh: 'MLCR 百万 Token 超长上下文跨文档多跳检索与精准推理', srcEn: 'MLCR million-token multi-hop long-context reasoning', get: r => r.frontierScores?.mlcr ?? null}
+      ];
     } else {
       $('#radarHeading').textContent = t('未饱和前沿极限六维能力雷达（剔除 90%+ 已饱和旧测试）', 'Unsaturated 6-Pillar Frontier Hard Radar (90%+ Legacy Suites Stripped)');
       axes = [
@@ -3086,6 +3482,8 @@ function renderCompare() {
       ];
       barMetrics = [
         ...axes,
+        {key: 'mlcr', zh: '百万长上下文', en: 'MLCR Long-Ctx', srcZh: 'MLCR 百万 Token 超长上下文跨文档推理实测', srcEn: 'MLCR million-token long-context reasoning', get: r => r.frontierScores?.mlcr ?? null},
+        {key: 'itBenchSre', zh: 'SRE 故障排障', en: 'IT-Bench SRE', srcZh: 'IT-Bench SRE 生产环境运维故障排障实测', srcEn: 'IT-Bench SRE incident diagnosis & remediation', get: r => r.frontierScores?.itBenchSre ?? null},
         {key: 'science', zh: 'Terminal 科学', en: 'Terminal Science', srcZh: 'Terminal-Bench Science 科研计算与数理实验代码实测', srcEn: 'Terminal-Bench Science scientific computing', get: r => r.frontierScores?.science ?? null}
       ];
     }
@@ -3110,7 +3508,11 @@ function renderCompare() {
         {key: 'creativeCraft', zh: 'SVG 与游戏创意', en: 'SVG & GameDev', srcZh: 'Design Arena SVG + GameDev · 矢量插画构图造型与可玩游戏动态交互审美（独立标尺校准）', srcEn: 'Design Arena SVG + GameDev · Vector illustration composition & interactive game feel', get: r => r.humanScores?.creativeCraft ?? null},
         {key: 'deliverable', zh: '专家真实交付', en: 'Deliverables', srcZh: 'GDPval + Briefcase · 44 个职业领域人类专家盲评真实办公交付物质量', srcEn: 'GDPval + Briefcase · Blind human expert grading of real office deliverables', get: r => r.humanScores?.deliverable ?? null}
       ];
-      barMetrics = [...axes];
+      barMetrics = [
+        ...axes,
+        {key: 'antiSlop', zh: '去 AI 套话感', en: 'Anti-Slop', srcZh: 'PersonalityBench Anti-Slop · 避免机械排比与官腔套话的自然表达分 (100 − Slop%)', srcEn: 'PersonalityBench Anti-Slop · Natural phrasing free of AI clichés (100 − Slop%)', get: r => r.humanScores?.antiSlop ?? null},
+        {key: 'spatialMotion', zh: '3D 与代码动效', en: '3D & Motion', srcZh: 'AA-3D + Code2Video · 纯代码构建三维场景与动态教学视频盲测校准分', srcEn: 'AA-3D + Code2Video · Blind human arena on 3D scenes & programmatic motion', get: r => r.humanScores?.spatialMotion ?? null}
+      ];
     }
   } else if (activeKey === 'models' || activeKey === 'cyber') {
     if (state.radarMode === 'domain') {
@@ -3150,6 +3552,8 @@ function renderCompare() {
       ];
       barMetrics = [
         ...axes,
+        {key: 'mmmuPro', zh: '视觉多模态', en: 'MMMU-Pro', srcZh: 'MMMU-Pro · 跨学科高难图表、公式与图像视觉理解实测', srcEn: 'MMMU-Pro · Multi-discipline college-level visual reasoning', get: r => r.subscores?.mmmuPro ?? null},
+        {key: 'mlcr', zh: '百万长上下文', en: 'MLCR Long-Ctx', srcZh: 'MLCR · 百万 Token 级超长文档多跳定位与综合推理准确率', srcEn: 'MLCR · Million-token multi-hop long-context accuracy', get: r => r.subscores?.mlcr ?? null},
         {
           key: 'hallucination',
           zh: '盲区幻觉率 ↓',
@@ -3161,6 +3565,19 @@ function renderCompare() {
         }
       ];
     }
+  } else if (activeKey === 'media') {
+    $('#radarHeading').textContent = t('多模态生成盲测胜率雷达与各模态能力拆解', 'Multimodal Generation Blind Arena Radar & Modality Scores');
+    const allMediaAxes = [
+      {key: 'index', zh: '盲测综合分', en: 'Arena Index', srcZh: '所属模态真人双盲竞技场校准胜率总分 (0–100)', srcEn: 'Calibrated blind human arena composite win-pct score (0–100)', get: r => r.intelligenceIndex},
+      {key: 't2i', zh: '文生图 (T2I)', en: 'Text-to-Image', srcZh: 'Artificial Analysis Image Arena · 文生图真人双盲投票校准分', srcEn: 'AA Image Arena · Blind human preference on Text-to-Image', get: r => r.mediaScores?.t2i ?? null},
+      {key: 'imgEdit', zh: '图像编辑', en: 'Image Edit', srcZh: 'Artificial Analysis Image Editing · 指令修图与局部重绘双盲校准分', srcEn: 'AA Image Editing · Blind human preference on instruction-guided editing', get: r => r.mediaScores?.imgEdit ?? null},
+      {key: 't2v', zh: '文生视频 (T2V)', en: 'Text-to-Video', srcZh: 'Artificial Analysis Video Arena · 文生视频动态美感与物理一致性双盲分', srcEn: 'AA Video Arena · Blind human preference on Text-to-Video', get: r => r.mediaScores?.t2v ?? null},
+      {key: 'i2v', zh: '图生视频 (I2V)', en: 'Image-to-Video', srcZh: 'Artificial Analysis Video Arena · 首帧图生视频动态还原双盲分', srcEn: 'AA Video Arena · Blind human preference on Image-to-Video', get: r => r.mediaScores?.i2v ?? null},
+      {key: 'tts', zh: '语音合成 (TTS)', en: 'Speech TTS', srcZh: 'Artificial Analysis Speech Arena · 语音自然度与情感韵律真人盲听分', srcEn: 'AA Speech Arena · Blind human listening score on TTS naturalness', get: r => r.mediaScores?.tts ?? null}
+    ];
+    const activeSubAxes = allMediaAxes.slice(1).filter(ax => selectedRows.some(r => ax.get(r) !== null));
+    axes = activeSubAxes.length >= 3 ? [allMediaAxes[0], ...activeSubAxes] : allMediaAxes;
+    barMetrics = [allMediaAxes[0], ...(activeSubAxes.length ? activeSubAxes : allMediaAxes.slice(1))];
   } else {
     $('#radarHeading').textContent = t('编程智能体四维基准能力雷达', 'Coding Agent 4-Axis Capability Radar');
     const evalNames = [];
@@ -4065,6 +4482,54 @@ function renderCompare() {
       }
       anatomyFrag.append(provGroup);
     }
+  } else if (activeKey === 'media') {
+    $('#anatomyHeading').textContent = t('单次生成计费、批发原价与原始盲测 Elo 剖析', 'Unit Generation Pricing, Wholesale Rates & Raw Arena Elo');
+    const maxUnitCost = Math.max(0.001, ...selectedRows.map(r => r.cost || 0));
+    const costBlock = html('div', null, 'metric-block');
+    costBlock.append(html('div', t('单次标准生成美元成本（图像/张 · 视频/5秒 · 语音/千字）', 'Normalized Unit Cost ($/img · $/5s video · $/1k TTS chars)'), 'metric-title'));
+    selectedRows.forEach((row, idx) => {
+      const mini = html('div', null, 'mini-bar-row');
+      const track = html('span', null, 'comparison-track');
+      const fill = html('i');
+      fill.style.width = `${Math.max(3, (row.cost / maxUnitCost) * 100)}%`;
+      fill.style.background = compareColor(idx);
+      track.append(fill);
+      const unitStr = row.mediaRaw ? ` ${t(row.mediaRaw.unitZh, row.mediaRaw.unitEn)}` : '';
+      mini.append(html('span', row.shortName || row.name, 'mini-bar-name'), track, html('span', `${money(row.cost)}${unitStr}`, 'mini-bar-val'));
+      costBlock.append(mini);
+    });
+    anatomyFrag.append(costBlock);
+
+    const eloGroup = html('div', null, 'provider-group');
+    eloGroup.append(html('div', t('各引擎竞技场原始盲测 Elo 与官方批发报价', 'Raw Blind Arena Elo & Official Wholesale Rate'), 'metric-title'));
+    selectedRows.forEach((row, idx) => {
+      const mr = row.mediaRaw || {};
+      const sub = html('div', null, 'metric-block');
+      const head = html('div', null, 'metric-title');
+      const left = html('span');
+      const dot = html('i', null, 'creator-dot');
+      dot.style.background = compareColor(idx);
+      dot.style.marginRight = '6px';
+      left.append(dot, document.createTextNode(row.shortName || row.name));
+      const rateStr = mr.kind === 'image'
+        ? `$${format(mr.pricePer1k ?? row.cost * 1000, 2)} / ${t('千张图', '1k imgs')}`
+        : mr.kind === 'video'
+          ? `$${format(mr.pricePerMin ?? row.cost * 12, 2)} / ${t('分钟视频', 'min video')}`
+          : `$${format(mr.pricePer1mChars ?? row.cost * 1000, 2)} / ${t('百万字符', '1M chars')}`;
+      head.append(left, html('span', rateStr));
+      const chips = html('div', null, 'provider-chips');
+      if (mr.t2iElo != null) chips.append(html('span', `T2I Elo ${format(mr.t2iElo, 0)}`, 'provider-pill is-cheapest'));
+      if (mr.imgEditElo != null) chips.append(html('span', `Edit Elo ${format(mr.imgEditElo, 0)}`, 'provider-pill'));
+      if (mr.t2vElo != null) chips.append(html('span', `T2V Elo ${format(mr.t2vElo, 0)}`, 'provider-pill is-cheapest'));
+      if (mr.i2vElo != null) chips.append(html('span', `I2V Elo ${format(mr.i2vElo, 0)}`, 'provider-pill'));
+      if (mr.vidEditElo != null) chips.append(html('span', `VidEdit Elo ${format(mr.vidEditElo, 0)}`, 'provider-pill'));
+      if (mr.ttsElo != null) chips.append(html('span', `TTS Elo ${format(mr.ttsElo, 0)}`, 'provider-pill is-cheapest'));
+      if (mr.ttfaMs != null) chips.append(html('span', `${t('首包', 'TTFA')} ${mr.ttfaMs}ms`, 'provider-pill'));
+      if (mr.cps != null) chips.append(html('span', `${format(mr.cps, 0)} ${t('字/秒', 'ch/s')}`, 'provider-pill'));
+      sub.append(head, chips);
+      eloGroup.append(sub);
+    });
+    anatomyFrag.append(eloGroup);
   } else {
     $('#anatomyHeading').textContent = t('单任务成本分位箱线图（尾部风险）与执行耗时', 'Task Cost Distribution (P05–P50–P95 Tail Risk) & Wall Time');
     const maxDollar = Math.max(1, ...selectedRows.map(r => Math.max(r.costPercentiles?.p95 || 0, r.cost))) * 1.06;
@@ -4199,7 +4664,7 @@ function renderCompare() {
     vals,
     false
   );
-  if (activeKey !== 'coding-agents') {
+  if (!['coding-agents', 'media'].includes(activeKey)) {
     addRow(
       t('跨榜全站排名（综合 / 极限 / 审美 / 安全）', 'Cross-Tab Ranks (Intel / Hard / Taste / Cyber)'),
       selectedRows.map(r => {
@@ -4250,6 +4715,19 @@ function renderCompare() {
       true
     );
     addRow(
+      t('视觉多模态 (MMMU-Pro) · 百万上下文 (MLCR)', 'Vision (MMMU-Pro) · Long-Ctx (MLCR)'),
+      selectedRows.map(r => {
+        const s = r.subscores || {};
+        const p = [
+          s.mmmuPro != null ? `MMMU ${format(s.mmmuPro, 1)}%` : null,
+          s.mlcr != null ? `MLCR ${format(s.mlcr, 1)}%` : null
+        ].filter(Boolean);
+        return p.length ? p.join(' · ') : '—';
+      }),
+      selectedRows.map(r => r.subscores?.mmmuPro ?? r.subscores?.mlcr ?? null),
+      false
+    );
+    addRow(
       t('发布日期', 'Release Date'),
       selectedRows.map(r => r.releaseDate || '—')
     );
@@ -4275,6 +4753,19 @@ function renderCompare() {
         ].filter(Boolean);
         return p.length ? p.join(' · ') : '—';
       })
+    );
+    addRow(
+      t('百万上下文 (MLCR) · SRE 故障排障', 'MLCR Long-Ctx · IT-Bench SRE'),
+      selectedRows.map(r => {
+        const fs = r.frontierScores || {};
+        const p = [
+          fs.mlcr != null ? `MLCR ${format(fs.mlcr, 1)}%` : null,
+          fs.itBenchSre != null ? `SRE ${format(fs.itBenchSre, 1)}%` : null
+        ].filter(Boolean);
+        return p.length ? p.join(' · ') : '—';
+      }),
+      selectedRows.map(r => r.frontierScores?.mlcr ?? r.frontierScores?.itBenchSre ?? null),
+      false
     );
     addRow(
       t('输出总 Token（思考占比）', 'Output Tokens (Reasoning %)'),
@@ -4343,6 +4834,21 @@ function renderCompare() {
       false
     );
     addRow(
+      t('去 AI 套话感 · 3D/代码动效 Elo', 'Anti-Slop · 3D / Code2Video Elo'),
+      selectedRows.map(r => {
+        const ar = r.arenaRaw || {};
+        const anti = r.humanScores?.antiSlop;
+        const p = [
+          anti != null ? `${t('自然度', 'Natural')} ${format(anti, 0)}%` : null,
+          ar.aa3dElo != null ? `3D ${format(ar.aa3dElo, 0)}` : null,
+          ar.code2videoElo != null ? `C2V ${format(ar.code2videoElo, 0)}` : null
+        ].filter(Boolean);
+        return p.length ? p.join(' · ') : '—';
+      }),
+      selectedRows.map(r => r.humanScores?.antiSlop ?? r.humanScores?.spatialMotion ?? null),
+      false
+    );
+    addRow(
       t('对比自动化综合指数（体感分差 Δ）', 'vs. Automated AA Index (Δ)'),
       selectedRows.map(r => {
         const d = r.indexDelta ?? 0;
@@ -4350,6 +4856,66 @@ function renderCompare() {
       }),
       selectedRows.map(r => r.indexDelta ?? null),
       false
+    );
+  } else if (activeKey === 'media') {
+    addRow(
+      t('生成模态 · 单次计费单位', 'Modality · Billing Unit'),
+      selectedRows.map(r => {
+        const kindLabel = r.mediaKind === 'image'
+          ? t('图像生成/修图', 'Image Gen/Edit')
+          : r.mediaKind === 'video'
+            ? t('视频生成/编辑', 'Video Gen/Edit')
+            : t('语音合成 TTS', 'Speech TTS');
+        const unit = r.mediaRaw ? t(r.mediaRaw.unitZh, r.mediaRaw.unitEn) : '';
+        return `${kindLabel}${unit ? ' · ' + unit : ''}`;
+      })
+    );
+    addRow(
+      t('官方商业批发原价', 'Official Wholesale Pricing'),
+      selectedRows.map(r => {
+        const mr = r.mediaRaw || {};
+        if (mr.kind === 'image') return `$${format(mr.pricePer1k ?? r.cost * 1000, 2)} / ${t('千张图', '1k imgs')}`;
+        if (mr.kind === 'video') return `$${format(mr.pricePerMin ?? r.cost * 12, 2)} / ${t('分钟视频', 'min video')}`;
+        return `$${format(mr.pricePer1mChars ?? r.cost * 1000, 2)} / ${t('百万字符', '1M chars')}`;
+      }),
+      selectedRows.map(r => r.cost),
+      true
+    );
+    addRow(
+      t('双盲竞技场原始 Elo', 'Raw Blind Arena Elo'),
+      selectedRows.map(r => {
+        const mr = r.mediaRaw || {};
+        const p = [
+          mr.t2iElo != null ? `T2I ${format(mr.t2iElo, 0)}` : null,
+          mr.imgEditElo != null ? `Edit ${format(mr.imgEditElo, 0)}` : null,
+          mr.t2vElo != null ? `T2V ${format(mr.t2vElo, 0)}` : null,
+          mr.i2vElo != null ? `I2V ${format(mr.i2vElo, 0)}` : null,
+          mr.vidEditElo != null ? `VEdit ${format(mr.vidEditElo, 0)}` : null,
+          mr.ttsElo != null ? `TTS ${format(mr.ttsElo, 0)}` : null
+        ].filter(Boolean);
+        return p.length ? p.join(' · ') : '—';
+      }),
+      selectedRows.map(r => r.intelligenceIndex),
+      false
+    );
+    if (selectedRows.some(r => r.mediaRaw?.ttfaMs != null || r.mediaRaw?.cps != null)) {
+      addRow(
+        t('TTS 首包延迟 (TTFA) · 吞吐速度', 'TTS First-Audio Latency · Throughput'),
+        selectedRows.map(r => {
+          const mr = r.mediaRaw || {};
+          const p = [
+            mr.ttfaMs != null ? `${mr.ttfaMs} ms` : null,
+            mr.cps != null ? `${format(mr.cps, 0)} ${t('字/秒', 'ch/s')}` : null
+          ].filter(Boolean);
+          return p.length ? p.join(' · ') : '—';
+        }),
+        selectedRows.map(r => r.mediaRaw?.ttfaMs ?? null),
+        true
+      );
+    }
+    addRow(
+      t('发布日期', 'Release Date'),
+      selectedRows.map(r => r.releaseDate || '—')
     );
   } else if (activeKey === 'cyber') {
     addRow(
@@ -4955,6 +5521,14 @@ function drawActive(champion) {
     item.label.style.opacity = emphasized ? '0' : muted ? '0.52' : '1';
     item.line.style.opacity = emphasized ? '0' : muted ? '0.18' : '0.6';
     if (focused && !active && inView(item.row)) companies.append(emphasisCopy(item, 5, 'company'));
+    if (!futureOut && isStarred(item.row) && inView(item.row)) {
+      layer.append(node('circle', {
+        class: 'star-ring',
+        cx: xCoord(item.row),
+        cy: y(item.row.intelligenceIndex),
+        r: 7.8
+      }));
+    }
   }
 
   const selected = nodes.find(item => item.row.id === state.selected);
@@ -5063,6 +5637,9 @@ function renderPinned() {
     if (row.arenaRaw.chatElo != null) metaParts.push(`Chat Elo ${format(row.arenaRaw.chatElo, 0)}`);
     if (row.arenaRaw.designWebElo != null) metaParts.push(`Design Elo ${row.arenaRaw.designWebElo}`);
   }
+  if (activeKey === 'media' && row.mediaRaw) {
+    metaParts.push(t(row.mediaRaw.unitZh, row.mediaRaw.unitEn.replace(/^\/\s*/, 'per ')));
+  }
   if (frontierIds.has(row.id)) metaParts.push(t('帕累托前沿', 'Pareto frontier'));
   if (rankInfo) metaParts.push(t(`性价比 #${rankInfo.rank}/${qualifiedCount}`, `Value #${rankInfo.rank}/${qualifiedCount}`));
   $('#pinnedMeta').textContent = metaParts.join(' · ');
@@ -5080,7 +5657,7 @@ function renderPinned() {
   $('#pinnedSubNote').textContent = tierBreakevenText(row.cost);
 
   const crossEl = $('#pinnedCrossTabs');
-  const crossInfo = activeKey !== 'coding-agents' ? crossTabIndex.get(row.id) : null;
+  const crossInfo = !['coding-agents', 'media'].includes(activeKey) ? crossTabIndex.get(row.id) : null;
   const tabDefs = [
     ['models', '综合', 'Intel'],
     ['frontier', '极限', 'Hard'],
@@ -5129,6 +5706,11 @@ function renderPinned() {
     provEl.textContent = '';
   }
   $('#pinnedOutside').hidden = !frame || inView(row);
+
+  const starred = isStarred(row);
+  $('#pinStarBtn').textContent = starred ? t('★ 已关注', '★ Starred') : t('☆ 关注', '☆ Star');
+  $('#pinStarBtn').setAttribute('aria-pressed', String(starred));
+  $('#pinStarBtn').title = starred ? t('从本地常驻关注移除', 'Remove from watchlist') : t('加入本地 ★ 常驻关注', 'Add to ★ watchlist');
 
   const inCmp = state.compareIds.includes(row.id);
   $('#pinCompareBtn').textContent = inCmp ? t('已对比 ✓', 'In cmp ✓') : t('+ 对比', '+ Compare');
@@ -5183,11 +5765,32 @@ function showHover(item, event) {
       : state.maxCost > 0 && row.cost > state.maxCost
         ? t('超出预算上限', 'Exceeds budget cap')
         : '—';
+  const costUnitLbl = activeKey === 'media' && row.mediaRaw
+    ? `${t('单次成本', 'Unit cost')} (${t(row.mediaRaw.unitZh, row.mediaRaw.unitEn.replace(/^\/\s*/, ''))})`
+    : t('每任务成本', 'Cost / task');
   const kvRows = [
     [axisLabel, format(row.intelligenceIndex, 2)],
-    [t('每任务成本', 'Cost / task'), money(row.cost)]
+    [costUnitLbl, money(row.cost)]
   ];
   if (row.timeSec > 0) kvRows.push([t('平均耗时', 'Mean time'), formatTime(row.timeSec)]);
+  if (activeKey === 'models' && (row.subscores?.mmmuPro != null || row.subscores?.mlcr != null)) {
+    const mParts = [];
+    if (row.subscores.mmmuPro != null) mParts.push(`MMMU ${format(row.subscores.mmmuPro, 1)}%`);
+    if (row.subscores.mlcr != null) mParts.push(`MLCR ${format(row.subscores.mlcr, 1)}%`);
+    kvRows.push([t('视觉多模态 · 超长上下文', 'Vision · Long-Ctx'), mParts.join(' · ')]);
+  }
+  if (activeKey === 'media' && row.mediaRaw) {
+    const mr = row.mediaRaw;
+    const elos = [
+      mr.t2iElo != null ? `T2I ${format(mr.t2iElo, 0)}` : null,
+      mr.imgEditElo != null ? `Edit ${format(mr.imgEditElo, 0)}` : null,
+      mr.t2vElo != null ? `T2V ${format(mr.t2vElo, 0)}` : null,
+      mr.i2vElo != null ? `I2V ${format(mr.i2vElo, 0)}` : null,
+      mr.ttsElo != null ? `TTS ${format(mr.ttsElo, 0)}` : null
+    ].filter(Boolean);
+    if (elos.length) kvRows.push([t('竞技场原始 Elo', 'Raw Arena Elo'), elos.join(' · ')]);
+    if (mr.ttfaMs != null) kvRows.push([t('首包音频延迟 (TTFA)', 'First-Audio TTFA'), `${mr.ttfaMs} ms`]);
+  }
   if (activeKey === 'frontier') {
     const d = row.rankDelta ?? 0;
     const dStr = d > 0 ? `↑+${d}` : d < 0 ? `↓${d}` : '—';
@@ -5249,7 +5852,7 @@ function clearHover() {
 }
 
 function nearestItem(event) {
-  if (!state || state.mode !== 'chart' || !frame || event.target.closest('.pinned-card')) return null;
+  if (!state || state.mode !== 'chart' || !frame || event.target.closest('.pinned-card, .lasso-menu')) return null;
   const rect = host.getBoundingClientRect(), px = event.clientX - rect.left, py = event.clientY - rect.top;
   let closest = null, best = 13 * 13;
   for (const item of nodes) {
@@ -5281,6 +5884,11 @@ function clearPin() {
 }
 
 $('#unpin').addEventListener('click', clearPin);
+$('#pinStarBtn').addEventListener('click', () => {
+  if (!state?.selected) return;
+  const row = state.rows.find(r => r.id === state.selected);
+  if (row) toggleStar(row);
+});
 $('#pinCompareBtn').addEventListener('click', () => {
   if (state?.selected) toggleCompareId(state.selected);
 });
@@ -5290,7 +5898,7 @@ $('#pinGoCompareBtn').addEventListener('click', () => {
     if (state.compareIds.length >= MAX_COMPARE) state.compareIds.shift();
     state.compareIds.push(state.selected);
   }
-  if (activeKey !== 'coding-agents') lastModelCompareIds = [...state.compareIds];
+  if (!['coding-agents', 'media'].includes(activeKey)) lastModelCompareIds = [...state.compareIds];
   showView('compare');
 });
 
@@ -5335,7 +5943,12 @@ function updateSummary() {
   }
 
   if (state.mode !== 'curve' && state.mode !== 'compare') {
-    if (state.yLens) $('#viewStatus').append(document.createTextNode(` · ${currentAxisLabel()}`));
+    const hasScen = state.scenarioId && state.scenarioId !== 'default' && !['coding-agents', 'media'].includes(activeKey);
+    if (state.yLens || hasScen) $('#viewStatus').append(document.createTextNode(` · ${currentAxisLabel()}`));
+    if (state.costProfile && state.costProfile !== 'benchmark' && activeKey !== 'media') {
+      const cp = COST_PROFILES.find(c => c.id === state.costProfile);
+      if (cp) $('#viewStatus').append(document.createTextNode(` · ${t(cp.zh, cp.en)}`));
+    }
     if (state.license === 'open') $('#viewStatus').append(document.createTextNode(t(' · 仅开源', ' · Open only')));
     else if (state.license === 'closed') $('#viewStatus').append(document.createTextNode(t(' · 仅闭源', ' · Proprietary')));
     if (state.extraFilter) {
@@ -5344,6 +5957,7 @@ function updateSummary() {
     }
     if (state.company) $('#viewStatus').append(document.createTextNode(t(` · 聚焦：${state.company}`, ` · Focus: ${state.company}`)));
     if (state.search) $('#viewStatus').append(document.createTextNode(t(` · 搜索：${state.search}`, ` · Search: ${state.search}`)));
+    if (state.starredOnly) $('#viewStatus').append(document.createTextNode(t(' · ★ 仅关注', ' · ★ Watchlist')));
     if (state.frontierOnly) $('#viewStatus').append(document.createTextNode(t(' · 仅前沿', ' · Frontier')));
   }
   $('#viewStatus').title = $('#viewStatus').textContent;
@@ -5361,9 +5975,19 @@ function updateSummary() {
     : '';
 }
 
+function clearLasso() {
+  lasso = null;
+  lassoSelection = null;
+  const rectEl = svg?.querySelector('.lasso-rect');
+  if (rectEl) rectEl.style.display = 'none';
+  const menu = $('#lassoMenu');
+  if (menu) menu.hidden = true;
+}
+
 function changeView(view) {
   if (!state) return;
   clearHover();
+  clearLasso();
   state.view = clampView(view, state.bounds);
   state.views[state.xMetric] = {...state.view};
   scheduleDraw();
@@ -5372,6 +5996,7 @@ function changeView(view) {
 function zoom(axis, factor, anchorX = 0.5, anchorY = 0.5) {
   if (!state) return;
   clearHover();
+  clearLasso();
   state.view = pointerZoomView(state.view, state.bounds, axis, factor, anchorX, anchorY);
   state.views[state.xMetric] = {...state.view};
   scheduleDraw();
@@ -5393,6 +6018,32 @@ $('#reset').addEventListener('click', () => {
 $('#fit').addEventListener('click', () => {
   if (state) changeView({...state.bounds});
 });
+$('#boxSelectBtn').addEventListener('click', () => {
+  boxSelectMode = !boxSelectMode;
+  if (!boxSelectMode) clearLasso();
+  if (state) syncControls();
+});
+$('#lassoZoomBtn').addEventListener('click', () => {
+  if (!state || !lassoSelection) return;
+  const targetView = lassoSelection.view;
+  boxSelectMode = false;
+  clearLasso();
+  syncControls();
+  changeView(targetView);
+});
+$('#lassoCompareBtn').addEventListener('click', () => {
+  if (!state || !lassoSelection?.hits?.length) return;
+  const picked = frontierCompareIds(lassoSelection.hits, MAX_COMPARE);
+  if (!picked.length) return;
+  state.compareIds = picked;
+  if (!['coding-agents', 'media'].includes(activeKey)) lastModelCompareIds = [...picked];
+  boxSelectMode = false;
+  clearLasso();
+  syncControls();
+  showView('compare');
+});
+$('#lassoCancelBtn').addEventListener('click', clearLasso);
+
 for (const [id, axis, factor] of [['xminus', 'x', 1.2], ['xplus', 'x', 1 / 1.2], ['yminus', 'y', 1.2], ['yplus', 'y', 1 / 1.2]]) {
   $('#' + id).addEventListener('click', () => zoom(axis, factor, 0.5, 0.5));
 }
@@ -5424,6 +6075,42 @@ $('#yLensSelect').addEventListener('change', () => {
   applyYLens(state, $('#yLensSelect').value);
   state.selected = null;
   renderLegend();
+  syncControls();
+  syncUrlHash();
+  buildPlot();
+});
+
+$('#scenarioBtn').addEventListener('click', () => {
+  setScenarioOpen(!scenarioOpen);
+});
+
+$('#scenarioResetBtn').addEventListener('click', () => {
+  if (!state) return;
+  stopHistoryPlay();
+  state.scenarioId = 'default';
+  state.scenarioWeights = null;
+  state.selected = null;
+  reprojectRows(state);
+  syncControls();
+  syncUrlHash();
+  buildPlot();
+});
+
+$('#costProfileSelect').addEventListener('change', () => {
+  if (!state) return;
+  stopHistoryPlay();
+  state.costProfile = $('#costProfileSelect').value || 'benchmark';
+  state.selected = null;
+  reprojectRows(state);
+  syncControls();
+  syncUrlHash();
+  buildPlot();
+});
+
+$('#starFilterBtn').addEventListener('click', () => {
+  if (!state) return;
+  state.starredOnly = !state.starredOnly;
+  state.selected = null;
   syncControls();
   syncUrlHash();
   buildPlot();
@@ -5673,7 +6360,7 @@ $('#compareAddBtn').addEventListener('click', () => {
 $('#compareSearchInput').addEventListener('input', renderComparePicker);
 
 $('#compareSyncBtn').addEventListener('click', () => {
-  if (!state || activeKey === 'coding-agents' || !Array.isArray(lastModelCompareIds)) return;
+  if (!state || ['coding-agents', 'media'].includes(activeKey) || !Array.isArray(lastModelCompareIds)) return;
   const valid = new Set(state.rows.map(r => r.id));
   const synced = lastModelCompareIds.filter(id => valid.has(id)).slice(0, MAX_COMPARE);
   if (!synced.length) return;
@@ -5687,7 +6374,7 @@ $('#compareAutoBtn').addEventListener('click', () => {
   if (!state) return;
   const pool = licenseFilteredRows(state.rows);
   state.compareIds = defaultCompareIds(pool.length >= 2 ? pool : state.rows);
-  if (activeKey !== 'coding-agents') lastModelCompareIds = [...state.compareIds];
+  if (!['coding-agents', 'media'].includes(activeKey)) lastModelCompareIds = [...state.compareIds];
   syncUrlHash();
   renderCompare();
   updateSummary();
@@ -5697,7 +6384,7 @@ $('#compareFrontierBtn').addEventListener('click', () => {
   if (!state) return;
   const pool = licenseFilteredRows(state.rows);
   state.compareIds = frontierCompareIds(pool.length >= 2 ? pool : state.rows, MAX_COMPARE);
-  if (activeKey !== 'coding-agents') lastModelCompareIds = [...state.compareIds];
+  if (!['coding-agents', 'media'].includes(activeKey)) lastModelCompareIds = [...state.compareIds];
   syncUrlHash();
   renderCompare();
   updateSummary();
@@ -5709,7 +6396,7 @@ $('#compareClearBtn').addEventListener('click', () => {
     ? state.radarPinnedId
     : state.compareIds[0];
   state.compareIds = [keepId];
-  if (activeKey !== 'coding-agents') lastModelCompareIds = [...state.compareIds];
+  if (!['coding-agents', 'media'].includes(activeKey)) lastModelCompareIds = [...state.compareIds];
   syncUrlHash();
   renderCompare();
   updateSummary();
@@ -5718,7 +6405,11 @@ $('#compareClearBtn').addEventListener('click', () => {
 $('#clearFilters').addEventListener('click', () => {
   if (!state) return;
   stopHistoryPlay();
-  if (state.yLens) applyYLens(state, '');
+  state.yLens = '';
+  state.scenarioId = 'default';
+  state.scenarioWeights = null;
+  state.costProfile = 'benchmark';
+  state.starredOnly = false;
   state.company = null;
   state.license = 'all';
   state.extraFilter = '';
@@ -5727,6 +6418,7 @@ $('#clearFilters').addEventListener('click', () => {
   state.minScore = 0;
   state.maxCost = 0;
   state.selected = null;
+  reprojectRows(state);
   syncControls();
   syncUrlHash();
   renderLegend();
@@ -5770,7 +6462,9 @@ function showView(mode) {
   if (!state || !['chart', 'table', 'curve', 'sub', 'compare'].includes(mode)) return;
   stopHistoryPlay();
   if (comparePickerOpen && mode !== 'compare') setComparePickerOpen(false);
+  if (scenarioOpen && (mode === 'curve' || mode === 'compare')) setScenarioOpen(false);
   endPointerInteractions();
+  clearLasso();
   clearHover();
   state.mode = mode;
   valueDetailsOpen = false;
@@ -5949,7 +6643,7 @@ host.addEventListener('wheel', event => {
 }, {passive: false});
 
 host.addEventListener('dblclick', event => {
-  if (state && !event.target.closest('.pinned-card') && !nearestItem(event)) {
+  if (state && !event.target.closest('.pinned-card, .lasso-menu') && !nearestItem(event)) {
     changeView({...state.defaultView});
   }
 });
@@ -5959,7 +6653,7 @@ host.addEventListener('click', event => {
     suppressClick = false;
     return;
   }
-  if (!state || event.target.closest('.pinned-card')) return;
+  if (!state || event.target.closest('.pinned-card, .lasso-menu')) return;
   const item = nearestItem(event);
   if (item) {
     host.focus({preventScroll: true});
@@ -5976,10 +6670,10 @@ host.addEventListener('click', event => {
   }
 });
 
-// Unified single-pointer pan & two-finger pinch-zoom on chart
+// Unified single-pointer pan, rubber-band box-select & two-finger pinch-zoom on chart
 host.addEventListener('pointerdown', event => {
   if (!state || !frame || event.button > 0) return;
-  if (event.target.closest('.pinned-card') || event.target.closest('.axis')) return;
+  if (event.target.closest('.pinned-card, .lasso-menu') || event.target.closest('.axis')) return;
   suppressClick = false;
   clearHover();
   host.focus({preventScroll: true});
@@ -5988,10 +6682,17 @@ host.addEventListener('pointerdown', event => {
   try { host.setPointerCapture(event.pointerId); } catch {}
 
   if (activePointers.size === 1) {
-    drag = {id: event.pointerId, startX: event.clientX, startY: event.clientY, view: {...state.view}, moved: false};
+    clearLasso();
+    if (boxSelectMode || event.shiftKey || event.altKey) {
+      lasso = {id: event.pointerId, startX: event.clientX, startY: event.clientY, curX: event.clientX, curY: event.clientY, moved: false};
+      drag = null;
+    } else {
+      drag = {id: event.pointerId, startX: event.clientX, startY: event.clientY, view: {...state.view}, moved: false};
+      host.classList.add('dragging');
+    }
     pinch = null;
-    host.classList.add('dragging');
   } else if (activePointers.size === 2) {
+    clearLasso();
     const [p1, p2] = [...activePointers.values()];
     pinch = {
       dist: Math.max(20, Math.hypot(p2.x - p1.x, p2.y - p1.y)),
@@ -6018,6 +6719,25 @@ host.addEventListener('pointermove', event => {
   }
 
   activePointers.set(event.pointerId, {x: event.clientX, y: event.clientY});
+
+  if (lasso && lasso.id === event.pointerId && frame) {
+    const dx = event.clientX - lasso.startX, dy = event.clientY - lasso.startY;
+    if (!lasso.moved && Math.hypot(dx, dy) > 5) lasso.moved = true;
+    if (!lasso.moved) return;
+    lasso.curX = event.clientX;
+    lasso.curY = event.clientY;
+    const hostRect = host.getBoundingClientRect();
+    const x1 = Math.max(frame.left, Math.min(frame.right, Math.min(lasso.startX, lasso.curX) - hostRect.left));
+    const x2 = Math.max(frame.left, Math.min(frame.right, Math.max(lasso.startX, lasso.curX) - hostRect.left));
+    const y1 = Math.max(frame.top, Math.min(frame.bottom, Math.min(lasso.startY, lasso.curY) - hostRect.top));
+    const y2 = Math.max(frame.top, Math.min(frame.bottom, Math.max(lasso.startY, lasso.curY) - hostRect.top));
+    const rectEl = svg.querySelector('.lasso-rect');
+    if (rectEl) {
+      setAttrs(rectEl, {x: x1, y: y1, width: Math.max(0, x2 - x1), height: Math.max(0, y2 - y1)});
+      rectEl.style.display = '';
+    }
+    return;
+  }
 
   if (activePointers.size === 2 && pinch && frame) {
     const [p1, p2] = [...activePointers.values()];
@@ -6051,6 +6771,48 @@ host.addEventListener('pointermove', event => {
 });
 
 function releasePointer(event) {
+  if (lasso && lasso.id === event.pointerId) {
+    const finished = lasso;
+    lasso = null;
+    if (finished.moved && frame && state) {
+      suppressClick = true;
+      const hostRect = host.getBoundingClientRect();
+      const x1 = Math.max(frame.left, Math.min(frame.right, Math.min(finished.startX, finished.curX) - hostRect.left));
+      const x2 = Math.max(frame.left, Math.min(frame.right, Math.max(finished.startX, finished.curX) - hostRect.left));
+      const y1 = Math.max(frame.top, Math.min(frame.bottom, Math.min(finished.startY, finished.curY) - hostRect.top));
+      const y2 = Math.max(frame.top, Math.min(frame.bottom, Math.max(finished.startY, finished.curY) - hostRect.top));
+      if (x2 - x1 >= 12 && y2 - y1 >= 12) {
+        const vxMin = state.view.x + ((x1 - frame.left) / frame.width) * state.view.width;
+        const vxMax = state.view.x + ((x2 - frame.left) / frame.width) * state.view.width;
+        const vyMax = state.view.y + ((frame.bottom - y1) / frame.height) * state.view.height;
+        const vyMin = state.view.y + ((frame.bottom - y2) / frame.height) * state.view.height;
+        const hits = nodes
+          .filter(n => inView(n.row) && !isFutureHidden(n.row))
+          .filter(n => {
+            const px = xCoord(n.row), py = y(n.row.intelligenceIndex);
+            return px >= x1 && px <= x2 && py >= y1 && py <= y2;
+          })
+          .map(n => n.row);
+        lassoSelection = {
+          view: {x: vxMin, y: vyMin, width: Math.max(1e-6, vxMax - vxMin), height: Math.max(0.5, vyMax - vyMin)},
+          hits
+        };
+        const menu = $('#lassoMenu');
+        $('#lassoCount').textContent = t(`框选 ${hits.length} 项`, `${hits.length} in box`);
+        $('#lassoCompareBtn').disabled = hits.length === 0;
+        menu.hidden = false;
+        const menuW = Math.min(hostRect.width - 16, 310);
+        const leftPx = Math.max(8, Math.min(hostRect.width - menuW - 8, (x1 + x2) / 2 - menuW / 2));
+        const topPx = y2 + 44 < hostRect.height ? y2 + 8 : Math.max(8, y1 - 42);
+        menu.style.left = `${leftPx}px`;
+        menu.style.top = `${topPx}px`;
+      } else {
+        clearLasso();
+      }
+    } else {
+      clearLasso();
+    }
+  }
   if (drag?.moved) suppressClick = true;
   activePointers.delete(event.pointerId);
   try {
@@ -6076,6 +6838,7 @@ function endPointerInteractions() {
   activePointers.clear();
   drag = null;
   pinch = null;
+  lasso = null;
   host.classList.remove('dragging');
 }
 
@@ -6115,13 +6878,222 @@ host.addEventListener('keydown', event => {
   changeView(v);
 });
 
+function buildGlobalCatalog(snap) {
+  if (!snap) return [];
+  const items = [];
+  const seenModelIds = new Set();
+  const modelTabOrder = [
+    ['models', 'models'],
+    ['frontier', 'frontierModels'],
+    ['human-arena', 'humanArenaModels'],
+    ['cyber', 'cyberModels']
+  ];
+  for (const [tabKey, snapKey] of modelTabOrder) {
+    const arr = Array.isArray(snap[snapKey]) ? validRows(snap[snapKey]) : [];
+    for (const row of arr) {
+      if (seenModelIds.has(row.id)) continue;
+      seenModelIds.add(row.id);
+      items.push({
+        row,
+        primaryTab: tabKey,
+        kind: 'llm',
+        searchText: [row.name, row.shortName, row.creator?.name, row.slug, row.family?.name, 'llm model 智能 模型'].filter(Boolean).join(' ').toLocaleLowerCase()
+      });
+    }
+  }
+  for (const row of (Array.isArray(snap.codingAgents) ? validRows(snap.codingAgents) : [])) {
+    items.push({
+      row,
+      primaryTab: 'coding-agents',
+      kind: 'agent',
+      searchText: [row.name, row.shortName, row.creator?.name, row.agentName, row.modelName, 'agent coding 编程 智能体'].filter(Boolean).join(' ').toLocaleLowerCase()
+    });
+  }
+  for (const row of (Array.isArray(snap.mediaModels) ? validRows(snap.mediaModels) : [])) {
+    const kindWords = row.mediaKind === 'image' ? 'image t2i 文生图 图像 修图' : row.mediaKind === 'video' ? 'video t2v i2v 视频' : 'tts speech audio 语音 合成';
+    items.push({
+      row,
+      primaryTab: 'media',
+      kind: row.mediaKind || 'media',
+      searchText: [row.name, row.shortName, row.creator?.name, row.slug, kindWords].filter(Boolean).join(' ').toLocaleLowerCase()
+    });
+  }
+  return items;
+}
+
+function getCmdMatches() {
+  const q = $('#cmdInput').value.trim().toLocaleLowerCase();
+  const tokens = q ? q.split(/\s+/).filter(Boolean) : [];
+  const filtered = tokens.length
+    ? globalCatalog.filter(it => tokens.every(tk => it.searchText.includes(tk)))
+    : globalCatalog;
+  return [...filtered]
+    .sort((a, b) => {
+      const sa = isStarred(a.row) ? 1 : 0;
+      const sb = isStarred(b.row) ? 1 : 0;
+      if (!tokens.length && sa !== sb) return sb - sa;
+      if (tokens.length) {
+        const na = (a.row.shortName || a.row.name).toLocaleLowerCase();
+        const nb = (b.row.shortName || b.row.name).toLocaleLowerCase();
+        const pa = na.startsWith(tokens[0]) ? 1 : 0;
+        const pb = nb.startsWith(tokens[0]) ? 1 : 0;
+        if (pa !== pb) return pb - pa;
+        if (sa !== sb) return sb - sa;
+      }
+      return b.row.intelligenceIndex - a.row.intelligenceIndex;
+    })
+    .slice(0, 32);
+}
+
+function activateCmdEntry(entry, {toCompare = false} = {}) {
+  if (!entry) return;
+  setCmdOpen(false);
+  if (activeKey !== entry.primaryTab) chooseChart(entry.primaryTab);
+  if (!state) return;
+  let targetRow = state.rows.find(r => r.id === entry.row.id);
+  if (!targetRow || !filteredRows().some(r => r.id === entry.row.id)) {
+    state.search = '';
+    state.license = 'all';
+    state.extraFilter = '';
+    state.starredOnly = false;
+    state.frontierOnly = false;
+    state.company = null;
+    syncControls();
+    renderLegend();
+    buildPlot();
+    targetRow = state.rows.find(r => r.id === entry.row.id);
+  }
+  if (!targetRow) return;
+  if (toCompare) {
+    if (!state.compareIds.includes(targetRow.id)) {
+      if (state.compareIds.length >= MAX_COMPARE) state.compareIds.shift();
+      state.compareIds.push(targetRow.id);
+    }
+    state.radarPinnedId = targetRow.id;
+    if (!['coding-agents', 'media'].includes(activeKey)) lastModelCompareIds = [...state.compareIds];
+    showView('compare');
+  } else {
+    locateRowInChart(targetRow);
+  }
+}
+
+function renderCmdList() {
+  const listEl = $('#cmdList');
+  const matches = getCmdMatches();
+  if (cmdIndex >= matches.length) cmdIndex = Math.max(0, matches.length - 1);
+  const frag = document.createDocumentFragment();
+  if (!matches.length) {
+    frag.append(html('div', t('未找到匹配模型或生成引擎，请尝试其他关键词', 'No matching models or generative engines found'), 'anatomy-note'));
+    listEl.replaceChildren(frag);
+    return;
+  }
+  matches.forEach((entry, idx) => {
+    const row = entry.row;
+    const item = html('div', null, idx === cmdIndex ? 'cmd-item is-active' : 'cmd-item');
+    item.setAttribute('role', 'option');
+    item.setAttribute('aria-selected', String(idx === cmdIndex));
+
+    const main = html('div', null, 'cmd-item-main');
+    const title = html('div', null, 'cmd-item-title');
+    const dot = html('i', null, 'creator-dot');
+    dot.style.background = color(row.creator?.color);
+    title.append(dot, html('span', row.name));
+    const badgeTxt = entry.primaryTab === 'coding-agents'
+      ? t('智能体', 'Agent')
+      : entry.primaryTab === 'media'
+        ? (row.mediaKind === 'image' ? t('图像', 'Image') : row.mediaKind === 'video' ? t('视频', 'Video') : 'TTS')
+        : t('大模型', 'LLM');
+    title.append(html('span', badgeTxt, 'row-tag'));
+
+    let subText = `${row.creator?.name || 'Other'} · ${format(row.intelligenceIndex, 1)} · ${money(row.cost)}`;
+    if (entry.primaryTab === 'media' && row.mediaRaw) {
+      subText += ` (${t(row.mediaRaw.unitZh, row.mediaRaw.unitEn.replace(/^\/\s*/, ''))})`;
+    } else if (entry.kind === 'llm') {
+      const info = crossTabIndex.get(row.id);
+      if (info) {
+        const ranks = [
+          info.models ? `${t('综合', 'Int')} #${info.models.rank}` : null,
+          info.frontier ? `${t('极限', 'Hard')} #${info.frontier.rank}` : null,
+          info['human-arena'] ? `${t('审美', 'Taste')} #${info['human-arena'].rank}` : null,
+          info.cyber ? `${t('安全', 'Cyber')} #${info.cyber.rank}` : null
+        ].filter(Boolean);
+        if (ranks.length) subText += ` · ${ranks.join(' / ')}`;
+      }
+    }
+    main.append(title, html('div', subText, 'cmd-item-sub'));
+
+    const actions = html('div', null, 'cmd-item-actions');
+    const starBtn = html('button', isStarred(row) ? '★' : '☆', 'star-row-btn');
+    starBtn.type = 'button';
+    starBtn.setAttribute('aria-pressed', String(isStarred(row)));
+    starBtn.title = t('常驻关注', 'Toggle star');
+    starBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      toggleStar(row);
+    });
+    const cmpBtn = html('button', t('+对比', '+Cmp'));
+    cmpBtn.type = 'button';
+    cmpBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      activateCmdEntry(entry, {toCompare: true});
+    });
+    actions.append(starBtn, cmpBtn);
+
+    item.append(main, actions);
+    item.addEventListener('pointerenter', () => {
+      if (cmdIndex === idx) return;
+      cmdIndex = idx;
+      for (const [i, el] of [...listEl.children].entries()) {
+        el.classList.toggle('is-active', i === cmdIndex);
+        el.setAttribute('aria-selected', String(i === cmdIndex));
+      }
+    });
+    item.addEventListener('click', event => {
+      activateCmdEntry(entry, {toCompare: event.shiftKey});
+    });
+    frag.append(item);
+  });
+  listEl.replaceChildren(frag);
+}
+
+function setCmdOpen(open) {
+  cmdOpen = open;
+  $('#cmdBackdrop').hidden = !open;
+  if (open) {
+    cmdIndex = 0;
+    renderCmdList();
+    requestAnimationFrame(() => {
+      $('#cmdInput').focus({preventScroll: true});
+      $('#cmdInput').select();
+    });
+  } else {
+    $('#cmdPaletteBtn').focus({preventScroll: true});
+  }
+}
+
+$('#cmdPaletteBtn').addEventListener('click', () => setCmdOpen(!cmdOpen));
+$('#cmdCloseBtn').addEventListener('click', () => setCmdOpen(false));
+$('#cmdBackdrop').addEventListener('click', event => {
+  if (event.target === $('#cmdBackdrop')) setCmdOpen(false);
+});
+$('#cmdInput').addEventListener('input', () => {
+  cmdIndex = 0;
+  renderCmdList();
+});
+
 // Close floating popovers on outside click or Escape
 document.addEventListener('pointerdown', event => {
   if (changelogOpen && !event.target.closest('.update-wrap')) {
     setChangelogOpen(false);
   }
+  if (scenarioOpen && !event.target.closest('.scenario-wrap')) {
+    setScenarioOpen(false);
+  }
   if (comparePickerOpen && !event.target.closest('.compare-picker-wrap')) {
     setComparePickerOpen(false);
+  }
+  if (lassoSelection && !event.target.closest('#chart')) {
+    clearLasso();
   }
   if (valueDetailsOpen && !event.target.closest('#valueMorePanel') && !event.target.closest('#valueMore')) {
     valueDetailsOpen = false;
@@ -6133,9 +7105,35 @@ document.addEventListener('pointerdown', event => {
 });
 
 document.addEventListener('keydown', event => {
+  if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === 'k') {
+    event.preventDefault();
+    setCmdOpen(!cmdOpen);
+    return;
+  }
+  if (cmdOpen) {
+    const matches = getCmdMatches();
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      setCmdOpen(false);
+    } else if (event.key === 'ArrowDown' && matches.length) {
+      event.preventDefault();
+      cmdIndex = (cmdIndex + 1) % matches.length;
+      renderCmdList();
+      $('#cmdList').children[cmdIndex]?.scrollIntoView({block: 'nearest'});
+    } else if (event.key === 'ArrowUp' && matches.length) {
+      event.preventDefault();
+      cmdIndex = (cmdIndex - 1 + matches.length) % matches.length;
+      renderCmdList();
+      $('#cmdList').children[cmdIndex]?.scrollIntoView({block: 'nearest'});
+    } else if (event.key === 'Enter' && matches[cmdIndex]) {
+      event.preventDefault();
+      activateCmdEntry(matches[cmdIndex], {toCompare: event.shiftKey});
+    }
+    return;
+  }
   const tag = event.target?.tagName;
   const typing = tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || event.target?.isContentEditable;
-  if (!typing && event.altKey && !event.ctrlKey && !event.metaKey && ['1', '2', '3', '4', '5'].includes(event.key)) {
+  if (!typing && event.altKey && !event.ctrlKey && !event.metaKey && ['1', '2', '3', '4', '5', '6'].includes(event.key)) {
     const visibleTabs = [...document.querySelectorAll('[role=tab]')].filter(el => !el.hidden);
     const targetTab = visibleTabs[Number(event.key) - 1];
     if (targetTab && targetTab.dataset.chart !== activeKey) {
@@ -6197,9 +7195,17 @@ document.addEventListener('keydown', event => {
   if (changelogOpen) {
     setChangelogOpen(false);
     $('#updateBadge').focus({preventScroll: true});
+  } else if (scenarioOpen) {
+    setScenarioOpen(false);
+    $('#scenarioBtn').focus({preventScroll: true});
   } else if (comparePickerOpen) {
     setComparePickerOpen(false);
     $('#compareAddBtn').focus({preventScroll: true});
+  } else if (lassoSelection) {
+    clearLasso();
+  } else if (boxSelectMode) {
+    boxSelectMode = false;
+    if (state) syncControls();
   } else if (state?.mode === 'compare' && state.radarPinnedId) {
     state.radarPinnedId = null;
     tip.hidden = true;
@@ -6223,6 +7229,7 @@ document.addEventListener('keydown', event => {
 
 addEventListener('resize', () => {
   if (changelogOpen) clampAnchoredPopover($('#changelogPopover'), $('#updateBadge'), 340);
+  if (scenarioOpen) clampAnchoredPopover($('#scenarioPopover'), $('#scenarioBtn'), 340);
   if (comparePickerOpen) clampAnchoredPopover($('#comparePickerPopover'), $('#compareAddBtn'), 360);
 });
 
@@ -6269,6 +7276,17 @@ function showLoadError(error) {
 
 function hydrateDerivedModels(snap) {
   if (!snap || !Array.isArray(snap.models)) return snap;
+  const humanById = new Map((snap.humanArenaModels || []).map(h => [h.id, h]));
+  const frontById = new Map((snap.frontierModels || []).map(f => [f.id, f]));
+  snap.models = snap.models.map(m => {
+    const h = humanById.get(m.id);
+    const f = frontById.get(m.id);
+    return {
+      ...m,
+      ...(f?.frontierScores ? {frontierScores: f.frontierScores} : {}),
+      ...(h?.humanScores ? {humanScores: h.humanScores, arenaRaw: h.arenaRaw} : {})
+    };
+  });
   const baseById = new Map(snap.models.map(m => [m.id, m]));
   for (const key of ['frontierModels', 'humanArenaModels', 'cyberModels']) {
     if (!Array.isArray(snap[key])) continue;
@@ -6316,14 +7334,18 @@ async function loadData() {
     if (generation !== loadGeneration) return;
     snapshot = next;
     crossTabIndex = buildCrossTabLookup(snapshot);
+    globalCatalog = buildGlobalCatalog(snapshot);
     states.clear();
     const hasFrontier = Array.isArray(snapshot.frontierModels) && snapshot.frontierModels.length > 0;
     const hasHumanArena = Array.isArray(snapshot.humanArenaModels) && snapshot.humanArenaModels.length > 0;
     const hasCyber = Array.isArray(snapshot.cyberModels) && snapshot.cyberModels.length > 0;
+    const hasMedia = Array.isArray(snapshot.mediaModels) && snapshot.mediaModels.length > 0;
     $('#tab-frontier').hidden = !hasFrontier;
     $('#tab-human-arena').hidden = !hasHumanArena;
     $('#tab-cyber').hidden = !hasCyber;
+    $('#tab-media').hidden = !hasMedia;
     if (changelogOpen) renderChangelog();
+    if (cmdOpen) renderCmdList();
     const parsed = parseHash();
     chooseChart(parsed.chart, {changeHash: false, routeParams: parsed.params});
   } catch (error) {

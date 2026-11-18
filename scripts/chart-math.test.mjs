@@ -21,6 +21,11 @@ import {
   zoomedAxisScale,
   zoomedRadarBounds,
   radarRadiusRatio,
+  SCENARIO_PILLARS,
+  SCENARIO_PRESETS,
+  COST_PROFILES,
+  computeScenarioScore,
+  simulateWorkloadCost,
   VALUE_WEIGHT,
   MIN_SCORE,
   MAX_COST_PRESETS,
@@ -168,6 +173,7 @@ test('all shipped datasets pass validation and fit inside their full-data view',
   if (snapshot.frontierModels?.length) suites.push(['frontierModels', snapshot.frontierModels]);
   if (snapshot.humanArenaModels?.length) suites.push(['humanArenaModels', snapshot.humanArenaModels]);
   if (snapshot.cyberModels?.length) suites.push(['cyberModels', snapshot.cyberModels]);
+  if (snapshot.mediaModels?.length) suites.push(['mediaModels', snapshot.mediaModels]);
   for (const [name, rows] of suites) {
     validRows(rows);
     const bounds = dataBounds(rows);
@@ -471,6 +477,35 @@ test('zoomedAxisScale, zoomedRadarBounds, and radarRadiusRatio magnify subtle fr
   const fullSpanDiff = (79.2 - 75.9) / 100;
   const zoomedDiff = radarRadiusRatio(79.2, zb.scaleMin, zb.scaleMax, zb.innerRatio) - radarRadiusRatio(75.9, zb.scaleMin, zb.scaleMax, zb.innerRatio);
   assert.ok(zoomedDiff > fullSpanDiff * 2.2, 'zoomed radar expands radial separation >2.2x');
+});
+
+test('computeScenarioScore and simulateWorkloadCost re-rank models by custom workflow weights and cost profiles', () => {
+  assert.equal(SCENARIO_PILLARS.length, 5);
+  assert.ok(SCENARIO_PRESETS.length >= 6 && COST_PROFILES.length >= 4);
+
+  const coder = {
+    id: 'coder', _baseIndex: 56, intelligenceIndex: 56, _baseCost: 5, cost: 5,
+    subscores: {frontierCode: 62, terminalBench: 70, mmmuPro: 65, omniscience: 60, hallucination: 45},
+    humanScores: {designWeb: 58, chatVibe: 62},
+    costBreakdown: {input: 0.4, reasoning: 4.1, answer: 0.5}
+  };
+  const designer = {
+    id: 'designer', _baseIndex: 54, intelligenceIndex: 54, _baseCost: 5, cost: 5,
+    subscores: {frontierCode: 38, terminalBench: 42, mmmuPro: 89, omniscience: 64, hallucination: 30},
+    humanScores: {designWeb: 84, designUi: 82, creativeCraft: 80, chatVibe: 83, antiSlop: 82},
+    costBreakdown: {input: 3.6, reasoning: 0.5, answer: 0.9}
+  };
+
+  const fullstackW = SCENARIO_PRESETS.find(p => p.id === 'fullstack').weights;
+  const aestheticW = SCENARIO_PRESETS.find(p => p.id === 'aesthetic').weights;
+  assert.ok(computeScenarioScore(coder, fullstackW) > computeScenarioScore(designer, fullstackW), 'fullstack preset favors coding specialist');
+  assert.ok(computeScenarioScore(designer, aestheticW) > computeScenarioScore(coder, aestheticW), 'aesthetic preset favors design/vibe specialist');
+  assert.equal(computeScenarioScore(coder, null), 56);
+
+  assert.equal(simulateWorkloadCost(coder, 'benchmark'), 5);
+  assert.ok(simulateWorkloadCost(coder, 'chat') < simulateWorkloadCost(coder, 'benchmark'), 'light Q&A reduces heavy reasoning cost');
+  assert.ok(simulateWorkloadCost(designer, 'longdoc') > simulateWorkloadCost(coder, 'longdoc'), 'longdoc profile penalizes expensive input-heavy breakdown');
+  assert.ok(simulateWorkloadCost(coder, 'reasoning') > simulateWorkloadCost(designer, 'reasoning'), 'heavy reasoning profile penalizes high thinking-token burn');
 });
 
 test('cache-busting version query strings match across index.html and app.js', async () => {
