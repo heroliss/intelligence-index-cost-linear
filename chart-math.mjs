@@ -321,6 +321,55 @@ export function cascadingRouteSummary(fastRow, strongRow, fastShare = 0.8, month
   };
 }
 
+export function zoomedAxisScale(values, {minSpan = 5, padRatio = 0.14, clampMin = 0, clampMax = 100} = {}) {
+  const finite = (Array.isArray(values) ? values : []).filter(v => typeof v === 'number' && Number.isFinite(v));
+  if (!finite.length) {
+    return {min: clampMin, max: clampMax, span: Math.max(1, clampMax - clampMin), minVal: null, maxVal: null, leaderGap: null};
+  }
+  const sorted = [...finite].sort((a, b) => a - b);
+  const minVal = sorted[0], maxVal = sorted.at(-1);
+  const leaderGap = sorted.length >= 2 ? sorted.at(-1) - sorted.at(-2) : null;
+  const effSpan = Math.max(minSpan, maxVal - minVal);
+  const totalSpan = Math.min(clampMax - clampMin, effSpan * (1 + padRatio * 2));
+  const mid = (minVal + maxVal) / 2;
+  let lo = mid - totalSpan / 2, hi = mid + totalSpan / 2;
+  if (lo < clampMin) {
+    hi = Math.min(clampMax, hi + (clampMin - lo));
+    lo = clampMin;
+  }
+  if (hi > clampMax) {
+    lo = Math.max(clampMin, lo - (hi - clampMax));
+    hi = clampMax;
+  }
+  return {min: lo, max: hi, span: Math.max(1e-6, hi - lo), minVal, maxVal, leaderGap};
+}
+
+export function zoomedRadarBounds(values) {
+  const finite = (Array.isArray(values) ? values : []).filter(v => typeof v === 'number' && Number.isFinite(v));
+  if (!finite.length) return {scaleMin: 0, scaleMax: 100, innerRatio: 0};
+  const sorted = [...finite].sort((a, b) => a - b);
+  const maxV = sorted.at(-1);
+  const qIdx = Math.floor(sorted.length * 0.18);
+  const focusRawMin = sorted.length >= 8 && (sorted[qIdx] - sorted[0]) > 16 ? sorted[qIdx] : sorted[0];
+  const scaleMax = Math.min(100, Math.max(25, Math.ceil((maxV + 2) / 5) * 5));
+  const pad = Math.max(3, (maxV - focusRawMin) * 0.18);
+  const rawFloor = Math.floor((focusRawMin - pad) / 5) * 5;
+  const scaleMin = Math.max(0, Math.min(scaleMax - 10, rawFloor));
+  if (scaleMin < 15) {
+    return {scaleMin: 0, scaleMax: Math.min(100, Math.max(60, Math.ceil(Math.max(40, maxV) / 20) * 20)), innerRatio: 0};
+  }
+  return {scaleMin, scaleMax, innerRatio: 0.18};
+}
+
+export function radarRadiusRatio(val, scaleMin = 0, scaleMax = 100, innerRatio = 0) {
+  if (typeof val !== 'number' || !Number.isFinite(val)) return 0;
+  if (scaleMin <= 0 || innerRatio <= 0) return Math.max(0, Math.min(1, val / Math.max(1e-6, scaleMax)));
+  if (val >= scaleMin) {
+    return innerRatio + (1 - innerRatio) * Math.min(1, (val - scaleMin) / Math.max(1e-6, scaleMax - scaleMin));
+  }
+  return 0.04 + (innerRatio - 0.04) * Math.max(0, val / scaleMin);
+}
+
 export function sortRows(rows, key, direction = 'asc', weight = VALUE_WEIGHT.default, minScore = MIN_SCORE.default, maxCost = 0) {
   validateValueWeight(weight);
   validateMinScore(minScore);

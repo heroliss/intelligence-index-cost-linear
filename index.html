@@ -26,8 +26,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261118-16">
-  <script type="module" src="app.js?v=20261118-16"></script>
+  <link rel="stylesheet" href="styles.css?v=20261118-18">
+  <script type="module" src="app.js?v=20261118-18"></script>
 </head>
 <body>
 <main class="app">
@@ -391,6 +391,26 @@
                 </div>
                 <button id="radarInfoBtn" type="button" class="ghost-btn radar-info-btn" aria-expanded="false" aria-controls="radarInfoPanel">指标口径</button>
               </div>
+            </div>
+            <div class="compare-vis-bar">
+              <div id="compareVisSwitch" class="axis-controls" role="group" aria-label="对比图表视图切换">
+                <button id="visRadarBtn" type="button" data-cvis="radar" aria-pressed="true">雷达图</button>
+                <button id="visStripBtn" type="button" data-cvis="strip" aria-pressed="false">微距跑道</button>
+                <button id="visDeltaBtn" type="button" data-cvis="delta" aria-pressed="false">胜负分差 Δ</button>
+              </div>
+              <div id="radarScaleSwitch" class="axis-controls" role="group" aria-label="雷达图量程模式">
+                <button id="scaleZoomBtn" type="button" data-cscale="zoom" aria-pressed="true">微距去底</button>
+                <button id="scaleAxisBtn" type="button" data-cscale="axis" aria-pressed="false">分轴极值</button>
+                <button id="scaleFullBtn" type="button" data-cscale="full" aria-pressed="false">0–100</button>
+              </div>
+              <div id="stripScaleSwitch" class="axis-controls" role="group" aria-label="跑道图量程模式" hidden>
+                <button id="stripZoomBtn" type="button" data-sscale="zoom" aria-pressed="true">微距区间</button>
+                <button id="stripFullBtn" type="button" data-sscale="full" aria-pressed="false">0–100 全程</button>
+              </div>
+              <label id="deltaBaseWrap" class="delta-base-wrap" hidden>
+                <span id="deltaBaseLabel">基准</span>
+                <select id="deltaBaseSelect"></select>
+              </label>
             </div>
             <div id="radarInfoPanel" class="radar-info-panel" hidden></div>
             <div class="radar-layout">

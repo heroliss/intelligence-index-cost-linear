@@ -18,6 +18,9 @@ import {
   breakEvenTasks,
   monthlyApiBill,
   subscriptionVerdict,
+  zoomedAxisScale,
+  zoomedRadarBounds,
+  radarRadiusRatio,
   VALUE_WEIGHT,
   MIN_SCORE,
   MAX_COST_PRESETS,
@@ -438,6 +441,36 @@ test('historicalFrontierSummary and cascadingRouteSummary compute exact AI cost 
   assert.ok(Math.abs(route.monthlyBlendedBill - 216) < 1e-9);
   assert.ok(Math.abs(route.savingsVsStrong - 0.784) < 1e-12);
   assert.throws(() => cascadingRouteSummary(historyRows[2], historyRows[3], 1.2, 60), RangeError);
+});
+
+test('zoomedAxisScale, zoomedRadarBounds, and radarRadiusRatio magnify subtle frontier gaps while staying monotonic', () => {
+  const closeFrontier = [75.9, 76.4, 79.2, 81.6];
+  const ax = zoomedAxisScale(closeFrontier);
+  assert.equal(ax.minVal, 75.9);
+  assert.equal(ax.maxVal, 81.6);
+  assert.ok(Math.abs(ax.leaderGap - 2.4) < 1e-9);
+  assert.ok(ax.min > 70 && ax.max < 86 && ax.span < 12, 'magnifies 5.7% frontier spread by ~9x vs 0-100');
+
+  const nearTie = zoomedAxisScale([80.1, 80.2], {minSpan: 5, padRatio: 0.14});
+  assert.ok(nearTie.span >= 5, 'enforces minSpan so 0.1% noise is not over-amplified');
+
+  const highEdge = zoomedAxisScale([97.5, 99.4]);
+  assert.equal(highEdge.max, 100);
+  assert.ok(highEdge.min < 94, 'preserves window width when clamped against 100 ceiling');
+
+  // Outlier-resistant radar zoom: 1 low-tier model (20%) mixed with 18 frontier scores (72%-85%)
+  const mixedCluster = [20, ...Array.from({length: 18}, (_, i) => 72 + (i % 7) * 2)];
+  const zb = zoomedRadarBounds(mixedCluster);
+  assert.ok(zb.scaleMin >= 60 && zb.scaleMax <= 95 && zb.innerRatio === 0.18);
+  let prevR = -1;
+  for (const s of [0, 20, zb.scaleMin, 75, 80, zb.scaleMax]) {
+    const r = radarRadiusRatio(s, zb.scaleMin, zb.scaleMax, zb.innerRatio);
+    assert.ok(r > prevR && r <= 1, `monotonic radius ratio at ${s}: ${r}`);
+    prevR = r;
+  }
+  const fullSpanDiff = (79.2 - 75.9) / 100;
+  const zoomedDiff = radarRadiusRatio(79.2, zb.scaleMin, zb.scaleMax, zb.innerRatio) - radarRadiusRatio(75.9, zb.scaleMin, zb.scaleMax, zb.innerRatio);
+  assert.ok(zoomedDiff > fullSpanDiff * 2.2, 'zoomed radar expands radial separation >2.2x');
 });
 
 test('cache-busting version query strings match across index.html and app.js', async () => {

@@ -14,6 +14,9 @@ import {
   isoValueCost,
   breakEvenTasks,
   subscriptionVerdict,
+  zoomedAxisScale,
+  zoomedRadarBounds,
+  radarRadiusRatio,
   VALUE_WEIGHT,
   MIN_SCORE,
   MAX_COST_PRESETS,
@@ -21,7 +24,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261118-16';
+} from './chart-math.mjs?v=20261118-18';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -337,17 +340,18 @@ function defaultCompareIds(rows) {
   const add = item => {
     if (item && !picks.includes(item.id) && picks.length < 4) picks.push(item.id);
   };
-  add(sortRows(rows, 'intelligenceIndex', 'desc')[0]);
-  add(sortRows(rows, 'valuePerDollar', 'desc', 6, 30)[0] || sortRows(rows, 'valuePerDollar', 'desc', 6)[0]);
-  add(sortRows(rows, 'valuePerDollar', 'desc', 2.5, 25)[0] || sortRows(rows, 'valuePerDollar', 'desc', 2.5)[0]);
-  const topOpen = sortRows(rows.filter(r => r.isOpenWeights), 'intelligenceIndex', 'desc')[0];
+  const byScore = sortRows(rows, 'intelligenceIndex', 'desc');
+  add(byScore[0]);
+  if (byScore[1]) add(byScore[1]);
+  add(sortRows(rows, 'valuePerDollar', 'desc', 5, 30)[0] || sortRows(rows, 'valuePerDollar', 'desc', 5)[0]);
+  const topOpen = byScore.find(r => r.isOpenWeights);
   if (topOpen) add(topOpen);
   for (const f of [...paretoFrontier(rows)].reverse()) {
-    if (picks.length >= 3) break;
+    if (picks.length >= Math.min(4, rows.length)) break;
     add(f);
   }
-  for (const r of sortRows(rows, 'intelligenceIndex', 'desc')) {
-    if (picks.length >= Math.min(3, rows.length)) break;
+  for (const r of byScore) {
+    if (picks.length >= Math.min(4, rows.length)) break;
     add(r);
   }
   return picks;
@@ -453,6 +457,10 @@ function makeState(key, routeParams = null) {
     subLine: false,
     ...DEFAULT_SETTINGS[key],
     mode: 'chart',
+    compareVis: 'radar',
+    radarScale: 'zoom',
+    stripScale: 'zoom',
+    deltaBase: 'mean',
     radarMode: 'bench',
     radarPinnedId: null,
     selected: null,
@@ -492,6 +500,13 @@ function applyRouteParams(target, params) {
   const xf = params.get('xf');
   if (xf) target.extraFilter = xf;
   if (params.get('radar') === 'domain') target.radarMode = 'domain';
+  const cvis = params.get('cvis');
+  if (['radar', 'strip', 'delta'].includes(cvis)) target.compareVis = cvis;
+  const cscale = params.get('cscale');
+  if (['zoom', 'axis', 'full'].includes(cscale)) target.radarScale = cscale;
+  if (params.get('sscale') === 'full') target.stripScale = 'full';
+  const dbase = params.get('dbase');
+  if (dbase) target.deltaBase = dbase;
   const w = Number(params.get('w'));
   if (params.has('w') && Number.isFinite(w) && w >= VALUE_WEIGHT.min && w <= VALUE_WEIGHT.max) {
     target.valueWeight = Math.round(w * 10) / 10;
@@ -546,7 +561,13 @@ function syncUrlHash() {
   if (state.xMetric === 'time') params.set('x', 'time');
   if (state.license !== 'all') params.set('lic', state.license);
   if (state.extraFilter) params.set('xf', state.extraFilter);
-  if (state.mode === 'compare' && state.radarMode === 'domain') params.set('radar', 'domain');
+  if (state.mode === 'compare') {
+    if (state.radarMode === 'domain') params.set('radar', 'domain');
+    if (state.compareVis !== 'radar') params.set('cvis', state.compareVis);
+    if (state.compareVis === 'radar' && state.radarScale !== 'zoom') params.set('cscale', state.radarScale);
+    if (state.compareVis === 'strip' && state.stripScale !== 'zoom') params.set('sscale', state.stripScale);
+    if (state.compareVis === 'delta' && state.deltaBase !== 'mean') params.set('dbase', state.deltaBase);
+  }
   if (state.valueWeight !== VALUE_WEIGHT.default) params.set('w', state.valueWeight.toFixed(1));
   if (state.minScore > 0) params.set('min', String(state.minScore));
   if (state.maxCost > 0) params.set('maxc', String(state.maxCost));
@@ -970,6 +991,21 @@ function syncStaticText() {
   $('#radarModeSwitch').setAttribute('aria-label', t('雷达图维度切换', 'Radar dimension mode'));
   $('#radarModeBench').textContent = t('基准六维', 'Benchmarks');
   $('#radarModeDomain').textContent = t('行业六维', 'Domains');
+  $('#compareVisSwitch').setAttribute('aria-label', t('对比图表形式切换', 'Comparison chart type'));
+  $('#visRadarBtn').textContent = t('雷达图', 'Radar');
+  $('#visStripBtn').textContent = t('微距跑道', 'Dot Strip');
+  $('#visDeltaBtn').textContent = t('胜负分差 Δ', 'Delta Δ');
+  $('#radarScaleSwitch').setAttribute('aria-label', t('雷达图量程缩放', 'Radar scale mode'));
+  $('#scaleZoomBtn').textContent = t('微距去底', 'Zoomed');
+  $('#scaleZoomBtn').title = t('自动剥离圆心低分空白死区，放大前沿模型微弱差距', 'Trim dead center range to amplify frontier model differences');
+  $('#scaleAxisBtn').textContent = t('分轴极值', 'Per-Axis');
+  $('#scaleAxisBtn').title = t('每个维度按已选模型各自最低/最高分独立归一化，解决跨测试分数段悬殊问题', 'Normalize each spoke independently to its [min, max] spread');
+  $('#scaleFullBtn').textContent = t('0–100', '0–100');
+  $('#scaleFullBtn').title = t('传统 0–100 全量程绝对比例雷达', 'Classic 0–100 zero-origin radar scale');
+  $('#stripScaleSwitch').setAttribute('aria-label', t('跑道图量程缩放', 'Dot strip scale mode'));
+  $('#stripZoomBtn').textContent = t('微距区间', 'Zoomed');
+  $('#stripFullBtn').textContent = t('0–100 全程', '0–100 Full');
+  $('#deltaBaseLabel').textContent = t('基准', 'Ref');
   $('#radarInfoBtn').textContent = radarInfoOpen ? t('收起口径', 'Hide sources') : t('ⓘ 指标口径', 'ⓘ Sources');
   $('#radarHeading').textContent = t('细分基准能力雷达与分项对比', 'Sub-benchmark Capability Radar & Breakdown');
   $('#anatomyHeading').textContent = t('单任务成本结构拆解与耗时剖析', 'Per-Task Cost Anatomy & Latency Profile');
@@ -2270,6 +2306,16 @@ function exportChartPng(kind = state?.mode) {
     .curve-probe circle { fill: ${v('--accent')}; stroke: ${v('--chart')}; stroke-width: 2; }
     .radar-grid, .radar-spoke { fill: none; stroke: ${v('--border-strong')}; stroke-width: 1; opacity: 0.72; }
     .radar-ring-fill { fill: ${v('--chart')}; opacity: 0.42; }
+    .radar-inner-floor { fill: ${v('--surface')}; fill-opacity: 0.55; stroke: ${v('--accent')}; stroke-width: 1.15; stroke-dasharray: 4 3; opacity: 0.82; }
+    .strip-lane { fill: ${v('--chart')}; stroke: ${v('--border')}; stroke-width: 1; }
+    .strip-rail { stroke: ${v('--border-strong')}; stroke-width: 1.2; opacity: 0.72; }
+    .strip-tick-line { stroke: ${v('--border-strong')}; stroke-width: 1; opacity: 0.65; }
+    .strip-span-bar { stroke: ${v('--border-strong')}; stroke-width: 4.5; stroke-linecap: round; opacity: 0.85; }
+    .strip-leader-ring { fill: none; stroke: ${v('--accent')}; stroke-width: 1.6; stroke-dasharray: 2.5 2; }
+    .delta-zero-line { stroke: ${v('--frame')}; stroke-width: 1.35; }
+    .delta-grid-line { stroke: ${v('--border-strong')}; stroke-width: 1; stroke-dasharray: 3 3; opacity: 0.55; }
+    .delta-header-text { font-size: 10.8px; font-weight: 600; }
+    .delta-val-label { font-size: 10.4px; font-weight: 600; stroke: ${v('--halo')}; stroke-width: 2.6px; paint-order: stroke; }
     .radar-axis-label { fill: ${v('--ink')}; font-size: 12.5px; font-weight: 600; }
     .radar-axis-sub { fill: ${v('--accent')}; font-size: 11px; font-weight: 500; }
     .radar-svg.has-focus .radar-series:not(.is-focused) { opacity: 0.18; }
@@ -2381,17 +2427,54 @@ function distToSegment(px, py, ax, ay, bx, by) {
 }
 
 function radarSvgPoint(event) {
-  const rect = $('#radarSvg')?.getBoundingClientRect();
-  if (!rect || !rect.width || !rect.height) return null;
+  const svgEl = $('#radarSvg');
+  const rect = svgEl?.getBoundingClientRect();
+  const vb = svgEl?.getAttribute('viewBox')?.split(/\s+/).map(Number);
+  if (!rect || !rect.width || !rect.height || !vb || vb.length !== 4) return null;
   return {
-    x: ((event.clientX - rect.left) / rect.width) * 580,
-    y: ((event.clientY - rect.top) / rect.height) * 410
+    x: ((event.clientX - rect.left) / rect.width) * vb[2],
+    y: ((event.clientY - rect.top) / rect.height) * vb[3]
   };
 }
 
 function hitTestRadar(sx, sy) {
   if (!radarCtx) return null;
-  const {cx, cy, verticesBySeries, axisEndpoints} = radarCtx;
+  const {visMode = 'radar', verticesBySeries, lanes = [], deltaBars = []} = radarCtx;
+
+  if (visMode === 'strip') {
+    const nearDots = [];
+    verticesBySeries.forEach((verts, sIdx) => {
+      verts.forEach((v, aIdx) => {
+        if (!v || v.val === null) return;
+        const d = Math.hypot(sx - v.x, sy - v.y);
+        if (d <= 15) nearDots.push({sIdx, aIdx, d, x: v.x, y: v.y, val: v.val});
+      });
+    });
+    if (nearDots.length) {
+      nearDots.sort((a, b) => a.d - b.d || a.sIdx - b.sIdx);
+      const top = nearDots[0];
+      const cluster = nearDots.filter(m => m.aIdx === top.aIdx && m.d <= top.d + 5.5);
+      const pinnedIdx = state?.radarPinnedId ? radarCtx.selectedRows.findIndex(r => r.id === state.radarPinnedId) : -1;
+      const chosen = cluster.find(m => m.sIdx === pinnedIdx) || top;
+      return {kind: 'vertex', seriesIdx: chosen.sIdx, axisIdx: top.aIdx, cluster};
+    }
+    const lane = lanes.find(l => sy >= l.top && sy <= l.bottom);
+    if (lane) return {kind: 'axis', seriesIdx: null, axisIdx: lane.axisIdx, cluster: null};
+    return null;
+  }
+
+  if (visMode === 'delta') {
+    for (const b of deltaBars) {
+      if (sx >= b.x0 && sx <= b.x1 && sy >= b.y0 && sy <= b.y1) {
+        return {kind: 'bar', seriesIdx: b.sIdx, axisIdx: b.aIdx, cluster: null};
+      }
+    }
+    const lane = lanes.find(l => sy >= l.top && sy <= l.bottom);
+    if (lane) return {kind: 'axis', seriesIdx: null, axisIdx: lane.axisIdx, cluster: null};
+    return null;
+  }
+
+  const {cx, cy, axisEndpoints} = radarCtx;
 
   // 1. Exact vertex proximity (never blocked by upper polygon fills!)
   const nearDots = [];
@@ -2455,7 +2538,7 @@ function hitTestRadar(sx, sy) {
 
 function syncRadarSpotlight(hoverSeriesIdx = null, hoverAxisKey = null) {
   if (!radarCtx || !state) return;
-  const {selectedRows, seriesLayer, calloutLayer, verticesBySeries, axes} = radarCtx;
+  const {visMode = 'radar', selectedRows, seriesLayer, calloutLayer, verticesBySeries, axes, stripLeaders = [], baseLabel = '', scaleMin = 0} = radarCtx;
   const radarSvg = $('#radarSvg');
 
   let pinnedIdx = state.radarPinnedId ? selectedRows.findIndex(r => r.id === state.radarPinnedId) : -1;
@@ -2484,12 +2567,12 @@ function syncRadarSpotlight(hoverSeriesIdx = null, hoverAxisKey = null) {
     }
   }
 
-  // Render crisp vertex score badges for the spotlighted model
+  // Render crisp vertex/strip score badges
   calloutLayer.replaceChildren();
-  if (activeIdx >= 0 && verticesBySeries[activeIdx]) {
+  if (visMode === 'radar' && activeIdx >= 0 && verticesBySeries[activeIdx]) {
     const sc = compareColor(activeIdx);
-    verticesBySeries[activeIdx].forEach((v, i) => {
-      if (v.val === null) return;
+    verticesBySeries[activeIdx].forEach(v => {
+      if (!v || v.val === null) return;
       const radialShift = v.ratio > 0.82 ? -13 : 12;
       const tx = v.x + Math.cos(v.ang) * radialShift;
       const ty = v.y + Math.sin(v.ang) * radialShift + 3.5;
@@ -2501,6 +2584,43 @@ function syncRadarSpotlight(hoverSeriesIdx = null, hoverAxisKey = null) {
         'text-anchor': 'middle'
       }, `${format(v.val, 1)}%`));
     });
+  } else if (visMode === 'strip') {
+    if (activeIdx >= 0 && verticesBySeries[activeIdx]) {
+      const sc = compareColor(activeIdx);
+      verticesBySeries[activeIdx].forEach(v => {
+        if (!v || v.val === null) return;
+        const tx = Math.max(178, Math.min(542, v.x));
+        const ty = v.y - 9;
+        calloutLayer.append(node('text', {
+          class: 'radar-vertex-val',
+          x: tx,
+          y: ty,
+          fill: sc,
+          'text-anchor': 'middle'
+        }, `#${v.rank} · ${format(v.val, 1)}%`));
+      });
+    } else {
+      for (const ld of stripLeaders) {
+        if (ld.best) {
+          calloutLayer.append(node('text', {
+            class: 'radar-vertex-val',
+            x: Math.min(548, ld.best.x),
+            y: ld.best.y - 9,
+            fill: compareColor(ld.best.sIdx),
+            'text-anchor': 'middle'
+          }, `${format(ld.best.val, 1)}%`));
+        }
+        if (ld.worst && ld.best && Math.abs(ld.best.x - ld.worst.x) >= 44) {
+          calloutLayer.append(node('text', {
+            class: 'radar-vertex-val',
+            x: Math.max(172, ld.worst.x),
+            y: ld.worst.y - 9,
+            fill: 'var(--muted)',
+            'text-anchor': 'middle'
+          }, `${format(ld.worst.val, 1)}%`));
+        }
+      }
+    }
   }
 
   // Sync chip states
@@ -2509,9 +2629,12 @@ function syncRadarSpotlight(hoverSeriesIdx = null, hoverAxisKey = null) {
     chip.classList.toggle('is-focused', idx === activeIdx);
   });
 
-  // Sync spoke, axis label & score card highlights
+  // Sync spoke/lane, axis label & score card highlights
   radarSvg.querySelectorAll('.radar-spoke').forEach((sp, i) => {
     sp.classList.toggle('is-axis-active', axes[i]?.key === hoverAxisKey);
+  });
+  radarSvg.querySelectorAll('.strip-lane').forEach((ln, i) => {
+    ln.classList.toggle('is-axis-active', axes[i]?.key === hoverAxisKey);
   });
   radarSvg.querySelectorAll('.radar-axis-label').forEach((lbl, i) => {
     lbl.classList.toggle('is-axis-active', axes[i]?.key === hoverAxisKey);
@@ -2528,13 +2651,33 @@ function syncRadarSpotlight(hoverSeriesIdx = null, hoverAxisKey = null) {
     if (pinnedIdx >= 0) {
       const pName = selectedRows[pinnedIdx].shortName || selectedRows[pinnedIdx].name;
       hintEl.textContent = t(
-        `已锁定置顶：${pName} · 单击雷达空白处或按 Esc 解锁（重叠顶点再次单击可切换下层模型）`,
-        `Locked on top: ${pName} · Click blank space or press Esc to unlock (click overlapping dots to cycle)`
+        `已锁定置顶：${pName} · 单击空白处或按 Esc 解锁`,
+        `Locked on top: ${pName} · Click blank space or press Esc to unlock`
+      );
+    } else if (visMode === 'strip') {
+      hintEl.textContent = t(
+        '每条水平跑道独立聚焦模型分差区间，将细微差距放大数倍 · 悬浮或单击圆点查看排名与单项差距',
+        'Each horizontal track zooms into the active score range to magnify subtle frontier gaps · Click any dot to lock'
+      );
+    } else if (visMode === 'delta') {
+      hintEl.textContent = t(
+        `中央 0 轴 = ${baseLabel} · 向右为领先 (+Δ)，向左为落后 (−Δ) · 右上方可随时切换对比基准模型`,
+        `Center 0 = ${baseLabel} · Right = ahead (+Δ), Left = behind (−Δ) · Switch reference baseline anytime above`
+      );
+    } else if (state.radarScale === 'axis') {
+      hintEl.textContent = t(
+        '分轴极值归一化：每根辐条按各自最低–最高分独立拉伸（轴名下方标注真实区间），彻底消除跨测试分数段压缩',
+        'Per-axis normalized: each spoke stretches its own [min–max%] spread (shown under spoke labels)'
+      );
+    } else if (scaleMin > 0) {
+      hintEl.textContent = t(
+        `微距去底雷达（内圈虚线 = ${scaleMin}% 起点）：剥离圆心空白死区放大前沿差距 · 也可切换上方「微距跑道」或「胜负分差 Δ」`,
+        `Zoomed radar (dashed inner ring = ${scaleMin}% floor) · Switch to "Dot Strip" or "Delta Δ" above for horizontal precision`
       );
     } else {
       hintEl.textContent = t(
-        '线条与顶点支持穿透拾取（不被上层遮挡）· 单击曲线或标签锁定置顶 · 悬浮轴名或卡片查看指标来源',
-        'Piercing edge/vertex hit-test (never blocked by upper layers) · Click line or chip to lock on top · Hover axis for source'
+        '线条与顶点支持穿透拾取 · 单击锁定置顶 · 细微差距建议点击上方「微距跑道」或「胜负分差 Δ」',
+        'Piercing hit-test · Click line or chip to lock · Try "Dot Strip" or "Delta Δ" above to inspect close gaps'
       );
     }
   }
@@ -2553,8 +2696,15 @@ function showMetricTip(metric, event, focusSeriesIdx = null, clusterCount = 0) {
     tip.append(html('span', t(metric.srcZh, metric.srcEn), 'tip-sub'));
   }
 
-  selectedRows.forEach((row, idx) => {
-    const val = metric.get(row);
+  const ordered = selectedRows
+    .map((row, idx) => ({row, idx, val: metric.get(row)}))
+    .sort((a, b) => {
+      if ((a.val === null) !== (b.val === null)) return a.val === null ? 1 : -1;
+      if (a.val === null) return a.idx - b.idx;
+      return metric.lowerBetter ? a.val - b.val : b.val - a.val;
+    });
+
+  ordered.forEach(({row, idx, val}) => {
     const line = html('div', null, 'tip-value');
     const left = html('span');
     const dot = html('i', null, 'creator-dot');
@@ -2567,6 +2717,11 @@ function showMetricTip(metric, event, focusSeriesIdx = null, clusterCount = 0) {
     if (metric.key === 'hallucination' && val !== null && row.subscores?.omniscience != null) {
       const totalWrong = ((100 - row.subscores.omniscience) * val) / 100;
       textVal += t(`（全题错答 ${format(totalWrong, 1)}%）`, ` (${format(totalWrong, 1)}% total)`);
+    } else if (val !== null && bestVal !== null && selectedRows.length > 1) {
+      const diff = metric.lowerBetter ? val - bestVal : val - bestVal;
+      if (Math.abs(diff) >= 0.05) {
+        textVal += ` (${diff > 0 ? '+' : ''}${format(diff, 1)})`;
+      }
     }
     const right = html('b', textVal);
     if (val !== null && bestVal !== null && selectedRows.length > 1 && Math.abs(val - bestVal) < 1e-6) {
@@ -2577,7 +2732,7 @@ function showMetricTip(metric, event, focusSeriesIdx = null, clusterCount = 0) {
   });
 
   if (clusterCount > 1) {
-    tip.append(html('span', t(`该处有 ${clusterCount} 个模型顶点重合，单击可依次轮换置顶`, `${clusterCount} models overlap here — click to cycle`), 'tip-foot'));
+    tip.append(html('span', t(`该处有 ${clusterCount} 个模型重合，单击可依次轮换置顶`, `${clusterCount} models overlap here — click to cycle`), 'tip-foot'));
   } else if (focusSeriesIdx !== null) {
     tip.append(html('span', t('单击锁定并将该模型置顶展示', 'Click to lock and bring model to front'), 'tip-foot'));
   }
@@ -3041,152 +3196,562 @@ function renderCompare() {
     ];
   }
 
+  const visMode = ['radar', 'strip', 'delta'].includes(state.compareVis) ? state.compareVis : 'radar';
+  for (const btn of document.querySelectorAll('#compareVisSwitch [data-cvis]')) {
+    btn.setAttribute('aria-pressed', String(btn.dataset.cvis === visMode));
+  }
+  $('#radarScaleSwitch').hidden = visMode !== 'radar';
+  $('#stripScaleSwitch').hidden = visMode !== 'strip';
+  $('#deltaBaseWrap').hidden = visMode !== 'delta';
+
+  for (const btn of document.querySelectorAll('#radarScaleSwitch [data-cscale]')) {
+    btn.setAttribute('aria-pressed', String(btn.dataset.cscale === state.radarScale));
+  }
+  for (const btn of document.querySelectorAll('#stripScaleSwitch [data-sscale]')) {
+    btn.setAttribute('aria-pressed', String(btn.dataset.sscale === state.stripScale));
+  }
+
+  const topByIndex = [...selectedRows].sort((a, b) => b.intelligenceIndex - a.intelligenceIndex)[0];
+  const baseSel = $('#deltaBaseSelect');
+  const baseFrag = document.createDocumentFragment();
+  const addBaseOpt = (val, text) => {
+    const o = html('option', text);
+    o.value = val;
+    baseFrag.append(o);
+  };
+  addBaseOpt('mean', t('已选均值 (Mean)', 'Pack Mean'));
+  if (topByIndex && selectedRows.length >= 2) {
+    addBaseOpt('top', `${t('总分榜首', '#1 Top')}: ${topByIndex.shortName || topByIndex.name}`);
+  }
+  for (const r of selectedRows) {
+    addBaseOpt(r.id, r.shortName || r.name);
+  }
+  baseSel.replaceChildren(baseFrag);
+  if (state.deltaBase !== 'mean' && state.deltaBase !== 'top' && !selectedRows.some(r => r.id === state.deltaBase)) {
+    state.deltaBase = 'mean';
+  }
+  baseSel.value = state.deltaBase;
+
   const radarSvg = $('#radarSvg');
-  radarSvg.setAttribute('viewBox', '0 0 580 410');
   radarSvg.classList.remove('has-focus');
   radarSvg.replaceChildren();
-  const cx = 290, cy = 205, R = 142, N = Math.max(3, axes.length);
-  const obsValues = selectedRows.flatMap(r => axes.map(a => a.get(r))).filter(v => v !== null);
-  const scaleMax = Math.min(100, Math.max(60, Math.ceil(Math.max(40, ...obsValues) / 20) * 20));
+  const seriesLayer = node('g', {class: 'radar-series-layer'});
+  const calloutLayer = node('g', {class: 'radar-callout-layer'});
+  const verticesBySeries = selectedRows.map(() => axes.map(() => ({val: null, x: 0, y: 0, ratio: 0, ang: 0})));
+  const axisEndpoints = [];
+  const lanes = [];
+  const stripLeaders = [];
+  const deltaBars = [];
+  let cx = 290, cy = 205, R = 142, scaleMin = 0, scaleMax = 100, baseLabel = '';
 
-  for (const [ringIdx, frac] of [1, 0.75, 0.5, 0.25].entries()) {
-    const pts = axes.map((_, i) => {
+  if (visMode === 'radar') {
+    radarSvg.setAttribute('viewBox', '0 0 580 410');
+    const N = Math.max(3, axes.length);
+    const obsValues = selectedRows.flatMap(r => axes.map(a => a.get(r))).filter(v => v !== null);
+    const axScales = axes.map(ax => zoomedAxisScale(
+      selectedRows.map(r => ax.get(r)).filter(v => v !== null),
+      {minSpan: 6, padRatio: 0.12}
+    ));
+
+    let innerRatio = 0;
+    if (state.radarScale === 'zoom') {
+      const zb = zoomedRadarBounds(obsValues);
+      scaleMin = zb.scaleMin;
+      scaleMax = zb.scaleMax;
+      innerRatio = zb.innerRatio;
+    } else if (state.radarScale === 'axis') {
+      scaleMin = 0;
+      scaleMax = 100;
+      innerRatio = 0.2;
+    } else {
+      scaleMin = 0;
+      scaleMax = Math.min(100, Math.max(60, Math.ceil(Math.max(40, ...obsValues) / 20) * 20));
+      innerRatio = 0;
+    }
+
+    const ringPolygonPts = frac => axes.map((_, i) => {
       const ang = -Math.PI / 2 + (i * 2 * Math.PI) / N;
       return `${cx + Math.cos(ang) * R * frac},${cy + Math.sin(ang) * R * frac}`;
     }).join(' ');
-    if (ringIdx % 2 === 0) {
-      radarSvg.append(node('polygon', {class: 'radar-ring-fill', points: pts}));
+
+    if (innerRatio > 0) {
+      const outerFracs = [1, innerRatio + (1 - innerRatio) * (2 / 3), innerRatio + (1 - innerRatio) * (1 / 3)];
+      outerFracs.forEach((frac, rIdx) => {
+        const pts = ringPolygonPts(frac);
+        if (rIdx % 2 === 0) radarSvg.append(node('polygon', {class: 'radar-ring-fill', points: pts}));
+        radarSvg.append(node('polygon', {class: 'radar-grid', points: pts}));
+      });
+      radarSvg.append(node('polygon', {class: 'radar-inner-floor', points: ringPolygonPts(innerRatio)}));
+
+      if (state.radarScale === 'zoom') {
+        const tickSpecs = [
+          [innerRatio, scaleMin],
+          [innerRatio + (1 - innerRatio) * (1 / 3), Math.round(scaleMin + (scaleMax - scaleMin) / 3)],
+          [innerRatio + (1 - innerRatio) * (2 / 3), Math.round(scaleMin + ((scaleMax - scaleMin) * 2) / 3)],
+          [1, scaleMax]
+        ];
+        for (const [frac, valNum] of tickSpecs) {
+          radarSvg.append(node('text', {
+            class: 'radar-scale-tick',
+            x: cx + 5,
+            y: cy - R * frac + 11
+          }, String(valNum)));
+        }
+      } else {
+        radarSvg.append(
+          node('text', {class: 'radar-scale-tick', x: cx + 5, y: cy - R * innerRatio + 11}, 'Min'),
+          node('text', {class: 'radar-scale-tick', x: cx + 5, y: cy - R + 11}, 'Max')
+        );
+      }
+    } else {
+      for (const [ringIdx, frac] of [1, 0.75, 0.5, 0.25].entries()) {
+        const pts = ringPolygonPts(frac);
+        if (ringIdx % 2 === 0) radarSvg.append(node('polygon', {class: 'radar-ring-fill', points: pts}));
+        radarSvg.append(node('polygon', {class: 'radar-grid', points: pts}));
+      }
+      for (const frac of [0.25, 0.5, 0.75, 1]) {
+        radarSvg.append(node('text', {
+          class: 'radar-scale-tick',
+          x: cx + 5,
+          y: cy - R * frac + 11
+        }, String(Math.round(scaleMax * frac))));
+      }
     }
-    radarSvg.append(node('polygon', {class: 'radar-grid', points: pts}));
-  }
 
-  for (const frac of [0.25, 0.5, 0.75, 1]) {
-    radarSvg.append(node('text', {
-      class: 'radar-scale-tick',
-      x: cx + 5,
-      y: cy - R * frac + 11
-    }, String(Math.round(scaleMax * frac))));
-  }
+    axes.forEach((ax, i) => {
+      const ang = -Math.PI / 2 + (i * 2 * Math.PI) / N;
+      const cos = Math.cos(ang), sin = Math.sin(ang);
+      const ex = cx + cos * R, ey = cy + sin * R;
+      radarSvg.append(node('line', {
+        class: 'radar-spoke',
+        'data-axis-idx': i,
+        x1: cx,
+        y1: cy,
+        x2: ex,
+        y2: ey
+      }));
+      const anchor = Math.abs(cos) < 0.18 ? 'middle' : cos > 0 ? 'start' : 'end';
+      const labelR = R + 16;
+      const lx = cx + cos * labelR;
+      const ly = cy + sin * labelR + (sin < -0.5 ? -8 : sin > 0.5 ? 12 : 1);
+      radarSvg.append(node('text', {
+        class: 'radar-axis-label',
+        'data-axis-idx': i,
+        x: lx,
+        y: ly,
+        'text-anchor': anchor
+      }, t(ax.zh, ax.en)));
 
-  const axisEndpoints = [];
-  axes.forEach((ax, i) => {
-    const ang = -Math.PI / 2 + (i * 2 * Math.PI) / N;
-    const cos = Math.cos(ang), sin = Math.sin(ang);
-    const ex = cx + cos * R, ey = cy + sin * R;
-    radarSvg.append(node('line', {
-      class: 'radar-spoke',
-      'data-axis-idx': i,
-      x1: cx,
-      y1: cy,
-      x2: ex,
-      y2: ey
-    }));
-    const anchor = Math.abs(cos) < 0.18 ? 'middle' : cos > 0 ? 'start' : 'end';
-    const labelR = R + 16;
-    const lx = cx + cos * labelR;
-    const ly = cy + sin * labelR + (sin < -0.5 ? -8 : sin > 0.5 ? 12 : 1);
-    radarSvg.append(node('text', {
-      class: 'radar-axis-label',
-      'data-axis-idx': i,
-      x: lx,
-      y: ly,
-      'text-anchor': anchor
-    }, t(ax.zh, ax.en)));
+      const labelHitX = anchor === 'start' ? lx + 28 : anchor === 'end' ? lx - 28 : lx;
+      axisEndpoints.push({ex, ey, lx: labelHitX, ly});
 
-    const labelHitX = anchor === 'start' ? lx + 28 : anchor === 'end' ? lx - 28 : lx;
-    axisEndpoints.push({ex, ey, lx: labelHitX, ly});
+      const vals = selectedRows.map(r => ax.get(r)).filter(v => v !== null);
+      if (vals.length) {
+        const loV = Math.min(...vals), hiV = Math.max(...vals);
+        const subTxt = vals.length >= 2 && Math.abs(hiV - loV) >= 0.05
+          ? `${format(loV, 1)}–${format(hiV, 1)}%`
+          : `${t('最高', 'Max')} ${format(hiV, 1)}%`;
+        radarSvg.append(node('text', {
+          class: 'radar-axis-sub',
+          x: lx,
+          y: ly + 14,
+          'text-anchor': anchor
+        }, subTxt));
+      }
+    });
 
-    const vals = selectedRows.map(r => ax.get(r)).filter(v => v !== null);
-    if (vals.length) {
-      const topVal = Math.max(...vals);
+    selectedRows.forEach((row, idx) => {
+      const sc = compareColor(idx);
+      const seriesG = node('g', {class: 'radar-series', 'data-series-idx': idx});
+      const verts = axes.map((ax, i) => {
+        const val = ax.get(row);
+        let ratio = 0;
+        if (val !== null) {
+          if (state.radarScale === 'axis') {
+            const scAx = axScales[i];
+            ratio = innerRatio + (1 - innerRatio) * Math.max(0, Math.min(1, (val - scAx.min) / scAx.span));
+          } else {
+            ratio = radarRadiusRatio(val, scaleMin, scaleMax, innerRatio);
+          }
+        }
+        const ang = -Math.PI / 2 + (i * 2 * Math.PI) / N;
+        return {
+          val,
+          ratio,
+          ang,
+          x: cx + Math.cos(ang) * R * ratio,
+          y: cy + Math.sin(ang) * R * ratio
+        };
+      });
+      verticesBySeries[idx] = verts;
+
+      const baseFillOpacity = selectedRows.length <= 4 ? 0.14 : Math.max(0.05, 0.2 - selectedRows.length * 0.018);
+      const baseStrokeW = selectedRows.length <= 5 ? 2.5 : 2.1;
+      const presentVerts = verts.filter(v => v.val !== null);
+      if (presentVerts.length >= 3) {
+        seriesG.append(node('polygon', {
+          points: presentVerts.map(v => `${v.x},${v.y}`).join(' '),
+          fill: sc,
+          'fill-opacity': baseFillOpacity,
+          stroke: sc,
+          'stroke-width': baseStrokeW,
+          'stroke-linejoin': 'round'
+        }));
+      } else if (presentVerts.length === 2) {
+        seriesG.append(node('line', {
+          x1: presentVerts[0].x,
+          y1: presentVerts[0].y,
+          x2: presentVerts[1].x,
+          y2: presentVerts[1].y,
+          stroke: sc,
+          'stroke-width': baseStrokeW,
+          'stroke-linecap': 'round'
+        }));
+      }
+      verts.forEach(v => {
+        if (v.val === null) return;
+        seriesG.append(node('circle', {
+          cx: v.x,
+          cy: v.y,
+          r: 4.5,
+          fill: sc,
+          stroke: 'var(--halo)',
+          'stroke-width': 1.4
+        }));
+      });
+      seriesLayer.append(seriesG);
+    });
+  } else if (visMode === 'strip') {
+    const laneH = 58, laneStep = 65, topOff = 8;
+    const svgH = topOff + axes.length * laneStep + 6;
+    radarSvg.setAttribute('viewBox', `0 0 580 ${svgH}`);
+    const trackL = 158, trackR = 556, trackW = trackR - trackL;
+    const seriesGroups = selectedRows.map((_, idx) => node('g', {class: 'radar-series', 'data-series-idx': idx}));
+    const ringLayer = node('g', {'pointer-events': 'none'});
+
+    axes.forEach((ax, aIdx) => {
+      const ly = topOff + aIdx * laneStep;
+      const trackY = ly + 25;
+      lanes.push({axisIdx: aIdx, top: ly, bottom: ly + laneH});
+
+      radarSvg.append(node('rect', {
+        class: 'strip-lane',
+        'data-axis-idx': aIdx,
+        x: 8,
+        y: ly,
+        width: 564,
+        height: laneH,
+        rx: 8
+      }));
+      radarSvg.append(node('text', {
+        class: 'radar-axis-label',
+        'data-axis-idx': aIdx,
+        x: 18,
+        y: ly + 23
+      }, t(ax.zh, ax.en)));
+
+      const present = selectedRows
+        .map((r, sIdx) => ({sIdx, val: ax.get(r)}))
+        .filter(d => d.val !== null);
+      const validVals = present.map(d => d.val);
+      const axScale = state.stripScale === 'full'
+        ? {min: 0, max: 100, span: 100, minVal: validVals.length ? Math.min(...validVals) : null, maxVal: validVals.length ? Math.max(...validVals) : null, leaderGap: validVals.length >= 2 ? [...validVals].sort((a, b) => b - a)[0] - [...validVals].sort((a, b) => b - a)[1] : null}
+        : zoomedAxisScale(validVals, {minSpan: 5, padRatio: 0.14});
+
+      let subNote = '—';
+      if (axScale.leaderGap !== null) {
+        subNote = axScale.leaderGap >= 0.05
+          ? t(`第1领先 +${format(axScale.leaderGap, 1)}%`, `#1 lead +${format(axScale.leaderGap, 1)}%`)
+          : t('榜首并列 (<0.1%)', 'Tied #1 (<0.1%)');
+      } else if (axScale.maxVal !== null) {
+        subNote = `${format(axScale.maxVal, 1)}%`;
+      }
       radarSvg.append(node('text', {
         class: 'radar-axis-sub',
-        x: lx,
-        y: ly + 14,
-        'text-anchor': anchor
-      }, `${t('最高', 'Max')} ${format(topVal, 1)}%`));
-    }
-  });
+        x: 18,
+        y: ly + 42
+      }, subNote));
 
-  const seriesLayer = node('g', {class: 'radar-series-layer'});
-  const calloutLayer = node('g', {class: 'radar-callout-layer'});
-  const verticesBySeries = [];
+      radarSvg.append(node('line', {
+        class: 'strip-rail',
+        x1: trackL,
+        x2: trackR,
+        y1: trackY,
+        y2: trackY
+      }));
 
-  selectedRows.forEach((row, idx) => {
-    const sc = compareColor(idx);
-    const seriesG = node('g', {class: 'radar-series', 'data-series-idx': idx});
-    const verts = axes.map((ax, i) => {
-      const val = ax.get(row);
-      const ratio = val === null ? 0 : Math.max(0, Math.min(1, val / scaleMax));
-      const ang = -Math.PI / 2 + (i * 2 * Math.PI) / N;
-      return {
-        val,
-        ratio,
-        ang,
-        x: cx + Math.cos(ang) * R * ratio,
-        y: cy + Math.sin(ang) * R * ratio
-      };
+      const xOfVal = v => trackL + ((v - axScale.min) / axScale.span) * trackW;
+      const tickNums = ticks(axScale.min, axScale.max, 5);
+      for (const tk of tickNums) {
+        const tx = xOfVal(tk);
+        if (tx < trackL - 1 || tx > trackR + 1) continue;
+        radarSvg.append(
+          node('line', {class: 'strip-tick-line', x1: tx, x2: tx, y1: trackY - 4, y2: trackY + 4}),
+          node('text', {
+            class: 'radar-scale-tick',
+            x: tx,
+            y: ly + 49,
+            'text-anchor': 'middle'
+          }, `${format(tk, axScale.span < 12 ? 1 : 0)}%`)
+        );
+      }
+
+      if (present.length >= 2 && axScale.minVal !== null && axScale.maxVal !== null) {
+        radarSvg.append(node('line', {
+          class: 'strip-span-bar',
+          x1: xOfVal(axScale.minVal),
+          x2: xOfVal(axScale.maxVal),
+          y1: trackY,
+          y2: trackY
+        }));
+      }
+
+      if (present.length) {
+        const byBest = [...present].sort((a, b) => (ax.lowerBetter ? a.val - b.val : b.val - a.val) || a.sIdx - b.sIdx);
+        const rankMap = new Map();
+        byBest.forEach((d, rIdx) => rankMap.set(d.sIdx, rIdx + 1));
+        const bestVal = byBest[0].val;
+
+        const byX = present
+          .map(d => ({...d, px: xOfVal(d.val)}))
+          .sort((a, b) => a.px - b.px || a.sIdx - b.sIdx);
+        const placed = [];
+        const dyCandidates = [0, -6.5, 6.5, -12, 12, -16, 16];
+        for (const item of byX) {
+          let chosenDy = 0;
+          for (const dy of dyCandidates) {
+            const pyTest = trackY + dy;
+            if (!placed.some(p => Math.hypot(item.px - p.x, pyTest - p.y) < 8.6)) {
+              chosenDy = dy;
+              break;
+            }
+          }
+          const py = Math.max(ly + 11, Math.min(ly + laneH - 13, trackY + chosenDy));
+          const ptObj = {
+            sIdx: item.sIdx,
+            val: item.val,
+            rank: rankMap.get(item.sIdx),
+            x: item.px,
+            y: py,
+            ratio: 0.5,
+            ang: 0
+          };
+          placed.push(ptObj);
+          verticesBySeries[item.sIdx][aIdx] = ptObj;
+
+          const sc = compareColor(item.sIdx);
+          if (selectedRows.length > 1 && Math.abs(item.val - bestVal) < 1e-6) {
+            ringLayer.append(node('circle', {
+              class: 'strip-leader-ring',
+              cx: item.px,
+              cy: py,
+              r: 7.8
+            }));
+          }
+          seriesGroups[item.sIdx].append(node('circle', {
+            cx: item.px,
+            cy: py,
+            r: 5,
+            fill: sc,
+            stroke: 'var(--halo)',
+            'stroke-width': 1.4
+          }));
+        }
+
+        const bestPt = placed.find(p => p.sIdx === byBest[0].sIdx) || null;
+        const worstPt = placed.length >= 2 ? placed.find(p => p.sIdx === byBest.at(-1).sIdx) : null;
+        stripLeaders.push({axisIdx: aIdx, best: bestPt, worst: worstPt});
+      }
     });
-    verticesBySeries.push(verts);
 
-    const baseFillOpacity = selectedRows.length <= 4 ? 0.15 : Math.max(0.06, 0.21 - selectedRows.length * 0.018);
-    const baseStrokeW = selectedRows.length <= 5 ? 2.5 : 2.1;
-    const presentVerts = verts.filter(v => v.val !== null);
-    if (presentVerts.length >= 3) {
-      seriesG.append(node('polygon', {
-        points: presentVerts.map(v => `${v.x},${v.y}`).join(' '),
-        fill: sc,
-        'fill-opacity': baseFillOpacity,
-        stroke: sc,
-        'stroke-width': baseStrokeW,
-        'stroke-linejoin': 'round'
-      }));
-    } else if (presentVerts.length === 2) {
-      seriesG.append(node('line', {
-        x1: presentVerts[0].x,
-        y1: presentVerts[0].y,
-        x2: presentVerts[1].x,
-        y2: presentVerts[1].y,
-        stroke: sc,
-        'stroke-width': baseStrokeW,
-        'stroke-linecap': 'round'
-      }));
+    radarSvg.append(ringLayer);
+    for (const g of seriesGroups) seriesLayer.append(g);
+  } else {
+    // visMode === 'delta': Baseline-Anchored Diverging Delta (+Δ / -Δ) Chart
+    let refRow = null, refIdx = -1;
+    if (selectedRows.length >= 2) {
+      if (state.deltaBase === 'top' && topByIndex) {
+        refRow = topByIndex;
+        refIdx = selectedRows.findIndex(r => r.id === refRow.id);
+      } else if (state.deltaBase !== 'mean') {
+        refIdx = selectedRows.findIndex(r => r.id === state.deltaBase);
+        if (refIdx >= 0) refRow = selectedRows[refIdx];
+      }
     }
-    verts.forEach(v => {
-      if (v.val === null) return;
-      seriesG.append(node('circle', {
-        cx: v.x,
-        cy: v.y,
-        r: 4.5,
-        fill: sc,
-        stroke: 'var(--halo)',
-        'stroke-width': 1.4
-      }));
+    baseLabel = refRow ? (refRow.shortName || refRow.name) : t('已选均值', 'Pack Mean');
+
+    const baseVals = axes.map(ax => {
+      const valid = selectedRows.map(r => ax.get(r)).filter(v => v !== null);
+      if (!valid.length) return null;
+      if (refRow) {
+        const rv = ax.get(refRow);
+        if (rv !== null) return rv;
+      }
+      return valid.reduce((s, v) => s + v, 0) / valid.length;
     });
-    seriesLayer.append(seriesG);
-  });
+
+    const barSeriesIndices = refIdx >= 0 && selectedRows.length >= 2
+      ? selectedRows.map((_, i) => i).filter(i => i !== refIdx)
+      : selectedRows.map((_, i) => i);
+
+    const allDeltas = [];
+    axes.forEach((ax, aIdx) => {
+      const bv = baseVals[aIdx];
+      if (bv === null) return;
+      for (const sIdx of barSeriesIndices) {
+        const v = ax.get(selectedRows[sIdx]);
+        if (v !== null) allDeltas.push(ax.lowerBetter ? bv - v : v - bv);
+      }
+    });
+    const maxAbs = Math.max(2, ...allDeltas.map(d => Math.abs(d))) * 1.22;
+
+    const rowStep = barSeriesIndices.length <= 4 ? 12 : barSeriesIndices.length <= 6 ? 10.4 : 9.2;
+    const laneH = Math.max(52, 16 + barSeriesIndices.length * rowStep);
+    const laneStep = laneH + 6;
+    const topOff = 26;
+    const svgH = topOff + axes.length * laneStep + 4;
+    radarSvg.setAttribute('viewBox', `0 0 580 ${svgH}`);
+
+    const zeroX = 358, halfW = 180;
+    const shortBase = baseLabel.length > 20 ? baseLabel.slice(0, 19) + '…' : baseLabel;
+    radarSvg.append(
+      node('text', {class: 'delta-header-text', x: 18, y: 17, fill: 'var(--ink)', 'text-anchor': 'start'}, `${t('基准', 'Ref')}: ${shortBase}`),
+      node('text', {class: 'delta-header-text', x: zeroX - 18, y: 17, fill: 'var(--muted)', 'text-anchor': 'end'}, t('← 落后 (−Δ)', '← Behind (−Δ)')),
+      node('text', {class: 'delta-header-text', x: zeroX, y: 17, fill: 'var(--ink)', 'text-anchor': 'middle'}, '0'),
+      node('text', {class: 'delta-header-text', x: zeroX + 18, y: 17, fill: 'var(--accent)', 'text-anchor': 'start'}, t('领先 (+Δ) →', 'Ahead (+Δ) →'))
+    );
+
+    const seriesGroups = selectedRows.map((_, idx) => node('g', {class: 'radar-series', 'data-series-idx': idx}));
+
+    axes.forEach((ax, aIdx) => {
+      const ly = topOff + aIdx * laneStep;
+      lanes.push({axisIdx: aIdx, top: ly, bottom: ly + laneH});
+      radarSvg.append(node('rect', {
+        class: 'strip-lane',
+        'data-axis-idx': aIdx,
+        x: 8,
+        y: ly,
+        width: 564,
+        height: laneH,
+        rx: 8
+      }));
+
+      const midStep = Math.max(1, Math.round((maxAbs / 2) * 10) / 10);
+      const guideDx = (midStep / maxAbs) * halfW;
+      radarSvg.append(
+        node('line', {class: 'delta-grid-line', x1: zeroX - guideDx, x2: zeroX - guideDx, y1: ly + 4, y2: ly + laneH - 4}),
+        node('line', {class: 'delta-grid-line', x1: zeroX + guideDx, x2: zeroX + guideDx, y1: ly + 4, y2: ly + laneH - 4}),
+        node('line', {class: 'delta-zero-line', x1: zeroX, x2: zeroX, y1: ly + 3, y2: ly + laneH - 3})
+      );
+
+      radarSvg.append(node('text', {
+        class: 'radar-axis-label',
+        'data-axis-idx': aIdx,
+        x: 18,
+        y: ly + Math.min(24, laneH * 0.44)
+      }, t(ax.zh, ax.en)));
+
+      const bv = baseVals[aIdx];
+      radarSvg.append(node('text', {
+        class: 'radar-axis-sub',
+        x: 18,
+        y: ly + Math.min(41, laneH * 0.44 + 16)
+      }, bv !== null ? `${refRow ? t('基准', 'Ref') : t('均值', 'Mean')} ${format(bv, 1)}%` : '—'));
+
+      if (refIdx >= 0 && bv !== null && ax.get(selectedRows[refIdx]) !== null) {
+        const refCy = ly + laneH / 2;
+        seriesGroups[refIdx].append(node('polygon', {
+          points: `${zeroX},${refCy - 5} ${zeroX + 5},${refCy} ${zeroX},${refCy + 5} ${zeroX - 5},${refCy}`,
+          fill: compareColor(refIdx),
+          stroke: 'var(--halo)',
+          'stroke-width': 1.2
+        }));
+      }
+
+      const startY = ly + (laneH - (barSeriesIndices.length - 1) * rowStep) / 2;
+      barSeriesIndices.forEach((sIdx, rPos) => {
+        const ry = startY + rPos * rowStep;
+        const val = ax.get(selectedRows[sIdx]);
+        if (val === null || bv === null) return;
+        const delta = ax.lowerBetter ? bv - val : val - bv;
+        const dx = (delta / maxAbs) * halfW;
+        const sc = compareColor(sIdx);
+        const barX = dx >= 0 ? zeroX : zeroX + dx;
+        const barW = Math.max(1.6, Math.abs(dx));
+
+        seriesGroups[sIdx].append(
+          node('rect', {
+            class: 'delta-bar',
+            x: barX,
+            y: ry - 3.1,
+            width: barW,
+            height: 6.2,
+            rx: 3,
+            fill: sc
+          }),
+          node('circle', {
+            cx: zeroX + dx,
+            cy: ry,
+            r: 3.3,
+            fill: sc,
+            stroke: 'var(--halo)',
+            'stroke-width': 1
+          })
+        );
+
+        const deltaStr = `${delta > 0.04 ? '+' : delta < -0.04 ? '−' : '±'}${format(Math.abs(delta), 1)}%`;
+        const lblX = dx >= 0 ? zeroX + dx + 6 : zeroX + dx - 6;
+        seriesGroups[sIdx].append(node('text', {
+          class: 'delta-val-label',
+          x: lblX,
+          y: ry + 3.4,
+          fill: sc,
+          'text-anchor': dx >= 0 ? 'start' : 'end'
+        }, deltaStr));
+
+        deltaBars.push({
+          sIdx,
+          aIdx,
+          x0: Math.min(zeroX, zeroX + dx) - 42,
+          x1: Math.max(zeroX, zeroX + dx) + 42,
+          y0: ry - rowStep * 0.52,
+          y1: ry + rowStep * 0.52
+        });
+      });
+    });
+
+    for (const g of seriesGroups) seriesLayer.append(g);
+  }
+
   radarSvg.append(seriesLayer, calloutLayer);
 
   radarCtx = {
+    visMode,
     cx,
     cy,
     R,
+    scaleMin,
     scaleMax,
+    baseLabel,
     axes,
     barMetrics,
     selectedRows,
     verticesBySeries,
     axisEndpoints,
+    lanes,
+    stripLeaders,
+    deltaBars,
     seriesLayer,
     calloutLayer
   };
 
-  // Compact score summary grid directly beneath the Hero Radar
+  // Sorted sub-dimension leaderboard cards beneath the Hero Chart (with zoomed micro-bars!)
   const barsFrag = document.createDocumentFragment();
   for (const m of barMetrics) {
     const validNums = selectedRows.map(r => m.get(r)).filter(v => v !== null);
     if (!validNums.length) continue;
     const bestVal = m.lowerBetter ? Math.min(...validNums) : Math.max(...validNums);
+    const dimScale = zoomedAxisScale(validNums, {minSpan: 5, padRatio: 0.1});
     const card = html('div', null, 'radar-dim-card');
     card.dataset.metricKey = m.key;
     const titleEl = html('div', t(m.zh, m.en), 'radar-dim-title');
@@ -3203,13 +3768,31 @@ function renderCompare() {
       syncRadarSpotlight(null, null);
     });
     card.append(titleEl);
-    selectedRows.forEach((row, idx) => {
-      const val = m.get(row);
+
+    const sortedEntries = selectedRows
+      .map((row, idx) => ({row, idx, val: m.get(row)}))
+      .sort((a, b) => {
+        if ((a.val === null) !== (b.val === null)) return a.val === null ? 1 : -1;
+        if (a.val === null) return a.idx - b.idx;
+        return (m.lowerBetter ? a.val - b.val : b.val - a.val) || a.idx - b.idx;
+      });
+
+    sortedEntries.forEach(({row, idx, val}) => {
       const item = html('div', null, 'radar-dim-item');
       item.dataset.seriesIdx = String(idx);
+      const sc = compareColor(idx);
+      if (val !== null) {
+        const bar = html('i', null, 'radar-dim-bar');
+        const rawPct = m.lowerBetter
+          ? ((dimScale.max - val) / dimScale.span) * 100
+          : ((val - dimScale.min) / dimScale.span) * 100;
+        bar.style.width = `${Math.max(6, Math.min(100, rawPct))}%`;
+        bar.style.background = sc;
+        item.append(bar);
+      }
       const nameWrap = html('span', null, 'radar-dim-name');
       const dot = html('i', null, 'creator-dot');
-      dot.style.background = compareColor(idx);
+      dot.style.background = sc;
       const short = (row.shortName || row.name).replace(/^Claude Code - |^Codex - /i, '');
       nameWrap.append(dot, html('span', short));
       const valEl = html('b', val === null ? '—' : `${format(val, 1)}%`);
@@ -4950,6 +5533,44 @@ for (const [btnId, mode] of [['#radarModeBench', 'bench'], ['#radarModeDomain', 
     renderCompare();
   });
 }
+
+for (const btn of document.querySelectorAll('#compareVisSwitch [data-cvis]')) {
+  btn.addEventListener('click', () => {
+    if (!state || state.compareVis === btn.dataset.cvis) return;
+    state.compareVis = btn.dataset.cvis;
+    tip.hidden = true;
+    syncUrlHash();
+    renderCompare();
+  });
+}
+
+for (const btn of document.querySelectorAll('#radarScaleSwitch [data-cscale]')) {
+  btn.addEventListener('click', () => {
+    if (!state || state.radarScale === btn.dataset.cscale) return;
+    state.radarScale = btn.dataset.cscale;
+    tip.hidden = true;
+    syncUrlHash();
+    renderCompare();
+  });
+}
+
+for (const btn of document.querySelectorAll('#stripScaleSwitch [data-sscale]')) {
+  btn.addEventListener('click', () => {
+    if (!state || state.stripScale === btn.dataset.sscale) return;
+    state.stripScale = btn.dataset.sscale;
+    tip.hidden = true;
+    syncUrlHash();
+    renderCompare();
+  });
+}
+
+$('#deltaBaseSelect').addEventListener('change', () => {
+  if (!state) return;
+  state.deltaBase = $('#deltaBaseSelect').value || 'mean';
+  tip.hidden = true;
+  syncUrlHash();
+  renderCompare();
+});
 
 $('#radarInfoBtn').addEventListener('click', () => {
   radarInfoOpen = !radarInfoOpen;
