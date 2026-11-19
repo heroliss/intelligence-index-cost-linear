@@ -584,3 +584,9 @@ test('multimodal media tab enforces strictly isolated tracks without a cross-mod
   const mkindValues = [...html.matchAll(/data-mkind="([^"]*)"/g)].map(m => m[1]);
   assert.deepEqual(mkindValues, ['image', 'video', 'tts']);
 });
+
+test('GitHub Pages deploy workflow stages modules/ directory and watches modules/** changes', async () => {
+  const yml = await readFile(new URL('../.github/workflows/update-and-deploy.yml', import.meta.url), 'utf8');
+  assert.match(yml, /'modules\/\*\*'/);
+  assert.match(yml, /cp modules\/\*\.mjs _site\/modules\//);
+});

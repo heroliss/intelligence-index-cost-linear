@@ -8,6 +8,7 @@ on:
       - 'app.js'
       - 'styles.css'
       - 'chart-math.mjs'
+      - 'modules/**'
       - 'favicon.svg'
       - 'manifest.webmanifest'
       - 'source-url.txt'
@@ -77,8 +78,9 @@ jobs:
         if: github.event_name != 'schedule' || steps.refresh.outputs.changed == 'true'
         run: |
           rm -rf _site
-          mkdir -p _site/data
+          mkdir -p _site/data _site/modules
           cp index.html styles.css app.js chart-math.mjs favicon.svg manifest.webmanifest .nojekyll _site/
+          cp modules/*.mjs _site/modules/
           cp data/current.json _site/data/current.json
 
       - name: Upload site artifact
