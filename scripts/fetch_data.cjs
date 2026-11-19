@@ -445,6 +445,17 @@ const HIGH_EFFORTS = new Set(['high', 'xhigh', 'max', 'default']);
 const LMARENA_DATASET_BASE = 'https://datasets-server.huggingface.co/rows?dataset=lmarena-ai%2Fleaderboard-dataset';
 const DESIGN_ARENA_API_BASE = 'https://www.designarena.ai/api/leaderboard?arenaType=models&category=';
 const DESIGN_ARENA_CATEGORIES = ['website', 'uicomponent', 'dataviz', 'gamedev', 'svg'];
+const LIVEBENCH_SITE_URL = 'https://livebench.ai/';
+const LIVEBENCH_FALLBACK_RELEASE = '20261106';
+const LIVEBENCH_SUITE_KEYS = {
+  'Long Agentic': 'longAgentic',
+  Reasoning: 'reasoning',
+  Coding: 'coding',
+  Browser: 'browser',
+  'Data Analysis': 'dataAnalysis',
+  Research: 'research',
+  Design: 'design'
+};
 const DESIGN_ARENA_CALIBRATION = {
   website: { center: 1220, scale: 195 },
   uicomponent: { center: 1220, scale: 210 },
@@ -601,7 +612,19 @@ function buildModelArenaIndex(models) {
   function resolve(rawName) {
     const { base, effort } = parseExternalIdentity(rawName, knownFamilies);
     if (!base) return null;
-    const famSlug = aliasToFamily.get(base) || aliasToFamily.get(stripDateStamp(base));
+    const altBases = [
+      base,
+      stripDateStamp(base),
+      base.replace(/-0$/, ''),
+      base.replace(/-nvfp4$/, ''),
+      base.replace(/^nemotron-super-vl-3-5$/, 'nemotron-3-5-super-vl')
+    ];
+    let famSlug = null;
+    for (const candidate of altBases) {
+      if (!candidate) continue;
+      famSlug = aliasToFamily.get(candidate) || aliasToFamily.get(stripDateStamp(candidate));
+      if (famSlug) break;
+    }
     if (!famSlug) return null;
     if (effort) {
       const exact = byFamilyEffort.get(`${famSlug}::${effort}`);
@@ -874,6 +897,315 @@ async function fetchDesignArenaCategory(category, get) {
   return Array.isArray(payload?.data) ? payload.data : [];
 }
 
+function parseSimpleCsv(text) {
+  if (typeof text !== 'string' || !text.trim()) return [];
+  const rows = [];
+  let row = [], cell = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQuotes) {
+      if (ch === '"' && text[i + 1] === '"') {
+        cell += '"';
+        i++;
+      } else if (ch === '"') {
+        inQuotes = false;
+      } else {
+        cell += ch;
+      }
+    } else if (ch === '"') {
+      inQuotes = true;
+    } else if (ch === ',') {
+      row.push(cell);
+      cell = '';
+    } else if (ch === '\n' || ch === '\r') {
+      if (ch === '\r' && text[i + 1] === '\n') i++;
+      row.push(cell);
+      if (row.some(v => v.trim() !== '')) rows.push(row);
+      row = [];
+      cell = '';
+    } else {
+      cell += ch;
+    }
+  }
+  if (cell.length || row.length) {
+    row.push(cell);
+    if (row.some(v => v.trim() !== '')) rows.push(row);
+  }
+  if (rows.length < 2) return [];
+  const headers = rows[0].map(h => h.trim());
+  return rows.slice(1).map(cols => {
+    const obj = {};
+    headers.forEach((h, idx) => {
+      obj[h] = (cols[idx] ?? '').trim();
+    });
+    return obj;
+  });
+}
+
+function formatLiveBenchDate(releaseId) {
+  if (typeof releaseId !== 'string') return null;
+  const m = releaseId.match(/^(\d{4})(\d{2})(\d{2})$/);
+  return m ? `${m[1]}-${m[2]}-${m[3]}` : releaseId;
+}
+
+function parseLiveBenchData({ tableCsv, categoriesJson, costCsv, releaseId, models }) {
+  const tableRows = parseSimpleCsv(tableCsv);
+  if (!tableRows.length) return { board: null, byModelId: new Map() };
+  const costRows = parseSimpleCsv(costCsv || '');
+  const costByModel = new Map(costRows.map(r => [r.model, r]));
+
+  const rawWeights = categoriesJson && typeof categoriesJson._overall_weights === 'object' ? categoriesJson._overall_weights : {};
+  const categories = {};
+  for (const [label, cols] of Object.entries(categoriesJson || {})) {
+    if (label === '_overall_weights' || !Array.isArray(cols) || !cols.length) continue;
+    categories[label] = cols;
+  }
+  const catNames = Object.keys(categories);
+  const allCols = Object.values(categories).flat();
+  const { resolve } = buildModelArenaIndex(models || []);
+
+  const parsed = [];
+  for (const r of tableRows) {
+    const rawModel = r.model;
+    if (!rawModel) continue;
+    const suites = {};
+    let weightedSum = 0, weightTotal = 0;
+    for (const label of catNames) {
+      const cols = categories[label];
+      const vals = cols.map(c => Number(r[c])).filter(v => Number.isFinite(v));
+      if (!vals.length) continue;
+      const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+      const shortKey = LIVEBENCH_SUITE_KEYS[label] || label.toLowerCase().replace(/[^a-z0-9]+/g, '');
+      suites[shortKey] = Number(avg.toFixed(1));
+      const w = Number.isFinite(Number(rawWeights[label])) && Number(rawWeights[label]) > 0 ? Number(rawWeights[label]) : 1;
+      weightedSum += avg * w;
+      weightTotal += w;
+    }
+    if (weightTotal <= 0) continue;
+    const overall = Number((weightedSum / weightTotal).toFixed(2));
+    const cRow = costByModel.get(rawModel);
+    let lbCost = null;
+    if (cRow) {
+      let costSum = 0, qSum = 0;
+      for (const col of allCols) {
+        const cVal = Number(cRow[col]);
+        const nqVal = Number(cRow[`nq_${col}`]);
+        if (Number.isFinite(cVal) && Number.isFinite(nqVal) && nqVal > 0) {
+          costSum += cVal;
+          qSum += nqVal;
+        }
+      }
+      if (qSum > 0) lbCost = Number((costSum / qSum).toFixed(4));
+    }
+    const matched = resolve(rawModel);
+    parsed.push({
+      rawModel,
+      name: matched ? (matched.shortName || matched.name) : rawModel,
+      creator: matched?.creator?.name || null,
+      modelId: matched?.id || null,
+      aaCost: matched?.cost ?? null,
+      overall,
+      lbCost,
+      suites
+    });
+  }
+  parsed.sort((a, b) => b.overall - a.overall || (a.lbCost ?? Infinity) - (b.lbCost ?? Infinity) || a.rawModel.localeCompare(b.rawModel));
+  const byModelId = new Map();
+  const rows = parsed.map((item, idx) => {
+    const rank = idx + 1;
+    const row = {
+      rank,
+      rawName: item.rawModel,
+      name: item.name,
+      ...(item.creator ? { creator: item.creator } : {}),
+      ...(item.modelId ? { modelId: item.modelId } : {}),
+      score: item.overall,
+      ...(item.lbCost !== null ? { lbCost: item.lbCost } : {}),
+      ...(item.aaCost !== null ? { cost: item.aaCost } : {}),
+      suites: item.suites
+    };
+    if (item.modelId && !byModelId.has(item.modelId)) {
+      byModelId.set(item.modelId, {
+        overall: item.overall,
+        rank,
+        ...(item.lbCost !== null ? { lbCost: item.lbCost } : {}),
+        ...item.suites
+      });
+    }
+    return row;
+  });
+
+  return {
+    board: {
+      releaseId: releaseId || LIVEBENCH_FALLBACK_RELEASE,
+      date: formatLiveBenchDate(releaseId || LIVEBENCH_FALLBACK_RELEASE),
+      sourceUrl: LIVEBENCH_SITE_URL,
+      totalCount: rows.length,
+      matchedCount: rows.filter(r => r.modelId).length,
+      rows
+    },
+    byModelId
+  };
+}
+
+async function fetchLiveBench(models, previous, get = getBuffer) {
+  try {
+    let releaseId = LIVEBENCH_FALLBACK_RELEASE;
+    try {
+      const html = (await get(LIVEBENCH_SITE_URL)).toString('utf8');
+      const jsPath = html.match(/src=["'](\.?\/static\/js\/main\.[^"']+\.js)["']/)?.[1];
+      if (jsPath) {
+        const jsUrl = new URL(jsPath, LIVEBENCH_SITE_URL).toString();
+        const bundle = (await get(jsUrl)).toString('utf8');
+        const v2Arr = bundle.match(/\[((?:"202\d{5}",?)+)\]/)?.[1];
+        if (v2Arr) {
+          const ids = [...v2Arr.matchAll(/"(202\d{5})"/g)].map(m => m[1]).sort();
+          if (ids.length) releaseId = ids[ids.length - 1];
+        }
+      }
+    } catch { /* Fall back to known v2 release id. */ }
+
+    const base = `https://livebench.ai/data/${releaseId}`;
+    const [tableBuf, catBuf, costRes] = await Promise.all([
+      get(`${base}/table.csv`),
+      get(`${base}/categories.json`),
+      get(`${base}/cost.csv`).catch(() => null)
+    ]);
+    const parsed = parseLiveBenchData({
+      tableCsv: tableBuf.toString('utf8'),
+      categoriesJson: JSON.parse(catBuf.toString('utf8')),
+      costCsv: costRes ? costRes.toString('utf8') : '',
+      releaseId,
+      models
+    });
+    if (parsed.board && parsed.board.rows.length >= 10) return parsed;
+  } catch (error) {
+    console.warn(`LiveBench 2.0 refresh degraded gracefully: ${error.message}`);
+  }
+  const prevBoard = previous?.orgLeaderboards?.livebench || null;
+  const byModelId = new Map();
+  if (prevBoard && Array.isArray(prevBoard.rows)) {
+    const { resolve } = buildModelArenaIndex(models || []);
+    for (const r of prevBoard.rows) {
+      const matched = resolve(r.rawName || r.name);
+      const id = matched?.id || r.modelId;
+      if (id && !byModelId.has(id)) {
+        byModelId.set(id, {
+          overall: r.score,
+          rank: r.rank,
+          ...(r.lbCost != null ? { lbCost: r.lbCost } : {}),
+          ...(r.suites || {})
+        });
+      }
+    }
+  }
+  return { board: prevBoard, byModelId };
+}
+
+function buildOrgArenaBoards(models, { chatRows = [], webdevRows = [], designByCat = {}, lmArenaPublishDate = null }) {
+  const { resolve } = buildModelArenaIndex(models || []);
+  const normLmBoard = (rows, limit = 60) => {
+    const seen = new Set();
+    const sorted = [...rows]
+      .filter(r => r && (!r.category || r.category === 'overall') && Number.isFinite(Number(r.rating)))
+      .sort((a, b) => Number(b.rating) - Number(a.rating));
+    const out = [];
+    for (const r of sorted) {
+      const rawName = String(r.model_name || r.modelName || r.name || '').trim();
+      if (!rawName || seen.has(rawName.toLowerCase())) continue;
+      seen.add(rawName.toLowerCase());
+      const matched = resolve(rawName);
+      out.push({
+        rank: out.length + 1,
+        rawName,
+        name: matched ? (matched.shortName || matched.name) : rawName,
+        ...(matched?.creator?.name ? { creator: matched.creator.name } : (r.organization ? { creator: r.organization } : {})),
+        ...(matched?.id ? { modelId: matched.id } : {}),
+        ...(matched?.cost != null ? { cost: matched.cost } : {}),
+        score: Number(Number(r.rating).toFixed(1)),
+        ...(Number.isFinite(Number(r.vote_count ?? r.votes)) ? { votes: Math.round(Number(r.vote_count ?? r.votes)) } : {})
+      });
+      if (out.length >= limit) break;
+    }
+    return out;
+  };
+
+  const arenaChatRows = normLmBoard(chatRows, 60);
+  const arenaWebdevRows = normLmBoard(webdevRows, 60);
+
+  // Build Design Arena standalone board anchored on 'website' + enriched with other 4 categories
+  const extraCatMaps = {};
+  for (const cat of ['uicomponent', 'dataviz', 'gamedev', 'svg']) {
+    const m = new Map();
+    for (const item of (designByCat[cat] || [])) {
+      const key = String(item?.modelId || item?.name || '').toLowerCase();
+      if (key && Number.isFinite(Number(item?.elo))) m.set(key, Math.round(Number(item.elo)));
+    }
+    extraCatMaps[cat] = m;
+  }
+  const webSorted = [...(designByCat.website || [])]
+    .filter(item => item && Number.isFinite(Number(item.elo)))
+    .sort((a, b) => Number(b.elo) - Number(a.elo));
+  const designSeen = new Set();
+  const designRows = [];
+  for (const item of webSorted) {
+    const rawName = String(item.displayName || item.name || item.modelId || '').trim();
+    const key = String(item.modelId || item.name || '').toLowerCase();
+    if (!rawName || designSeen.has(key)) continue;
+    designSeen.add(key);
+    const matched = resolve(item.modelId || item.name || item.displayName);
+    const suites = {
+      website: Math.round(Number(item.elo)),
+      ...(extraCatMaps.uicomponent.has(key) ? { uicomponent: extraCatMaps.uicomponent.get(key) } : {}),
+      ...(extraCatMaps.dataviz.has(key) ? { dataviz: extraCatMaps.dataviz.get(key) } : {}),
+      ...(extraCatMaps.gamedev.has(key) ? { gamedev: extraCatMaps.gamedev.get(key) } : {}),
+      ...(extraCatMaps.svg.has(key) ? { svg: extraCatMaps.svg.get(key) } : {})
+    };
+    designRows.push({
+      rank: designRows.length + 1,
+      rawName,
+      name: matched ? (matched.shortName || matched.name) : rawName,
+      ...(matched?.creator?.name ? { creator: matched.creator.name } : (item.provider ? { creator: item.provider } : {})),
+      ...(matched?.id ? { modelId: matched.id } : {}),
+      ...(matched?.cost != null ? { cost: matched.cost } : {}),
+      score: Math.round(Number(item.elo)),
+      ...(typeof item.winRate === 'number' && Number.isFinite(item.winRate) ? { winRate: Number(item.winRate.toFixed(1)) } : {}),
+      ...(Number.isFinite(Number(item.battles)) ? { battles: Math.round(Number(item.battles)) } : {}),
+      suites
+    });
+    if (designRows.length >= 60) break;
+  }
+
+  return {
+    ...(arenaChatRows.length ? {
+      arenaChat: {
+        date: lmArenaPublishDate || null,
+        sourceUrl: 'https://arena.ai/leaderboard',
+        totalCount: arenaChatRows.length,
+        matchedCount: arenaChatRows.filter(r => r.modelId).length,
+        rows: arenaChatRows
+      }
+    } : {}),
+    ...(arenaWebdevRows.length ? {
+      arenaWebdev: {
+        date: lmArenaPublishDate || null,
+        sourceUrl: 'https://arena.ai/leaderboard',
+        totalCount: arenaWebdevRows.length,
+        matchedCount: arenaWebdevRows.filter(r => r.modelId).length,
+        rows: arenaWebdevRows
+      }
+    } : {}),
+    ...(designRows.length ? {
+      designArena: {
+        sourceUrl: 'https://www.designarena.ai/leaderboard',
+        totalCount: designRows.length,
+        matchedCount: designRows.filter(r => r.modelId).length,
+        rows: designRows
+      }
+    } : {})
+  };
+}
+
 async function fetchHumanArenas(models, previous, get = getBuffer) {
   try {
     const [chat0, chat1, chat2, web0, doc0, ...designResults] = await Promise.allSettled([
@@ -898,12 +1230,15 @@ async function fetchHumanArenas(models, previous, get = getBuffer) {
       if (res.status === 'fulfilled') designByCat[cat] = res.value;
     });
 
+    const lmArenaPublishDate = (chat0.status === 'fulfilled' && chat0.value.date) || (web0.status === 'fulfilled' && web0.value.date) || null;
     const humanArenaModels = buildHumanArenaModels(models, { chatRows, webdevRows, docRows, designByCat });
+    const arenaBoards = buildOrgArenaBoards(models, { chatRows, webdevRows, designByCat, lmArenaPublishDate });
     if (humanArenaModels.length >= 10) {
       validateRows(humanArenaModels, 10, 'human-arena-model');
       return {
         humanArenaModels,
-        lmArenaPublishDate: (chat0.status === 'fulfilled' && chat0.value.date) || (web0.status === 'fulfilled' && web0.value.date) || null
+        lmArenaPublishDate,
+        arenaBoards
       };
     }
     console.warn(`External human arena matched ${humanArenaModels.length} models (< 10); falling back to previous snapshot if available.`);
@@ -912,7 +1247,12 @@ async function fetchHumanArenas(models, previous, get = getBuffer) {
   }
   return {
     humanArenaModels: Array.isArray(previous?.humanArenaModels) ? previous.humanArenaModels : [],
-    lmArenaPublishDate: previous?.lmArenaPublishDate || null
+    lmArenaPublishDate: previous?.lmArenaPublishDate || null,
+    arenaBoards: {
+      ...(previous?.orgLeaderboards?.arenaChat ? { arenaChat: previous.orgLeaderboards.arenaChat } : {}),
+      ...(previous?.orgLeaderboards?.arenaWebdev ? { arenaWebdev: previous.orgLeaderboards.arenaWebdev } : {}),
+      ...(previous?.orgLeaderboards?.designArena ? { designArena: previous.orgLeaderboards.designArena } : {})
+    }
   };
 }
 
@@ -1359,9 +1699,34 @@ async function main() {
   const { models, cyberModels, mediaModels, changelog, manifestPath, hostsManifestPath } = await fetchModels(modelPage.toString('utf8'), sourceUrl, previous, getBuffer, { includeHosts: true, includeMedia: true });
   const frontierModels = buildFrontierModels(models);
   if (frontierModels.length >= 30) validateRows(frontierModels, 30, 'frontier-model');
-  const { humanArenaModels, lmArenaPublishDate } = process.env.DISABLE_EXTERNAL_ARENAS === '1'
-    ? { humanArenaModels: previous?.humanArenaModels || [], lmArenaPublishDate: previous?.lmArenaPublishDate || null }
+  const { humanArenaModels, lmArenaPublishDate, arenaBoards } = process.env.DISABLE_EXTERNAL_ARENAS === '1'
+    ? {
+        humanArenaModels: previous?.humanArenaModels || [],
+        lmArenaPublishDate: previous?.lmArenaPublishDate || null,
+        arenaBoards: {
+          ...(previous?.orgLeaderboards?.arenaChat ? { arenaChat: previous.orgLeaderboards.arenaChat } : {}),
+          ...(previous?.orgLeaderboards?.arenaWebdev ? { arenaWebdev: previous.orgLeaderboards.arenaWebdev } : {}),
+          ...(previous?.orgLeaderboards?.designArena ? { designArena: previous.orgLeaderboards.designArena } : {})
+        }
+      }
     : await fetchHumanArenas(models, previous, getBuffer);
+  const { board: livebenchBoard, byModelId: livebenchByModelId } = process.env.DISABLE_EXTERNAL_ARENAS === '1'
+    ? { board: previous?.orgLeaderboards?.livebench || null, byModelId: new Map() }
+    : await fetchLiveBench(models, previous, getBuffer);
+  if (livebenchByModelId.size) {
+    for (const m of models) {
+      const lb = livebenchByModelId.get(m.id);
+      if (lb) m.livebench = lb;
+    }
+    for (const fm of frontierModels) {
+      const lb = livebenchByModelId.get(fm.id);
+      if (lb) fm.livebench = lb;
+    }
+  }
+  const orgLeaderboards = {
+    ...(livebenchBoard ? { livebench: livebenchBoard } : {}),
+    ...(arenaBoards || {})
+  };
   const openFamilyNames = new Set(
     models.filter(m => m.isOpenWeights && m.family?.name).map(m => m.family.name.toLowerCase())
   );
@@ -1381,12 +1746,13 @@ async function main() {
       frontierModels
     } : {}),
     ...(humanArenaModels.length ? {
-      lmArenaSourceUrl: 'https://lmarena.ai/leaderboard',
+      lmArenaSourceUrl: 'https://arena.ai/leaderboard',
       designArenaSourceUrl: 'https://www.designarena.ai/leaderboard',
       ...(lmArenaPublishDate ? { lmArenaPublishDate } : {}),
       humanArenaCount: humanArenaModels.length,
       humanArenaModels
     } : {}),
+    ...(Object.keys(orgLeaderboards).length ? { orgLeaderboards } : {}),
     codingAgentSourceUrl,
     codingAgentMethodologyUrl: 'https://artificialanalysis.ai/methodology/coding-agents-benchmarking',
     codingAgentIndexVersion: codingPage.match(/Coding Agent Index v([\d.]+)/)?.[1] || null,
@@ -1407,11 +1773,11 @@ async function main() {
   const diffEvents = buildSnapshotDiff(output, previous);
   if (diffEvents.length) output.diffEvents = diffEvents;
   const changed = await writeSnapshot(outPath, output, previous);
-  console.log(`${changed ? 'Wrote' : 'Unchanged:'} ${models.length} models, ${frontierModels.length} frontier, ${humanArenaModels.length} human-arena, ${codingAgents.length} coding agents, ${cyberModels.length} cyber, ${mediaModels.length} media; checked ${new Date().toISOString()}`);
+  console.log(`${changed ? 'Wrote' : 'Unchanged:'} ${models.length} models, ${frontierModels.length} frontier, ${humanArenaModels.length} human-arena, ${livebenchBoard?.rows?.length || 0} livebench, ${codingAgents.length} coding agents, ${cyberModels.length} cyber, ${mediaModels.length} media; checked ${new Date().toISOString()}`);
   if (process.env.GITHUB_OUTPUT) await fs.appendFile(process.env.GITHUB_OUTPUT, `changed=${changed}\n`);
   if (process.env.GITHUB_STEP_SUMMARY) await fs.appendFile(process.env.GITHUB_STEP_SUMMARY,
-    `### Multi-source benchmark data check\n- Checked: ${new Date().toISOString()}\n- Models: ${models.length}\n- Frontier hard-eval models: ${frontierModels.length}\n- Human & Aesthetic Arena models: ${humanArenaModels.length}\n- Coding-agent variants: ${codingAgents.length}\n- Cyber-index models: ${cyberModels.length}\n- Multimodal generation models (Image/Video/TTS): ${mediaModels.length}\n- Excluded coding-agent rows without comparable score/cost: ${output.codingAgentExcludedCount}\n- Snapshot changed: ${changed}\n`);
+    `### Multi-source benchmark data check\n- Checked: ${new Date().toISOString()}\n- Models: ${models.length}\n- Frontier hard-eval models: ${frontierModels.length}\n- Human & Aesthetic Arena models: ${humanArenaModels.length}\n- LiveBench 2.0 models: ${livebenchBoard?.rows?.length || 0} (matched ${livebenchBoard?.matchedCount || 0})\n- Coding-agent variants: ${codingAgents.length}\n- Cyber-index models: ${cyberModels.length}\n- Multimodal generation models (Image/Video/TTS): ${mediaModels.length}\n- Excluded coding-agent rows without comparable score/cost: ${output.codingAgentExcludedCount}\n- Snapshot changed: ${changed}\n`);
 }
 
-module.exports = { getBuffer, readFlightRecords, readManifests, decryptPayload, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildHumanArenaModels, fetchHumanArenas, readTtsHostRows, buildMediaModels, buildSnapshotDiff, resolveFlightReference, readCodingRows, expectedCodingComponents, simplifyCodingAgent, validateRows, fetchModels, writeSnapshot };
+module.exports = { getBuffer, readFlightRecords, readManifests, decryptPayload, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildHumanArenaModels, fetchHumanArenas, parseSimpleCsv, parseLiveBenchData, fetchLiveBench, buildOrgArenaBoards, readTtsHostRows, buildMediaModels, buildSnapshotDiff, resolveFlightReference, readCodingRows, expectedCodingComponents, simplifyCodingAgent, validateRows, fetchModels, writeSnapshot };
 if (require.main === module) main().catch(error => { console.error(error.stack || error); process.exitCode = 1; });

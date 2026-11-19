@@ -29,7 +29,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261119-03';
+} from './chart-math.mjs?v=20261119-04';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -72,15 +72,15 @@ const BENCHMARKS = {
     key: 'humanArenaModels',
     zhTitle: '人类体感、视觉审美与真实交付指数 vs. 成本',
     enTitle: 'Human Blind Preference, Aesthetic Taste & Deliverable Arena vs. Cost',
-    zhSub: '融合 LMArena 去水份盲测人味 + Design Arena 网页/UI 视觉审美 + GDPval/Briefcase 44 职业真实交付盲评',
-    enSub: 'LMArena style-controlled blind votes + Design Arena UI/web aesthetics + GDPval/Briefcase expert deliverables',
+    zhSub: '融合 Arena.ai (LMArena) 去水份盲测人味 + Design Arena 网页/UI 视觉审美 + GDPval/Briefcase 44 职业真实交付盲评',
+    enSub: 'Arena.ai (LMArena) style-controlled blind votes + Design Arena UI/web aesthetics + GDPval/Briefcase expert deliverables',
     zhAxis: '人类审美与体感指数',
     enAxis: 'Human & Aesthetic Index',
     zhUnit: '个真人盲测模型',
     enUnit: 'blind-tested models',
     zhCostNote: '横轴为统一单任务 API 成本；悬停与剖析对比可查看各竞技场原始 Elo 与对决胜率',
     enCostNote: 'Standardized API cost/task on X-axis; hover & Compare show raw Elo & win rates',
-    source: 'https://lmarena.ai/leaderboard',
+    source: 'https://arena.ai/leaderboard',
     defaultX: 8,
     defaultTimeMin: 25
   },
@@ -159,6 +159,7 @@ const DEFAULT_SETTINGS = {
 const Y_LENSES = {
   models: [
     {id: '', zh: '纵轴：综合智能总分', en: 'Y: Overall Index', axisZh: '综合智能指数', axisEn: 'Intelligence Index', get: r => r._baseIndex},
+    {id: 'livebench', zh: '纵轴：LiveBench 2.0 防污染总分', en: 'Y: LiveBench 2.0 Overall', axisZh: 'LiveBench 2.0 防污染加权分', axisEn: 'LiveBench 2.0 Overall Score', get: r => r.livebench?.overall ?? null},
     {id: 'mmmuPro', zh: '纵轴：视觉多模态 (MMMU-Pro)', en: 'Y: Vision MMMU-Pro', axisZh: 'MMMU-Pro 视觉推理 (%)', axisEn: 'MMMU-Pro Vision (%)', get: r => r.subscores?.mmmuPro ?? null},
     {id: 'mlcr', zh: '纵轴：百万长上下文 (MLCR)', en: 'Y: Million-Ctx MLCR', axisZh: 'MLCR 超长上下文 (%)', axisEn: 'MLCR Long-Context (%)', get: r => r.subscores?.mlcr ?? null},
     {id: 'omniscience', zh: '纵轴：全科闭卷准确率', en: 'Y: Omniscience Acc.', axisZh: '全科闭卷准确率 (%)', axisEn: 'Omniscience Accuracy (%)', get: r => r.subscores?.omniscience ?? null},
@@ -169,6 +170,8 @@ const Y_LENSES = {
   ],
   frontier: [
     {id: '', zh: '纵轴：未饱和硬核总分', en: 'Y: Frontier Hard Index', axisZh: '未饱和前沿极限指数', axisEn: 'Frontier Hard Index', get: r => r._baseIndex},
+    {id: 'livebench', zh: '纵轴：LiveBench 2.0 防污染总分', en: 'Y: LiveBench 2.0 Overall', axisZh: 'LiveBench 2.0 防污染加权分', axisEn: 'LiveBench 2.0 Overall Score', get: r => r.livebench?.overall ?? null},
+    {id: 'lbLongAgentic', zh: '纵轴：LiveBench 长程智能体', en: 'Y: LiveBench Long Agentic', axisZh: 'LiveBench 2.0 长程智能体 (%)', axisEn: 'LiveBench 2.0 Long Agentic (%)', get: r => r.livebench?.longAgentic ?? null},
     {id: 'gdpPdf', zh: '纵轴：GDP-PDF 一次全过', en: 'Y: GDP-PDF All-Pass', axisZh: 'GDP-PDF 全过率 (%)', axisEn: 'GDP-PDF All-Pass (%)', get: r => r.frontierScores?.gdpPdf ?? null},
     {id: 'frontierCode', zh: '纵轴：FrontierCode 2.0', en: 'Y: FrontierCode 2.0', axisZh: 'FrontierCode 2.0 (%)', axisEn: 'FrontierCode 2.0 (%)', get: r => r.frontierScores?.frontierCode ?? null},
     {id: 'mlcr', zh: '纵轴：MLCR 百万长上下文', en: 'Y: MLCR Long-Context', axisZh: 'MLCR 百万长上下文 (%)', axisEn: 'MLCR Long-Context (%)', get: r => r.frontierScores?.mlcr ?? null},
@@ -180,13 +183,13 @@ const Y_LENSES = {
   ],
   'human-arena': [
     {id: '', zh: '纵轴：人类与审美总分', en: 'Y: Human & Taste Index', axisZh: '人类审美与体感指数', axisEn: 'Human & Aesthetic Index', get: r => r._baseIndex},
-    {id: 'chatVibe', zh: '纵轴：交流人味 (去水份)', en: 'Y: Chat Vibe (De-biased)', axisZh: 'LMArena 交流人味校准分', axisEn: 'LMArena Chat Vibe Score', get: r => r.humanScores?.chatVibe ?? null},
+    {id: 'chatVibe', zh: '纵轴：交流人味 (Arena.ai 去水份)', en: 'Y: Chat Vibe (Arena.ai)', axisZh: 'Arena.ai (LMArena) 交流人味校准分', axisEn: 'Arena.ai (LMArena) Chat Vibe Score', get: r => r.humanScores?.chatVibe ?? null},
     {id: 'antiSlop', zh: '纵轴：去 AI 套话自然度', en: 'Y: Anti-Slop Naturalness', axisZh: '去 AI 套话自然度 (%)', axisEn: 'Anti-Slop Score (%)', get: r => r.humanScores?.antiSlop ?? null},
     {id: 'pureVisual', zh: '纵轴：视觉审美五维总分', en: 'Y: Design Arena 5D', axisZh: 'Design Arena 五维审美分', axisEn: 'Design Arena 5D Aesthetic', get: r => r.humanScores?.pureVisual ?? null},
     {id: 'creativeCraft', zh: '纵轴：SVG 矢量与游戏创意', en: 'Y: SVG & GameDev Craft', axisZh: 'SVG与游戏交互创意分', axisEn: 'SVG & GameDev Craft Score', get: r => r.humanScores?.creativeCraft ?? null},
     {id: 'spatialMotion', zh: '纵轴：3D 造型与代码动效', en: 'Y: 3D & Code2Video', axisZh: '3D与代码动效盲测分', axisEn: '3D & Code2Video Score', get: r => r.humanScores?.spatialMotion ?? null},
     {id: 'deliverable', zh: '纵轴：专家办公交付 (GDPval)', en: 'Y: Expert Deliverables', axisZh: '44职业真实交付盲评分', axisEn: 'Expert Deliverable Score', get: r => r.humanScores?.deliverable ?? null},
-    {id: 'webdev', zh: '纵轴：Web全栈体感 (WebDev)', en: 'Y: WebDev Arena', axisZh: 'WebDev 全栈体感分', axisEn: 'WebDev Arena Score', get: r => r.humanScores?.webdev ?? null}
+    {id: 'webdev', zh: '纵轴：Web全栈体感 (Arena.ai WebDev)', en: 'Y: WebDev Arena (Arena.ai)', axisZh: 'Arena.ai WebDev 全栈体感分', axisEn: 'Arena.ai WebDev Score', get: r => r.humanScores?.webdev ?? null}
   ],
   'coding-agents': [
     {id: '', zh: '纵轴：编程智能体总分', en: 'Y: Coding Agent Index', axisZh: '编程智能体指数', axisEn: 'Coding Agent Index', get: r => r._baseIndex},
@@ -240,6 +243,13 @@ const initialRoute = parseHash();
 let snapshot, activeKey = initialRoute.chart;
 const states = new Map();
 let crossTabIndex = new Map();
+let orgBoards = [];
+let orgRankIndex = new Map();
+let orgCreatorColors = new Map();
+let orgFocus = 'all';
+let orgMatchedOnly = false;
+let orgSpotlightKey = null;
+let orgPinnedKey = null;
 let globalCatalog = [];
 let lastModelCompareIds = null;
 const starredKeys = new Set((() => {
@@ -646,7 +656,10 @@ function makeState(key, routeParams = null) {
 
 function applyRouteParams(target, params) {
   const view = params.get('view');
-  if (['chart', 'table', 'curve', 'sub', 'compare'].includes(view)) target.mode = view;
+  if (['chart', 'table', 'orgs', 'curve', 'sub', 'compare'].includes(view)) target.mode = view;
+  const org = params.get('org');
+  if (['all', 'aa', 'livebench', 'arenaChat', 'arenaWebdev', 'designArena', 'aaGdpval'].includes(org)) orgFocus = org;
+  if (params.get('orgm') === '1') orgMatchedOnly = true;
   const yl = params.get('ylens') || '';
   const scen = params.get('scen') || '';
   const cprof = params.get('cprof') || '';
@@ -691,6 +704,7 @@ function applyRouteParams(target, params) {
     }
   }
   if (params.get('radar') === 'domain') target.radarMode = 'domain';
+  else if (params.get('radar') === 'livebench') target.radarMode = 'livebench';
   const cvis = params.get('cvis');
   if (['radar', 'strip', 'delta'].includes(cvis)) target.compareVis = cvis;
   const cscale = params.get('cscale');
@@ -762,8 +776,12 @@ function syncUrlHash() {
   if (state.xMetric === 'time') params.set('x', 'time');
   if (state.license !== 'all') params.set('lic', state.license);
   if (state.extraFilter) params.set('xf', state.extraFilter);
+  if (state.mode === 'orgs') {
+    if (orgFocus && orgFocus !== 'all') params.set('org', orgFocus);
+    if (orgMatchedOnly) params.set('orgm', '1');
+  }
   if (state.mode === 'compare') {
-    if (state.radarMode === 'domain') params.set('radar', 'domain');
+    if (state.radarMode === 'domain' || state.radarMode === 'livebench') params.set('radar', state.radarMode);
     if (state.compareVis !== 'radar') params.set('cvis', state.compareVis);
     if (state.compareVis === 'radar' && state.radarScale !== 'zoom') params.set('cscale', state.radarScale);
     if (state.compareVis === 'strip' && state.stripScale !== 'zoom') params.set('sscale', state.stripScale);
@@ -783,7 +801,7 @@ function syncUrlHash() {
   }
   if (state.isoCurve) params.set('iso', '1');
   if (state.subLine) params.set('subline', '1');
-  if (state.selected && state.mode !== 'curve' && state.mode !== 'compare') {
+  if (state.selected && state.mode !== 'curve' && state.mode !== 'compare' && state.mode !== 'orgs') {
     params.set('pin', state.selected);
   }
   if (state.mode === 'compare' && state.radarPinnedId) {
@@ -1134,9 +1152,14 @@ function syncStaticText() {
 
   $('[data-i18n="scatterView"]').textContent = t('散点图', 'Scatter');
   $('[data-i18n="tableView"]').textContent = t('数据表', 'Table');
+  $('[data-i18n="orgView"]').textContent = t('机构分榜', 'Org Ranks');
   $('[data-i18n="curveView"]').textContent = t('权重曲线', 'Curve');
   $('[data-i18n="subView"]').textContent = t('订阅回本', 'Sub vs API');
   $('[data-i18n="compareView"]').textContent = t('剖析对比', 'Compare');
+  $('#orgSelectGroup').setAttribute('aria-label', t('选择测评机构原榜', 'Choose evaluation organization leaderboard'));
+  $('#orgMatchedToggle').textContent = orgMatchedOnly
+    ? t('仅看可对齐全站模型 ✓', 'Aligned models only ✓')
+    : t('仅看可对齐全站模型', 'Aligned models only');
 
   $('#keyLinear').textContent = t('线性美元横轴', 'Linear USD axis');
   $('#keyQuadrant').textContent = t('优于中位参考区', 'Above-median score & below-median cost');
@@ -1192,7 +1215,7 @@ function syncStaticText() {
     document.createTextNode(t('键盘：', 'Keys: ')),
     html('kbd', 'Ctrl+K'),
     document.createTextNode(t(' 速查 · ', ' jump · ')),
-    html('kbd', '1–5'),
+    html('kbd', '1–6'),
     document.createTextNode(t(' 切视图 · ', ' views · ')),
     html('kbd', 'Alt+1–6'),
     document.createTextNode(t(' 切榜单 · ', ' tabs · ')),
@@ -1293,6 +1316,7 @@ function syncStaticText() {
   $('#radarModeSwitch').setAttribute('aria-label', t('雷达图维度切换', 'Radar dimension mode'));
   $('#radarModeBench').textContent = t('基准六维', 'Benchmarks');
   $('#radarModeDomain').textContent = t('行业六维', 'Domains');
+  $('#radarModeLiveBench').textContent = 'LiveBench 2.0';
   $('#compareVisSwitch').setAttribute('aria-label', t('对比图表形式切换', 'Comparison chart type'));
   $('#visRadarBtn').textContent = t('雷达图', 'Radar');
   $('#visStripBtn').textContent = t('微距跑道', 'Dot Strip');
@@ -1589,8 +1613,8 @@ function syncScenarioControls() {
   }
   $('#scenarioSliders').replaceChildren(sFrag);
   $('#scenarioNote').textContent = t(
-    '融合代码终端、复杂长文本推理、Design Arena 审美、LMArena 人味去套话与办公防幻觉五维实测，实时重算专属于您的帕累托前沿与性价比榜首。',
-    'Blends Coding, Long-Doc Reasoning, Visual Taste, Chat Vibe & Low-Hallucination Rigor to recompute your custom Pareto frontier live.'
+    '融合代码终端、复杂长文本推理、Design Arena 审美、Arena.ai (LMArena) 人味去套话与办公防幻觉五维实测，实时重算专属于您的帕累托前沿与性价比榜首。',
+    'Blends Coding, Long-Doc Reasoning, Visual Taste, Arena.ai Chat Vibe & Low-Hallucination Rigor to recompute your custom Pareto frontier live.'
   );
 }
 
@@ -1651,7 +1675,7 @@ function syncExtraFilterOptions() {
   } else if (activeKey === 'human-arena') {
     const opts = [
       ['', t('全部真人盲测模型', 'All blind-tested models')],
-      ['src:both', t('双竞技场全覆盖 (LMArena + Design)', 'Both LMArena & Design Arena')],
+      ['src:both', t('双竞技场全覆盖 (Arena.ai + Design)', 'Both Arena.ai & Design Arena')],
       ['vibe:top', t('高交流人味 (Chat Elo ≥ 1470)', 'Top Chat Vibe (Elo ≥ 1470)')],
       ['design:top', t('高视觉审美 (Website Elo ≥ 1300)', 'Top Aesthetic (Web Elo ≥ 1300)')],
       ['deliv:top', t('高专家交付 (GDPval ≥ 1700)', 'Top Deliverable (GDPval ≥ 1700)')],
@@ -1867,12 +1891,22 @@ function syncControls() {
   syncSubControls();
   syncHistoryControls();
 
+  const isOrgs = state.mode === 'orgs';
   const hideFilterChrome = state.mode === 'curve' || state.mode === 'compare';
+  if (isOrgs) {
+    $('#yLensWrap').hidden = true;
+    $('#scenarioWrap').hidden = true;
+    $('#costProfileWrap').hidden = true;
+    if (scenarioOpen) setScenarioOpen(false);
+  }
+  $('#extraFilter').closest('.extra-filter-wrap').hidden = isOrgs;
+  $('#frontier').hidden = isOrgs;
   $('#optionsPanel').hidden = state.mode !== 'chart';
   for (const button of document.querySelectorAll('[data-view]')) {
     button.setAttribute('aria-pressed', String(button.dataset.view === state.mode));
   }
   $('#dataTable').hidden = state.mode !== 'table';
+  $('#orgPanel').hidden = !isOrgs;
   $('#subPanel').hidden = state.mode !== 'sub';
   $('#comparePanel').hidden = state.mode !== 'compare';
   host.hidden = state.mode !== 'chart';
@@ -2169,7 +2203,18 @@ function renderStatus() {
     : activeKey === 'coding-agents'
       ? snapshot.codingAgentIndexVersion
       : null;
-  $('#count').textContent = `${state.rows.length} ${t(cfg.zhUnit, cfg.enUnit)}${version ? ' · v' + version : ''}`;
+  if (state?.mode === 'orgs') {
+    $('#chartTitle').textContent = t('各测评机构独立原榜对照', 'Independent Evaluation Organization Leaderboards');
+    $('#chartSubtitle').textContent = t(
+      '6 份权威榜单原序原分呈现 · 悬停或点击任意模型跨机构同步高亮排名',
+      '6 un-blended official org leaderboards · Hover or click any model to spotlight ranks across orgs'
+    );
+    $('#count').textContent = t(`${orgBoards.length} 份独立机构原榜`, `${orgBoards.length} org boards`);
+  } else {
+    $('#chartTitle').textContent = t(cfg.zhTitle, cfg.enTitle);
+    $('#chartSubtitle').textContent = t(cfg.zhSub, cfg.enSub);
+    $('#count').textContent = `${state.rows.length} ${t(cfg.zhUnit, cfg.enUnit)}${version ? ' · v' + version : ''}`;
+  }
 
   const makeLink = (txt, href) => {
     const a = html('a', txt);
@@ -2186,9 +2231,19 @@ function renderStatus() {
 
   const sourceFrag = document.createDocumentFragment();
   sourceFrag.append(document.createTextNode(t('数据来源：', 'Source: ')));
-  if (activeKey === 'human-arena') {
+  if (state?.mode === 'orgs') {
     sourceFrag.append(
-      makeLink('LMArena', snapshot.lmArenaSourceUrl || 'https://lmarena.ai/leaderboard'),
+      makeLink('Artificial Analysis', 'https://artificialanalysis.ai/'),
+      document.createTextNode(' · '),
+      makeLink('LiveBench 2.0', snapshot.orgLeaderboards?.livebench?.sourceUrl || 'https://livebench.ai/'),
+      document.createTextNode(' · '),
+      makeLink('Arena.ai (LMArena)', snapshot.lmArenaSourceUrl || 'https://arena.ai/leaderboard'),
+      document.createTextNode(' · '),
+      makeLink('Design Arena', snapshot.designArenaSourceUrl || 'https://www.designarena.ai/leaderboard')
+    );
+  } else if (activeKey === 'human-arena') {
+    sourceFrag.append(
+      makeLink('Arena.ai (LMArena)', snapshot.lmArenaSourceUrl || 'https://arena.ai/leaderboard'),
       document.createTextNode(' + '),
       makeLink('Design Arena', snapshot.designArenaSourceUrl || 'https://www.designarena.ai/leaderboard'),
       document.createTextNode(' + '),
@@ -2202,6 +2257,12 @@ function renderStatus() {
       document.createTextNode(' + '),
       makeLink('Speech TTS', 'https://artificialanalysis.ai/text-to-speech')
     );
+  } else if ((activeKey === 'models' || activeKey === 'frontier') && snapshot.orgLeaderboards?.livebench) {
+    sourceFrag.append(
+      makeLink('Artificial Analysis', cfg.source),
+      document.createTextNode(' + '),
+      makeLink('LiveBench 2.0', snapshot.orgLeaderboards.livebench.sourceUrl || 'https://livebench.ai/')
+    );
   } else {
     sourceFrag.append(makeLink('Artificial Analysis', cfg.source));
   }
@@ -2214,7 +2275,9 @@ function renderStatus() {
     '仅在源数据变化时更新快照时间；每 2 小时自动检查记录见 GitHub Actions。',
     'Snapshot timestamp updates only when upstream benchmark data changes.'
   );
-  $('#costNote').textContent = t(cfg.zhCostNote, cfg.enCostNote);
+  $('#costNote').textContent = state?.mode === 'orgs'
+    ? t('各机构原榜严格保留官方原始排名与计分口径，绝不混算改序', 'Each org leaderboard preserves its exact official ranking & scoring methodology without blending')
+    : t(cfg.zhCostNote, cfg.enCostNote);
   $('#keyQuadrantWrap').title = t(
     '参考象限：成本不高于全榜中位数，且指数不低于全榜中位数。',
     'Reference region: cost at or below median and score at or above median across all entries.'
@@ -2329,6 +2392,7 @@ function buildPlot() {
 
   if (state.selected && !rows.some(row => row.id === state.selected)) state.selected = null;
   if (state.mode === 'table') renderTable(rows);
+  else if (state.mode === 'orgs') renderOrgLeaderboards();
   else if (state.mode === 'sub') renderSubTable(rows);
   else if (state.mode === 'compare') renderCompare();
   updateSummary();
@@ -2733,9 +2797,9 @@ function exportCsv() {
     'Score_0_100',
     'CostPerUnitUSD',
     'MeanTimeSec',
-    ...(activeKey === 'models' ? ['MMMU_Pro_Pct', 'MLCR_LongCtx_Pct', 'Omniscience_Acc_Pct', 'Hallucination_Guess_Pct'] : []),
-    ...(activeKey === 'frontier' ? ['AA_OverallIndex', 'HardRankDelta', 'GDP_PDF_AllPass_Pct', 'FrontierCode2_Pct', 'MLCR_Pct', 'IT_Bench_SRE_Pct'] : []),
-    ...(activeKey === 'human-arena' ? ['LMArena_ChatElo', 'LMArena_WebDevElo', 'DesignArena_WebElo', 'AA_GDPvalElo', 'AntiSlop_Pct', 'AA3D_Elo', 'Code2Video_Elo'] : []),
+    ...(activeKey === 'models' ? ['MMMU_Pro_Pct', 'MLCR_LongCtx_Pct', 'Omniscience_Acc_Pct', 'Hallucination_Guess_Pct', 'LiveBench2_Overall', 'LiveBench2_CostUSD'] : []),
+    ...(activeKey === 'frontier' ? ['AA_OverallIndex', 'HardRankDelta', 'GDP_PDF_AllPass_Pct', 'FrontierCode2_Pct', 'MLCR_Pct', 'IT_Bench_SRE_Pct', 'LiveBench2_Overall'] : []),
+    ...(activeKey === 'human-arena' ? ['ArenaAI_ChatElo', 'ArenaAI_WebDevElo', 'DesignArena_WebElo', 'AA_GDPvalElo', 'AntiSlop_Pct', 'AA3D_Elo', 'Code2Video_Elo'] : []),
     ...(activeKey === 'coding-agents' ? ['AgentHarness', 'BaseModel', 'CostP50_USD', 'CostP95_USD', 'CacheHit_Pct'] : []),
     ...(activeKey === 'cyber' ? ['SafetyRefusalPct'] : []),
     ...(activeKey === 'media' ? ['MediaKind', 'BillingUnit', 'T2I_Elo', 'ImageEdit_Elo', 'T2V_Elo', 'I2V_Elo', 'TTS_Elo', 'TTS_TTFA_ms'] : []),
@@ -2770,7 +2834,9 @@ function exportCsv() {
         row.subscores?.mmmuPro ?? '',
         row.subscores?.mlcr ?? '',
         row.subscores?.omniscience ?? '',
-        row.subscores?.hallucination ?? ''
+        row.subscores?.hallucination ?? '',
+        row.livebench?.overall ?? '',
+        row.livebench?.lbCost ?? ''
       ] : []),
       ...(activeKey === 'frontier' ? [
         row.aaIndex ?? '',
@@ -2778,7 +2844,8 @@ function exportCsv() {
         row.frontierScores?.gdpPdf ?? '',
         row.frontierScores?.frontierCode ?? '',
         row.frontierScores?.mlcr ?? '',
-        row.frontierScores?.itBenchSre ?? ''
+        row.frontierScores?.itBenchSre ?? '',
+        row.livebench?.overall ?? ''
       ] : []),
       ...(activeKey === 'human-arena' ? [
         row.arenaRaw?.chatElo ?? '',
@@ -2968,10 +3035,12 @@ function exportChartPng(kind = state?.mode) {
     ctx.drawImage(img, (outW - svgW) / 2, headH, svgW, svgH);
 
     const srcFoot = activeKey === 'human-arena'
-      ? 'LMArena + Design Arena + Artificial Analysis'
+      ? 'Arena.ai (LMArena) + Design Arena + Artificial Analysis'
       : activeKey === 'media'
         ? 'Artificial Analysis Image / Video / Speech Arenas'
-        : 'Artificial Analysis';
+        : state.yLens === 'livebench' || state.yLens === 'lbLongAgentic' || state.radarMode === 'livebench'
+          ? 'LiveBench 2.0 + Artificial Analysis'
+          : 'Artificial Analysis';
     ctx.fillStyle = v('--muted');
     ctx.font = '400 11.5px "IBM Plex Sans", "Segoe UI", sans-serif';
     ctx.fillText(`${srcFoot} · Intelligence vs. Cost (${new Date().toISOString().slice(0, 10)})`, padX, outH - 11, maxTextW);
@@ -3340,7 +3409,19 @@ function renderRadarInfo() {
   };
 
   const frag = document.createDocumentFragment();
-  if (activeKey === 'frontier') {
+  if ((activeKey === 'models' || activeKey === 'frontier') && state?.radarMode === 'livebench') {
+    const p1 = html('p');
+    p1.append(
+      html('strong', t('LiveBench 2.0 防污染长程实测来源：', 'LiveBench 2.0 Contamination-Free Evaluation: ')),
+      document.createTextNode(t(
+        '完全独立于 Artificial Analysis，由 Abacus.AI / LiveBench 学术团队定期轮换全新考题并采用客观程序自动判分（非 LLM-as-a-Judge）。官方加权总分权重：长程智能体 (Long Agentic) ×2、真实编程 (Coding) ×1.5、视觉设计 (Design) ×1.5，其余深度推理、网页浏览、数据分析、深度研究各 ×1。详见 ',
+        'Completely independent from Artificial Analysis — periodically refreshed questions with objective programmatic grading (no LLM-as-a-Judge). Official overall weighting: Long Agentic ×2, Coding ×1.5, Design ×1.5, plus Reasoning, Browser, Data Analysis & Research ×1 each. See '
+      )),
+      extLink('LiveBench 2.0 Official Leaderboard', snapshot?.orgLeaderboards?.livebench?.sourceUrl || 'https://livebench.ai/'),
+      document.createTextNode('。')
+    );
+    frag.append(p1);
+  } else if (activeKey === 'frontier') {
     const p1 = html('p');
     p1.append(
       html('strong', t('为什么要单独设立「未饱和前沿极限」榜？', 'Why Strip Saturated Legacy Benchmarks? ')),
@@ -3368,7 +3449,7 @@ function renderRadarInfo() {
         '自动化考试高分不代表模型“好聊、有审美、交付物能直接用”。本页实时融合：(1) ',
         'High automated exam scores do not guarantee natural conversation, visual taste, or polished deliverables. This arena fuses: (1) '
       )),
-      extLink('LMArena Style-Controlled & WebDev', 'https://lmarena.ai/leaderboard'),
+      extLink('Arena.ai (LMArena) Style-Controlled & WebDev', 'https://arena.ai/leaderboard'),
       document.createTextNode(t(
         '（剥离长篇废话与排版偏见的纯盲测交流人味、文档写作及 Web 全栈体感）；(2) ',
         ' (blind human chat preference controlling for length/markdown verbosity, plus WebDev & Document arenas); (2) '
@@ -3396,8 +3477,8 @@ function renderRadarInfo() {
     p3.append(
       html('strong', t('为什么众包网页盲测（Design Arena）有时与个人主观设计品味存在温差？', 'Why Can Crowd HTML Arenas Diverge from Editorial Taste? ')),
       document.createTextNode(t(
-        '在 15 秒众包双盲投票中，大众往往优先奖励「按钮交互全能点、信息密度高、不报错」的工业风 B 端卡片模板，而未必惩罚千篇一律的 AI 套路感；相比之下，44 职业人类专家深度审阅 Word/PPT/报告版式的 GDPval 与去长文水分的 LMArena 更能反映细腻审美与人味——您可随时用上方「纵轴切换」单独查看纯人味或专家交付榜。',
-        'In 15-second crowd HTML battles, voters heavily reward functional JS interactivity and dense SaaS dashboards even when typography feels generic. By contrast, expert-graded GDPval deliverables and style-controlled LMArena chat better capture editorial polish and natural tone — use the Y-axis lens selector to isolate each.'
+        '在 15 秒众包双盲投票中，大众往往优先奖励「按钮交互全能点、信息密度高、不报错」的工业风 B 端卡片模板，而未必惩罚千篇一律的 AI 套路感；相比之下，44 职业人类专家深度审阅 Word/PPT/报告版式的 GDPval 与去长文水分的 Arena.ai (LMArena) 更能反映细腻审美与人味——您可随时用上方「纵轴切换」或「机构分榜」单独查看纯人味与各机构原榜。',
+        'In 15-second crowd HTML battles, voters heavily reward functional JS interactivity and dense SaaS dashboards even when typography feels generic. By contrast, expert-graded GDPval deliverables and style-controlled Arena.ai (LMArena) chat better capture editorial polish and natural tone — use the Y-axis lens selector or Org Ranks view to inspect each independently.'
       ))
     );
     frag.append(p1, p2, p3);
@@ -3661,6 +3742,9 @@ function renderCompare() {
 
   // 2. Hero Centerpiece Capability Radar & Compact Score Strip
   $('#radarModeSwitch').hidden = activeKey === 'coding-agents' || activeKey === 'media';
+  const showLbRadarBtn = (activeKey === 'models' || activeKey === 'frontier') && selectedRows.some(r => r.livebench);
+  $('#radarModeLiveBench').hidden = !showLbRadarBtn;
+  if (!showLbRadarBtn && state.radarMode === 'livebench') state.radarMode = 'bench';
   if (activeKey === 'frontier') {
     $('#radarModeBench').textContent = t('未饱和六维', 'Hard 6D');
     $('#radarModeDomain').textContent = t('专项实验室', 'Lab Suites');
@@ -3671,12 +3755,28 @@ function renderCompare() {
     $('#radarModeBench').textContent = t('基准六维', 'Benchmarks');
     $('#radarModeDomain').textContent = t('行业六维', 'Domains');
   }
-  $('#radarModeBench').setAttribute('aria-pressed', String(state.radarMode !== 'domain'));
+  $('#radarModeBench').setAttribute('aria-pressed', String(state.radarMode !== 'domain' && state.radarMode !== 'livebench'));
   $('#radarModeDomain').setAttribute('aria-pressed', String(state.radarMode === 'domain'));
+  $('#radarModeLiveBench').setAttribute('aria-pressed', String(state.radarMode === 'livebench'));
   renderRadarInfo();
 
   let axes, barMetrics;
-  if (activeKey === 'frontier') {
+  if ((activeKey === 'models' || activeKey === 'frontier') && state.radarMode === 'livebench') {
+    $('#radarHeading').textContent = t('LiveBench 2.0 七维防污染长程实测雷达', 'LiveBench 2.0 7-Suite Contamination-Free Radar');
+    axes = [
+      {key: 'longAgentic', zh: '长程智能体 (×2)', en: 'Long Agentic (×2)', srcZh: 'LiveBench 2.0 Long Agentic · 多轮工具调用、跨步长程代理规划（官方加权权重 ×2）', srcEn: 'LiveBench 2.0 Long Agentic · Multi-step tool & planning agent suite (weight ×2)', get: r => r.livebench?.longAgentic ?? null},
+      {key: 'reasoning', zh: '深度推理', en: 'Reasoning', srcZh: 'LiveBench 2.0 Reasoning · 定期轮换防污染数理逻辑推理题集', srcEn: 'LiveBench 2.0 Reasoning · Contamination-free logic & math reasoning', get: r => r.livebench?.reasoning ?? null},
+      {key: 'coding', zh: '真实编程 (×1.5)', en: 'Coding (×1.5)', srcZh: 'LiveBench 2.0 Coding · 实时防污染代码生成与排障实测（官方权重 ×1.5）', srcEn: 'LiveBench 2.0 Coding · Contamination-free code generation & repair (weight ×1.5)', get: r => r.livebench?.coding ?? null},
+      {key: 'browser', zh: '网页浏览', en: 'Browser', srcZh: 'LiveBench 2.0 Browser · 真实浏览器交互、检索与跨页信息提取代理', srcEn: 'LiveBench 2.0 Browser · Live web browsing & interaction agent suite', get: r => r.livebench?.browser ?? null},
+      {key: 'dataAnalysis', zh: '数据分析', en: 'Data Analysis', srcZh: 'LiveBench 2.0 Data Analysis · 表格重构、统计分析与程序化数据处理', srcEn: 'LiveBench 2.0 Data Analysis · Tabular & programmatic data analytics', get: r => r.livebench?.dataAnalysis ?? null},
+      {key: 'research', zh: '深度研究', en: 'Research', srcZh: 'LiveBench 2.0 Research · 复杂文献综述与多源事实验证研究', srcEn: 'LiveBench 2.0 Research · Deep multi-source synthesis & fact verification', get: r => r.livebench?.research ?? null},
+      {key: 'design', zh: '视觉设计 (×1.5)', en: 'Design (×1.5)', srcZh: 'LiveBench 2.0 Design · 前端视觉排版与界面设计实现能力（官方权重 ×1.5）', srcEn: 'LiveBench 2.0 Design · UI layout & visual frontend craft (weight ×1.5)', get: r => r.livebench?.design ?? null}
+    ];
+    barMetrics = [
+      {key: 'lbOverall', zh: 'LB 2.0 总分', en: 'LB 2.0 Overall', srcZh: 'LiveBench 2.0 官方加权综合分', srcEn: 'LiveBench 2.0 official weighted overall score', get: r => r.livebench?.overall ?? null},
+      ...axes
+    ];
+  } else if (activeKey === 'frontier') {
     if (state.radarMode === 'domain') {
       $('#radarHeading').textContent = t('前沿专项实验室（律所 / 闭卷物理 / 金融代理 / 专科医疗）', 'Specialist Frontier Labs (BigLaw / Physics / Analyst / Clinical)');
       axes = [
@@ -3723,8 +3823,8 @@ function renderCompare() {
     } else {
       $('#radarHeading').textContent = t('人类盲测六维体感雷达（交流人味 · 视觉创意 · 真实交付）', '6-Axis Human Preference Radar (Chat Vibe · Visual & Creative · Deliverables)');
       axes = [
-        {key: 'chatVibe', zh: '交流人味 (Chat)', en: 'Chat Vibe', srcZh: 'LMArena Text & Doc Style-Controlled · 剔除长篇堆砌与排版讨好后的纯人类对话与行文偏好', srcEn: 'LMArena Style-Controlled · Blind chat & writing preference controlling for verbosity bias', get: r => r.humanScores?.chatVibe ?? null},
-        {key: 'webdev', zh: '全栈体感 (WebDev)', en: 'WebDev Arena', srcZh: 'LMArena WebDev · 真人实测构建可交互前端/全栈应用盲评校准分', srcEn: 'LMArena WebDev · Blind human battles on live interactive web apps', get: r => r.humanScores?.webdev ?? null},
+        {key: 'chatVibe', zh: '交流人味 (Chat)', en: 'Chat Vibe', srcZh: 'Arena.ai (LMArena) Text & Doc Style-Controlled · 剔除长篇堆砌与排版讨好后的纯人类对话与行文偏好', srcEn: 'Arena.ai (LMArena) Style-Controlled · Blind chat & writing preference controlling for verbosity bias', get: r => r.humanScores?.chatVibe ?? null},
+        {key: 'webdev', zh: '全栈体感 (WebDev)', en: 'WebDev Arena', srcZh: 'Arena.ai (LMArena) WebDev · 真人实测构建可交互前端/全栈应用盲评校准分', srcEn: 'Arena.ai (LMArena) WebDev · Blind human battles on live interactive web apps', get: r => r.humanScores?.webdev ?? null},
         {key: 'designWeb', zh: '整站视觉审美', en: 'Website Taste', srcZh: 'Design Arena Website · 真人双盲视觉审美对决校准分（整站排版、配色与留白）', srcEn: 'Design Arena Website · Blind human aesthetic preference on full web pages', get: r => r.humanScores?.designWeb ?? null},
         {key: 'designUi', zh: 'UI 与图表美感', en: 'UI & DataViz', srcZh: 'Design Arena UI Component + DataViz · 交互控件细节与数据可视化美感综合分', srcEn: 'Design Arena UI Component + DataViz · Component craft & dashboard visual clarity', get: r => r.humanScores?.designUi ?? null},
         {key: 'creativeCraft', zh: 'SVG 与游戏创意', en: 'SVG & GameDev', srcZh: 'Design Arena SVG + GameDev · 矢量插画构图造型与可玩游戏动态交互审美（独立标尺校准）', srcEn: 'Design Arena SVG + GameDev · Vector illustration composition & interactive game feel', get: r => r.humanScores?.creativeCraft ?? null},
@@ -4657,8 +4757,8 @@ function renderCompare() {
     $('#anatomyHeading').textContent = t('跨平台真人盲测原始 Elo、视觉胜率与耗时剖析', 'Cross-Arena Raw Human Elo, Aesthetic Win Rate & Latency');
     const rawMetrics = [
       {
-        titleZh: 'LMArena 交流人味 Elo（Style-Controlled 去长文水分）',
-        titleEn: 'LMArena Style-Controlled Chat Elo (De-biased)',
+        titleZh: 'Arena.ai (LMArena) 交流人味 Elo（Style-Controlled 去长文水分）',
+        titleEn: 'Arena.ai (LMArena) Style-Controlled Chat Elo (De-biased)',
         min: 1250,
         max: 1550,
         getVal: r => r.arenaRaw?.chatElo ?? null,
@@ -5042,6 +5142,20 @@ function renderCompare() {
       selectedRows.map(r => r.subscores?.mmmuPro ?? r.subscores?.mlcr ?? null),
       false
     );
+    if (selectedRows.some(r => r.livebench)) {
+      addRow(
+        t('LiveBench 2.0 防污染总分（排名 · 自测单价）', 'LiveBench 2.0 Score (Rank · LB Cost)'),
+        selectedRows.map(r => r.livebench
+          ? `${format(r.livebench.overall, 2)} (#${r.livebench.rank}${r.livebench.lbCost != null ? ' · ' + money(r.livebench.lbCost) : ''})`
+          : '—'),
+        selectedRows.map(r => r.livebench?.overall ?? null),
+        false
+      );
+    }
+    addRow(
+      t('各测评机构独立排名（AA / LB2 / Arena / Design）', 'Org Ranks (AA / LB2 / Arena / Design)'),
+      selectedRows.map(r => formatOrgRankSummary(r.id))
+    );
     addRow(
       t('发布日期', 'Release Date'),
       selectedRows.map(r => r.releaseDate || '—')
@@ -5090,13 +5204,27 @@ function renderCompare() {
       selectedRows.map(r => r.outTokens?.total ?? null),
       true
     );
+    if (selectedRows.some(r => r.livebench)) {
+      addRow(
+        t('LiveBench 2.0 防污染总分（排名 · 长程代理）', 'LiveBench 2.0 (Rank · Long Agentic)'),
+        selectedRows.map(r => r.livebench
+          ? `${format(r.livebench.overall, 2)} (#${r.livebench.rank}${r.livebench.longAgentic != null ? ' · Ag ' + format(r.livebench.longAgentic, 1) + '%' : ''})`
+          : '—'),
+        selectedRows.map(r => r.livebench?.overall ?? null),
+        false
+      );
+    }
+    addRow(
+      t('各测评机构独立排名（AA / LB2 / Arena / Design）', 'Org Ranks (AA / LB2 / Arena / Design)'),
+      selectedRows.map(r => formatOrgRankSummary(r.id))
+    );
     addRow(
       t('发布日期', 'Release Date'),
       selectedRows.map(r => r.releaseDate || '—')
     );
   } else if (activeKey === 'human-arena') {
     addRow(
-      t('LMArena 交流人味 Elo（去水份）', 'LMArena Style-Ctrl Chat Elo'),
+      t('Arena.ai (LMArena) 交流人味 Elo（去水份）', 'Arena.ai (LMArena) Style-Ctrl Chat Elo'),
       selectedRows.map(r => r.arenaRaw?.chatElo != null
         ? `${format(r.arenaRaw.chatElo, 1)}${r.arenaRaw.chatVotes ? ' (' + format(r.arenaRaw.chatVotes / 1000, 1) + 'k' + t('票', 'v') + ')' : ''}`
         : '—'),
@@ -5104,7 +5232,7 @@ function renderCompare() {
       false
     );
     addRow(
-      t('LMArena WebDev / 文档盲测 Elo', 'LMArena WebDev / Doc Elo'),
+      t('Arena.ai (LMArena) WebDev / 文档盲测 Elo', 'Arena.ai (LMArena) WebDev / Doc Elo'),
       selectedRows.map(r => {
         const w = r.arenaRaw?.webdevElo, d = r.arenaRaw?.docElo;
         if (w == null && d == null) return '—';
@@ -5171,6 +5299,10 @@ function renderCompare() {
       }),
       selectedRows.map(r => r.indexDelta ?? null),
       false
+    );
+    addRow(
+      t('各测评机构独立排名（AA / LB2 / Arena / Design）', 'Org Ranks (AA / LB2 / Arena / Design)'),
+      selectedRows.map(r => formatOrgRankSummary(r.id))
     );
   } else if (activeKey === 'media') {
     addRow(
@@ -5992,7 +6124,8 @@ function renderPinned() {
   const crossEntries = crossInfo
     ? tabDefs.filter(([k]) => crossInfo[k] && !$(`#tab-${k}`)?.hidden)
     : [];
-  if (crossEntries.length >= 2) {
+  const hasOrgRanks = !['coding-agents', 'media'].includes(activeKey) && (orgRankIndex.has(row.id) || !!row.livebench);
+  if (crossEntries.length >= 2 || hasOrgRanks) {
     const cFrag = document.createDocumentFragment();
     for (const [tabKey, zhLbl, enLbl] of crossEntries) {
       const entry = crossInfo[tabKey];
@@ -6010,6 +6143,30 @@ function renderPinned() {
         });
       }
       cFrag.append(pill);
+    }
+    if (row.livebench) {
+      const lbPill = html('button', `LB2 ${format(row.livebench.overall, 1)} (#${row.livebench.rank})`, 'cross-tab-pill');
+      lbPill.type = 'button';
+      lbPill.title = t('查看 LiveBench 2.0 防污染原榜或纵轴透视', 'Inspect LiveBench 2.0 standalone leaderboard');
+      lbPill.addEventListener('click', () => {
+        orgFocus = 'livebench';
+        orgPinnedKey = row.id;
+        orgSpotlightKey = row.id;
+        showView('orgs');
+      });
+      cFrag.append(lbPill);
+    }
+    if (orgRankIndex.has(row.id)) {
+      const orgPill = html('button', t('机构分榜 →', 'Org ranks →'), 'cross-tab-pill');
+      orgPill.type = 'button';
+      orgPill.title = t('在 6 家独立测评机构原榜中同步高亮该模型', 'Spotlight this model across all 6 independent org leaderboards');
+      orgPill.addEventListener('click', () => {
+        orgFocus = 'all';
+        orgPinnedKey = row.id;
+        orgSpotlightKey = row.id;
+        showView('orgs');
+      });
+      cFrag.append(orgPill);
     }
     crossEl.replaceChildren(cFrag);
     crossEl.hidden = false;
@@ -6049,7 +6206,7 @@ function renderPinned() {
     card.style.width = '';
     const rx = xCoord(row);
     if (frame.width >= 440) {
-      card.style.width = Math.min(318, frame.width * 0.46) + 'px';
+      card.style.width = Math.min(336, frame.width * 0.46) + 'px';
       if (Number.isFinite(rx) && rx > frame.left + frame.width / 2) {
         card.style.left = frame.left + 10 + 'px';
         card.style.right = 'auto';
@@ -6127,16 +6284,22 @@ function showHover(item, event) {
       kvRows.push([t('极难分项 (全过/编程)', 'Hard Suites (PDF/Code)'), fParts.join(' · ')]);
     }
   }
+  if ((activeKey === 'models' || activeKey === 'frontier') && row.livebench) {
+    kvRows.push([
+      'LiveBench 2.0',
+      `${format(row.livebench.overall, 2)} (#${row.livebench.rank}${row.livebench.lbCost != null ? ' · LB ' + money(row.livebench.lbCost) : ''})`
+    ]);
+  }
   if (activeKey === 'human-arena' && row.arenaRaw) {
     const ar = row.arenaRaw;
-    if (ar.chatElo != null) kvRows.push([t('LMArena 交流人味 Elo', 'LMArena Chat Elo'), format(ar.chatElo, 1)]);
+    if (ar.chatElo != null) kvRows.push([t('Arena.ai 交流人味 Elo', 'Arena.ai Chat Elo'), format(ar.chatElo, 1)]);
     if (ar.designWebElo != null) {
       kvRows.push([
         t('Design Arena 网页审美', 'Design Arena Web'),
         `${ar.designWebElo} Elo${ar.designWebWinRate != null ? ' (' + format(ar.designWebWinRate, 1) + '%)' : ''}`
       ]);
     }
-    if (ar.webdevElo != null) kvRows.push([t('LMArena WebDev Elo', 'LMArena WebDev Elo'), format(ar.webdevElo, 0)]);
+    if (ar.webdevElo != null) kvRows.push([t('Arena.ai WebDev Elo', 'Arena.ai WebDev Elo'), format(ar.webdevElo, 0)]);
     if (ar.gdpvalElo != null) kvRows.push([t('专家交付 GDPval Elo', 'Expert GDPval Elo'), format(ar.gdpvalElo, 0)]);
   }
   if (row.refusalRate != null) kvRows.push([t('安全拒答率', 'Safety refusal'), `${format(row.refusalRate, 1)}%`]);
@@ -6244,6 +6407,21 @@ function updateSummary() {
       `已选 ${state.compareIds.length}/${MAX_COMPARE} 项深度剖析 · 含大尺寸雷达、成本结构与并排对决表`,
       `Comparing ${state.compareIds.length}/${MAX_COMPARE} entries · Hero radar, cost anatomy & matrix`
     );
+  } else if (state.mode === 'orgs') {
+    const activeOrg = orgBoards.find(b => b.id === orgFocus);
+    if (activeOrg) {
+      const shownOrgRows = filterOrgRows(activeOrg.rows).length;
+      $('#viewStatus').textContent = t(
+        `${activeOrg.orgZh} · ${activeOrg.titleZh}：显示 ${shownOrgRows}/${activeOrg.rows.length} 项${activeOrg.date ? ' · 原榜日期 ' + activeOrg.date : ''}`,
+        `${activeOrg.orgEn} · ${activeOrg.titleEn}: ${shownOrgRows}/${activeOrg.rows.length} rows${activeOrg.date ? ' · As of ' + activeOrg.date : ''}`
+      );
+    } else {
+      const totalShown = orgBoards.reduce((sum, b) => sum + filterOrgRows(b.rows).length, 0);
+      $('#viewStatus').textContent = t(
+        `并排展示 ${orgBoards.length} 份独立机构原榜（共 ${totalShown} 条上榜记录）· 悬停或点击任意模型跨机构联动对照`,
+        `Side-by-side ${orgBoards.length} independent org leaderboards (${totalShown} ranked entries) · Hover or click any model to spotlight across orgs`
+      );
+    }
   } else if (state.mode === 'table') {
     $('#viewStatus').textContent = t(
       `共 ${rows.length} 项 · α = ${state.valueWeight.toFixed(1)}${state.minScore > 0 ? ' · 门槛 ≥' + state.minScore : ''}${state.maxCost > 0 ? ' · 预算 ≤$' + state.maxCost : ''}`,
@@ -6267,7 +6445,7 @@ function updateSummary() {
     );
   }
 
-  if (state.mode !== 'curve' && state.mode !== 'compare') {
+  if (state.mode !== 'curve' && state.mode !== 'compare' && state.mode !== 'orgs') {
     const hasScen = state.scenarioId && state.scenarioId !== 'default' && !['coding-agents', 'media'].includes(activeKey);
     if (state.yLens || hasScen) $('#viewStatus').append(document.createTextNode(` · ${currentAxisLabel()}`));
     if (state.costProfile && state.costProfile !== 'benchmark' && activeKey !== 'media') {
@@ -6295,7 +6473,7 @@ function updateSummary() {
   }
 
   const selected = state.rows.find(row => row.id === state.selected);
-  $('#selection').textContent = selected && state.mode !== 'curve' && state.mode !== 'compare'
+  $('#selection').textContent = selected && state.mode !== 'curve' && state.mode !== 'compare' && state.mode !== 'orgs'
     ? t(`已锁定：${selected.name}`, `Pinned: ${selected.name}`)
     : '';
 }
@@ -6544,7 +6722,7 @@ $('#routerShare').addEventListener('input', () => {
   syncRouterControls();
 });
 
-for (const [btnId, mode] of [['#radarModeBench', 'bench'], ['#radarModeDomain', 'domain']]) {
+for (const [btnId, mode] of [['#radarModeBench', 'bench'], ['#radarModeDomain', 'domain'], ['#radarModeLiveBench', 'livebench']]) {
   $(btnId).addEventListener('click', () => {
     if (!state || state.radarMode === mode) return;
     state.radarMode = mode;
@@ -6791,19 +6969,21 @@ $('#resetSettings').addEventListener('click', () => {
 });
 
 function showView(mode) {
-  if (!state || !['chart', 'table', 'curve', 'sub', 'compare'].includes(mode)) return;
+  if (!state || !['chart', 'table', 'orgs', 'curve', 'sub', 'compare'].includes(mode)) return;
   stopHistoryPlay();
   if (comparePickerOpen && mode !== 'compare') setComparePickerOpen(false);
-  if (scenarioOpen && (mode === 'curve' || mode === 'compare')) setScenarioOpen(false);
+  if (scenarioOpen && (mode === 'curve' || mode === 'compare' || mode === 'orgs')) setScenarioOpen(false);
   endPointerInteractions();
   clearLasso();
   clearHover();
   state.mode = mode;
   valueDetailsOpen = false;
   syncControls();
+  renderStatus();
   syncUrlHash();
   if (mode === 'chart') buildPlot();
   else if (mode === 'table') renderTable();
+  else if (mode === 'orgs') renderOrgLeaderboards();
   else if (mode === 'sub') renderSubTable();
   else if (mode === 'compare') renderCompare();
   scheduleDraw();
@@ -7489,8 +7669,8 @@ document.addEventListener('keydown', event => {
     return;
   }
   if (!typing && !event.ctrlKey && !event.metaKey && !event.altKey) {
-    if (state && ['1', '2', '3', '4', '5'].includes(event.key)) {
-      const modes = ['chart', 'table', 'curve', 'sub', 'compare'];
+    if (state && ['1', '2', '3', '4', '5', '6'].includes(event.key)) {
+      const modes = ['chart', 'table', 'orgs', 'curve', 'sub', 'compare'];
       const targetMode = modes[Number(event.key) - 1];
       if (targetMode && state.mode !== targetMode) {
         event.preventDefault();
@@ -7568,6 +7748,10 @@ document.addEventListener('keydown', event => {
   } else if (mobileLayout.matches && controlsOpen) {
     setControlsOpen(false);
     $('#controlsToggle').focus({preventScroll: true});
+  } else if (state?.mode === 'orgs' && orgPinnedKey) {
+    orgPinnedKey = null;
+    orgSpotlightKey = null;
+    applyOrgSpotlight(null);
   } else if (state?.selected) {
     clearPin();
   }
@@ -7593,6 +7777,7 @@ new ResizeObserver(scheduleDraw).observe($('#curveHost'));
 function showLoadError(error) {
   host.hidden = false;
   $('#dataTable').hidden = true;
+  $('#orgPanel').hidden = true;
   $('#subPanel').hidden = true;
   $('#comparePanel').hidden = true;
   $('#curvePanel').hidden = true;
@@ -7686,6 +7871,866 @@ function buildCrossTabLookup(snap) {
   return map;
 }
 
+const ORG_FALLBACK_COLORS = {
+  openai: '#10a37f',
+  anthropic: '#d97757',
+  google: '#4285f4',
+  meta: '#0668e1',
+  xai: '#94a3b8',
+  deepseek: '#4f7cff',
+  alibaba: '#ff6a00',
+  qwen: '#ff6a00',
+  'z ai': '#38bdf8',
+  zai: '#38bdf8',
+  moonshot: '#a78bfa',
+  minimax: '#f472b6',
+  mistral: '#f59e0b',
+  xiaomi: '#fb923c',
+  bytedance: '#22d3ee',
+  nvidia: '#76b900',
+  amazon: '#f59e0b',
+  cohere: '#34d399'
+};
+
+function orgCreatorColor(name, explicitColor = null) {
+  if (explicitColor) return color(explicitColor);
+  const key = String(name || '').toLowerCase().trim();
+  const mapped = orgCreatorColors.get(key) || ORG_FALLBACK_COLORS[key];
+  return color(mapped || '#64748b');
+}
+
+function normalizeOrgSpotKey(raw) {
+  return String(raw || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
+function buildStandaloneOrgBoards(snap) {
+  orgBoards = [];
+  orgRankIndex = new Map();
+  orgCreatorColors = new Map();
+  if (!snap || !Array.isArray(snap.models)) return;
+
+  const baseModels = validRows(snap.models);
+  const baseById = new Map();
+  for (const m of baseModels) {
+    baseById.set(m.id, m);
+    const cname = m.creator?.name;
+    if (cname && m.creator?.color && !orgCreatorColors.has(cname.toLowerCase())) {
+      orgCreatorColors.set(cname.toLowerCase(), m.creator.color);
+    }
+  }
+
+  const snapDate = typeof snap.updatedAt === 'string' ? snap.updatedAt.slice(0, 10) : '';
+  const aaSorted = sortRows(baseModels, 'intelligenceIndex', 'desc');
+  const aaRows = aaSorted.map((m, i) => ({
+    rank: i + 1,
+    modelId: m.id,
+    familySlug: m.family?.slug || null,
+    rawName: m.name,
+    name: m.name,
+    shortName: m.shortName || m.name,
+    creator: m.creator?.name || 'Other',
+    creatorColor: m.creator?.color || null,
+    isOpenWeights: !!m.isOpenWeights,
+    score: m.intelligenceIndex,
+    cost: m.cost,
+    timeSec: m.timeSec,
+    subscores: m.subscores || null,
+    livebench: m.livebench || null
+  }));
+
+  const enrichExternalRows = (rawRows = []) => {
+    const idCount = new Map();
+    for (const r of rawRows) {
+      if (r.modelId) idCount.set(r.modelId, (idCount.get(r.modelId) || 0) + 1);
+    }
+    return rawRows.map((r, i) => {
+      const base = r.modelId ? baseById.get(r.modelId) : null;
+      const dupId = !!(r.modelId && (idCount.get(r.modelId) || 0) > 1);
+      const creatorName = r.creator || base?.creator?.name || 'Other';
+      return {
+        ...r,
+        rank: r.rank ?? (i + 1),
+        modelId: r.modelId || null,
+        familySlug: base?.family?.slug || null,
+        rawName: r.rawName || r.name || '',
+        name: base?.name || r.name || r.rawName || '',
+        shortName: base?.shortName || r.name || r.rawName || '',
+        dupId,
+        creator: creatorName,
+        creatorColor: base?.creator?.color || null,
+        isOpenWeights: base ? !!base.isOpenWeights : null,
+        cost: r.cost ?? base?.cost ?? null,
+        aaIndex: base?.intelligenceIndex ?? null
+      };
+    });
+  };
+
+  const ext = snap.orgLeaderboards || {};
+  const boards = [
+    {
+      id: 'aa',
+      orgZh: 'Artificial Analysis',
+      orgEn: 'Artificial Analysis',
+      titleZh: '综合智能指数 v5',
+      titleEn: 'Intelligence Index v5',
+      pillZh: 'AA 综合 v5',
+      pillEn: 'AA Index v5',
+      shortTag: 'AA',
+      tagZh: '自动化综合',
+      tagEn: 'Automated',
+      scoreLabelZh: '智能分',
+      scoreLabelEn: 'Score',
+      scoreDecimals: 1,
+      sourceUrl: 'https://artificialanalysis.ai/models',
+      date: snapDate,
+      scatterTarget: {tab: 'models', yLens: ''},
+      rows: aaRows
+    }
+  ];
+
+  if (ext.livebench?.rows?.length) {
+    boards.push({
+      id: 'livebench',
+      orgZh: 'LiveBench 2.0',
+      orgEn: 'LiveBench 2.0',
+      titleZh: '防污染长程实测榜',
+      titleEn: 'Contamination-Free v2',
+      pillZh: 'LiveBench 2.0',
+      pillEn: 'LiveBench 2.0',
+      shortTag: 'LB2',
+      tagZh: '防污染硬考',
+      tagEn: 'Live Evals',
+      scoreLabelZh: '加权分',
+      scoreLabelEn: 'Overall',
+      scoreDecimals: 2,
+      sourceUrl: ext.livebench.sourceUrl || 'https://livebench.ai/',
+      date: ext.livebench.date || '',
+      scatterTarget: {tab: 'models', yLens: 'livebench'},
+      rows: enrichExternalRows(ext.livebench.rows)
+    });
+  }
+
+  if (ext.arenaChat?.rows?.length) {
+    boards.push({
+      id: 'arenaChat',
+      orgZh: 'Arena.ai (LMArena)',
+      orgEn: 'Arena.ai (LMArena)',
+      titleZh: '去水份聊天盲测榜',
+      titleEn: 'Style-Ctrl Text Arena',
+      pillZh: 'Arena.ai 聊天',
+      pillEn: 'Arena.ai Text',
+      shortTag: 'Chat',
+      tagZh: '真人盲投',
+      tagEn: 'Human Elo',
+      scoreLabelZh: 'Chat Elo',
+      scoreLabelEn: 'Chat Elo',
+      scoreDecimals: 1,
+      sourceUrl: ext.arenaChat.sourceUrl || 'https://arena.ai/leaderboard',
+      date: ext.arenaChat.date || '',
+      scatterTarget: {tab: 'human-arena', yLens: 'chatVibe'},
+      rows: enrichExternalRows(ext.arenaChat.rows)
+    });
+  }
+
+  if (ext.arenaWebdev?.rows?.length) {
+    boards.push({
+      id: 'arenaWebdev',
+      orgZh: 'Arena.ai (LMArena)',
+      orgEn: 'Arena.ai (LMArena)',
+      titleZh: 'WebDev 前端盲测榜',
+      titleEn: 'WebDev Blind Arena',
+      pillZh: 'Arena.ai WebDev',
+      pillEn: 'Arena.ai WebDev',
+      shortTag: 'WebDev',
+      tagZh: '前端盲投',
+      tagEn: 'WebDev Elo',
+      scoreLabelZh: 'WebDev Elo',
+      scoreLabelEn: 'WebDev Elo',
+      scoreDecimals: 1,
+      sourceUrl: ext.arenaWebdev.sourceUrl || 'https://arena.ai/leaderboard',
+      date: ext.arenaWebdev.date || '',
+      scatterTarget: {tab: 'human-arena', yLens: 'webdev'},
+      rows: enrichExternalRows(ext.arenaWebdev.rows)
+    });
+  }
+
+  if (ext.designArena?.rows?.length) {
+    boards.push({
+      id: 'designArena',
+      orgZh: 'Design Arena',
+      orgEn: 'Design Arena',
+      titleZh: '网页与视觉审美盲测',
+      titleEn: 'Website & Visual Taste',
+      pillZh: 'Design Arena',
+      pillEn: 'Design Arena',
+      shortTag: 'Design',
+      tagZh: '视觉审美',
+      tagEn: 'Aesthetic',
+      scoreLabelZh: 'Website Elo',
+      scoreLabelEn: 'Web Elo',
+      scoreDecimals: 0,
+      sourceUrl: ext.designArena.sourceUrl || 'https://www.designarena.ai/leaderboard',
+      date: ext.designArena.date || snapDate,
+      scatterTarget: {tab: 'human-arena', yLens: 'pureVisual'},
+      rows: enrichExternalRows(ext.designArena.rows)
+    });
+  }
+
+  const gdpModels = baseModels
+    .filter(m => m.expertElo?.gdpval != null)
+    .sort((a, b) => b.expertElo.gdpval - a.expertElo.gdpval);
+  if (gdpModels.length) {
+    boards.push({
+      id: 'aaGdpval',
+      orgZh: 'Artificial Analysis',
+      orgEn: 'Artificial Analysis',
+      titleZh: 'GDPval 44 职业专家交付',
+      titleEn: 'GDPval 44-Job Experts',
+      pillZh: 'AA GDPval',
+      pillEn: 'AA GDPval',
+      shortTag: 'GDPval',
+      tagZh: '专家盲评',
+      tagEn: 'Expert Elo',
+      scoreLabelZh: 'GDPval Elo',
+      scoreLabelEn: 'GDPval Elo',
+      scoreDecimals: 0,
+      sourceUrl: 'https://artificialanalysis.ai/evaluations/gdpval-aa',
+      date: snapDate,
+      scatterTarget: {tab: 'human-arena', yLens: 'deliverable'},
+      rows: gdpModels.map((m, i) => ({
+        rank: i + 1,
+        modelId: m.id,
+        familySlug: m.family?.slug || null,
+        rawName: m.name,
+        name: m.name,
+        shortName: m.shortName || m.name,
+        creator: m.creator?.name || 'Other',
+        creatorColor: m.creator?.color || null,
+        isOpenWeights: !!m.isOpenWeights,
+        score: m.expertElo.gdpval,
+        briefcaseElo: m.expertElo.briefcase ?? null,
+        domainScores: m.domainScores || null,
+        cost: m.cost,
+        aaIndex: m.intelligenceIndex
+      }))
+    });
+  }
+
+  orgBoards = boards;
+
+  // Index best rank per modelId and per familySlug for O(1) lookup & spotlighting
+  const familyBest = new Map();
+  for (const board of orgBoards) {
+    for (const row of board.rows) {
+      if (row.modelId) {
+        let rec = orgRankIndex.get(row.modelId);
+        if (!rec) {
+          rec = {name: row.name, shortName: row.shortName, creator: row.creator, creatorColor: row.creatorColor, cost: row.cost, familySlug: row.familySlug, ranks: {}};
+          orgRankIndex.set(row.modelId, rec);
+        }
+        if (!rec.ranks[board.id]) {
+          rec.ranks[board.id] = {rank: row.rank, total: board.rows.length, score: row.score, rawName: row.rawName, exact: true};
+        }
+      }
+      if (row.familySlug) {
+        let frec = familyBest.get(row.familySlug);
+        if (!frec) {
+          frec = {};
+          familyBest.set(row.familySlug, frec);
+        }
+        if (!frec[board.id]) {
+          frec[board.id] = {rank: row.rank, total: board.rows.length, score: row.score, rawName: row.rawName, modelId: row.modelId, exact: false};
+        }
+      }
+    }
+  }
+  // Attach family-level fallback rank when exact effort variant wasn't evaluated by an org
+  for (const [, rec] of orgRankIndex) {
+    if (!rec.familySlug) continue;
+    const frec = familyBest.get(rec.familySlug);
+    if (!frec) continue;
+    for (const board of orgBoards) {
+      if (!rec.ranks[board.id] && frec[board.id]) {
+        rec.ranks[board.id] = {...frec[board.id], exact: false};
+      }
+    }
+  }
+  if (orgFocus !== 'all' && !orgBoards.some(b => b.id === orgFocus)) {
+    orgFocus = 'all';
+  }
+}
+
+function formatOrgRankSummary(modelId) {
+  const rec = orgRankIndex.get(modelId);
+  if (!rec) return '—';
+  const parts = [];
+  for (const board of orgBoards) {
+    const r = rec.ranks[board.id];
+    if (!r) continue;
+    parts.push(`${board.shortTag} ${r.exact ? '' : '~'}#${r.rank}`);
+  }
+  return parts.length ? parts.join(' · ') : '—';
+}
+
+function filterOrgRows(rows) {
+  const q = (state?.search || '').trim().toLowerCase();
+  const comp = state?.company || null;
+  const lic = state?.license || 'all';
+  const starOnly = !!state?.starredOnly;
+  return rows.filter(r => {
+    if (orgMatchedOnly && !r.modelId) return false;
+    if (comp && r.creator !== comp) return false;
+    if (lic === 'open' && r.isOpenWeights !== true) return false;
+    if (lic === 'closed' && r.isOpenWeights !== false) return false;
+    if (starOnly && !(r.modelId && isStarred({id: r.modelId, name: r.name, creator: {name: r.creator}}))) return false;
+    if (q) {
+      const hay = `${r.name} ${r.rawName} ${r.creator}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+function jumpToOrgScatter(board) {
+  if (!board?.scatterTarget) return;
+  const {tab, yLens} = board.scatterTarget;
+  chooseChart(tab, {changeHash: false});
+  if (state) {
+    applyYLens(state, yLens || '');
+    showView('chart');
+  }
+}
+
+function locateOrgModel(row, board) {
+  if (!row?.modelId) return;
+  const preferredTab = board?.scatterTarget?.tab || 'models';
+  const preferredArr = snapshot?.[BENCHMARKS[preferredTab]?.key] || [];
+  const hasInPreferred = preferredArr.some(m => m.id === row.modelId);
+  const targetTab = hasInPreferred ? preferredTab : 'models';
+  chooseChart(targetTab, {changeHash: false});
+  if (!state) return;
+  const targetLens = hasInPreferred ? (board?.scatterTarget?.yLens || '') : '';
+  const testLens = (Y_LENSES[targetTab] || []).find(l => l.id === targetLens);
+  const baseMatch = state.baseRows.find(r => r.id === row.modelId);
+  const canUseLens = targetLens && testLens && baseMatch && testLens.get(baseMatch) != null;
+  applyYLens(state, canUseLens ? targetLens : '');
+  const found = state.rows.find(r => r.id === row.modelId);
+  if (found) {
+    locateRowInChart(found);
+  } else {
+    showView('chart');
+  }
+}
+
+function toggleOrgCompare(row, board, openCompare = false) {
+  if (!row?.modelId) return;
+  const preferredTab = !['coding-agents', 'media'].includes(activeKey)
+    ? activeKey
+    : (board?.scatterTarget?.tab || 'models');
+  const preferredArr = snapshot?.[BENCHMARKS[preferredTab]?.key] || [];
+  const targetTab = preferredArr.some(m => m.id === row.modelId) ? preferredTab : 'models';
+  if (!states.has(targetTab)) states.set(targetTab, makeState(targetTab));
+  const targetState = states.get(targetTab);
+  const idx = targetState.compareIds.indexOf(row.modelId);
+  if (openCompare) {
+    if (idx === -1) {
+      if (targetState.compareIds.length >= MAX_COMPARE) targetState.compareIds.shift();
+      targetState.compareIds.push(row.modelId);
+    }
+    lastModelCompareIds = [...targetState.compareIds];
+    chooseChart(targetTab, {changeHash: false});
+    showView('compare');
+    return;
+  }
+  if (idx !== -1) {
+    if (targetState.compareIds.length > 1) targetState.compareIds.splice(idx, 1);
+  } else {
+    if (targetState.compareIds.length >= MAX_COMPARE) targetState.compareIds.shift();
+    targetState.compareIds.push(row.modelId);
+  }
+  lastModelCompareIds = [...targetState.compareIds];
+  if (targetTab === activeKey) syncUrlHash();
+  renderOrgLeaderboards();
+}
+
+function isInCompareAnyModelTab(modelId) {
+  if (!modelId) return false;
+  if (state && !['coding-agents', 'media'].includes(activeKey) && state.compareIds.includes(modelId)) return true;
+  const ms = states.get('models');
+  return !!(ms && ms.compareIds.includes(modelId));
+}
+
+function orgRowSpotKey(row) {
+  return row.modelId || `raw:${normalizeOrgSpotKey(row.rawName || row.name)}`;
+}
+
+function renderOrgSpotlightBar(spotKey, spotRow = null) {
+  const bar = $('#orgSpotlightBar');
+  if (!bar) return;
+  const activeSpot = spotKey || orgPinnedKey;
+  if (!activeSpot) {
+    bar.classList.remove('is-active');
+    bar.replaceChildren(
+      html('span', t(
+        '悬停或点击任意模型，即可跨 6 家独立测评机构原榜同步高亮其真实排名（点击行可锁定，按 Esc 取消）。',
+        'Hover or click any model to spotlight its exact un-blended rank across all 6 independent org leaderboards (click to pin, Esc to clear).'
+      ), 'org-spot-hint')
+    );
+    return;
+  }
+
+  bar.classList.add('is-active');
+  const rec = orgRankIndex.get(activeSpot);
+  const displayName = rec?.shortName || rec?.name || spotRow?.rawName || spotRow?.name || '';
+  const creatorName = rec?.creator || spotRow?.creator || 'Other';
+  const cColor = orgCreatorColor(creatorName, rec?.creatorColor || spotRow?.creatorColor);
+  const costVal = rec?.cost ?? spotRow?.cost ?? null;
+
+  const left = html('div', null, 'org-spot-identity');
+  const dot = html('i', null, 'creator-dot');
+  dot.style.background = cColor;
+  dot.setAttribute('aria-hidden', 'true');
+  left.append(dot, html('strong', displayName), html('span', creatorName, 'org-spot-creator'));
+  if (costVal != null && costVal > 0) {
+    left.append(html('span', money(costVal), 'org-spot-cost'));
+  }
+
+  const pills = html('div', null, 'org-spot-ranks');
+  let pillCount = 0;
+  for (const board of orgBoards) {
+    const info = rec?.ranks?.[board.id] || (() => {
+      const m = board.rows.find(r => orgRowSpotKey(r) === activeSpot);
+      return m ? {rank: m.rank, total: board.rows.length, score: m.score, exact: true} : null;
+    })();
+    if (!info) continue;
+    pillCount++;
+    const scoreTxt = format(info.score, board.scoreDecimals);
+    const pill = html('button', `${t(board.pillZh, board.pillEn)} ${info.exact ? '' : '~'}#${info.rank} (${scoreTxt})`, 'org-spot-pill');
+    pill.type = 'button';
+    if (!info.exact) {
+      pill.classList.add('is-family');
+      pill.title = t('同系列其他推理档位在该机构的最佳排名（点击展开该机构全榜）', 'Best rank by sibling effort variant in this org (click to open full org table)');
+    } else {
+      pill.title = t(`点击展开 ${board.orgZh} · ${board.titleZh} 完整分项表`, `Open full ${board.orgEn} · ${board.titleEn} table`);
+    }
+    pill.addEventListener('click', () => {
+      orgFocus = board.id;
+      orgPinnedKey = activeSpot;
+      orgSpotlightKey = activeSpot;
+      syncUrlHash();
+      renderOrgLeaderboards();
+      updateSummary();
+    });
+    pills.append(pill);
+  }
+  if (!pillCount) {
+    pills.append(html('span', t('仅在该机构上榜', 'Ranked in this org only'), 'org-spot-hint'));
+  }
+
+  const actions = html('div', null, 'org-spot-actions');
+  if (rec) {
+    const locBtn = html('button', t('定位散点', 'Locate'), 'org-mini-btn');
+    locBtn.type = 'button';
+    locBtn.addEventListener('click', () => locateOrgModel({modelId: activeSpot}, orgBoards.find(b => b.id === orgFocus) || orgBoards[0]));
+    const cmpBtn = html('button', t('去剖析 →', 'Compare →'), 'org-mini-btn');
+    cmpBtn.type = 'button';
+    cmpBtn.addEventListener('click', () => toggleOrgCompare({modelId: activeSpot}, orgBoards.find(b => b.id === orgFocus) || orgBoards[0], true));
+    actions.append(locBtn, cmpBtn);
+  }
+  if (orgPinnedKey) {
+    const clearBtn = html('button', t('取消锁定 ×', 'Clear ×'), 'org-mini-btn is-clear');
+    clearBtn.type = 'button';
+    clearBtn.addEventListener('click', () => {
+      orgPinnedKey = null;
+      orgSpotlightKey = null;
+      applyOrgSpotlight(null);
+    });
+    actions.append(clearBtn);
+  }
+
+  bar.replaceChildren(left, pills, actions);
+}
+
+function applyOrgSpotlight(hoverKey, hoverRow = null) {
+  const activeKey = hoverKey || orgPinnedKey;
+  const activeFamily = hoverRow?.familySlug || (activeKey ? orgRankIndex.get(activeKey)?.familySlug : null) || null;
+  const nodesEl = document.querySelectorAll('#orgContent [data-spot-key]');
+  for (const el of nodesEl) {
+    const ek = el.dataset.spotKey;
+    const ef = el.dataset.familySlug || '';
+    const exact = !!(activeKey && ek === activeKey);
+    const fam = !!(activeFamily && !exact && ef && ef === activeFamily);
+    el.classList.toggle('is-spotlit', exact);
+    el.classList.toggle('is-family-spotlit', fam);
+    el.classList.toggle('is-pinned-spot', !!(orgPinnedKey && ek === orgPinnedKey));
+  }
+  renderOrgSpotlightBar(activeKey, hoverRow);
+}
+
+function orgDisplayName(row) {
+  if (!row.modelId || row.dupId) return row.rawName || row.name;
+  return row.shortName || row.name || row.rawName;
+}
+
+function renderOrgSideBySide(container) {
+  const grid = html('div', null, 'org-grid');
+  for (const board of orgBoards) {
+    const rows = filterOrgRows(board.rows);
+    const card = html('section', null, 'org-card');
+    card.dataset.orgId = board.id;
+
+    const head = html('header', null, 'org-card-head');
+    const titleWrap = html('div', null, 'org-card-titles');
+    const topLine = html('div', null, 'org-card-topline');
+    const ext = html('a', `${t(board.orgZh, board.orgEn)} ↗`, 'org-ext-link');
+    ext.href = board.sourceUrl;
+    ext.target = '_blank';
+    ext.rel = 'noopener';
+    ext.title = t('打开该机构官方原榜', 'Open official organization leaderboard');
+    const badge = html('span', t(board.tagZh, board.tagEn), 'org-tag-pill');
+    topLine.append(ext, badge);
+
+    const subLine = html('div', null, 'org-card-subline');
+    subLine.append(
+      html('strong', t(board.titleZh, board.titleEn)),
+      html('span', `${rows.length}/${board.rows.length}${board.date ? ' · ' + board.date : ''}`, 'org-meta-count')
+    );
+    titleWrap.append(topLine, subLine);
+
+    const headBtns = html('div', null, 'org-card-actions');
+    const expandBtn = html('button', t('看全榜', 'Full table'), 'org-mini-btn');
+    expandBtn.type = 'button';
+    expandBtn.title = t('展开该机构完整分项数据表', 'Expand full detail table with all sub-metrics');
+    expandBtn.addEventListener('click', () => {
+      orgFocus = board.id;
+      syncUrlHash();
+      renderOrgLeaderboards();
+      updateSummary();
+    });
+    const scatterBtn = html('button', t('散点 ↗', 'Scatter ↗'), 'org-mini-btn');
+    scatterBtn.type = 'button';
+    scatterBtn.title = t('以该机构成绩作为纵轴打开成本散点图', 'Open cost scatter chart with this org on the Y-axis');
+    scatterBtn.addEventListener('click', () => jumpToOrgScatter(board));
+    headBtns.append(expandBtn, scatterBtn);
+    head.append(titleWrap, headBtns);
+
+    const list = html('ol', null, 'org-card-list');
+    if (!rows.length) {
+      const empty = html('li', t('当前筛选条件下无匹配模型', 'No matching models under current filters'), 'org-empty');
+      list.append(empty);
+    } else {
+      const frag = document.createDocumentFragment();
+      for (const row of rows) {
+        const li = html('li', null, 'org-row');
+        const spotKey = orgRowSpotKey(row);
+        li.dataset.spotKey = spotKey;
+        if (row.familySlug) li.dataset.familySlug = row.familySlug;
+        if (!row.modelId) li.classList.add('is-unmatched');
+
+        const rankSpan = html('span', `#${row.rank}`, `org-rank${row.rank <= 3 ? ' rank-' + row.rank : ''}`);
+        const dot = html('i', null, 'creator-dot');
+        dot.style.background = orgCreatorColor(row.creator, row.creatorColor);
+        dot.setAttribute('aria-hidden', 'true');
+
+        const main = html('div', null, 'org-row-main');
+        const primaryTxt = orgDisplayName(row);
+        const nameEl = html('span', primaryTxt, 'org-row-name');
+        nameEl.title = row.rawName && row.rawName !== primaryTxt ? `${primaryTxt} (${row.rawName})` : primaryTxt;
+
+        const subParts = [row.creator];
+        if (row.dupId && row.name && row.name !== row.rawName) subParts.push(row.shortName || row.name);
+        if (board.id === 'livebench' && row.lbCost != null) subParts.push(`LB ${money(row.lbCost)}`);
+        else if (row.cost != null && row.cost > 0) subParts.push(money(row.cost));
+        if (board.id === 'designArena' && row.winRate != null) subParts.push(`${format(row.winRate, 1)}%`);
+        else if ((board.id === 'arenaChat' || board.id === 'arenaWebdev') && row.votes) {
+          subParts.push(`${row.votes >= 1000 ? format(row.votes / 1000, 1) + 'k' : row.votes}${t('票', 'v')}`);
+        }
+        if (!row.modelId) subParts.push(t('机构独有', 'Org-only'));
+        main.append(nameEl, html('span', subParts.join(' · '), 'org-row-sub'));
+
+        const scoreEl = html('span', format(row.score, board.scoreDecimals), 'org-row-score');
+        scoreEl.title = `${t(board.scoreLabelZh, board.scoreLabelEn)}: ${format(row.score, board.scoreDecimals)}`;
+
+        const rowActs = html('div', null, 'org-row-acts');
+        if (row.modelId) {
+          const loc = html('button', t('定位', 'Pin'), 'org-micro-btn');
+          loc.type = 'button';
+          loc.title = t('在散点图中定位该模型', 'Locate in scatter chart');
+          loc.addEventListener('click', e => {
+            e.stopPropagation();
+            locateOrgModel(row, board);
+          });
+          const inCmp = isInCompareAnyModelTab(row.modelId);
+          const cmp = html('button', inCmp ? '✓' : '+', `org-micro-btn${inCmp ? ' is-in' : ''}`);
+          cmp.type = 'button';
+          cmp.title = inCmp ? t('已在剖析对比组中（点击移除）', 'In comparison (click to remove)') : t('加入剖析对比组', 'Add to comparison');
+          cmp.addEventListener('click', e => {
+            e.stopPropagation();
+            toggleOrgCompare(row, board, false);
+          });
+          rowActs.append(loc, cmp);
+        }
+
+        li.addEventListener('pointerenter', () => {
+          orgSpotlightKey = spotKey;
+          applyOrgSpotlight(spotKey, row);
+        });
+        li.addEventListener('pointerleave', () => {
+          orgSpotlightKey = null;
+          applyOrgSpotlight(null);
+        });
+        li.addEventListener('click', () => {
+          orgPinnedKey = orgPinnedKey === spotKey ? null : spotKey;
+          applyOrgSpotlight(orgPinnedKey, row);
+        });
+
+        li.append(rankSpan, dot, main, scoreEl, rowActs);
+        frag.append(li);
+      }
+      list.append(frag);
+    }
+
+    card.append(head, list);
+    grid.append(card);
+  }
+  container.replaceChildren(grid);
+}
+
+function renderOrgDetailTable(container, board) {
+  const rows = filterOrgRows(board.rows);
+  const wrap = html('div', null, 'org-detail-wrap');
+
+  const banner = html('div', null, 'org-detail-banner');
+  const bLeft = html('div', null, 'org-detail-head-copy');
+  const ext = html('a', `${t(board.orgZh, board.orgEn)} · ${t(board.titleZh, board.titleEn)} ↗`, 'org-ext-link');
+  ext.href = board.sourceUrl;
+  ext.target = '_blank';
+  ext.rel = 'noopener';
+  const metaTxt = `${rows.length}/${board.rows.length} ${t('款上榜模型', 'ranked models')}${board.date ? ' · ' + t('原榜日期 ', 'Official date ') + board.date : ''}`;
+  bLeft.append(ext, html('span', metaTxt, 'org-meta-count'));
+  const backBtn = html('button', t('← 返回 6 机构并排', '← All 6 orgs'), 'org-mini-btn');
+  backBtn.type = 'button';
+  backBtn.addEventListener('click', () => {
+    orgFocus = 'all';
+    syncUrlHash();
+    renderOrgLeaderboards();
+    updateSummary();
+  });
+  banner.append(bLeft, backBtn);
+
+  // Define org-specific columns faithfully showing every official sub-metric
+  let cols;
+  if (board.id === 'livebench') {
+    cols = [
+      {zh: 'LB 2.0 总分', en: 'Overall', cls: 'num is-primary', get: r => format(r.score, 2)},
+      {zh: '长程智能体 ×2', en: 'Agentic ×2', cls: 'num', get: r => r.suites?.longAgentic != null ? format(r.suites.longAgentic, 1) : '—'},
+      {zh: '深度推理', en: 'Reasoning', cls: 'num', get: r => r.suites?.reasoning != null ? format(r.suites.reasoning, 1) : '—'},
+      {zh: '真实编程 ×1.5', en: 'Coding ×1.5', cls: 'num', get: r => r.suites?.coding != null ? format(r.suites.coding, 1) : '—'},
+      {zh: '网页浏览', en: 'Browser', cls: 'num', get: r => r.suites?.browser != null ? format(r.suites.browser, 1) : '—'},
+      {zh: '数据分析', en: 'Data', cls: 'num', get: r => r.suites?.dataAnalysis != null ? format(r.suites.dataAnalysis, 1) : '—'},
+      {zh: '深度研究', en: 'Research', cls: 'num', get: r => r.suites?.research != null ? format(r.suites.research, 1) : '—'},
+      {zh: '视觉设计 ×1.5', en: 'Design ×1.5', cls: 'num', get: r => r.suites?.design != null ? format(r.suites.design, 1) : '—'},
+      {zh: 'LB 实测单价', en: 'LB $/task', cls: 'num', get: r => r.lbCost != null ? money(r.lbCost) : '—'},
+      {zh: 'AA 均价', en: 'AA $/task', cls: 'num', get: r => r.cost != null ? money(r.cost) : '—'}
+    ];
+  } else if (board.id === 'designArena') {
+    cols = [
+      {zh: '整站 Website Elo', en: 'Website Elo', cls: 'num is-primary', get: r => format(r.score, 0)},
+      {zh: '盲测胜率 · 场次', en: 'Win% · Battles', cls: 'num', get: r => `${r.winRate != null ? format(r.winRate, 1) + '%' : '—'}${r.battles ? ' · ' + (r.battles >= 1000 ? format(r.battles / 1000, 1) + 'k' : r.battles) : ''}`},
+      {zh: 'UI 组件 Elo', en: 'UI Comp.', cls: 'num', get: r => r.suites?.uicomponent != null ? format(r.suites.uicomponent, 0) : '—'},
+      {zh: '数据图表 Elo', en: 'DataViz', cls: 'num', get: r => r.suites?.dataviz != null ? format(r.suites.dataviz, 0) : '—'},
+      {zh: '游戏交互 Elo', en: 'GameDev', cls: 'num', get: r => r.suites?.gamedev != null ? format(r.suites.gamedev, 0) : '—'},
+      {zh: 'SVG 矢量 Elo', en: 'SVG', cls: 'num', get: r => r.suites?.svg != null ? format(r.suites.svg, 0) : '—'},
+      {zh: 'AA 均价', en: 'AA $/task', cls: 'num', get: r => r.cost != null ? money(r.cost) : '—'}
+    ];
+  } else if (board.id === 'arenaChat' || board.id === 'arenaWebdev') {
+    cols = [
+      {zh: board.scoreLabelZh, en: board.scoreLabelEn, cls: 'num is-primary', get: r => format(r.score, 1)},
+      {zh: '真人盲测票数', en: 'Blind Votes', cls: 'num', get: r => r.votes != null ? r.votes.toLocaleString() : '—'},
+      {zh: 'AA 综合分', en: 'AA Index', cls: 'num', get: r => r.aaIndex != null ? format(r.aaIndex, 1) : '—'},
+      {zh: 'AA 均价', en: 'AA $/task', cls: 'num', get: r => r.cost != null ? money(r.cost) : '—'},
+      {zh: '其他机构排名', en: 'Other Orgs', cls: 'org-cross-cell', get: r => r.modelId ? formatOrgRankSummary(r.modelId) : '—'}
+    ];
+  } else if (board.id === 'aaGdpval') {
+    cols = [
+      {zh: 'GDPval Elo', en: 'GDPval Elo', cls: 'num is-primary', get: r => format(r.score, 0)},
+      {zh: 'Briefcase Elo', en: 'Briefcase', cls: 'num', get: r => r.briefcaseElo != null ? format(r.briefcaseElo, 0) : '—'},
+      {zh: '金融财务', en: 'Finance', cls: 'num', get: r => r.domainScores?.finance != null ? format(r.domainScores.finance, 1) : '—'},
+      {zh: '法律合规', en: 'Legal', cls: 'num', get: r => r.domainScores?.legal != null ? format(r.domainScores.legal, 1) : '—'},
+      {zh: '医疗健康', en: 'Health', cls: 'num', get: r => r.domainScores?.healthcare != null ? format(r.domainScores.healthcare, 1) : '—'},
+      {zh: '工程研发', en: 'Eng.', cls: 'num', get: r => r.domainScores?.engineering != null ? format(r.domainScores.engineering, 1) : '—'},
+      {zh: 'AA 均价', en: 'AA $/task', cls: 'num', get: r => r.cost != null ? money(r.cost) : '—'}
+    ];
+  } else {
+    cols = [
+      {zh: '综合智能 v5', en: 'AA Index v5', cls: 'num is-primary', get: r => format(r.score, 1)},
+      {zh: 'FrontierCode 2', en: 'FrontierCode 2', cls: 'num', get: r => r.subscores?.frontierCode != null ? format(r.subscores.frontierCode, 1) : '—'},
+      {zh: 'Terminal 4.0', en: 'Terminal 4', cls: 'num', get: r => r.subscores?.terminalBench != null ? format(r.subscores.terminalBench, 1) : '—'},
+      {zh: 'HLE Diamond', en: 'HLE', cls: 'num', get: r => r.subscores?.hleDiamond != null ? format(r.subscores.hleDiamond, 1) : '—'},
+      {zh: 'LiveBench 2.0', en: 'LB 2.0', cls: 'num', get: r => r.livebench?.overall != null ? `${format(r.livebench.overall, 1)} (#${r.livebench.rank})` : '—'},
+      {zh: '单任务 API', en: 'API $/task', cls: 'num', get: r => r.cost != null ? money(r.cost) : '—'},
+      {zh: '跨机构原榜排名', en: 'Cross-Org Ranks', cls: 'org-cross-cell', get: r => formatOrgRankSummary(r.modelId)}
+    ];
+  }
+
+  const scroller = html('div', null, 'org-detail-scroll');
+  const table = html('table', null, 'org-detail-table');
+  const thead = html('thead');
+  const trHead = html('tr');
+  trHead.append(
+    html('th', t('排名', 'Rank'), 'num'),
+    html('th', t('模型（原榜条目）', 'Model (Official Entry)')),
+    ...cols.map(c => html('th', t(c.zh, c.en), c.cls.includes('num') ? 'num' : '')),
+    html('th', t('操作', 'Action'), 'num')
+  );
+  thead.append(trHead);
+
+  const tbody = html('tbody');
+  if (!rows.length) {
+    const tr = html('tr');
+    const td = html('td', t('当前筛选条件下无匹配模型', 'No matching models under current filters'), 'org-empty-cell');
+    td.colSpan = cols.length + 3;
+    tr.append(td);
+    tbody.append(tr);
+  } else {
+    for (const row of rows) {
+      const tr = html('tr');
+      const spotKey = orgRowSpotKey(row);
+      tr.dataset.spotKey = spotKey;
+      if (row.familySlug) tr.dataset.familySlug = row.familySlug;
+      if (!row.modelId) tr.classList.add('is-unmatched');
+
+      const tdRank = html('td', null, 'num');
+      tdRank.append(html('span', `#${row.rank}`, `org-rank${row.rank <= 3 ? ' rank-' + row.rank : ''}`));
+
+      const tdName = html('td', null, 'org-name-cell');
+      const nameWrap = html('div', null, 'org-detail-name-wrap');
+      const dot = html('i', null, 'creator-dot');
+      dot.style.background = orgCreatorColor(row.creator, row.creatorColor);
+      dot.setAttribute('aria-hidden', 'true');
+      const copy = html('div', null, 'org-detail-name-copy');
+      const primaryTxt = orgDisplayName(row);
+      const subBits = [row.creator];
+      if (row.rawName && row.rawName.toLowerCase() !== primaryTxt.toLowerCase()) subBits.push(row.rawName);
+      if (row.isOpenWeights === true) subBits.push(t('开源', 'Open'));
+      if (!row.modelId) subBits.push(t('机构独有', 'Org-only'));
+      copy.append(html('strong', primaryTxt), html('span', subBits.join(' · '), 'org-row-sub'));
+      nameWrap.append(dot, copy);
+      tdName.append(nameWrap);
+
+      const valTds = cols.map(c => html('td', c.get(row), c.cls));
+
+      const tdAct = html('td', null, 'num org-act-cell');
+      if (row.modelId) {
+        const loc = html('button', t('定位', 'Locate'), 'org-micro-btn');
+        loc.type = 'button';
+        loc.addEventListener('click', e => {
+          e.stopPropagation();
+          locateOrgModel(row, board);
+        });
+        const inCmp = isInCompareAnyModelTab(row.modelId);
+        const cmp = html('button', inCmp ? t('已对比 ✓', 'In ✓') : t('+ 对比', '+ Cmp'), `org-micro-btn${inCmp ? ' is-in' : ''}`);
+        cmp.type = 'button';
+        cmp.addEventListener('click', e => {
+          e.stopPropagation();
+          toggleOrgCompare(row, board, false);
+        });
+        tdAct.append(loc, cmp);
+      } else {
+        tdAct.append(html('span', '—', 'org-row-sub'));
+      }
+
+      tr.addEventListener('pointerenter', () => {
+        orgSpotlightKey = spotKey;
+        applyOrgSpotlight(spotKey, row);
+      });
+      tr.addEventListener('pointerleave', () => {
+        orgSpotlightKey = null;
+        applyOrgSpotlight(null);
+      });
+      tr.addEventListener('click', () => {
+        orgPinnedKey = orgPinnedKey === spotKey ? null : spotKey;
+        applyOrgSpotlight(orgPinnedKey, row);
+      });
+
+      tr.append(tdRank, tdName, ...valTds, tdAct);
+      tbody.append(tr);
+    }
+  }
+  table.append(thead, tbody);
+  scroller.append(table);
+  wrap.append(banner, scroller);
+  container.replaceChildren(wrap);
+}
+
+function renderOrgLeaderboards() {
+  if (!state || !orgBoards.length) return;
+  const selGroup = $('#orgSelectGroup');
+  const pFrag = document.createDocumentFragment();
+  const allBtn = html('button', t(`并排全览 (${orgBoards.length} 机构)`, `Side-by-Side (${orgBoards.length})`));
+  allBtn.type = 'button';
+  allBtn.setAttribute('aria-pressed', String(orgFocus === 'all'));
+  allBtn.addEventListener('click', () => {
+    if (orgFocus === 'all') return;
+    orgFocus = 'all';
+    syncUrlHash();
+    renderOrgLeaderboards();
+    updateSummary();
+  });
+  pFrag.append(allBtn);
+
+  for (const board of orgBoards) {
+    const btn = html('button', t(board.pillZh, board.pillEn));
+    btn.type = 'button';
+    btn.setAttribute('aria-pressed', String(orgFocus === board.id));
+    btn.title = `${t(board.orgZh, board.orgEn)} · ${t(board.titleZh, board.titleEn)}`;
+    btn.addEventListener('click', () => {
+      if (orgFocus === board.id) return;
+      orgFocus = board.id;
+      syncUrlHash();
+      renderOrgLeaderboards();
+      updateSummary();
+    });
+    pFrag.append(btn);
+  }
+  selGroup.replaceChildren(pFrag);
+
+  const matchBtn = $('#orgMatchedToggle');
+  matchBtn.setAttribute('aria-pressed', String(orgMatchedOnly));
+  matchBtn.textContent = orgMatchedOnly
+    ? t('仅看可对齐全站模型 ✓', 'Aligned models only ✓')
+    : t('仅看可对齐全站模型', 'Aligned models only');
+
+  const activeBoard = orgBoards.find(b => b.id === orgFocus) || null;
+  const jumpBtn = $('#orgJumpScatterBtn');
+  if (activeBoard) {
+    jumpBtn.hidden = false;
+    jumpBtn.textContent = t(`在散点图看 ${activeBoard.pillZh} →`, `Scatter: ${activeBoard.pillEn} →`);
+  } else {
+    jumpBtn.hidden = true;
+  }
+
+  const content = $('#orgContent');
+  if (activeBoard) {
+    renderOrgDetailTable(content, activeBoard);
+  } else {
+    renderOrgSideBySide(content);
+  }
+  applyOrgSpotlight(orgSpotlightKey);
+}
+
+$('#orgMatchedToggle').addEventListener('click', () => {
+  orgMatchedOnly = !orgMatchedOnly;
+  syncUrlHash();
+  renderOrgLeaderboards();
+  updateSummary();
+});
+
+$('#orgJumpScatterBtn').addEventListener('click', () => {
+  const activeBoard = orgBoards.find(b => b.id === orgFocus);
+  if (activeBoard) jumpToOrgScatter(activeBoard);
+});
+
 async function loadData() {
   loadController?.abort();
   loadController = new AbortController();
@@ -7699,6 +8744,7 @@ async function loadData() {
     if (generation !== loadGeneration) return;
     snapshot = next;
     crossTabIndex = buildCrossTabLookup(snapshot);
+    buildStandaloneOrgBoards(snapshot);
     globalCatalog = buildGlobalCatalog(snapshot);
     states.clear();
     const hasFrontier = Array.isArray(snapshot.frontierModels) && snapshot.frontierModels.length > 0;

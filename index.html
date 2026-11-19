@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>智能水平与任务成本 · Intelligence vs. Cost</title>
-  <meta name="description" content="用线性美元与实测耗时坐标比较综合智能、未饱和前沿极限、LMArena 与 Design Arena 真人盲测审美、编程智能体、网络安全及多模态生成（图/视频/TTS），支持自定义工作流场景配方、业务成本换算、框选对比与 Ctrl+K 全局速查。">
+  <meta name="description" content="用线性美元与实测耗时坐标比较 Artificial Analysis 综合智能、LiveBench 2.0 防污染实测、Arena.ai (LMArena) 与 Design Arena 真人盲测审美、编程智能体、网络安全及多模态生成，支持 6 家测评机构独立原榜对照、自定义场景配方与 Ctrl+K 全局速查。">
   <meta property="og:type" content="website">
   <meta property="og:title" content="智能水平与任务成本 · Intelligence vs. Cost">
-  <meta property="og:description" content="六大维度线性美元成本基准分析器：综合智能、前沿极限抗饱和测试、LMArena & Design Arena 人类盲测审美、编程智能体、网络安全与多模态图像/视频/语音生成。">
+  <meta property="og:description" content="多机构独立原榜对照与线性美元成本基准分析器：Artificial Analysis、LiveBench 2.0、Arena.ai (LMArena)、Design Arena、编程智能体、网络安全与多模态生成。">
   <meta name="twitter:card" content="summary">
   <meta name="color-scheme" content="dark light">
   <meta name="darkreader-lock">
@@ -26,8 +26,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261119-03">
-  <script type="module" src="app.js?v=20261119-03"></script>
+  <link rel="stylesheet" href="styles.css?v=20261119-04">
+  <script type="module" src="app.js?v=20261119-04"></script>
 </head>
 <body>
 <main class="app">
@@ -86,6 +86,10 @@
         <button id="tableToggle" type="button" data-view="table" aria-pressed="false" aria-controls="dataTable">
           <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="2" y="2.5" width="12" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M2 6.2h12M6.5 6.2v7.3" stroke="currentColor" stroke-width="1.3"/></svg>
           <span data-i18n="tableView">数据表</span>
+        </button>
+        <button id="orgView" type="button" data-view="orgs" aria-pressed="false" aria-controls="orgPanel">
+          <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="2" y="7" width="3.2" height="6.5" rx="0.8" fill="none" stroke="currentColor" stroke-width="1.25"/><rect x="6.4" y="2.8" width="3.2" height="10.7" rx="0.8" fill="none" stroke="currentColor" stroke-width="1.25"/><rect x="10.8" y="5" width="3.2" height="8.5" rx="0.8" fill="none" stroke="currentColor" stroke-width="1.25"/></svg>
+          <span data-i18n="orgView">机构分榜</span>
         </button>
         <button id="curveView" type="button" data-view="curve" aria-pressed="false" aria-controls="curvePanel">
           <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M2.5 13C6.5 12.6 9.8 9.8 13.5 2.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M2.5 13L13.5 3" fill="none" stroke="currentColor" stroke-width="1.1" stroke-dasharray="2 2" opacity="0.65"/></svg>
@@ -342,6 +346,18 @@
       </div>
     </div>
 
+    <div id="orgPanel" class="org-panel" hidden>
+      <div class="org-bar">
+        <div id="orgSelectGroup" class="preset-group org-select-group" role="group" aria-label="选择测评机构原榜"></div>
+        <div class="org-bar-actions">
+          <button id="orgMatchedToggle" type="button" aria-pressed="false">仅看可对齐全站模型</button>
+          <button id="orgJumpScatterBtn" type="button" hidden>去散点图看此榜 →</button>
+        </div>
+      </div>
+      <div id="orgSpotlightBar" class="org-spotlight-bar"></div>
+      <div id="orgContent" class="org-content"></div>
+    </div>
+
     <div id="curvePanel" class="curve-panel" hidden>
       <div class="curve-heading">
         <div class="curve-title-wrap">
@@ -416,6 +432,7 @@
                 <div id="radarModeSwitch" class="axis-controls" role="group" aria-label="雷达图维度切换">
                   <button id="radarModeBench" type="button" aria-pressed="true">基准六维</button>
                   <button id="radarModeDomain" type="button" aria-pressed="false">行业六维</button>
+                  <button id="radarModeLiveBench" type="button" aria-pressed="false" hidden>LiveBench 2.0</button>
                 </div>
                 <button id="radarInfoBtn" type="button" class="ghost-btn radar-info-btn" aria-expanded="false" aria-controls="radarInfoPanel">指标口径</button>
               </div>

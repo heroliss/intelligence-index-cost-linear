@@ -7,7 +7,7 @@ const crypto = require('node:crypto');
 const zlib = require('node:zlib');
 const http = require('node:http');
 const { spawn } = require('node:child_process');
-const { getBuffer, readCodingRows, readManifests, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildHumanArenaModels, fetchHumanArenas, buildMediaModels, buildSnapshotDiff, expectedCodingComponents, simplifyCodingAgent, fetchModels, validateRows, writeSnapshot } = require('./fetch_data.cjs');
+const { getBuffer, readCodingRows, readManifests, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildHumanArenaModels, fetchHumanArenas, parseSimpleCsv, parseLiveBenchData, fetchLiveBench, buildOrgArenaBoards, buildMediaModels, buildSnapshotDiff, expectedCodingComponents, simplifyCodingAgent, fetchModels, validateRows, writeSnapshot } = require('./fetch_data.cjs');
 
 const model = { id: 'model-1', slug: 'example-model', name: 'Example Model', intelligenceIndex: 50, intelligenceIndexCostPerTask: { total: 0.5 } };
 const agent = { id: 'agent-1', displayLabel: 'Example Agent - Model', indexScore: 0.53, mean: { costUsd: 7.6 }, indexComponentCount: 3, modelCreators: [{ name: 'Example', color: '#123456' }] };
@@ -363,4 +363,60 @@ test('new hard benchmarks (MLCR, MMMU-Pro, SRE), 3D/Video/Slop, buildMediaModels
   assert.ok(diffs.some(d => d.id === 'b' && d.kind === 'new'));
   assert.ok(diffs.some(d => d.id === 'a' && d.kind === 'price-drop' && d.pct === -25));
   assert.ok(diffs.some(d => d.id === 'a' && d.kind === 'score'));
+});
+
+test('LiveBench 2.0 parser, weighted score, per-task cost, orgLeaderboards, and fallback work accurately', async () => {
+  const csvRows = parseSimpleCsv('a,b\n"x,1","y""2"\nfoo,bar\r\n');
+  assert.deepEqual(csvRows, [{ a: 'x,1', b: 'y"2' }, { a: 'foo', b: 'bar' }]);
+
+  const models = [
+    { id: 'm-1', slug: 'claude-fable-5-2', name: 'Claude Fable 5.2 (max)', shortName: 'Claude Fable 5.2 (max)', cost: 26.5, intelligenceIndex: 64.5, family: { slug: 'claude-fable-5-2' }, creator: { name: 'Anthropic' } },
+    { id: 'm-2', slug: 'muse-wonder', name: 'Muse Wonder (max)', shortName: 'Muse Wonder (max)', cost: 6.95, intelligenceIndex: 55.0, family: { slug: 'muse-wonder' }, creator: { name: 'Meta' } }
+  ];
+  const tableCsv = [
+    'model,long_agentic,reasoning,coding,browser,data_analysis,research,design',
+    'claude-fable-5.2,80,90,80,85,80,95,84',
+    'muse-wonder-1.0,70,80,75,75,70,80,82'
+  ].join('\n');
+  const categoriesJson = {
+    'Long Agentic': ['long_agentic'], Reasoning: ['reasoning'], Coding: ['coding'],
+    Browser: ['browser'], 'Data Analysis': ['data_analysis'], Research: ['research'], Design: ['design'],
+    _overall_weights: { 'Long Agentic': 2, Coding: 1.5, Design: 1.5 }
+  };
+  const costCsv = [
+    'model,long_agentic,nq_long_agentic,reasoning,nq_reasoning,coding,nq_coding,browser,nq_browser,data_analysis,nq_data_analysis,research,nq_research,design,nq_design',
+    'claude-fable-5.2,100,10,20,10,30,10,10,10,10,10,20,10,10,10',
+    'muse-wonder-1.0,50,10,10,10,15,10,5,10,5,10,10,10,5,10'
+  ].join('\n');
+
+  const { board, byModelId } = parseLiveBenchData({ tableCsv, categoriesJson, costCsv, releaseId: '20261106', models });
+  assert.equal(board.date, '2026-11-06');
+  assert.equal(board.totalCount, 2);
+  assert.equal(board.matchedCount, 2);
+  assert.equal(board.rows[0].rank, 1);
+  assert.equal(board.rows[0].modelId, 'm-1');
+  // Weighted avg = (80*2 + 90*1 + 80*1.5 + 85*1 + 80*1 + 95*1 + 84*1.5) / 9 = 756 / 9 = 84.00
+  assert.equal(board.rows[0].score, 84);
+  // Cost = 200 / 70 = 2.8571
+  assert.equal(board.rows[0].lbCost, 2.8571);
+  assert.equal(byModelId.get('m-2').rank, 2);
+  assert.equal(byModelId.get('m-2').design, 82);
+
+  const boards = buildOrgArenaBoards(models, {
+    chatRows: [{ model_name: 'Muse Wonder (Max)', rating: 1510.7, vote_count: 15331, category: 'overall' }],
+    webdevRows: [{ model_name: 'Claude Fable 5.2', rating: 1823.8, vote_count: 1875, category: 'overall' }],
+    designByCat: {
+      website: [{ modelId: 'muse-wonder-1.0', elo: 1375.4, winRate: 63.8, battles: 4983 }],
+      uicomponent: [{ modelId: 'muse-wonder-1.0', elo: 1359.2 }]
+    },
+    lmArenaPublishDate: '2026-11-18'
+  });
+  assert.equal(boards.arenaChat.rows[0].modelId, 'm-2');
+  assert.equal(boards.arenaWebdev.rows[0].modelId, 'm-1');
+  assert.equal(boards.designArena.rows[0].suites.uicomponent, 1359);
+
+  // Graceful fallback when LiveBench network fails
+  const fb = await fetchLiveBench(models, { orgLeaderboards: { livebench: board } }, async () => { throw new Error('offline'); });
+  assert.equal(fb.board.totalCount, 2);
+  assert.equal(fb.byModelId.get('m-1').overall, 84);
 });
