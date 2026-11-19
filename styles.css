@@ -2333,8 +2333,8 @@ th[aria-sort="descending"] .sub-sort-button {
 
 .radar-score-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
-  gap: 6px;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 8px;
   width: 100%;
 }
 
@@ -2526,6 +2526,11 @@ th[aria-sort="descending"] .sub-sort-button {
   border-bottom: 1px solid var(--border);
   text-align: left;
   font-variant-numeric: tabular-nums;
+  white-space: normal;
+  line-height: 1.4;
+}
+
+.compare-matrix thead th {
   white-space: nowrap;
 }
 
@@ -2541,6 +2546,8 @@ th[aria-sort="descending"] .sub-sort-button {
   left: 0;
   z-index: 1;
   background: var(--surface);
+  min-width: 148px;
+  max-width: 215px;
 }
 
 .compare-matrix td.cell-best {
@@ -4084,6 +4091,7 @@ tbody tr.is-selected .locate-btn,
   width: 100%;
   min-width: 820px;
   height: auto;
+  margin: 0 auto;
 }
 
 .bump-guide {
@@ -4135,7 +4143,11 @@ tbody tr.is-selected .locate-btn,
 }
 
 .bump-series.is-dimmed {
-  opacity: 0.13;
+  opacity: 0.16;
+}
+
+:root[data-theme="light"] .bump-series.is-dimmed {
+  opacity: 0.22;
 }
 
 .bump-hit {
@@ -4223,16 +4235,16 @@ tbody tr.is-selected .locate-btn,
   font-variant-numeric: tabular-nums;
 }
 
-/* Single-Org Top Ranked Bar Visualization */
+/* Single-Org Top Ranked Bar Visualization (native typography, never scales with viewport) */
 .org-bar-viz {
   border-radius: 10px;
   background: var(--surface);
   border: 1px solid var(--border);
-  padding: 7px 10px;
+  padding: 6px 10px 7px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .org-viz-head {
@@ -4249,98 +4261,117 @@ tbody tr.is-selected .locate-btn,
 }
 
 .org-viz-scroll {
-  max-height: 176px;
-  overflow: auto;
+  max-height: 184px;
+  overflow-y: auto;
+  overflow-x: auto;
   border-radius: 7px;
   background: var(--chart);
   border: 1px solid var(--border);
   padding: 4px 6px;
 }
 
-.org-bar-svg {
-  display: block;
-  width: 100%;
-  min-width: 680px;
-  height: auto;
+.org-bar-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 540px;
 }
 
-.org-viz-grid {
-  stroke: var(--grid);
-  stroke-width: 1;
-}
-
-.org-viz-row {
+.org-bar-item {
+  display: grid;
+  grid-template-columns: 30px 7px minmax(150px, 214px) minmax(120px, 1fr) 58px 50px 74px;
+  align-items: center;
+  gap: 8px;
+  min-height: 25px;
+  padding: 2px 7px;
+  border-radius: 5px;
   cursor: pointer;
+  transition: background-color 110ms ease-out;
 }
 
-.org-viz-bg {
-  fill: transparent;
-  transition: fill 110ms ease-out;
+.org-bar-item:hover {
+  background: var(--hover);
 }
 
-.org-viz-row:hover .org-viz-bg {
-  fill: var(--hover);
+.org-bar-item.is-spotlit,
+.org-bar-item.is-pinned-spot {
+  background: var(--active-bg);
 }
 
-.org-viz-row.is-spotlit .org-viz-bg,
-.org-viz-row.is-pinned-spot .org-viz-bg {
-  fill: var(--active-bg);
-}
-
-.org-viz-rank {
-  fill: var(--muted);
-  font-size: 11px;
+.org-bar-rank {
+  font-size: 11.5px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  text-align: right;
 }
 
-.org-viz-rank.is-top {
-  fill: var(--accent);
+.org-bar-rank.is-top {
+  color: var(--accent);
 }
 
-.org-viz-name {
-  fill: var(--ink);
+.org-bar-name {
   font-size: 12px;
   font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.org-viz-track {
-  fill: var(--surface);
+.org-bar-track {
+  position: relative;
+  display: block;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--surface);
+  overflow: hidden;
 }
 
-.org-viz-fill {
-  opacity: 0.32;
-  transition: opacity 120ms ease-out;
+.org-bar-fill {
+  position: relative;
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--bar-color, var(--accent)) 36%, transparent);
+  border-right: 2.5px solid var(--bar-color, var(--accent));
+  transition: background-color 120ms ease-out;
 }
 
-.org-viz-row:hover .org-viz-fill,
-.org-viz-row.is-spotlit .org-viz-fill,
-.org-viz-row.is-pinned-spot .org-viz-fill {
-  opacity: 0.56;
+.org-bar-item:hover .org-bar-fill,
+.org-bar-item.is-spotlit .org-bar-fill,
+.org-bar-item.is-pinned-spot .org-bar-fill {
+  background: color-mix(in srgb, var(--bar-color, var(--accent)) 56%, transparent);
 }
 
-.org-viz-score {
-  fill: var(--ink);
+.org-bar-score {
   font-size: 12px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  text-align: right;
 }
 
-.org-viz-gap {
-  fill: var(--muted);
-  font-size: 11px;
+.org-bar-gap {
+  font-size: 11.5px;
   font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  text-align: right;
 }
 
-.org-viz-gap.is-lead {
-  fill: var(--amber);
+.org-bar-gap.is-lead {
+  color: var(--amber);
   font-weight: 600;
 }
 
-.org-viz-cost {
-  fill: var(--muted);
-  font-size: 11px;
+.org-bar-cost {
+  font-size: 11.5px;
   font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  text-align: right;
 }
 
 /* Single-Org Detail Table */
@@ -4419,8 +4450,8 @@ tbody tr.is-selected .locate-btn,
 }
 
 .org-detail-table {
-  width: max-content;
-  min-width: 100%;
+  width: 100%;
+  min-width: 900px;
   table-layout: auto;
   border-collapse: collapse;
   font-size: 12.5px;
@@ -4497,7 +4528,10 @@ tbody tr.is-selected .locate-btn,
 .org-cross-cell {
   font-size: 11.5px;
   color: var(--muted);
-  min-width: 180px;
+  min-width: 150px;
+  max-width: 245px;
+  white-space: normal;
+  line-height: 1.38;
 }
 
 .org-act-cell {
@@ -4599,6 +4633,26 @@ tbody tr.is-selected .locate-btn,
   .cmd-trigger-btn kbd {
     display: none;
   }
+}
+
+@media (max-width: 680px) {
+  .org-bar-list {
+    min-width: 0;
+    gap: 5px;
+  }
+  .org-bar-item {
+    grid-template-columns: 26px 7px minmax(0, 1fr) auto auto;
+    grid-template-rows: auto auto;
+    gap: 3px 6px;
+    padding: 5px 6px;
+  }
+  .org-bar-rank { grid-column: 1; grid-row: 1; }
+  .org-bar-item > .creator-dot { grid-column: 2; grid-row: 1; }
+  .org-bar-name { grid-column: 3; grid-row: 1; }
+  .org-bar-score { grid-column: 4; grid-row: 1; }
+  .org-bar-gap { grid-column: 5; grid-row: 1; }
+  .org-bar-track { grid-column: 1 / 4; grid-row: 2; height: 8px; }
+  .org-bar-cost { grid-column: 4 / 6; grid-row: 2; }
 }
 
 @media (prefers-reduced-motion: reduce) {

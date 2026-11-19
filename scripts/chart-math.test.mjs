@@ -503,6 +503,11 @@ test('computeScenarioScore and simulateWorkloadCost re-rank models by custom wor
   const aestheticW = SCENARIO_PRESETS.find(p => p.id === 'aesthetic').weights;
   assert.ok(computeScenarioScore(coder, fullstackW) > computeScenarioScore(designer, fullstackW), 'fullstack preset favors coding specialist');
   assert.ok(computeScenarioScore(designer, aestheticW) > computeScenarioScore(coder, aestheticW), 'aesthetic preset favors design/vibe specialist');
+  const mmmuOnlySibling = {
+    id: 'mmmu-only', _baseIndex: 54, intelligenceIndex: 54, _baseCost: 3, cost: 3,
+    subscores: {frontierCode: 38, terminalBench: 42, mmmuPro: 90, omniscience: 64, hallucination: 30}
+  };
+  assert.ok(computeScenarioScore(designer, aestheticW) > computeScenarioScore(mmmuOnlySibling, aestheticW), 'missing Design Arena does not let MMMU-Pro alone beat tested aesthetic leaders');
   assert.equal(computeScenarioScore(coder, null), 56);
 
   assert.equal(simulateWorkloadCost(coder, 'benchmark'), 5);

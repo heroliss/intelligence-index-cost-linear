@@ -4,7 +4,7 @@
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
   "hostsManifestPath": "/data/324ed05c14a0dc8b.txt",
-  "updatedAt": "2026-11-19T08:28:14.654Z",
+  "updatedAt": "2026-11-19T09:04:21.489Z",
   "updateIntervalHours": 2,
   "changelog": [
     {
@@ -32320,7 +32320,7 @@
       "name": "Kokoro 82M v1.0",
       "shortName": "Kokoro 82M v1.0",
       "mediaKind": "tts",
-      "intelligenceIndex": 41.83,
+      "intelligenceIndex": 41.44,
       "cost": 0.00065,
       "creator": {
         "name": "Kokoro",
@@ -32335,7 +32335,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 41.83
+        "tts": 41.44
       },
       "mediaRaw": {
         "kind": "tts",
@@ -32354,7 +32354,7 @@
       "name": "StyleTTS 2",
       "shortName": "StyleTTS 2",
       "mediaKind": "tts",
-      "intelligenceIndex": 4.07,
+      "intelligenceIndex": 15.89,
       "cost": 0.00282,
       "creator": {
         "name": "StyleTTS ",
@@ -32369,7 +32369,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 4.07
+        "tts": 15.89
       },
       "mediaRaw": {
         "kind": "tts",
@@ -32388,7 +32388,7 @@
       "name": "Step Image Edit 2",
       "shortName": "Step Image Edit 2",
       "mediaKind": "image",
-      "intelligenceIndex": 21.51,
+      "intelligenceIndex": 46.72,
       "cost": 0.003,
       "creator": {
         "name": "StepFun",
@@ -32398,7 +32398,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 21.51,
+        "imgEdit": 46.72,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -32419,7 +32419,7 @@
       "name": "P-Image-Ideogram (Very Low)",
       "shortName": "P-Image-Ideogram (Very Low)",
       "mediaKind": "image",
-      "intelligenceIndex": 7.81,
+      "intelligenceIndex": 32.35,
       "cost": 0.003,
       "creator": {
         "name": "Pruna AI",
@@ -32428,7 +32428,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 7.81,
+        "t2i": 32.35,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -32450,7 +32450,7 @@
       "name": "FLUX.1 [schnell]",
       "shortName": "FLUX.1 [schnell]",
       "mediaKind": "image",
-      "intelligenceIndex": 0.66,
+      "intelligenceIndex": 11.4,
       "cost": 0.003,
       "creator": {
         "name": "Black Forest Labs",
@@ -32459,7 +32459,7 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 0.66,
+        "t2i": 11.4,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -32481,7 +32481,7 @@
       "name": "WaveNet",
       "shortName": "WaveNet",
       "mediaKind": "tts",
-      "intelligenceIndex": 6.23,
+      "intelligenceIndex": 18.89,
       "cost": 0.004,
       "creator": {
         "name": "Google",
@@ -32496,7 +32496,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 6.23
+        "tts": 18.89
       },
       "mediaRaw": {
         "kind": "tts",
@@ -32515,7 +32515,7 @@
       "name": "Standard",
       "shortName": "Standard",
       "mediaKind": "tts",
-      "intelligenceIndex": 3.84,
+      "intelligenceIndex": 15.52,
       "cost": 0.004,
       "creator": {
         "name": "Google",
@@ -32530,7 +32530,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 3.84
+        "tts": 15.52
       },
       "mediaRaw": {
         "kind": "tts",
@@ -32549,7 +32549,7 @@
       "name": "Polly Standard",
       "shortName": "Standard",
       "mediaKind": "tts",
-      "intelligenceIndex": 1.62,
+      "intelligenceIndex": 10.83,
       "cost": 0.004,
       "creator": {
         "name": "Amazon",
@@ -32564,7 +32564,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 1.62
+        "tts": 10.83
       },
       "mediaRaw": {
         "kind": "tts",
@@ -32583,7 +32583,7 @@
       "name": "FLUX.2 [dev] Flash",
       "shortName": "FLUX.2 [dev] Flash",
       "mediaKind": "image",
-      "intelligenceIndex": 20.91,
+      "intelligenceIndex": 46.25,
       "cost": 0.005,
       "creator": {
         "name": "Fal",
@@ -32592,8 +32592,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 19.76,
-        "imgEdit": 22.07,
+        "t2i": 45.35,
+        "imgEdit": 47.14,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -32614,7 +32614,7 @@
       "name": "Z-Image Turbo",
       "shortName": "Z-Image Turbo",
       "mediaKind": "image",
-      "intelligenceIndex": 10.64,
+      "intelligenceIndex": 36.3,
       "cost": 0.005,
       "creator": {
         "name": "Alibaba",
@@ -32623,7 +32623,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 10.64,
+        "t2i": 36.3,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -32645,7 +32645,7 @@
       "name": "P-Image",
       "shortName": "P-Image",
       "mediaKind": "image",
-      "intelligenceIndex": 6.01,
+      "intelligenceIndex": 29.25,
       "cost": 0.005,
       "creator": {
         "name": "Pruna AI",
@@ -32654,7 +32654,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 6.01,
+        "t2i": 29.25,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -32676,7 +32676,7 @@
       "name": "HiDream-O1-Image-Dev",
       "shortName": "HiDream-O1-Image-Dev",
       "mediaKind": "image",
-      "intelligenceIndex": 2.79,
+      "intelligenceIndex": 21.05,
       "cost": 0.005,
       "creator": {
         "name": "HiDream",
@@ -32685,8 +32685,8 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 1.78,
-        "imgEdit": 3.81,
+        "t2i": 17.71,
+        "imgEdit": 24.39,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -32707,7 +32707,7 @@
       "name": "Luma Photon Flash",
       "shortName": "Luma Photon Flash",
       "mediaKind": "image",
-      "intelligenceIndex": 1.05,
+      "intelligenceIndex": 14.02,
       "cost": 0.005,
       "creator": {
         "name": "Luma Labs",
@@ -32716,7 +32716,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 1.05,
+        "t2i": 14.02,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -32738,7 +32738,7 @@
       "name": "Simba 3.5",
       "shortName": "Simba 3.5",
       "mediaKind": "tts",
-      "intelligenceIndex": 97.1,
+      "intelligenceIndex": 80.94,
       "cost": 0.00658,
       "creator": {
         "name": "SpeechifyAI",
@@ -32753,7 +32753,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 97.1
+        "tts": 80.94
       },
       "mediaRaw": {
         "kind": "tts",
@@ -32772,7 +32772,7 @@
       "name": "Simba 3.2",
       "shortName": "Simba 3.2",
       "mediaKind": "tts",
-      "intelligenceIndex": 94.44,
+      "intelligenceIndex": 75.58,
       "cost": 0.00658,
       "creator": {
         "name": "SpeechifyAI",
@@ -32787,7 +32787,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 94.44
+        "tts": 75.58
       },
       "mediaRaw": {
         "kind": "tts",
@@ -32806,7 +32806,7 @@
       "name": "Simba 3.0",
       "shortName": "SIMBA 3.0",
       "mediaKind": "tts",
-      "intelligenceIndex": 63.2,
+      "intelligenceIndex": 51.51,
       "cost": 0.00658,
       "creator": {
         "name": "SpeechifyAI",
@@ -32821,7 +32821,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 63.2
+        "tts": 51.51
       },
       "mediaRaw": {
         "kind": "tts",
@@ -32840,7 +32840,7 @@
       "name": "Recraft V4.1 Flash",
       "shortName": "Recraft V4.1 Flash",
       "mediaKind": "image",
-      "intelligenceIndex": 12.53,
+      "intelligenceIndex": 38.54,
       "cost": 0.007,
       "creator": {
         "name": "Recraft",
@@ -32849,7 +32849,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 12.53,
+        "t2i": 38.54,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -32871,7 +32871,7 @@
       "name": "Ideogram 4.0 Instant",
       "shortName": "Ideogram 4.0 Instant",
       "mediaKind": "image",
-      "intelligenceIndex": 19.44,
+      "intelligenceIndex": 45.09,
       "cost": 0.0075,
       "creator": {
         "name": "Fal",
@@ -32880,7 +32880,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 19.44,
+        "t2i": 45.09,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -32902,7 +32902,7 @@
       "name": "P-Image-Ideogram (Low)",
       "shortName": "P-Image-Ideogram (Low)",
       "mediaKind": "image",
-      "intelligenceIndex": 15.45,
+      "intelligenceIndex": 41.56,
       "cost": 0.0075,
       "creator": {
         "name": "Pruna AI",
@@ -32911,7 +32911,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 15.45,
+        "t2i": 41.56,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -32933,7 +32933,7 @@
       "name": "FLUX.2 [dev] Turbo",
       "shortName": "FLUX.2 [dev] Turbo",
       "mediaKind": "image",
-      "intelligenceIndex": 22.68,
+      "intelligenceIndex": 47.59,
       "cost": 0.008,
       "creator": {
         "name": "Fal",
@@ -32942,8 +32942,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 22.23,
-        "imgEdit": 23.13,
+        "t2i": 47.26,
+        "imgEdit": 47.92,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -32964,7 +32964,7 @@
       "name": "OpenVoice v2",
       "shortName": "OpenVoice v2",
       "mediaKind": "tts",
-      "intelligenceIndex": 11.35,
+      "intelligenceIndex": 24.03,
       "cost": 0.00833,
       "creator": {
         "name": "OpenVoice",
@@ -32979,7 +32979,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 11.35
+        "tts": 24.03
       },
       "mediaRaw": {
         "kind": "tts",
@@ -32998,7 +32998,7 @@
       "name": "FLUX 3 Image Klein",
       "shortName": "FLUX 3 Image Klein",
       "mediaKind": "image",
-      "intelligenceIndex": 38.15,
+      "intelligenceIndex": 57.13,
       "cost": 0.009,
       "creator": {
         "name": "Black Forest Labs",
@@ -33007,8 +33007,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 36.02,
-        "imgEdit": 40.28,
+        "t2i": 55.98,
+        "imgEdit": 58.27,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -33029,7 +33029,7 @@
       "name": "Gemini 2.5 Flash Lite TTS",
       "shortName": "Gemini 2.5 Flash Lite",
       "mediaKind": "tts",
-      "intelligenceIndex": 51.19,
+      "intelligenceIndex": 45.77,
       "cost": 0.00915,
       "creator": {
         "name": "Google",
@@ -33043,7 +33043,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 51.19
+        "tts": 45.77
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33062,7 +33062,7 @@
       "name": "Gemini 2.5 Flash TTS (Dec 2025)",
       "shortName": "Gemini 2.5 Flash",
       "mediaKind": "tts",
-      "intelligenceIndex": 46.88,
+      "intelligenceIndex": 43.78,
       "cost": 0.00915,
       "creator": {
         "name": "Google",
@@ -33077,7 +33077,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 46.88
+        "tts": 43.78
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33091,12 +33091,43 @@
       "releaseDate": "2025-12-10"
     },
     {
+      "id": "img:0a7b7bb4-caa5-4334-aff3-57ad2bdead0d",
+      "slug": "muse-image-1.0",
+      "name": "Muse Image",
+      "shortName": "Muse Image",
+      "mediaKind": "image",
+      "intelligenceIndex": 69.85,
+      "cost": 0.01,
+      "creator": {
+        "name": "Meta",
+        "color": "#0089f4"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "mediaScores": {
+        "t2i": 70.83,
+        "imgEdit": 68.88,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": null
+      },
+      "mediaRaw": {
+        "kind": "image",
+        "unitZh": "每张图",
+        "unitEn": "/ image",
+        "t2iElo": 1125.6,
+        "imgEditElo": 1128.53,
+        "pricePer1k": 10
+      }
+    },
+    {
       "id": "tts:58476ab8-ff13-4b24-9340-58d94ebea241",
       "slug": "falcon-2",
       "name": "Falcon 2",
       "shortName": "Falcon 2",
       "mediaKind": "tts",
-      "intelligenceIndex": 77.81,
+      "intelligenceIndex": 59.71,
       "cost": 0.01,
       "creator": {
         "name": "Murf AI",
@@ -33111,7 +33142,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 77.81
+        "tts": 59.71
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33130,7 +33161,7 @@
       "name": "Falcon 2.1",
       "shortName": "Falcon 2.1",
       "mediaKind": "tts",
-      "intelligenceIndex": 76.79,
+      "intelligenceIndex": 59.06,
       "cost": 0.01,
       "creator": {
         "name": "Murf AI",
@@ -33145,7 +33176,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 76.79
+        "tts": 59.06
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33159,43 +33190,12 @@
       "releaseDate": "2026-10-28"
     },
     {
-      "id": "img:0a7b7bb4-caa5-4334-aff3-57ad2bdead0d",
-      "slug": "muse-image-1.0",
-      "name": "Muse Image",
-      "shortName": "Muse Image",
-      "mediaKind": "image",
-      "intelligenceIndex": 64.26,
-      "cost": 0.01,
-      "creator": {
-        "name": "Meta",
-        "color": "#0089f4"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "mediaScores": {
-        "t2i": 66.32,
-        "imgEdit": 62.2,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": null
-      },
-      "mediaRaw": {
-        "kind": "image",
-        "unitZh": "每张图",
-        "unitEn": "/ image",
-        "t2iElo": 1125.6,
-        "imgEditElo": 1128.53,
-        "pricePer1k": 10
-      }
-    },
-    {
       "id": "img:d74e176c-b2ca-4132-b641-fc4932c2314d",
       "slug": "p-image-ideogram-medium",
       "name": "P-Image-Ideogram (Medium)",
       "shortName": "P-Image-Ideogram (Medium)",
       "mediaKind": "image",
-      "intelligenceIndex": 17.68,
+      "intelligenceIndex": 43.6,
       "cost": 0.01,
       "creator": {
         "name": "Pruna AI",
@@ -33204,7 +33204,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 17.68,
+        "t2i": 43.6,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -33226,7 +33226,7 @@
       "name": "P-Image-Edit",
       "shortName": "P-Image-Edit",
       "mediaKind": "image",
-      "intelligenceIndex": 15.59,
+      "intelligenceIndex": 41.69,
       "cost": 0.01,
       "creator": {
         "name": "Pruna AI",
@@ -33236,7 +33236,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 15.59,
+        "imgEdit": 41.69,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -33257,7 +33257,7 @@
       "name": "HiDream-O1-Image",
       "shortName": "HiDream-O1-Image",
       "mediaKind": "image",
-      "intelligenceIndex": 14.41,
+      "intelligenceIndex": 40.17,
       "cost": 0.01,
       "creator": {
         "name": "HiDream",
@@ -33266,8 +33266,8 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 18.17,
-        "imgEdit": 10.64,
+        "t2i": 44.02,
+        "imgEdit": 36.31,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -33288,7 +33288,7 @@
       "name": "Z-Image Base",
       "shortName": "Z-Image Base",
       "mediaKind": "image",
-      "intelligenceIndex": 5.96,
+      "intelligenceIndex": 29.15,
       "cost": 0.01,
       "creator": {
         "name": "Alibaba",
@@ -33297,7 +33297,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 5.96,
+        "t2i": 29.15,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -33319,7 +33319,7 @@
       "name": "Async Flash v1.5",
       "shortName": "Async Flash v1.5",
       "mediaKind": "tts",
-      "intelligenceIndex": 72.31,
+      "intelligenceIndex": 56.36,
       "cost": 0.0101,
       "creator": {
         "name": "async",
@@ -33334,7 +33334,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 72.31
+        "tts": 56.36
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33353,7 +33353,7 @@
       "name": "Async Flash v1.0",
       "shortName": "Async Flash v1.0",
       "mediaKind": "tts",
-      "intelligenceIndex": 36.34,
+      "intelligenceIndex": 38.85,
       "cost": 0.0101,
       "creator": {
         "name": "async",
@@ -33368,7 +33368,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 36.34
+        "tts": 38.85
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33387,7 +33387,7 @@
       "name": "MAI-Image-2.7-Flash",
       "shortName": "MAI-Image-2.7-Flash",
       "mediaKind": "image",
-      "intelligenceIndex": 76.94,
+      "intelligenceIndex": 76.13,
       "cost": 0.01024,
       "creator": {
         "name": "Microsoft AI",
@@ -33396,8 +33396,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 76.16,
-        "imgEdit": 77.71,
+        "t2i": 75.72,
+        "imgEdit": 76.54,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -33419,7 +33419,7 @@
       "name": "Realtime TTS-2 Flash",
       "shortName": "Realtime TTS-2 Flash",
       "mediaKind": "tts",
-      "intelligenceIndex": 90.02,
+      "intelligenceIndex": 69.73,
       "cost": 0.01042,
       "creator": {
         "name": "Inworld",
@@ -33434,7 +33434,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 90.02
+        "tts": 69.73
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33453,7 +33453,7 @@
       "name": "ERNIE Image Turbo",
       "shortName": "ERNIE Image Turbo",
       "mediaKind": "image",
-      "intelligenceIndex": 7.95,
+      "intelligenceIndex": 32.56,
       "cost": 0.01049,
       "creator": {
         "name": "Baidu",
@@ -33462,7 +33462,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 7.95,
+        "t2i": 32.56,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -33484,7 +33484,7 @@
       "name": "Ideogram 4.0 Fast",
       "shortName": "Ideogram 4.0 Fast",
       "mediaKind": "image",
-      "intelligenceIndex": 15.58,
+      "intelligenceIndex": 41.69,
       "cost": 0.0105,
       "creator": {
         "name": "Fal",
@@ -33493,7 +33493,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 15.58,
+        "t2i": 41.69,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -33515,7 +33515,7 @@
       "name": "GPT Image 1 Mini (medium)",
       "shortName": "GPT Image 1 Mini (medium)",
       "mediaKind": "image",
-      "intelligenceIndex": 9.98,
+      "intelligenceIndex": 35.42,
       "cost": 0.011,
       "creator": {
         "name": "OpenAI",
@@ -33524,8 +33524,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 10.87,
-        "imgEdit": 9.09,
+        "t2i": 36.59,
+        "imgEdit": 34.24,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -33546,7 +33546,7 @@
       "name": "Gemini 3.8 Flash-Lite TTS",
       "shortName": "Gemini 3.8 Flash-Lite TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 95.24,
+      "intelligenceIndex": 76.97,
       "cost": 0.01103,
       "creator": {
         "name": "Google",
@@ -33561,7 +33561,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 95.24
+        "tts": 76.97
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33580,7 +33580,7 @@
       "name": "Qwen3 TTS Flash",
       "shortName": "Qwen3 TTS Flash",
       "mediaKind": "tts",
-      "intelligenceIndex": 9.11,
+      "intelligenceIndex": 22,
       "cost": 0.01103,
       "creator": {
         "name": "Alibaba",
@@ -33595,7 +33595,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 9.11
+        "tts": 22
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33614,7 +33614,7 @@
       "name": "FLUX.2 [dev]",
       "shortName": "FLUX.2 [dev]",
       "mediaKind": "image",
-      "intelligenceIndex": 21.48,
+      "intelligenceIndex": 46.65,
       "cost": 0.012,
       "creator": {
         "name": "Black Forest Labs",
@@ -33623,8 +33623,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 23.35,
-        "imgEdit": 19.6,
+        "t2i": 48.08,
+        "imgEdit": 45.22,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -33645,7 +33645,7 @@
       "name": "Voxtral 3 TTS",
       "shortName": "Voxtral 3 TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 89.91,
+      "intelligenceIndex": 69.62,
       "cost": 0.013,
       "creator": {
         "name": "Mistral",
@@ -33660,7 +33660,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 89.91
+        "tts": 69.62
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33679,7 +33679,7 @@
       "name": "Qwen3 TTS",
       "shortName": "Qwen3-TTS-VC-Realtime",
       "mediaKind": "tts",
-      "intelligenceIndex": 7.7,
+      "intelligenceIndex": 20.57,
       "cost": 0.01379,
       "creator": {
         "name": "Alibaba",
@@ -33693,7 +33693,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 7.7
+        "tts": 20.57
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33712,7 +33712,7 @@
       "name": "FLUX.2 [klein] 4B",
       "shortName": "FLUX.2 [klein] 4B",
       "mediaKind": "image",
-      "intelligenceIndex": 5.97,
+      "intelligenceIndex": 27.85,
       "cost": 0.014,
       "creator": {
         "name": "Black Forest Labs",
@@ -33721,8 +33721,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 2.74,
-        "imgEdit": 9.2,
+        "t2i": 21.3,
+        "imgEdit": 34.4,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -33743,7 +33743,7 @@
       "name": "Soniox TTS Real-Time v2",
       "shortName": "Soniox TTS RT v2",
       "mediaKind": "tts",
-      "intelligenceIndex": 83.74,
+      "intelligenceIndex": 63.94,
       "cost": 0.01423,
       "creator": {
         "name": "Soniox",
@@ -33758,7 +33758,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 83.74
+        "tts": 63.94
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33777,7 +33777,7 @@
       "name": "Fish Audio Drama 3",
       "shortName": "Fish Audio Drama 3",
       "mediaKind": "tts",
-      "intelligenceIndex": 96.33,
+      "intelligenceIndex": 79.13,
       "cost": 0.015,
       "creator": {
         "name": "Fish Audio",
@@ -33792,7 +33792,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 96.33
+        "tts": 79.13
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33811,7 +33811,7 @@
       "name": "Fish Audio Drama 3 Preview",
       "shortName": "Fish Audio Drama 3 Preview",
       "mediaKind": "tts",
-      "intelligenceIndex": 93,
+      "intelligenceIndex": 73.4,
       "cost": 0.015,
       "creator": {
         "name": "Fish Audio",
@@ -33826,7 +33826,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 93
+        "tts": 73.4
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33845,7 +33845,7 @@
       "name": "AssemblyAI-TTS-1",
       "shortName": "AssemblyAI-TTS-1",
       "mediaKind": "tts",
-      "intelligenceIndex": 89.87,
+      "intelligenceIndex": 69.57,
       "cost": 0.015,
       "creator": {
         "name": "AssemblyAI",
@@ -33860,7 +33860,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 89.87
+        "tts": 69.57
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33879,7 +33879,7 @@
       "name": "Luna TTS",
       "shortName": "Luna TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 86.58,
+      "intelligenceIndex": 66.33,
       "cost": 0.015,
       "creator": {
         "name": "VUI Labs",
@@ -33894,7 +33894,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 86.58
+        "tts": 66.33
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33913,7 +33913,7 @@
       "name": "Fish Audio S2.1 Pro (Oct 2026)",
       "shortName": "Fish Audio S2.1 Pro",
       "mediaKind": "tts",
-      "intelligenceIndex": 84.22,
+      "intelligenceIndex": 64.33,
       "cost": 0.015,
       "creator": {
         "name": "Fish Audio",
@@ -33928,7 +33928,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 84.22
+        "tts": 64.33
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33947,7 +33947,7 @@
       "name": "SpaceXAI TTS",
       "shortName": "xAI Text to Speech",
       "mediaKind": "tts",
-      "intelligenceIndex": 79.1,
+      "intelligenceIndex": 60.57,
       "cost": 0.015,
       "creator": {
         "name": "SpaceXAI",
@@ -33962,7 +33962,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 79.1
+        "tts": 60.57
       },
       "mediaRaw": {
         "kind": "tts",
@@ -33976,12 +33976,43 @@
       "releaseDate": "2026-03-16"
     },
     {
+      "id": "img:b461c47d-a141-4f70-8ed1-c42f808ee44c",
+      "slug": "krea-2-medium-turbo",
+      "name": "Krea 2 Medium Turbo",
+      "shortName": "Krea 2 Medium Turbo",
+      "mediaKind": "image",
+      "intelligenceIndex": 51.82,
+      "cost": 0.015,
+      "creator": {
+        "name": "Krea",
+        "color": "#000000"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "mediaScores": {
+        "t2i": 51.82,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": null
+      },
+      "mediaRaw": {
+        "kind": "image",
+        "unitZh": "每张图",
+        "unitEn": "/ image",
+        "t2iElo": 1019.51,
+        "imgEditElo": null,
+        "pricePer1k": 15
+      }
+    },
+    {
       "id": "tts:794ee34e-8276-4119-9aae-eff196fee678",
       "slug": "fish-audio-s2-pro",
       "name": "Fish Audio S2 Pro",
       "shortName": "Fish Audio S2 Pro",
       "mediaKind": "tts",
-      "intelligenceIndex": 58.52,
+      "intelligenceIndex": 49.22,
       "cost": 0.015,
       "creator": {
         "name": "Fish Audio",
@@ -33996,7 +34027,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 58.52
+        "tts": 49.22
       },
       "mediaRaw": {
         "kind": "tts",
@@ -34010,12 +34041,43 @@
       "releaseDate": "2026-03-10"
     },
     {
+      "id": "img:9a73193a-8830-4fa8-98f4-0230cd749914",
+      "slug": "p-image-ideogram-high",
+      "name": "P-Image-Ideogram (High)",
+      "shortName": "P-Image-Ideogram (High)",
+      "mediaKind": "image",
+      "intelligenceIndex": 47.84,
+      "cost": 0.015,
+      "creator": {
+        "name": "Pruna AI",
+        "color": "#9334E9"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "mediaScores": {
+        "t2i": 47.84,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": null
+      },
+      "mediaRaw": {
+        "kind": "image",
+        "unitZh": "每张图",
+        "unitEn": "/ image",
+        "t2iElo": 998.71,
+        "imgEditElo": null,
+        "pricePer1k": 15
+      }
+    },
+    {
       "id": "tts:46730007-0d7b-4395-8077-2b5104ea79b0",
       "slug": "openaudio-s1",
       "name": "OpenAudio S1",
       "shortName": "OpenAudio S1",
       "mediaKind": "tts",
-      "intelligenceIndex": 54.54,
+      "intelligenceIndex": 47.33,
       "cost": 0.015,
       "creator": {
         "name": "Fish Audio",
@@ -34030,7 +34092,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 54.54
+        "tts": 47.33
       },
       "mediaRaw": {
         "kind": "tts",
@@ -34049,7 +34111,7 @@
       "name": "TTS-1",
       "shortName": "Standard",
       "mediaKind": "tts",
-      "intelligenceIndex": 52.53,
+      "intelligenceIndex": 46.39,
       "cost": 0.015,
       "creator": {
         "name": "OpenAI",
@@ -34064,7 +34126,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 52.53
+        "tts": 46.39
       },
       "mediaRaw": {
         "kind": "tts",
@@ -34078,12 +34140,43 @@
       "releaseDate": "2023-11-06"
     },
     {
+      "id": "img:3a03722d-32c0-44f3-adde-188c51b639f1",
+      "slug": "flux_flux-2-klein-9b",
+      "name": "FLUX.2 [klein] 9B",
+      "shortName": "FLUX.2 [klein] 9B",
+      "mediaKind": "image",
+      "intelligenceIndex": 41.5,
+      "cost": 0.015,
+      "creator": {
+        "name": "Black Forest Labs",
+        "color": "#272727"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "mediaScores": {
+        "t2i": 35.34,
+        "imgEdit": 47.65,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": null
+      },
+      "mediaRaw": {
+        "kind": "image",
+        "unitZh": "每张图",
+        "unitEn": "/ image",
+        "t2iElo": 931.29,
+        "imgEditElo": 1012.74,
+        "pricePer1k": 15
+      }
+    },
+    {
       "id": "tts:49dc49c3-828e-4af5-8527-49606b4f6e14",
       "slug": "higgs-audio-v3-tts",
       "name": "Higgs Audio V3 TTS",
       "shortName": "Higgs Audio V3",
       "mediaKind": "tts",
-      "intelligenceIndex": 32.23,
+      "intelligenceIndex": 36.85,
       "cost": 0.015,
       "creator": {
         "name": "Boson AI",
@@ -34098,7 +34191,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 32.23
+        "tts": 36.85
       },
       "mediaRaw": {
         "kind": "tts",
@@ -34117,7 +34210,7 @@
       "name": "Azure Neural",
       "shortName": "Neural",
       "mediaKind": "tts",
-      "intelligenceIndex": 31.42,
+      "intelligenceIndex": 36.45,
       "cost": 0.015,
       "creator": {
         "name": "Microsoft",
@@ -34132,7 +34225,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 31.42
+        "tts": 36.45
       },
       "mediaRaw": {
         "kind": "tts",
@@ -34146,139 +34239,12 @@
       "releaseDate": "2018-09-24"
     },
     {
-      "id": "img:b461c47d-a141-4f70-8ed1-c42f808ee44c",
-      "slug": "krea-2-medium-turbo",
-      "name": "Krea 2 Medium Turbo",
-      "shortName": "Krea 2 Medium Turbo",
-      "mediaKind": "image",
-      "intelligenceIndex": 28.93,
-      "cost": 0.015,
-      "creator": {
-        "name": "Krea",
-        "color": "#000000"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "mediaScores": {
-        "t2i": 28.93,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": null
-      },
-      "mediaRaw": {
-        "kind": "image",
-        "unitZh": "每张图",
-        "unitEn": "/ image",
-        "t2iElo": 1019.51,
-        "imgEditElo": null,
-        "pricePer1k": 15
-      }
-    },
-    {
-      "id": "img:9a73193a-8830-4fa8-98f4-0230cd749914",
-      "slug": "p-image-ideogram-high",
-      "name": "P-Image-Ideogram (High)",
-      "shortName": "P-Image-Ideogram (High)",
-      "mediaKind": "image",
-      "intelligenceIndex": 23.01,
-      "cost": 0.015,
-      "creator": {
-        "name": "Pruna AI",
-        "color": "#9334E9"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "mediaScores": {
-        "t2i": 23.01,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": null
-      },
-      "mediaRaw": {
-        "kind": "image",
-        "unitZh": "每张图",
-        "unitEn": "/ image",
-        "t2iElo": 998.71,
-        "imgEditElo": null,
-        "pricePer1k": 15
-      }
-    },
-    {
-      "id": "img:3a03722d-32c0-44f3-adde-188c51b639f1",
-      "slug": "flux_flux-2-klein-9b",
-      "name": "FLUX.2 [klein] 9B",
-      "shortName": "FLUX.2 [klein] 9B",
-      "mediaKind": "image",
-      "intelligenceIndex": 16.33,
-      "cost": 0.015,
-      "creator": {
-        "name": "Black Forest Labs",
-        "color": "#272727"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "mediaScores": {
-        "t2i": 9.89,
-        "imgEdit": 22.76,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": null
-      },
-      "mediaRaw": {
-        "kind": "image",
-        "unitZh": "每张图",
-        "unitEn": "/ image",
-        "t2iElo": 931.29,
-        "imgEditElo": 1012.74,
-        "pricePer1k": 15
-      }
-    },
-    {
-      "id": "tts:b424cd2e-abb9-4131-8f47-7731bdbff455",
-      "slug": "voxtral-tts",
-      "name": "Voxtral TTS",
-      "shortName": "Voxtral TTS",
-      "mediaKind": "tts",
-      "intelligenceIndex": 55.89,
-      "cost": 0.016,
-      "creator": {
-        "name": "Mistral",
-        "color": "#f32e02"
-      },
-      "isReasoning": false,
-      "isOpenWeights": true,
-      "timeSec": 7.2,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": 55.89
-      },
-      "mediaRaw": {
-        "kind": "tts",
-        "unitZh": "每千字语音",
-        "unitEn": "/ 1k chars",
-        "ttsElo": 1094.4,
-        "pricePer1mChars": 16,
-        "ttfaMs": 602,
-        "cps": 108.8
-      },
-      "releaseDate": "2026-03-26"
-    },
-    {
       "id": "img:3c29418c-ff63-459d-9d78-b9cceea260ce",
       "slug": "qwen-image-2-1-turbo",
       "name": "Qwen-Image-2.1-Turbo",
       "shortName": "Qwen-Image-2.1-Turbo",
       "mediaKind": "image",
-      "intelligenceIndex": 34.28,
+      "intelligenceIndex": 54.94,
       "cost": 0.016,
       "creator": {
         "name": "Alibaba",
@@ -34287,8 +34253,8 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 30.54,
-        "imgEdit": 38.03,
+        "t2i": 52.81,
+        "imgEdit": 57.07,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -34304,12 +34270,46 @@
       }
     },
     {
+      "id": "tts:b424cd2e-abb9-4131-8f47-7731bdbff455",
+      "slug": "voxtral-tts",
+      "name": "Voxtral TTS",
+      "shortName": "Voxtral TTS",
+      "mediaKind": "tts",
+      "intelligenceIndex": 47.97,
+      "cost": 0.016,
+      "creator": {
+        "name": "Mistral",
+        "color": "#f32e02"
+      },
+      "isReasoning": false,
+      "isOpenWeights": true,
+      "timeSec": 7.2,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 47.97
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1094.4,
+        "pricePer1mChars": 16,
+        "ttfaMs": 602,
+        "cps": 108.8
+      },
+      "releaseDate": "2026-03-26"
+    },
+    {
       "id": "tts:eb3b0d75-134b-4e6a-82c5-4db2398d5c07",
       "slug": "polly-neural",
       "name": "Polly Neural",
       "shortName": "Neural",
       "mediaKind": "tts",
-      "intelligenceIndex": 4.46,
+      "intelligenceIndex": 16.49,
       "cost": 0.016,
       "creator": {
         "name": "Amazon",
@@ -34324,7 +34324,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 4.46
+        "tts": 16.49
       },
       "mediaRaw": {
         "kind": "tts",
@@ -34343,7 +34343,7 @@
       "name": "Neural2",
       "shortName": "Neural2",
       "mediaKind": "tts",
-      "intelligenceIndex": 4.31,
+      "intelligenceIndex": 16.26,
       "cost": 0.016,
       "creator": {
         "name": "Google",
@@ -34358,7 +34358,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 4.31
+        "tts": 16.26
       },
       "mediaRaw": {
         "kind": "tts",
@@ -34377,7 +34377,7 @@
       "name": "Gemini 3.8 Flash TTS",
       "shortName": "Gemini 3.8 Flash TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 96.57,
+      "intelligenceIndex": 79.68,
       "cost": 0.01649,
       "creator": {
         "name": "Google",
@@ -34392,7 +34392,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 96.57
+        "tts": 79.68
       },
       "mediaRaw": {
         "kind": "tts",
@@ -34411,7 +34411,7 @@
       "name": "Ideogram 4.0 Fast (Quality)",
       "shortName": "Ideogram 4.0 Fast (Quality)",
       "mediaKind": "image",
-      "intelligenceIndex": 18.89,
+      "intelligenceIndex": 44.63,
       "cost": 0.0175,
       "creator": {
         "name": "Fal",
@@ -34420,7 +34420,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 18.89,
+        "t2i": 44.63,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -34442,7 +34442,7 @@
       "name": "Lucid Origin Fast",
       "shortName": "Lucid Origin Fast",
       "mediaKind": "image",
-      "intelligenceIndex": 4.04,
+      "intelligenceIndex": 24.97,
       "cost": 0.01794,
       "creator": {
         "name": "Leonardo.Ai",
@@ -34451,7 +34451,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 4.04,
+        "t2i": 24.97,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -34473,7 +34473,7 @@
       "name": "Gemini 3.1 Flash TTS",
       "shortName": "Gemini 3.1 Flash TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 90.17,
+      "intelligenceIndex": 69.89,
       "cost": 0.01831,
       "creator": {
         "name": "Google",
@@ -34488,7 +34488,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 90.17
+        "tts": 69.89
       },
       "mediaRaw": {
         "kind": "tts",
@@ -34507,7 +34507,7 @@
       "name": "Gemini 2.5 Pro (Dec 2025)",
       "shortName": "Gemini 2.5 Pro",
       "mediaKind": "tts",
-      "intelligenceIndex": 33.08,
+      "intelligenceIndex": 37.27,
       "cost": 0.01831,
       "creator": {
         "name": "Google",
@@ -34522,7 +34522,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 33.08
+        "tts": 37.27
       },
       "mediaRaw": {
         "kind": "tts",
@@ -34541,7 +34541,7 @@
       "name": "Luma Photon",
       "shortName": "Luma Photon",
       "mediaKind": "image",
-      "intelligenceIndex": 2.74,
+      "intelligenceIndex": 21.3,
       "cost": 0.019,
       "creator": {
         "name": "Luma Labs",
@@ -34550,7 +34550,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 2.74,
+        "t2i": 21.3,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -34572,7 +34572,7 @@
       "name": "Qwen-Audio-3.1-TTS-Plus",
       "shortName": "Qwen-Audio-3.1-TTS-Plus",
       "mediaKind": "tts",
-      "intelligenceIndex": 97.36,
+      "intelligenceIndex": 81.64,
       "cost": 0.01931,
       "creator": {
         "name": "Alibaba",
@@ -34586,7 +34586,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 97.36
+        "tts": 81.64
       },
       "mediaRaw": {
         "kind": "tts",
@@ -34605,7 +34605,7 @@
       "name": "Qwen-Audio-3.0-TTS-Plus",
       "shortName": "Qwen-Audio-3.0-TTS-Plus",
       "mediaKind": "tts",
-      "intelligenceIndex": 95.25,
+      "intelligenceIndex": 76.99,
       "cost": 0.01931,
       "creator": {
         "name": "Alibaba",
@@ -34619,7 +34619,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 95.25
+        "tts": 76.99
       },
       "mediaRaw": {
         "kind": "tts",
@@ -34638,7 +34638,7 @@
       "name": "Phoenix 1.0 Fast",
       "shortName": "Phoenix 1.0 Fast",
       "mediaKind": "image",
-      "intelligenceIndex": 2.27,
+      "intelligenceIndex": 19.69,
       "cost": 0.01943,
       "creator": {
         "name": "Leonardo.Ai",
@@ -34647,7 +34647,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 2.27,
+        "t2i": 19.69,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -34669,7 +34669,7 @@
       "name": "MAI-Image-2.6-Flash",
       "shortName": "MAI-Image-2.6-Flash",
       "mediaKind": "image",
-      "intelligenceIndex": 66.75,
+      "intelligenceIndex": 71.05,
       "cost": 0.019456,
       "creator": {
         "name": "Microsoft AI",
@@ -34678,8 +34678,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 65.75,
-        "imgEdit": 67.76,
+        "t2i": 70.56,
+        "imgEdit": 71.53,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -34700,7 +34700,7 @@
       "name": "Lightning V3.1 Pro (Oct 2026)",
       "shortName": "Lightning V3.1 Pro",
       "mediaKind": "tts",
-      "intelligenceIndex": 96.27,
+      "intelligenceIndex": 79.01,
       "cost": 0.0195,
       "creator": {
         "name": "Smallest.ai",
@@ -34715,7 +34715,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 96.27
+        "tts": 79.01
       },
       "mediaRaw": {
         "kind": "tts",
@@ -34734,7 +34734,7 @@
       "name": "MAI-Image-2.5-Flash",
       "shortName": "MAI-Image-2.5-Flash",
       "mediaKind": "image",
-      "intelligenceIndex": 40.88,
+      "intelligenceIndex": 58.42,
       "cost": 0.019968,
       "creator": {
         "name": "Microsoft AI",
@@ -34743,8 +34743,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 33.54,
-        "imgEdit": 48.21,
+        "t2i": 54.59,
+        "imgEdit": 62.25,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -34765,7 +34765,7 @@
       "name": "Seedream 5.5",
       "shortName": "Seedream 5.5",
       "mediaKind": "image",
-      "intelligenceIndex": 70.66,
+      "intelligenceIndex": 72.94,
       "cost": 0.02,
       "creator": {
         "name": "ByteDance Seed",
@@ -34774,8 +34774,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 69.01,
-        "imgEdit": 72.31,
+        "t2i": 72.13,
+        "imgEdit": 73.76,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -34797,7 +34797,7 @@
       "name": "grok-imagine-image",
       "shortName": "grok-imagine-image",
       "mediaKind": "image",
-      "intelligenceIndex": 36.41,
+      "intelligenceIndex": 56.05,
       "cost": 0.02,
       "creator": {
         "name": "SpaceXAI",
@@ -34806,8 +34806,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 30.31,
-        "imgEdit": 42.52,
+        "t2i": 52.67,
+        "imgEdit": 59.43,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -34823,45 +34823,12 @@
       }
     },
     {
-      "id": "tts:f5a3ab85-032b-41b1-8c78-c4b0eef2a9e8",
-      "slug": "zonos-v0-1",
-      "name": "Zonos-v0.1",
-      "shortName": "Zonos v0.1",
-      "mediaKind": "tts",
-      "intelligenceIndex": 21.15,
-      "cost": 0.02,
-      "creator": {
-        "name": "Zyphra",
-        "color": "#1A1A2E"
-      },
-      "isReasoning": false,
-      "isOpenWeights": true,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": 21.15
-      },
-      "mediaRaw": {
-        "kind": "tts",
-        "unitZh": "每千字语音",
-        "unitEn": "/ 1k chars",
-        "ttsElo": 1000,
-        "pricePer1mChars": 20,
-        "ttfaMs": null,
-        "cps": null
-      },
-      "releaseDate": "2025-02-10"
-    },
-    {
       "id": "img:a7ce8a95-072f-4ca2-b574-35400c21d005",
       "slug": "qwen-image",
       "name": "Qwen Image",
       "shortName": "Qwen Image",
       "mediaKind": "image",
-      "intelligenceIndex": 7.2,
+      "intelligenceIndex": 31.35,
       "cost": 0.02,
       "creator": {
         "name": "Alibaba",
@@ -34870,7 +34837,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 7.2,
+        "t2i": 31.35,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -34887,12 +34854,45 @@
       }
     },
     {
+      "id": "tts:f5a3ab85-032b-41b1-8c78-c4b0eef2a9e8",
+      "slug": "zonos-v0-1",
+      "name": "Zonos-v0.1",
+      "shortName": "Zonos v0.1",
+      "mediaKind": "tts",
+      "intelligenceIndex": 30.88,
+      "cost": 0.02,
+      "creator": {
+        "name": "Zyphra",
+        "color": "#1A1A2E"
+      },
+      "isReasoning": false,
+      "isOpenWeights": true,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 30.88
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1000,
+        "pricePer1mChars": 20,
+        "ttfaMs": null,
+        "cps": null
+      },
+      "releaseDate": "2025-02-10"
+    },
+    {
       "id": "img:95379740-648d-4251-8ae8-33b3021ad14b",
       "slug": "bria_fibo-lite",
       "name": "FIBO Lite",
       "shortName": "FIBO Lite",
       "mediaKind": "image",
-      "intelligenceIndex": 1.92,
+      "intelligenceIndex": 18.33,
       "cost": 0.02,
       "creator": {
         "name": "Bria",
@@ -34901,7 +34901,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 1.92,
+        "t2i": 18.33,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -34923,7 +34923,7 @@
       "name": "Async Pro v1.0",
       "shortName": "Async Pro v1.0",
       "mediaKind": "tts",
-      "intelligenceIndex": 69.87,
+      "intelligenceIndex": 55,
       "cost": 0.0202,
       "creator": {
         "name": "async",
@@ -34938,7 +34938,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 69.87
+        "tts": 55
       },
       "mediaRaw": {
         "kind": "tts",
@@ -34957,7 +34957,7 @@
       "name": "Realtime TTS-2",
       "shortName": "Realtime TTS-2",
       "mediaKind": "tts",
-      "intelligenceIndex": 95.78,
+      "intelligenceIndex": 77.99,
       "cost": 0.02083,
       "creator": {
         "name": "Inworld",
@@ -34972,7 +34972,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 95.78
+        "tts": 77.99
       },
       "mediaRaw": {
         "kind": "tts",
@@ -34991,7 +34991,7 @@
       "name": "H3-Image",
       "shortName": "H3-Image",
       "mediaKind": "image",
-      "intelligenceIndex": 54.58,
+      "intelligenceIndex": 65.23,
       "cost": 0.02179,
       "creator": {
         "name": "MiniMax",
@@ -35000,8 +35000,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 44.7,
-        "imgEdit": 64.46,
+        "t2i": 60.52,
+        "imgEdit": 69.95,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35022,7 +35022,7 @@
       "name": "Azure HD 2.5",
       "shortName": "Azure HD 2.5",
       "mediaKind": "tts",
-      "intelligenceIndex": 75.6,
+      "intelligenceIndex": 58.32,
       "cost": 0.022,
       "creator": {
         "name": "Microsoft",
@@ -35037,7 +35037,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 75.6
+        "tts": 58.32
       },
       "mediaRaw": {
         "kind": "tts",
@@ -35056,7 +35056,7 @@
       "name": "HunyuanImage 3.5 (Preview)",
       "shortName": "HunyuanImage 3.5 (Preview)",
       "mediaKind": "image",
-      "intelligenceIndex": 32.8,
+      "intelligenceIndex": 52.67,
       "cost": 0.024,
       "creator": {
         "name": "Tencent",
@@ -35065,8 +35065,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 16.76,
-        "imgEdit": 48.84,
+        "t2i": 42.78,
+        "imgEdit": 62.56,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35087,7 +35087,7 @@
       "name": "Lightning v3.1",
       "shortName": "Lightning v3.1",
       "mediaKind": "tts",
-      "intelligenceIndex": 28.55,
+      "intelligenceIndex": 34.98,
       "cost": 0.025,
       "creator": {
         "name": "Smallest.ai",
@@ -35102,7 +35102,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 28.55
+        "tts": 34.98
       },
       "mediaRaw": {
         "kind": "tts",
@@ -35121,7 +35121,7 @@
       "name": "Chatterbox",
       "shortName": "Chatterbox",
       "mediaKind": "tts",
-      "intelligenceIndex": 27.02,
+      "intelligenceIndex": 34.17,
       "cost": 0.025,
       "creator": {
         "name": "Resemble AI",
@@ -35135,7 +35135,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 27.02
+        "tts": 34.17
       },
       "mediaRaw": {
         "kind": "tts",
@@ -35154,7 +35154,7 @@
       "name": "FLUX.1 Krea [dev]",
       "shortName": "FLUX.1 Krea [dev]",
       "mediaKind": "image",
-      "intelligenceIndex": 4.24,
+      "intelligenceIndex": 25.48,
       "cost": 0.025,
       "creator": {
         "name": "Black Forest Labs",
@@ -35163,7 +35163,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 4.24,
+        "t2i": 25.48,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35185,7 +35185,7 @@
       "name": "FLUX.1 Kontext [dev]",
       "shortName": "FLUX.1 Kontext [dev]",
       "mediaKind": "image",
-      "intelligenceIndex": 4.1,
+      "intelligenceIndex": 25.13,
       "cost": 0.025,
       "creator": {
         "name": "Black Forest Labs",
@@ -35195,7 +35195,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 4.1,
+        "imgEdit": 25.13,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35216,7 +35216,7 @@
       "name": "FLUX.1 [dev]",
       "shortName": "FLUX.1 [dev]",
       "mediaKind": "image",
-      "intelligenceIndex": 1.95,
+      "intelligenceIndex": 18.46,
       "cost": 0.025,
       "creator": {
         "name": "Black Forest Labs",
@@ -35225,7 +35225,7 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 1.95,
+        "t2i": 18.46,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35247,7 +35247,7 @@
       "name": "Wan 2.7",
       "shortName": "Wan 2.7",
       "mediaKind": "image",
-      "intelligenceIndex": 25.45,
+      "intelligenceIndex": 49.32,
       "cost": 0.026,
       "creator": {
         "name": "Alibaba",
@@ -35256,8 +35256,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 20.36,
-        "imgEdit": 30.54,
+        "t2i": 45.82,
+        "imgEdit": 52.82,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35278,7 +35278,7 @@
       "name": "SRPO",
       "shortName": "SRPO",
       "mediaKind": "image",
-      "intelligenceIndex": 2.6,
+      "intelligenceIndex": 20.82,
       "cost": 0.026,
       "creator": {
         "name": "Tencent",
@@ -35287,7 +35287,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 2.6,
+        "t2i": 20.82,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35309,7 +35309,7 @@
       "name": "Kling Image 3.0 Omni",
       "shortName": "Kling Image 3.0 Omni",
       "mediaKind": "image",
-      "intelligenceIndex": 10.02,
+      "intelligenceIndex": 35.47,
       "cost": 0.028,
       "creator": {
         "name": "KlingAI",
@@ -35318,8 +35318,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 9.1,
-        "imgEdit": 10.94,
+        "t2i": 34.26,
+        "imgEdit": 36.67,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35340,7 +35340,7 @@
       "name": "Kling Image O1",
       "shortName": "Kling Image O1",
       "mediaKind": "image",
-      "intelligenceIndex": 9.8,
+      "intelligenceIndex": 35.22,
       "cost": 0.028,
       "creator": {
         "name": "KlingAI",
@@ -35350,7 +35350,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 9.8,
+        "imgEdit": 35.22,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35371,7 +35371,7 @@
       "name": "Canva Craft",
       "shortName": "Canva Craft",
       "mediaKind": "image",
-      "intelligenceIndex": 76.09,
+      "intelligenceIndex": 75.68,
       "cost": 0.03,
       "creator": {
         "name": "Canva",
@@ -35380,7 +35380,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 76.09,
+        "t2i": 75.68,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35397,46 +35397,12 @@
       }
     },
     {
-      "id": "tts:4a2776b8-a0c6-42f2-8ebe-db364f1ddf13",
-      "slug": "tts-1-hd",
-      "name": "TTS-1 HD",
-      "shortName": "TTS-1 HD",
-      "mediaKind": "tts",
-      "intelligenceIndex": 62.24,
-      "cost": 0.03,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "timeSec": 6.54,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": 62.24
-      },
-      "mediaRaw": {
-        "kind": "tts",
-        "unitZh": "每千字语音",
-        "unitEn": "/ 1k chars",
-        "ttsElo": 1110.4,
-        "pricePer1mChars": 30,
-        "ttfaMs": 2377,
-        "cps": 103.9
-      },
-      "releaseDate": "2023-11-06"
-    },
-    {
       "id": "img:2253749f-b609-4016-b639-0ce39a42375a",
       "slug": "qwen-image-3-0",
       "name": "Qwen-Image-3.0",
       "shortName": "Qwen-Image-3.0",
       "mediaKind": "image",
-      "intelligenceIndex": 44.55,
+      "intelligenceIndex": 60.41,
       "cost": 0.03,
       "creator": {
         "name": "Alibaba",
@@ -35445,8 +35411,8 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 48.5,
-        "imgEdit": 40.59,
+        "t2i": 62.39,
+        "imgEdit": 58.43,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35462,80 +35428,12 @@
       }
     },
     {
-      "id": "tts:4ef13968-15ee-4311-a6d1-685f015b0717",
-      "slug": "polly-generative",
-      "name": "Polly Generative",
-      "shortName": "Generative",
-      "mediaKind": "tts",
-      "intelligenceIndex": 42.9,
-      "cost": 0.03,
-      "creator": {
-        "name": "Amazon",
-        "color": "#FF9900"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "timeSec": 6.42,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": 42.9
-      },
-      "mediaRaw": {
-        "kind": "tts",
-        "unitZh": "每千字语音",
-        "unitEn": "/ 1k chars",
-        "ttsElo": 1062.6,
-        "pricePer1mChars": 30,
-        "ttfaMs": 236,
-        "cps": 108.9
-      },
-      "releaseDate": "2024-05-08"
-    },
-    {
-      "id": "tts:f524429e-7e12-47eb-88df-6a9730f88989",
-      "slug": "chirp3-hd",
-      "name": "Chirp 3: HD",
-      "shortName": "Chirp 3: HD",
-      "mediaKind": "tts",
-      "intelligenceIndex": 42.73,
-      "cost": 0.03,
-      "creator": {
-        "name": "Google",
-        "color": "#34A853"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "timeSec": 7.41,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": 42.73
-      },
-      "mediaRaw": {
-        "kind": "tts",
-        "unitZh": "每千字语音",
-        "unitEn": "/ 1k chars",
-        "ttsElo": 1062.2,
-        "pricePer1mChars": 30,
-        "ttfaMs": 1573,
-        "cps": 127.9
-      },
-      "releaseDate": "2025-03-12"
-    },
-    {
       "id": "img:c8a7698c-a595-476d-a56b-8b3ef4f239b7",
       "slug": "wan_wan-2-6",
       "name": "Wan 2.6 Image",
       "shortName": "Wan 2.6 Image",
       "mediaKind": "image",
-      "intelligenceIndex": 31.02,
+      "intelligenceIndex": 53.1,
       "cost": 0.03,
       "creator": {
         "name": "Alibaba",
@@ -35544,8 +35442,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 30.46,
-        "imgEdit": 31.58,
+        "t2i": 52.76,
+        "imgEdit": 53.44,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35561,46 +35459,12 @@
       }
     },
     {
-      "id": "tts:c8c8fcf1-03cb-4b63-a6c9-d72cab227b3f",
-      "slug": "t2a-01-turbo",
-      "name": "T2A-01-Turbo",
-      "shortName": "T2A-01-Turbo",
-      "mediaKind": "tts",
-      "intelligenceIndex": 28.51,
-      "cost": 0.03,
-      "creator": {
-        "name": "MiniMax",
-        "color": "#EB3568"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "timeSec": 6.53,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": 28.51
-      },
-      "mediaRaw": {
-        "kind": "tts",
-        "unitZh": "每千字语音",
-        "unitEn": "/ 1k chars",
-        "ttsElo": 1024.1,
-        "pricePer1mChars": 30,
-        "ttfaMs": 591,
-        "cps": 106.1
-      },
-      "releaseDate": "2025-01-20"
-    },
-    {
       "id": "img:caa670a4-e827-4a4b-84fb-2dd240205fe2",
       "slug": "wan_wan-2-6-text-to-image-v2",
       "name": "Wan2.6 Text to Image",
       "shortName": "Wan2.6 Text to Image",
       "mediaKind": "image",
-      "intelligenceIndex": 28.06,
+      "intelligenceIndex": 51.27,
       "cost": 0.03,
       "creator": {
         "name": "Alibaba",
@@ -35609,7 +35473,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 28.06,
+        "t2i": 51.27,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35626,12 +35490,46 @@
       }
     },
     {
+      "id": "tts:4a2776b8-a0c6-42f2-8ebe-db364f1ddf13",
+      "slug": "tts-1-hd",
+      "name": "TTS-1 HD",
+      "shortName": "TTS-1 HD",
+      "mediaKind": "tts",
+      "intelligenceIndex": 51.03,
+      "cost": 0.03,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "timeSec": 6.54,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 51.03
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1110.4,
+        "pricePer1mChars": 30,
+        "ttfaMs": 2377,
+        "cps": 103.9
+      },
+      "releaseDate": "2023-11-06"
+    },
+    {
       "id": "img:01ec8e55-dad9-4e6f-9036-e1da2a5226b6",
       "slug": "krea-2-medium",
       "name": "Krea 2 Medium",
       "shortName": "Krea 2 Medium",
       "mediaKind": "image",
-      "intelligenceIndex": 27.35,
+      "intelligenceIndex": 50.81,
       "cost": 0.03,
       "creator": {
         "name": "Krea",
@@ -35640,7 +35538,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 27.35,
+        "t2i": 50.81,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35662,7 +35560,7 @@
       "name": "Ming-Image-0.1-Design",
       "shortName": "Ming-Image-0.1-Design",
       "mediaKind": "image",
-      "intelligenceIndex": 23.57,
+      "intelligenceIndex": 48.24,
       "cost": 0.03,
       "creator": {
         "name": "InclusionAI",
@@ -35671,7 +35569,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 23.57,
+        "t2i": 48.24,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35693,7 +35591,7 @@
       "name": "FLUX.2 [pro]",
       "shortName": "FLUX.2 [pro]",
       "mediaKind": "image",
-      "intelligenceIndex": 23.26,
+      "intelligenceIndex": 48,
       "cost": 0.03,
       "creator": {
         "name": "Black Forest Labs",
@@ -35702,8 +35600,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 24.55,
-        "imgEdit": 21.96,
+        "t2i": 48.93,
+        "imgEdit": 47.06,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35719,12 +35617,80 @@
       }
     },
     {
+      "id": "tts:4ef13968-15ee-4311-a6d1-685f015b0717",
+      "slug": "polly-generative",
+      "name": "Polly Generative",
+      "shortName": "Generative",
+      "mediaKind": "tts",
+      "intelligenceIndex": 41.94,
+      "cost": 0.03,
+      "creator": {
+        "name": "Amazon",
+        "color": "#FF9900"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "timeSec": 6.42,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 41.94
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1062.6,
+        "pricePer1mChars": 30,
+        "ttfaMs": 236,
+        "cps": 108.9
+      },
+      "releaseDate": "2024-05-08"
+    },
+    {
+      "id": "tts:f524429e-7e12-47eb-88df-6a9730f88989",
+      "slug": "chirp3-hd",
+      "name": "Chirp 3: HD",
+      "shortName": "Chirp 3: HD",
+      "mediaKind": "tts",
+      "intelligenceIndex": 41.86,
+      "cost": 0.03,
+      "creator": {
+        "name": "Google",
+        "color": "#34A853"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "timeSec": 7.41,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 41.86
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1062.2,
+        "pricePer1mChars": 30,
+        "ttfaMs": 1573,
+        "cps": 127.9
+      },
+      "releaseDate": "2025-03-12"
+    },
+    {
       "id": "img:c02b3b9d-2847-46b2-b410-98e29a594fa5",
       "slug": "qwen_qwen-image-plus-2601",
       "name": "Qwen Image Plus 2601",
       "shortName": "Qwen Image Plus 2601",
       "mediaKind": "image",
-      "intelligenceIndex": 14.03,
+      "intelligenceIndex": 40.15,
       "cost": 0.03,
       "creator": {
         "name": "Alibaba",
@@ -35733,7 +35699,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 14.03,
+        "t2i": 40.15,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35755,7 +35721,7 @@
       "name": "Qwen Image Edit Plus 2509",
       "shortName": "Qwen Image Edit Plus 2509",
       "mediaKind": "image",
-      "intelligenceIndex": 12.4,
+      "intelligenceIndex": 38.39,
       "cost": 0.03,
       "creator": {
         "name": "Alibaba",
@@ -35765,7 +35731,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 12.4,
+        "imgEdit": 38.39,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35786,7 +35752,7 @@
       "name": "Dreamina 3.1",
       "shortName": "Dreamina 3.1",
       "mediaKind": "image",
-      "intelligenceIndex": 9.72,
+      "intelligenceIndex": 35.11,
       "cost": 0.03,
       "creator": {
         "name": "Bytedance",
@@ -35795,7 +35761,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 9.72,
+        "t2i": 35.11,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35812,12 +35778,46 @@
       }
     },
     {
+      "id": "tts:c8c8fcf1-03cb-4b63-a6c9-d72cab227b3f",
+      "slug": "t2a-01-turbo",
+      "name": "T2A-01-Turbo",
+      "shortName": "T2A-01-Turbo",
+      "mediaKind": "tts",
+      "intelligenceIndex": 34.96,
+      "cost": 0.03,
+      "creator": {
+        "name": "MiniMax",
+        "color": "#EB3568"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "timeSec": 6.53,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 34.96
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1024.1,
+        "pricePer1mChars": 30,
+        "ttfaMs": 591,
+        "cps": 106.1
+      },
+      "releaseDate": "2025-01-20"
+    },
+    {
       "id": "img:29714890-0638-4648-a1df-3fdc2a4b42fa",
       "slug": "vidu_vidu_q2",
       "name": "Vidu Q2",
       "shortName": "Vidu Q2",
       "mediaKind": "image",
-      "intelligenceIndex": 8.54,
+      "intelligenceIndex": 33.12,
       "cost": 0.03,
       "creator": {
         "name": "Vidu",
@@ -35826,8 +35826,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 6.25,
-        "imgEdit": 10.84,
+        "t2i": 29.69,
+        "imgEdit": 36.55,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35848,7 +35848,7 @@
       "name": "Qwen Image Edit",
       "shortName": "Qwen Image Edit",
       "mediaKind": "image",
-      "intelligenceIndex": 4.33,
+      "intelligenceIndex": 25.69,
       "cost": 0.03,
       "creator": {
         "name": "Alibaba",
@@ -35858,7 +35858,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 4.33,
+        "imgEdit": 25.69,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35879,7 +35879,7 @@
       "name": "Step1X-Edit",
       "shortName": "Step1X-Edit",
       "mediaKind": "image",
-      "intelligenceIndex": 0.06,
+      "intelligenceIndex": 3.44,
       "cost": 0.03,
       "creator": {
         "name": "StepFun",
@@ -35889,7 +35889,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 0.06,
+        "imgEdit": 3.44,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35910,7 +35910,7 @@
       "name": "Mist V2",
       "shortName": "mistv2",
       "mediaKind": "tts",
-      "intelligenceIndex": 5.12,
+      "intelligenceIndex": 17.45,
       "cost": 0.03113,
       "creator": {
         "name": "Rime",
@@ -35925,7 +35925,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 5.12
+        "tts": 17.45
       },
       "mediaRaw": {
         "kind": "tts",
@@ -35944,7 +35944,7 @@
       "name": "ERNIE Image",
       "shortName": "ERNIE Image",
       "mediaKind": "image",
-      "intelligenceIndex": 7.3,
+      "intelligenceIndex": 31.53,
       "cost": 0.03146,
       "creator": {
         "name": "Baidu",
@@ -35953,7 +35953,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 7.3,
+        "t2i": 31.53,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35975,7 +35975,7 @@
       "name": "Fibo 2.0",
       "shortName": "Fibo 2.0",
       "mediaKind": "image",
-      "intelligenceIndex": 40.6,
+      "intelligenceIndex": 58.33,
       "cost": 0.032,
       "creator": {
         "name": "Bria",
@@ -35984,8 +35984,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 34.55,
-        "imgEdit": 46.66,
+        "t2i": 55.16,
+        "imgEdit": 61.49,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36006,7 +36006,7 @@
       "name": "HunyuanImage 3.0 (Tencent Cloud)",
       "shortName": "HunyuanImage 3.0 (Tencent Cloud)",
       "mediaKind": "image",
-      "intelligenceIndex": 24.17,
+      "intelligenceIndex": 48.58,
       "cost": 0.032,
       "creator": {
         "name": "Tencent",
@@ -36015,8 +36015,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 21.27,
-        "imgEdit": 27.07,
+        "t2i": 46.53,
+        "imgEdit": 50.63,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36037,7 +36037,7 @@
       "name": "P-Image-Ideogram (Very High)",
       "shortName": "P-Image-Ideogram (Very High)",
       "mediaKind": "image",
-      "intelligenceIndex": 21.79,
+      "intelligenceIndex": 46.93,
       "cost": 0.033,
       "creator": {
         "name": "Pruna AI",
@@ -36046,7 +36046,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 21.79,
+        "t2i": 46.93,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -36068,7 +36068,7 @@
       "name": "Nano Banana 2.1",
       "shortName": "Nano Banana 2.1",
       "mediaKind": "image",
-      "intelligenceIndex": 75.37,
+      "intelligenceIndex": 75.4,
       "cost": 0.0336,
       "creator": {
         "name": "Google",
@@ -36077,8 +36077,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 80.64,
-        "imgEdit": 70.09,
+        "t2i": 78.15,
+        "imgEdit": 72.65,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36100,7 +36100,7 @@
       "name": "Nano Banana 2 Lite (Gemini 3.1 Flash Lite Image)",
       "shortName": "Nano Banana 2 Lite",
       "mediaKind": "image",
-      "intelligenceIndex": 47.81,
+      "intelligenceIndex": 61.77,
       "cost": 0.0336,
       "creator": {
         "name": "Google",
@@ -36109,8 +36109,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 60.95,
-        "imgEdit": 34.67,
+        "t2i": 68.3,
+        "imgEdit": 55.23,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36131,7 +36131,7 @@
       "name": "Breeze TTS 2",
       "shortName": "Breeze TTS 2",
       "mediaKind": "tts",
-      "intelligenceIndex": 92.09,
+      "intelligenceIndex": 72.18,
       "cost": 0.034,
       "creator": {
         "name": "BreezeBlue",
@@ -36146,7 +36146,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 92.09
+        "tts": 72.18
       },
       "mediaRaw": {
         "kind": "tts",
@@ -36165,7 +36165,7 @@
       "name": "MAI-Image-2.7",
       "shortName": "MAI-Image-2.7",
       "mediaKind": "image",
-      "intelligenceIndex": 86.84,
+      "intelligenceIndex": 81.96,
       "cost": 0.034816,
       "creator": {
         "name": "Microsoft AI",
@@ -36174,8 +36174,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 88.04,
-        "imgEdit": 85.63,
+        "t2i": 82.76,
+        "imgEdit": 81.15,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36197,7 +36197,7 @@
       "name": "Seedream 5.0 Lite",
       "shortName": "Seedream 5.0 Lite",
       "mediaKind": "image",
-      "intelligenceIndex": 33.63,
+      "intelligenceIndex": 54.55,
       "cost": 0.035,
       "creator": {
         "name": "ByteDance Seed",
@@ -36206,8 +36206,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 29.22,
-        "imgEdit": 38.05,
+        "t2i": 52,
+        "imgEdit": 57.09,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36228,7 +36228,7 @@
       "name": "Recraft V4.1 Utility",
       "shortName": "Recraft V4.1 Utility",
       "mediaKind": "image",
-      "intelligenceIndex": 31.33,
+      "intelligenceIndex": 53.29,
       "cost": 0.035,
       "creator": {
         "name": "Recraft",
@@ -36237,7 +36237,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 31.33,
+        "t2i": 53.29,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -36259,7 +36259,7 @@
       "name": "Qwen Image 2.0 (2026-03-03)",
       "shortName": "Qwen Image 2.0",
       "mediaKind": "image",
-      "intelligenceIndex": 16.95,
+      "intelligenceIndex": 42.58,
       "cost": 0.035,
       "creator": {
         "name": "Alibaba",
@@ -36268,8 +36268,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 21.33,
-        "imgEdit": 12.57,
+        "t2i": 46.58,
+        "imgEdit": 38.58,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36290,7 +36290,7 @@
       "name": "H3-Image Highspeed",
       "shortName": "H3-Image Highspeed",
       "mediaKind": "image",
-      "intelligenceIndex": 55.22,
+      "intelligenceIndex": 65.56,
       "cost": 0.03529,
       "creator": {
         "name": "MiniMax",
@@ -36299,8 +36299,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 46.91,
-        "imgEdit": 63.54,
+        "t2i": 61.62,
+        "imgEdit": 69.51,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36321,7 +36321,7 @@
       "name": "Qwen-Image-2.1-Pro",
       "shortName": "Qwen-Image-2.1-Pro",
       "mediaKind": "image",
-      "intelligenceIndex": 41,
+      "intelligenceIndex": 58.64,
       "cost": 0.035333,
       "creator": {
         "name": "Alibaba",
@@ -36330,8 +36330,8 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 41.97,
-        "imgEdit": 40.04,
+        "t2i": 59.14,
+        "imgEdit": 58.14,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36352,7 +36352,7 @@
       "name": "MAI-Image-2.6",
       "shortName": "MAI-Image-2.6",
       "mediaKind": "image",
-      "intelligenceIndex": 74.04,
+      "intelligenceIndex": 74.69,
       "cost": 0.038912,
       "creator": {
         "name": "Microsoft AI",
@@ -36361,8 +36361,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 78.63,
-        "imgEdit": 69.45,
+        "t2i": 77.04,
+        "imgEdit": 72.34,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36384,7 +36384,7 @@
       "name": "Nano Banana (Gemini 2.5 Flash Image)",
       "shortName": "Nano Banana",
       "mediaKind": "image",
-      "intelligenceIndex": 18.24,
+      "intelligenceIndex": 44.02,
       "cost": 0.039,
       "creator": {
         "name": "Google",
@@ -36393,8 +36393,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 20.21,
-        "imgEdit": 16.27,
+        "t2i": 45.7,
+        "imgEdit": 42.33,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36415,7 +36415,7 @@
       "name": "Eleven v4 Turbo",
       "shortName": "Eleven v4 Turbo",
       "mediaKind": "tts",
-      "intelligenceIndex": 98.64,
+      "intelligenceIndex": 85.92,
       "cost": 0.04,
       "creator": {
         "name": "ElevenLabs",
@@ -36429,7 +36429,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 98.64
+        "tts": 85.92
       },
       "mediaRaw": {
         "kind": "tts",
@@ -36443,79 +36443,12 @@
       "releaseDate": "2026-09-28"
     },
     {
-      "id": "tts:7b1ca2ff-3ba6-4071-b78f-925c913725b4",
-      "slug": "step-tts-2-mar-2026",
-      "name": "Step TTS 2 (Mar 2026)",
-      "shortName": "Step TTS 2",
-      "mediaKind": "tts",
-      "intelligenceIndex": 71.86,
-      "cost": 0.04,
-      "creator": {
-        "name": "StepFun",
-        "color": "#00F5E7"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "timeSec": 2.43,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": 71.86
-      },
-      "mediaRaw": {
-        "kind": "tts",
-        "unitZh": "每千字语音",
-        "unitEn": "/ 1k chars",
-        "ttsElo": 1137,
-        "pricePer1mChars": 40,
-        "ttfaMs": 4604,
-        "cps": 35.8
-      },
-      "releaseDate": "2026-02-12"
-    },
-    {
-      "id": "tts:06b8f3e3-e4fe-4cf7-9774-30816972bb59",
-      "slug": "chatterbox-hd",
-      "name": "Chatterbox HD",
-      "shortName": "Chatterbox HD",
-      "mediaKind": "tts",
-      "intelligenceIndex": 61.82,
-      "cost": 0.04,
-      "creator": {
-        "name": "Resemble AI",
-        "color": "#48d1a1"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": 61.82
-      },
-      "mediaRaw": {
-        "kind": "tts",
-        "unitZh": "每千字语音",
-        "unitEn": "/ 1k chars",
-        "ttsElo": 1109.3,
-        "pricePer1mChars": 40,
-        "ttfaMs": null,
-        "cps": null
-      },
-      "releaseDate": "2025-05-28"
-    },
-    {
       "id": "img:5538a039-fb86-4cd7-a207-4d692f358032",
       "slug": "qwen-image-3-0-pro",
       "name": "Qwen-Image-3.0-Pro",
       "shortName": "Qwen-Image-3.0-Pro",
       "mediaKind": "image",
-      "intelligenceIndex": 52.04,
+      "intelligenceIndex": 64.09,
       "cost": 0.04,
       "creator": {
         "name": "Alibaba",
@@ -36524,8 +36457,8 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 55.32,
-        "imgEdit": 48.76,
+        "t2i": 65.65,
+        "imgEdit": 62.52,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36541,37 +36474,38 @@
       }
     },
     {
-      "id": "tts:58e4baac-f1c7-4a67-b812-bb7feda26a3b",
-      "slug": "bland-0830",
-      "name": "Bland Speech v3",
-      "shortName": "Bland Speech v3",
+      "id": "tts:7b1ca2ff-3ba6-4071-b78f-925c913725b4",
+      "slug": "step-tts-2-mar-2026",
+      "name": "Step TTS 2 (Mar 2026)",
+      "shortName": "Step TTS 2",
       "mediaKind": "tts",
-      "intelligenceIndex": 31.74,
+      "intelligenceIndex": 56.11,
       "cost": 0.04,
       "creator": {
-        "name": "Bland AI",
-        "color": "#CA071A"
+        "name": "StepFun",
+        "color": "#00F5E7"
       },
       "isReasoning": false,
       "isOpenWeights": false,
+      "timeSec": 2.43,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 31.74
+        "tts": 56.11
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1033.5,
+        "ttsElo": 1137,
         "pricePer1mChars": 40,
-        "ttfaMs": null,
-        "cps": null
+        "ttfaMs": 4604,
+        "cps": 35.8
       },
-      "releaseDate": "2026-08-05"
+      "releaseDate": "2026-02-12"
     },
     {
       "id": "img:08f19008-675e-4d70-98b2-49ad3178c1f0",
@@ -36579,7 +36513,7 @@
       "name": "Seedream 4.5",
       "shortName": "Seedream 4.5",
       "mediaKind": "image",
-      "intelligenceIndex": 31.09,
+      "intelligenceIndex": 53.14,
       "cost": 0.04,
       "creator": {
         "name": "ByteDance Seed",
@@ -36588,8 +36522,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 32.21,
-        "imgEdit": 29.97,
+        "t2i": 53.81,
+        "imgEdit": 52.47,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36605,12 +36539,45 @@
       }
     },
     {
+      "id": "tts:06b8f3e3-e4fe-4cf7-9774-30816972bb59",
+      "slug": "chatterbox-hd",
+      "name": "Chatterbox HD",
+      "shortName": "Chatterbox HD",
+      "mediaKind": "tts",
+      "intelligenceIndex": 50.82,
+      "cost": 0.04,
+      "creator": {
+        "name": "Resemble AI",
+        "color": "#48d1a1"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 50.82
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1109.3,
+        "pricePer1mChars": 40,
+        "ttfaMs": null,
+        "cps": null
+      },
+      "releaseDate": "2025-05-28"
+    },
+    {
       "id": "img:498395f7-5cde-4443-9f05-1dfc164caa6f",
       "slug": "cosmos3-super-text2image",
       "name": "Cosmos3-Super-Text2Image",
       "shortName": "Cosmos3-Super-Text2Image",
       "mediaKind": "image",
-      "intelligenceIndex": 20.36,
+      "intelligenceIndex": 45.83,
       "cost": 0.04,
       "creator": {
         "name": "NVIDIA",
@@ -36619,7 +36586,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 20.36,
+        "t2i": 45.83,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -36641,7 +36608,7 @@
       "name": "Reve V1 (December)",
       "shortName": "Reve V1 (December)",
       "mediaKind": "image",
-      "intelligenceIndex": 16.17,
+      "intelligenceIndex": 42.24,
       "cost": 0.04,
       "creator": {
         "name": "Reve",
@@ -36651,7 +36618,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 16.17,
+        "imgEdit": 42.24,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36667,12 +36634,45 @@
       }
     },
     {
+      "id": "tts:58e4baac-f1c7-4a67-b812-bb7feda26a3b",
+      "slug": "bland-0830",
+      "name": "Bland Speech v3",
+      "shortName": "Bland Speech v3",
+      "mediaKind": "tts",
+      "intelligenceIndex": 36.61,
+      "cost": 0.04,
+      "creator": {
+        "name": "Bland AI",
+        "color": "#CA071A"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 36.61
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1033.5,
+        "pricePer1mChars": 40,
+        "ttfaMs": null,
+        "cps": null
+      },
+      "releaseDate": "2026-08-05"
+    },
+    {
       "id": "img:3338f278-fb1f-4727-b9af-d51ae3ab7e36",
       "slug": "flux-1-kontext-pro",
       "name": "FLUX.1 Kontext [pro]",
       "shortName": "FLUX.1 Kontext [pro]",
       "mediaKind": "image",
-      "intelligenceIndex": 7.76,
+      "intelligenceIndex": 32.13,
       "cost": 0.04,
       "creator": {
         "name": "Black Forest Labs",
@@ -36681,8 +36681,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 9.12,
-        "imgEdit": 6.4,
+        "t2i": 34.28,
+        "imgEdit": 29.97,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36703,7 +36703,7 @@
       "name": "FIBO Edit",
       "shortName": "FIBO Edit",
       "mediaKind": "image",
-      "intelligenceIndex": 6.62,
+      "intelligenceIndex": 30.37,
       "cost": 0.04,
       "creator": {
         "name": "Bria",
@@ -36713,7 +36713,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 6.62,
+        "imgEdit": 30.37,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36734,7 +36734,7 @@
       "name": "FLUX1.1 [pro]",
       "shortName": "FLUX1.1 [pro]",
       "mediaKind": "image",
-      "intelligenceIndex": 4.53,
+      "intelligenceIndex": 26.17,
       "cost": 0.04,
       "creator": {
         "name": "Black Forest Labs",
@@ -36743,7 +36743,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 4.53,
+        "t2i": 26.17,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -36765,7 +36765,7 @@
       "name": "FIBO",
       "shortName": "FIBO",
       "mediaKind": "image",
-      "intelligenceIndex": 3.37,
+      "intelligenceIndex": 23.22,
       "cost": 0.04,
       "creator": {
         "name": "Bria",
@@ -36774,7 +36774,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 3.37,
+        "t2i": 23.22,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -36796,7 +36796,7 @@
       "name": "Luma UNI 1",
       "shortName": "Luma UNI 1",
       "mediaKind": "image",
-      "intelligenceIndex": 27.09,
+      "intelligenceIndex": 50.48,
       "cost": 0.0404,
       "creator": {
         "name": "Luma Labs",
@@ -36805,8 +36805,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 22.56,
-        "imgEdit": 31.61,
+        "t2i": 47.5,
+        "imgEdit": 53.46,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36827,7 +36827,7 @@
       "name": "XTTS v2",
       "shortName": "XTTS v2",
       "mediaKind": "tts",
-      "intelligenceIndex": 6.21,
+      "intelligenceIndex": 18.86,
       "cost": 0.04044,
       "creator": {
         "name": "Coqui",
@@ -36842,7 +36842,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 6.21
+        "tts": 18.86
       },
       "mediaRaw": {
         "kind": "tts",
@@ -36861,7 +36861,7 @@
       "name": "Flux TTS",
       "shortName": "Flux TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 38.44,
+      "intelligenceIndex": 39.85,
       "cost": 0.045,
       "creator": {
         "name": "Deepgram",
@@ -36876,7 +36876,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 38.44
+        "tts": 39.85
       },
       "mediaRaw": {
         "kind": "tts",
@@ -36895,7 +36895,7 @@
       "name": "Gradium TTS (Sep 2026)",
       "shortName": "Gradium TTS (September)",
       "mediaKind": "tts",
-      "intelligenceIndex": 81.96,
+      "intelligenceIndex": 62.58,
       "cost": 0.04778,
       "creator": {
         "name": "Gradium",
@@ -36910,7 +36910,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 81.96
+        "tts": 62.58
       },
       "mediaRaw": {
         "kind": "tts",
@@ -36929,7 +36929,7 @@
       "name": "Gradium TTS (Oct 2026)",
       "shortName": "Gradium TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 81.92,
+      "intelligenceIndex": 62.55,
       "cost": 0.04778,
       "creator": {
         "name": "Gradium",
@@ -36944,7 +36944,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 81.92
+        "tts": 62.55
       },
       "mediaRaw": {
         "kind": "tts",
@@ -36963,7 +36963,7 @@
       "name": "Gradium TTS (Aug 2026)",
       "shortName": "Gradium TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 77.48,
+      "intelligenceIndex": 59.5,
       "cost": 0.04778,
       "creator": {
         "name": "Gradium",
@@ -36978,7 +36978,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 77.48
+        "tts": 59.5
       },
       "mediaRaw": {
         "kind": "tts",
@@ -36997,7 +36997,7 @@
       "name": "FLUX 3 Image",
       "shortName": "FLUX 3 Image",
       "mediaKind": "image",
-      "intelligenceIndex": 60.69,
+      "intelligenceIndex": 68.17,
       "cost": 0.048,
       "creator": {
         "name": "Black Forest Labs",
@@ -37006,8 +37006,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 62.56,
-        "imgEdit": 58.81,
+        "t2i": 69.05,
+        "imgEdit": 67.29,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37028,7 +37028,7 @@
       "name": "MAI-Image-2.5",
       "shortName": "MAI-Image-2.5",
       "mediaKind": "image",
-      "intelligenceIndex": 62.05,
+      "intelligenceIndex": 68.81,
       "cost": 0.048128,
       "creator": {
         "name": "Microsoft AI",
@@ -37037,8 +37037,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 63.55,
-        "imgEdit": 60.55,
+        "t2i": 69.52,
+        "imgEdit": 68.11,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37059,7 +37059,7 @@
       "name": "Sonic 3.6",
       "shortName": "Sonic 3.6",
       "mediaKind": "tts",
-      "intelligenceIndex": 97.18,
+      "intelligenceIndex": 81.15,
       "cost": 0.049,
       "creator": {
         "name": "Cartesia",
@@ -37074,7 +37074,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 97.18
+        "tts": 81.15
       },
       "mediaRaw": {
         "kind": "tts",
@@ -37093,7 +37093,7 @@
       "name": "Sonic 3.5",
       "shortName": "Sonic 3.5",
       "mediaKind": "tts",
-      "intelligenceIndex": 86.82,
+      "intelligenceIndex": 66.55,
       "cost": 0.049,
       "creator": {
         "name": "Cartesia",
@@ -37108,7 +37108,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 86.82
+        "tts": 66.55
       },
       "mediaRaw": {
         "kind": "tts",
@@ -37127,7 +37127,7 @@
       "name": "Sonic 3",
       "shortName": "Sonic 3",
       "mediaKind": "tts",
-      "intelligenceIndex": 42.39,
+      "intelligenceIndex": 41.7,
       "cost": 0.049,
       "creator": {
         "name": "Cartesia",
@@ -37142,7 +37142,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 42.39
+        "tts": 41.7
       },
       "mediaRaw": {
         "kind": "tts",
@@ -37161,7 +37161,7 @@
       "name": "v3 Conversational",
       "shortName": "v3 Conversational",
       "mediaKind": "tts",
-      "intelligenceIndex": 90.49,
+      "intelligenceIndex": 70.25,
       "cost": 0.05,
       "creator": {
         "name": "ElevenLabs",
@@ -37175,7 +37175,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 90.49
+        "tts": 70.25
       },
       "mediaRaw": {
         "kind": "tts",
@@ -37189,12 +37189,43 @@
       "releaseDate": "2026-08-19"
     },
     {
+      "id": "img:9fe07c8f-8d20-4908-a991-65c00e5ef260",
+      "slug": "grok-imagine-image-quality",
+      "name": "grok-imagine-image-quality",
+      "shortName": "grok-imagine-image-quality",
+      "mediaKind": "image",
+      "intelligenceIndex": 60.41,
+      "cost": 0.05,
+      "creator": {
+        "name": "SpaceXAI",
+        "color": "#736cd3"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "mediaScores": {
+        "t2i": 57.48,
+        "imgEdit": 63.33,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": null
+      },
+      "mediaRaw": {
+        "kind": "image",
+        "unitZh": "每张图",
+        "unitEn": "/ image",
+        "t2iElo": 1049.3,
+        "imgEditElo": 1096.21,
+        "pricePer1k": 50
+      }
+    },
+    {
       "id": "tts:4d22c37d-8a05-4865-a7a4-9f3b3b6f8249",
       "slug": "rime-coda-v2",
       "name": "Coda v2",
       "shortName": "Coda v2",
       "mediaKind": "tts",
-      "intelligenceIndex": 64.34,
+      "intelligenceIndex": 52.09,
       "cost": 0.05,
       "creator": {
         "name": "Rime",
@@ -37209,7 +37240,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 64.34
+        "tts": 52.09
       },
       "mediaRaw": {
         "kind": "tts",
@@ -37228,7 +37259,7 @@
       "name": "Turbo v2.5",
       "shortName": "Turbo v2.5",
       "mediaKind": "tts",
-      "intelligenceIndex": 55.95,
+      "intelligenceIndex": 48,
       "cost": 0.05,
       "creator": {
         "name": "ElevenLabs",
@@ -37242,7 +37273,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 55.95
+        "tts": 48
       },
       "mediaRaw": {
         "kind": "tts",
@@ -37261,7 +37292,7 @@
       "name": "Flash v2.5",
       "shortName": "Flash v2.5",
       "mediaKind": "tts",
-      "intelligenceIndex": 47.85,
+      "intelligenceIndex": 44.23,
       "cost": 0.05,
       "creator": {
         "name": "ElevenLabs",
@@ -37275,7 +37306,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 47.85
+        "tts": 44.23
       },
       "mediaRaw": {
         "kind": "tts",
@@ -37294,7 +37325,7 @@
       "name": "T2A-01-HD",
       "shortName": "T2A-01-HD",
       "mediaKind": "tts",
-      "intelligenceIndex": 46.75,
+      "intelligenceIndex": 43.72,
       "cost": 0.05,
       "creator": {
         "name": "MiniMax",
@@ -37309,7 +37340,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 46.75
+        "tts": 43.72
       },
       "mediaRaw": {
         "kind": "tts",
@@ -37323,43 +37354,12 @@
       "releaseDate": "2025-01-15"
     },
     {
-      "id": "img:9fe07c8f-8d20-4908-a991-65c00e5ef260",
-      "slug": "grok-imagine-image-quality",
-      "name": "grok-imagine-image-quality",
-      "shortName": "grok-imagine-image-quality",
-      "mediaKind": "image",
-      "intelligenceIndex": 44.62,
-      "cost": 0.05,
-      "creator": {
-        "name": "SpaceXAI",
-        "color": "#736cd3"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "mediaScores": {
-        "t2i": 38.79,
-        "imgEdit": 50.45,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": null
-      },
-      "mediaRaw": {
-        "kind": "image",
-        "unitZh": "每张图",
-        "unitEn": "/ image",
-        "t2iElo": 1049.3,
-        "imgEditElo": 1096.21,
-        "pricePer1k": 50
-      }
-    },
-    {
       "id": "tts:cddf7ab5-43d6-488f-be03-1dcfbb8955d3",
       "slug": "rime-coda",
       "name": "Coda",
       "shortName": "Coda",
       "mediaKind": "tts",
-      "intelligenceIndex": 37.87,
+      "intelligenceIndex": 39.58,
       "cost": 0.05,
       "creator": {
         "name": "Rime",
@@ -37374,7 +37374,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 37.87
+        "tts": 39.58
       },
       "mediaRaw": {
         "kind": "tts",
@@ -37393,7 +37393,7 @@
       "name": "GLM-Image",
       "shortName": "GLM-Image",
       "mediaKind": "image",
-      "intelligenceIndex": 3.73,
+      "intelligenceIndex": 23.27,
       "cost": 0.05,
       "creator": {
         "name": "Z AI",
@@ -37402,8 +37402,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 5.6,
-        "imgEdit": 1.87,
+        "t2i": 28.44,
+        "imgEdit": 18.09,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37419,46 +37419,12 @@
       }
     },
     {
-      "id": "tts:827b69bd-3c20-415c-b5cd-9228e439c326",
-      "slug": "speech-2-8-turbo",
-      "name": "Speech 2.8 Turbo",
-      "shortName": "Speech 2.8 Turbo",
-      "mediaKind": "tts",
-      "intelligenceIndex": 76.52,
-      "cost": 0.06,
-      "creator": {
-        "name": "MiniMax",
-        "color": "#EB3568"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "timeSec": 7.58,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": 76.52
-      },
-      "mediaRaw": {
-        "kind": "tts",
-        "unitZh": "每千字语音",
-        "unitEn": "/ 1k chars",
-        "ttsElo": 1151.8,
-        "pricePer1mChars": 60,
-        "ttfaMs": 428,
-        "cps": 109.7
-      },
-      "releaseDate": "2026-02-14"
-    },
-    {
       "id": "img:748fadd1-ecd9-41d0-9b43-f5fccd4fb843",
       "slug": "grok-imagine-image-2-0",
       "name": "Grok Imagine Image 2.0",
       "shortName": "Grok Imagine Image 2.0",
       "mediaKind": "image",
-      "intelligenceIndex": 68.47,
+      "intelligenceIndex": 72.03,
       "cost": 0.06,
       "creator": {
         "name": "SpaceXAI",
@@ -37467,8 +37433,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 78.4,
-        "imgEdit": 58.54,
+        "t2i": 76.91,
+        "imgEdit": 67.16,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37485,12 +37451,12 @@
       "releaseDate": "2026-08-07"
     },
     {
-      "id": "tts:365ea52f-0abb-4d28-a292-3d77e32fe468",
-      "slug": "speech-2.6-turbo",
-      "name": "Speech 2.6 Turbo",
-      "shortName": "Speech 2.6 Turbo",
+      "id": "tts:827b69bd-3c20-415c-b5cd-9228e439c326",
+      "slug": "speech-2-8-turbo",
+      "name": "Speech 2.8 Turbo",
+      "shortName": "Speech 2.8 Turbo",
       "mediaKind": "tts",
-      "intelligenceIndex": 67.45,
+      "intelligenceIndex": 58.89,
       "cost": 0.06,
       "creator": {
         "name": "MiniMax",
@@ -37498,59 +37464,25 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.26,
+      "timeSec": 7.58,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 67.45
+        "tts": 58.89
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1124.3,
+        "ttsElo": 1151.8,
         "pricePer1mChars": 60,
-        "ttfaMs": 413,
-        "cps": 115.9
+        "ttfaMs": 428,
+        "cps": 109.7
       },
-      "releaseDate": "2025-10-30"
-    },
-    {
-      "id": "tts:953aeced-7f15-4a02-a2f5-3c9cfccbbb39",
-      "slug": "speech-02-turbo",
-      "name": "Speech-02-Turbo",
-      "shortName": "Speech-02-HD",
-      "mediaKind": "tts",
-      "intelligenceIndex": 53.77,
-      "cost": 0.06,
-      "creator": {
-        "name": "MiniMax",
-        "color": "#EB3568"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "timeSec": 7.13,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": 53.77
-      },
-      "mediaRaw": {
-        "kind": "tts",
-        "unitZh": "每千字语音",
-        "unitEn": "/ 1k chars",
-        "ttsElo": 1089.2,
-        "pricePer1mChars": 60,
-        "ttfaMs": 386,
-        "cps": 112.3
-      },
-      "releaseDate": "2025-03-31"
+      "releaseDate": "2026-02-14"
     },
     {
       "id": "img:4f4bff18-e48f-4f7f-aa6b-94e9a9a11b68",
@@ -37558,7 +37490,7 @@
       "name": "Krea 2 Large",
       "shortName": "Krea 2 Large",
       "mediaKind": "image",
-      "intelligenceIndex": 34.01,
+      "intelligenceIndex": 54.85,
       "cost": 0.06,
       "creator": {
         "name": "Krea",
@@ -37567,7 +37499,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 34.01,
+        "t2i": 54.85,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -37584,12 +37516,46 @@
       }
     },
     {
+      "id": "tts:365ea52f-0abb-4d28-a292-3d77e32fe468",
+      "slug": "speech-2.6-turbo",
+      "name": "Speech 2.6 Turbo",
+      "shortName": "Speech 2.6 Turbo",
+      "mediaKind": "tts",
+      "intelligenceIndex": 53.7,
+      "cost": 0.06,
+      "creator": {
+        "name": "MiniMax",
+        "color": "#EB3568"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "timeSec": 7.26,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 53.7
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1124.3,
+        "pricePer1mChars": 60,
+        "ttfaMs": 413,
+        "cps": 115.9
+      },
+      "releaseDate": "2025-10-30"
+    },
+    {
       "id": "img:e2201d15-3e29-48c6-89ba-e63ccf3dde15",
       "slug": "flux_flux-2--flex",
       "name": "FLUX.2 [flex]",
       "shortName": "FLUX.2 [flex]",
       "mediaKind": "image",
-      "intelligenceIndex": 25.19,
+      "intelligenceIndex": 49.02,
       "cost": 0.06,
       "creator": {
         "name": "Black Forest Labs",
@@ -37598,8 +37564,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 31.37,
-        "imgEdit": 19.01,
+        "t2i": 53.31,
+        "imgEdit": 44.73,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37620,7 +37586,7 @@
       "name": "Ideogram 4.0",
       "shortName": "Ideogram 4.0",
       "mediaKind": "image",
-      "intelligenceIndex": 24.06,
+      "intelligenceIndex": 48.59,
       "cost": 0.06,
       "creator": {
         "name": "Ideogram",
@@ -37629,7 +37595,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 24.06,
+        "t2i": 48.59,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -37646,12 +37612,46 @@
       }
     },
     {
+      "id": "tts:953aeced-7f15-4a02-a2f5-3c9cfccbbb39",
+      "slug": "speech-02-turbo",
+      "name": "Speech-02-Turbo",
+      "shortName": "Speech-02-HD",
+      "mediaKind": "tts",
+      "intelligenceIndex": 46.97,
+      "cost": 0.06,
+      "creator": {
+        "name": "MiniMax",
+        "color": "#EB3568"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "timeSec": 7.13,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 46.97
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1089.2,
+        "pricePer1mChars": 60,
+        "ttfaMs": 386,
+        "cps": 112.3
+      },
+      "releaseDate": "2025-03-31"
+    },
+    {
       "id": "img:878746c7-f8e0-48c0-941e-d8262608ca1a",
       "slug": "qwen_qwen-image-edit-2511",
       "name": "Qwen Image Edit Plus 2511",
       "shortName": "Qwen Image Edit Plus 2511",
       "mediaKind": "image",
-      "intelligenceIndex": 18.75,
+      "intelligenceIndex": 44.52,
       "cost": 0.06,
       "creator": {
         "name": "Alibaba",
@@ -37661,7 +37661,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 18.75,
+        "imgEdit": 44.52,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37682,7 +37682,7 @@
       "name": "Ideogram 3.0",
       "shortName": "Ideogram 3.0",
       "mediaKind": "image",
-      "intelligenceIndex": 7.23,
+      "intelligenceIndex": 31.41,
       "cost": 0.06,
       "creator": {
         "name": "Ideogram",
@@ -37691,7 +37691,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 7.23,
+        "t2i": 31.41,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -37713,7 +37713,7 @@
       "name": "FLUX1.1 [pro] Ultra",
       "shortName": "FLUX1.1 [pro] Ultra",
       "mediaKind": "image",
-      "intelligenceIndex": 3.39,
+      "intelligenceIndex": 23.27,
       "cost": 0.06,
       "creator": {
         "name": "Black Forest Labs",
@@ -37722,7 +37722,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 3.39,
+        "t2i": 23.27,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -37744,7 +37744,7 @@
       "name": "HiDream-E1.1",
       "shortName": "HiDream-E1.1",
       "mediaKind": "image",
-      "intelligenceIndex": 0.73,
+      "intelligenceIndex": 11.92,
       "cost": 0.06,
       "creator": {
         "name": "HiDream",
@@ -37754,7 +37754,7 @@
       "isOpenWeights": true,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 0.73,
+        "imgEdit": 11.92,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37775,7 +37775,7 @@
       "name": "Kling Image 4.0",
       "shortName": "Kling Image 4.0",
       "mediaKind": "image",
-      "intelligenceIndex": 80.11,
+      "intelligenceIndex": 77.86,
       "cost": 0.063,
       "creator": {
         "name": "KlingAI",
@@ -37784,8 +37784,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 81.53,
-        "imgEdit": 78.68,
+        "t2i": 78.66,
+        "imgEdit": 77.06,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37807,7 +37807,7 @@
       "name": "Nano Banana 2 (Gemini 3.1 Flash Image)",
       "shortName": "Nano Banana 2",
       "mediaKind": "image",
-      "intelligenceIndex": 66.56,
+      "intelligenceIndex": 70.98,
       "cost": 0.067,
       "creator": {
         "name": "Google",
@@ -37816,8 +37816,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 71.95,
-        "imgEdit": 61.16,
+        "t2i": 73.57,
+        "imgEdit": 68.39,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37838,7 +37838,7 @@
       "name": "Krea 3 (Fast)",
       "shortName": "Krea 3 (Fast)",
       "mediaKind": "image",
-      "intelligenceIndex": 60.03,
+      "intelligenceIndex": 67.86,
       "cost": 0.07,
       "creator": {
         "name": "Krea",
@@ -37848,7 +37848,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 60.03,
+        "imgEdit": 67.86,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37869,7 +37869,7 @@
       "name": "FLUX.2 [max]",
       "shortName": "FLUX.2 [max]",
       "mediaKind": "image",
-      "intelligenceIndex": 24.28,
+      "intelligenceIndex": 48.48,
       "cost": 0.07,
       "creator": {
         "name": "Black Forest Labs",
@@ -37878,8 +37878,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 29.43,
-        "imgEdit": 19.13,
+        "t2i": 52.13,
+        "imgEdit": 44.83,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37900,7 +37900,7 @@
       "name": "HiDream-O1-Edit-2.0",
       "shortName": "HiDream-O1-Edit-2.0",
       "mediaKind": "image",
-      "intelligenceIndex": 55.1,
+      "intelligenceIndex": 65.54,
       "cost": 0.075,
       "creator": {
         "name": "HiDream",
@@ -37910,7 +37910,7 @@
       "isOpenWeights": true,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 55.1,
+        "imgEdit": 65.54,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37931,7 +37931,7 @@
       "name": "Qwen Image 2.0 Pro (2026-04-22)",
       "shortName": "Qwen Image 2.0 Pro",
       "mediaKind": "image",
-      "intelligenceIndex": 34.67,
+      "intelligenceIndex": 55.22,
       "cost": 0.075,
       "creator": {
         "name": "Alibaba",
@@ -37940,8 +37940,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 33.59,
-        "imgEdit": 35.74,
+        "t2i": 54.62,
+        "imgEdit": 55.83,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37962,7 +37962,7 @@
       "name": "Wan 2.7 Pro",
       "shortName": "Wan 2.7 Pro",
       "mediaKind": "image",
-      "intelligenceIndex": 26.25,
+      "intelligenceIndex": 49.63,
       "cost": 0.075,
       "creator": {
         "name": "Alibaba",
@@ -37971,8 +37971,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 18.85,
-        "imgEdit": 33.65,
+        "t2i": 44.6,
+        "imgEdit": 54.65,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37993,7 +37993,7 @@
       "name": "Qwen Image Edit Max 2601",
       "shortName": "Qwen Image Edit Max 2601",
       "mediaKind": "image",
-      "intelligenceIndex": 15.61,
+      "intelligenceIndex": 41.71,
       "cost": 0.075,
       "creator": {
         "name": "Alibaba",
@@ -38003,7 +38003,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 15.61,
+        "imgEdit": 41.71,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38024,7 +38024,7 @@
       "name": "Phoenix 0.9 Ultra",
       "shortName": "Phoenix 0.9 Ultra",
       "mediaKind": "image",
-      "intelligenceIndex": 2.66,
+      "intelligenceIndex": 21.04,
       "cost": 0.07624,
       "creator": {
         "name": "Leonardo.Ai",
@@ -38033,7 +38033,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 2.66,
+        "t2i": 21.04,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -38055,7 +38055,7 @@
       "name": "Eleven v4",
       "shortName": "Eleven v4",
       "mediaKind": "tts",
-      "intelligenceIndex": 98.65,
+      "intelligenceIndex": 85.94,
       "cost": 0.08,
       "creator": {
         "name": "ElevenLabs",
@@ -38069,7 +38069,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 98.65
+        "tts": 85.94
       },
       "mediaRaw": {
         "kind": "tts",
@@ -38088,7 +38088,7 @@
       "name": "DreamImage 2.0",
       "shortName": "DreamImage 2.0",
       "mediaKind": "image",
-      "intelligenceIndex": 33.59,
+      "intelligenceIndex": 54.61,
       "cost": 0.08,
       "creator": {
         "name": "Newport AI",
@@ -38098,7 +38098,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 33.59,
+        "imgEdit": 54.61,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38119,7 +38119,7 @@
       "name": "HiDream-O1-Image-1.5",
       "shortName": "HiDream-O1-Image-1.5",
       "mediaKind": "image",
-      "intelligenceIndex": 28.79,
+      "intelligenceIndex": 51.74,
       "cost": 0.08,
       "creator": {
         "name": "HiDream",
@@ -38128,7 +38128,7 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 28.79,
+        "t2i": 51.74,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -38150,7 +38150,7 @@
       "name": "FLUX.1 Kontext [max]",
       "shortName": "FLUX.1 Kontext [max]",
       "mediaKind": "image",
-      "intelligenceIndex": 8.95,
+      "intelligenceIndex": 34,
       "cost": 0.08,
       "creator": {
         "name": "Black Forest Labs",
@@ -38159,8 +38159,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 9.8,
-        "imgEdit": 8.09,
+        "t2i": 35.21,
+        "imgEdit": 32.78,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38181,7 +38181,7 @@
       "name": "StepAudio 2.5 TTS (Aug 2026)",
       "shortName": "StepAudio 2.5 TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 90.25,
+      "intelligenceIndex": 69.98,
       "cost": 0.085,
       "creator": {
         "name": "StepFun",
@@ -38196,7 +38196,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 90.25
+        "tts": 69.98
       },
       "mediaRaw": {
         "kind": "tts",
@@ -38215,7 +38215,7 @@
       "name": "StepAudio 2.5 TTS",
       "shortName": "StepAudio 2.5 TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 83.76,
+      "intelligenceIndex": 63.96,
       "cost": 0.085,
       "creator": {
         "name": "StepFun",
@@ -38230,7 +38230,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 83.76
+        "tts": 63.96
       },
       "mediaRaw": {
         "kind": "tts",
@@ -38249,7 +38249,7 @@
       "name": "Lucid Origin Ultra",
       "shortName": "Lucid Origin Ultra",
       "mediaKind": "image",
-      "intelligenceIndex": 4.7,
+      "intelligenceIndex": 26.55,
       "cost": 0.08671,
       "creator": {
         "name": "Leonardo.Ai",
@@ -38258,7 +38258,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 4.7,
+        "t2i": 26.55,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -38280,7 +38280,7 @@
       "name": "Octave 2",
       "shortName": "Octave 2",
       "mediaKind": "tts",
-      "intelligenceIndex": 40.72,
+      "intelligenceIndex": 40.92,
       "cost": 0.0875,
       "creator": {
         "name": "Hume AI",
@@ -38294,7 +38294,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 40.72
+        "tts": 40.92
       },
       "mediaRaw": {
         "kind": "tts",
@@ -38313,7 +38313,7 @@
       "name": "Octave TTS",
       "shortName": "Octave TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 33.63,
+      "intelligenceIndex": 37.54,
       "cost": 0.0875,
       "creator": {
         "name": "Hume AI",
@@ -38327,7 +38327,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 33.63
+        "tts": 37.54
       },
       "mediaRaw": {
         "kind": "tts",
@@ -38346,7 +38346,7 @@
       "name": "Seedream 5.0 Pro",
       "shortName": "Seedream 5.0 Pro",
       "mediaKind": "image",
-      "intelligenceIndex": 60.91,
+      "intelligenceIndex": 68.28,
       "cost": 0.09,
       "creator": {
         "name": "ByteDance Seed",
@@ -38355,8 +38355,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 58.4,
-        "imgEdit": 63.42,
+        "t2i": 67.1,
+        "imgEdit": 69.46,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38372,12 +38372,44 @@
       }
     },
     {
+      "id": "img:6bce2e1f-3d76-4d7f-b850-d4fe4d6d34c6",
+      "slug": "krea-3-ultra",
+      "name": "Krea 3 (Ultra)",
+      "shortName": "Krea 3 (Ultra)",
+      "mediaKind": "image",
+      "intelligenceIndex": 72.88,
+      "cost": 0.1,
+      "creator": {
+        "name": "Krea",
+        "color": "#000000"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": 72.88,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": null
+      },
+      "mediaRaw": {
+        "kind": "image",
+        "unitZh": "每张图",
+        "unitEn": "/ image",
+        "t2iElo": null,
+        "imgEditElo": 1153.79,
+        "pricePer1k": 100
+      },
+      "releaseDate": "2026-10-15"
+    },
+    {
       "id": "tts:49285d46-f230-416c-aa92-6322c9f60629",
       "slug": "eleven-v3",
       "name": "Eleven v3",
       "shortName": "Eleven v3",
       "mediaKind": "tts",
-      "intelligenceIndex": 86.33,
+      "intelligenceIndex": 66.11,
       "cost": 0.1,
       "creator": {
         "name": "ElevenLabs",
@@ -38391,7 +38423,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 86.33
+        "tts": 66.11
       },
       "mediaRaw": {
         "kind": "tts",
@@ -38410,7 +38442,7 @@
       "name": "Speech 2.8 HD",
       "shortName": "Speech 2.8 HD",
       "mediaKind": "tts",
-      "intelligenceIndex": 82.29,
+      "intelligenceIndex": 62.83,
       "cost": 0.1,
       "creator": {
         "name": "MiniMax",
@@ -38425,7 +38457,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 82.29
+        "tts": 62.83
       },
       "mediaRaw": {
         "kind": "tts",
@@ -38439,145 +38471,12 @@
       "releaseDate": "2026-02-14"
     },
     {
-      "id": "img:6bce2e1f-3d76-4d7f-b850-d4fe4d6d34c6",
-      "slug": "krea-3-ultra",
-      "name": "Krea 3 (Ultra)",
-      "shortName": "Krea 3 (Ultra)",
-      "mediaKind": "image",
-      "intelligenceIndex": 70.54,
-      "cost": 0.1,
-      "creator": {
-        "name": "Krea",
-        "color": "#000000"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": 70.54,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": null
-      },
-      "mediaRaw": {
-        "kind": "image",
-        "unitZh": "每张图",
-        "unitEn": "/ image",
-        "t2iElo": null,
-        "imgEditElo": 1153.79,
-        "pricePer1k": 100
-      },
-      "releaseDate": "2026-10-15"
-    },
-    {
-      "id": "tts:0b68ecd2-8ad5-4035-bafc-e76e61bb536b",
-      "slug": "speech-2.6-hd",
-      "name": "Speech 2.6 HD",
-      "shortName": "Speech 2.6 HD",
-      "mediaKind": "tts",
-      "intelligenceIndex": 67.58,
-      "cost": 0.1,
-      "creator": {
-        "name": "MiniMax",
-        "color": "#EB3568"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "timeSec": 7.29,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": 67.58
-      },
-      "mediaRaw": {
-        "kind": "tts",
-        "unitZh": "每千字语音",
-        "unitEn": "/ 1k chars",
-        "ttsElo": 1124.7,
-        "pricePer1mChars": 100,
-        "ttfaMs": 444,
-        "cps": 110.9
-      },
-      "releaseDate": "2025-10-30"
-    },
-    {
-      "id": "tts:65166a7b-b42c-4a68-b051-9662facd2f91",
-      "slug": "speech-02-hd",
-      "name": "Speech-02-HD",
-      "shortName": "Speech-02-HD",
-      "mediaKind": "tts",
-      "intelligenceIndex": 59.71,
-      "cost": 0.1,
-      "creator": {
-        "name": "MiniMax",
-        "color": "#EB3568"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "timeSec": 7.34,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": 59.71
-      },
-      "mediaRaw": {
-        "kind": "tts",
-        "unitZh": "每千字语音",
-        "unitEn": "/ 1k chars",
-        "ttsElo": 1103.9,
-        "pricePer1mChars": 100,
-        "ttfaMs": 320,
-        "cps": 111.2
-      },
-      "releaseDate": "2025-03-31"
-    },
-    {
-      "id": "tts:9cd43eb4-f436-4ea2-b3d9-5c912bdea912",
-      "slug": "multilingual-v2",
-      "name": "Multilingual v2",
-      "shortName": "Multilingual v2",
-      "mediaKind": "tts",
-      "intelligenceIndex": 54.82,
-      "cost": 0.1,
-      "creator": {
-        "name": "ElevenLabs",
-        "color": "#30C695"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": 54.82
-      },
-      "mediaRaw": {
-        "kind": "tts",
-        "unitZh": "每千字语音",
-        "unitEn": "/ 1k chars",
-        "ttsElo": 1091.8,
-        "pricePer1mChars": 100,
-        "ttfaMs": null,
-        "cps": null
-      },
-      "releaseDate": "2023-08-22"
-    },
-    {
       "id": "img:a71a9c1d-a20f-4237-8e36-8a58558e2edc",
       "slug": "luma-uni-1-max",
       "name": "Luma UNI 1 Max",
       "shortName": "Luma UNI 1 Max",
       "mediaKind": "image",
-      "intelligenceIndex": 37.19,
+      "intelligenceIndex": 56.46,
       "cost": 0.1,
       "creator": {
         "name": "Luma Labs",
@@ -38586,8 +38485,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 30.77,
-        "imgEdit": 43.6,
+        "t2i": 52.95,
+        "imgEdit": 59.97,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38608,7 +38507,7 @@
       "name": "Ideogram 4.5 (High)",
       "shortName": "Ideogram 4.5 (High)",
       "mediaKind": "image",
-      "intelligenceIndex": 33.53,
+      "intelligenceIndex": 54.45,
       "cost": 0.1,
       "creator": {
         "name": "Ideogram",
@@ -38617,8 +38516,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 28.16,
-        "imgEdit": 38.91,
+        "t2i": 51.34,
+        "imgEdit": 57.55,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38634,12 +38533,46 @@
       }
     },
     {
+      "id": "tts:0b68ecd2-8ad5-4035-bafc-e76e61bb536b",
+      "slug": "speech-2.6-hd",
+      "name": "Speech 2.6 HD",
+      "shortName": "Speech 2.6 HD",
+      "mediaKind": "tts",
+      "intelligenceIndex": 53.76,
+      "cost": 0.1,
+      "creator": {
+        "name": "MiniMax",
+        "color": "#EB3568"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "timeSec": 7.29,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 53.76
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1124.7,
+        "pricePer1mChars": 100,
+        "ttfaMs": 444,
+        "cps": 110.9
+      },
+      "releaseDate": "2025-10-30"
+    },
+    {
       "id": "img:f625feda-2695-40cc-ba87-a5e65b914021",
       "slug": "ideogram-v4-quality",
       "name": "Ideogram 4.0 (Quality)",
       "shortName": "Ideogram 4.0 (Quality)",
       "mediaKind": "image",
-      "intelligenceIndex": 30.92,
+      "intelligenceIndex": 53.04,
       "cost": 0.1,
       "creator": {
         "name": "Ideogram",
@@ -38648,7 +38581,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 30.92,
+        "t2i": 53.04,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -38665,12 +38598,79 @@
       }
     },
     {
+      "id": "tts:65166a7b-b42c-4a68-b051-9662facd2f91",
+      "slug": "speech-02-hd",
+      "name": "Speech-02-HD",
+      "shortName": "Speech-02-HD",
+      "mediaKind": "tts",
+      "intelligenceIndex": 49.79,
+      "cost": 0.1,
+      "creator": {
+        "name": "MiniMax",
+        "color": "#EB3568"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "timeSec": 7.34,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 49.79
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1103.9,
+        "pricePer1mChars": 100,
+        "ttfaMs": 320,
+        "cps": 111.2
+      },
+      "releaseDate": "2025-03-31"
+    },
+    {
+      "id": "tts:9cd43eb4-f436-4ea2-b3d9-5c912bdea912",
+      "slug": "multilingual-v2",
+      "name": "Multilingual v2",
+      "shortName": "Multilingual v2",
+      "mediaKind": "tts",
+      "intelligenceIndex": 47.46,
+      "cost": 0.1,
+      "creator": {
+        "name": "ElevenLabs",
+        "color": "#30C695"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 47.46
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1091.8,
+        "pricePer1mChars": 100,
+        "ttfaMs": null,
+        "cps": null
+      },
+      "releaseDate": "2023-08-22"
+    },
+    {
       "id": "tts:8b4be309-2f31-4ff2-be79-a6652c29ab12",
       "slug": "polly-long-form",
       "name": "Polly Long-Form",
       "shortName": "Long-form",
       "mediaKind": "tts",
-      "intelligenceIndex": 29.39,
+      "intelligenceIndex": 35.41,
       "cost": 0.1,
       "creator": {
         "name": "Amazon",
@@ -38685,7 +38685,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 29.39
+        "tts": 35.41
       },
       "mediaRaw": {
         "kind": "tts",
@@ -38704,7 +38704,7 @@
       "name": "Murf Speech Gen 2",
       "shortName": "Murf Speech Gen 2",
       "mediaKind": "tts",
-      "intelligenceIndex": 17.68,
+      "intelligenceIndex": 28.71,
       "cost": 0.1,
       "creator": {
         "name": "Murf AI",
@@ -38719,7 +38719,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 17.68
+        "tts": 28.71
       },
       "mediaRaw": {
         "kind": "tts",
@@ -38738,7 +38738,7 @@
       "name": "Bagel",
       "shortName": "Bagel",
       "mediaKind": "image",
-      "intelligenceIndex": 0.52,
+      "intelligenceIndex": 8.84,
       "cost": 0.1,
       "creator": {
         "name": "Bytedance",
@@ -38747,8 +38747,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 0.09,
-        "imgEdit": 0.95,
+        "t2i": 4.26,
+        "imgEdit": 13.41,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38769,7 +38769,7 @@
       "name": "MAI-Image-2.5-Pro",
       "shortName": "MAI-Image-2.5-Pro",
       "mediaKind": "image",
-      "intelligenceIndex": 61.91,
+      "intelligenceIndex": 68.75,
       "cost": 0.108544,
       "creator": {
         "name": "Microsoft AI",
@@ -38778,8 +38778,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 63.05,
-        "imgEdit": 60.78,
+        "t2i": 69.28,
+        "imgEdit": 68.21,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38800,7 +38800,7 @@
       "name": "MetaVoice v1",
       "shortName": "MetaVoice v1",
       "mediaKind": "tts",
-      "intelligenceIndex": 2.05,
+      "intelligenceIndex": 11.96,
       "cost": 0.12397,
       "creator": {
         "name": "MetaVoice",
@@ -38815,7 +38815,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 2.05
+        "tts": 11.96
       },
       "mediaRaw": {
         "kind": "tts",
@@ -38834,7 +38834,7 @@
       "name": "LongCat Image",
       "shortName": "LongCat Image",
       "mediaKind": "image",
-      "intelligenceIndex": 4.38,
+      "intelligenceIndex": 25.73,
       "cost": 0.13,
       "creator": {
         "name": "Meituan",
@@ -38843,8 +38843,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 3.78,
-        "imgEdit": 4.97,
+        "t2i": 24.33,
+        "imgEdit": 27.14,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38865,7 +38865,7 @@
       "name": "GPT Image 1.5 (high)",
       "shortName": "GPT Image 1.5 (high)",
       "mediaKind": "image",
-      "intelligenceIndex": 62.35,
+      "intelligenceIndex": 68.97,
       "cost": 0.133,
       "creator": {
         "name": "OpenAI",
@@ -38874,8 +38874,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 66.11,
-        "imgEdit": 58.59,
+        "t2i": 70.74,
+        "imgEdit": 67.19,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38896,7 +38896,7 @@
       "name": "Nano Banana Pro (Gemini 3 Pro Image)",
       "shortName": "Nano Banana Pro",
       "mediaKind": "image",
-      "intelligenceIndex": 59.92,
+      "intelligenceIndex": 67.81,
       "cost": 0.134,
       "creator": {
         "name": "Google",
@@ -38905,8 +38905,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 64.09,
-        "imgEdit": 55.75,
+        "t2i": 69.77,
+        "imgEdit": 65.85,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38927,7 +38927,7 @@
       "name": "OmniGen V2",
       "shortName": "OmniGen V2",
       "mediaKind": "image",
-      "intelligenceIndex": 0.64,
+      "intelligenceIndex": 10.88,
       "cost": 0.15,
       "creator": {
         "name": "VectorSpaceLab",
@@ -38936,8 +38936,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 0.35,
-        "imgEdit": 0.93,
+        "t2i": 8.46,
+        "imgEdit": 13.29,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38958,7 +38958,7 @@
       "name": "Studio",
       "shortName": "Studio",
       "mediaKind": "tts",
-      "intelligenceIndex": 47.86,
+      "intelligenceIndex": 44.23,
       "cost": 0.16,
       "creator": {
         "name": "Google",
@@ -38973,7 +38973,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 47.86
+        "tts": 44.23
       },
       "mediaRaw": {
         "kind": "tts",
@@ -38992,7 +38992,7 @@
       "name": "Journey",
       "shortName": "Journey",
       "mediaKind": "tts",
-      "intelligenceIndex": 45.11,
+      "intelligenceIndex": 42.96,
       "cost": 0.16,
       "creator": {
         "name": "Google",
@@ -39007,7 +39007,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 45.11
+        "tts": 42.96
       },
       "mediaRaw": {
         "kind": "tts",
@@ -39026,7 +39026,7 @@
       "name": "GPT Image 1 (high)",
       "shortName": "GPT Image 1 (high)",
       "mediaKind": "image",
-      "intelligenceIndex": 23.7,
+      "intelligenceIndex": 48.11,
       "cost": 0.167,
       "creator": {
         "name": "OpenAI",
@@ -39035,8 +39035,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 28.34,
-        "imgEdit": 19.06,
+        "t2i": 51.45,
+        "imgEdit": 44.77,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39057,7 +39057,7 @@
       "name": "Pika H3 Flex",
       "shortName": "Pika H3 Flex",
       "mediaKind": "video",
-      "intelligenceIndex": 57.56,
+      "intelligenceIndex": 61.61,
       "cost": 0.175,
       "creator": {
         "name": "Pika Art",
@@ -39068,9 +39068,9 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 69.08,
-        "i2v": 65.52,
-        "vidEdit": 38.08,
+        "t2v": 69.21,
+        "i2v": 66.87,
+        "vidEdit": 48.75,
         "tts": null
       },
       "mediaRaw": {
@@ -39090,7 +39090,7 @@
       "name": "GPT-Realtime-2",
       "shortName": "GPT-Realtime-2",
       "mediaKind": "tts",
-      "intelligenceIndex": 46.59,
+      "intelligenceIndex": 43.64,
       "cost": 0.19156,
       "creator": {
         "name": "OpenAI",
@@ -39105,7 +39105,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 46.59
+        "tts": 43.64
       },
       "mediaRaw": {
         "kind": "tts",
@@ -39124,7 +39124,7 @@
       "name": "HeyGen Video 1",
       "shortName": "HeyGen Video 1",
       "mediaKind": "video",
-      "intelligenceIndex": 73.22,
+      "intelligenceIndex": 72.05,
       "cost": 0.2,
       "creator": {
         "name": "HeyGen",
@@ -39135,8 +39135,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 77.15,
-        "i2v": 69.29,
+        "t2v": 74.75,
+        "i2v": 69.35,
         "vidEdit": null,
         "tts": null
       },
@@ -39157,7 +39157,7 @@
       "name": "Agnes-Video-2.5",
       "shortName": "Agnes-Video-2.5",
       "mediaKind": "video",
-      "intelligenceIndex": 53.58,
+      "intelligenceIndex": 59.09,
       "cost": 0.2,
       "creator": {
         "name": "Sapiens AI",
@@ -39168,8 +39168,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 44.99,
-        "i2v": 62.16,
+        "t2v": 53.49,
+        "i2v": 64.68,
         "vidEdit": null,
         "tts": null
       },
@@ -39189,7 +39189,7 @@
       "name": "Recraft V4.1 Utility Pro",
       "shortName": "Recraft V4.1 Utility Pro",
       "mediaKind": "image",
-      "intelligenceIndex": 29.05,
+      "intelligenceIndex": 51.9,
       "cost": 0.21,
       "creator": {
         "name": "Recraft",
@@ -39198,7 +39198,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 29.05,
+        "t2i": 51.9,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -39220,7 +39220,7 @@
       "name": "GPT Image 2.6 Sunburst (max)",
       "shortName": "GPT Image 2.6 Sunburst (max)",
       "mediaKind": "image",
-      "intelligenceIndex": 89.22,
+      "intelligenceIndex": 83.94,
       "cost": 0.21072,
       "creator": {
         "name": "OpenAI",
@@ -39229,8 +39229,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 93.61,
-        "imgEdit": 84.82,
+        "t2i": 87.26,
+        "imgEdit": 80.63,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39252,7 +39252,7 @@
       "name": "GPT Image 2.6 Flare (max)",
       "shortName": "GPT Image 2.6 Flare (max)",
       "mediaKind": "image",
-      "intelligenceIndex": 86.8,
+      "intelligenceIndex": 82.02,
       "cost": 0.21072,
       "creator": {
         "name": "OpenAI",
@@ -39261,8 +39261,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 89.83,
-        "imgEdit": 83.76,
+        "t2i": 84.06,
+        "imgEdit": 79.98,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39284,7 +39284,7 @@
       "name": "GPT Image 2.5 Sunburst (max)",
       "shortName": "GPT Image 2.5 Sunburst (max)",
       "mediaKind": "image",
-      "intelligenceIndex": 86.56,
+      "intelligenceIndex": 81.91,
       "cost": 0.21072,
       "creator": {
         "name": "OpenAI",
@@ -39293,8 +39293,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 90.18,
-        "imgEdit": 82.95,
+        "t2i": 84.33,
+        "imgEdit": 79.49,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39316,7 +39316,7 @@
       "name": "GPT Image 2.5 Flare (max)",
       "shortName": "GPT Image 2.5 Flare (max)",
       "mediaKind": "image",
-      "intelligenceIndex": 83.21,
+      "intelligenceIndex": 79.78,
       "cost": 0.21072,
       "creator": {
         "name": "OpenAI",
@@ -39325,8 +39325,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 87.31,
-        "imgEdit": 79.11,
+        "t2i": 82.25,
+        "imgEdit": 77.3,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39348,7 +39348,7 @@
       "name": "GPT Image 2 (high)",
       "shortName": "GPT Image 2 (high)",
       "mediaKind": "image",
-      "intelligenceIndex": 75.11,
+      "intelligenceIndex": 75.47,
       "cost": 0.211,
       "creator": {
         "name": "OpenAI",
@@ -39357,8 +39357,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 84.15,
-        "imgEdit": 66.06,
+        "t2i": 80.22,
+        "imgEdit": 70.71,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39380,7 +39380,7 @@
       "name": "Boreal",
       "shortName": "Boreal",
       "mediaKind": "video",
-      "intelligenceIndex": 1.66,
+      "intelligenceIndex": 7.98,
       "cost": 0.22417,
       "creator": {
         "name": "Creatify",
@@ -39391,7 +39391,7 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 1.66,
+        "t2v": 7.98,
         "i2v": null,
         "vidEdit": null,
         "tts": null
@@ -39412,7 +39412,7 @@
       "name": "LTX-2.3 Fast",
       "shortName": "LTX-2.3 Fast",
       "mediaKind": "video",
-      "intelligenceIndex": 1.86,
+      "intelligenceIndex": 8.56,
       "cost": 0.3,
       "creator": {
         "name": "Lightricks",
@@ -39423,8 +39423,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 1.93,
-        "i2v": 1.8,
+        "t2v": 8.75,
+        "i2v": 8.37,
         "vidEdit": null,
         "tts": null
       },
@@ -39444,7 +39444,7 @@
       "name": "Vidu Q3 Turbo",
       "shortName": "Vidu Q3 Turbo",
       "mediaKind": "video",
-      "intelligenceIndex": 5.59,
+      "intelligenceIndex": 16.67,
       "cost": 0.325,
       "creator": {
         "name": "Vidu",
@@ -39455,8 +39455,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 5.76,
-        "i2v": 5.43,
+        "t2v": 16.96,
+        "i2v": 16.38,
         "vidEdit": null,
         "tts": null
       },
@@ -39476,7 +39476,7 @@
       "name": "MiniMax H3 (768p)",
       "shortName": "MiniMax H3 (768p)",
       "mediaKind": "video",
-      "intelligenceIndex": 74.05,
+      "intelligenceIndex": 72.65,
       "cost": 0.4,
       "creator": {
         "name": "MiniMax",
@@ -39487,9 +39487,9 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 80.02,
-        "i2v": 72.42,
-        "vidEdit": 69.72,
+        "t2v": 76.84,
+        "i2v": 71.46,
+        "vidEdit": 69.64,
         "tts": null
       },
       "mediaRaw": {
@@ -39509,7 +39509,7 @@
       "name": "Veo 3.1 Lite",
       "shortName": "Veo 3.1 Lite",
       "mediaKind": "video",
-      "intelligenceIndex": 9.84,
+      "intelligenceIndex": 23.05,
       "cost": 0.4,
       "creator": {
         "name": "Google",
@@ -39520,8 +39520,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 11.11,
-        "i2v": 8.58,
+        "t2v": 24.75,
+        "i2v": 21.36,
         "vidEdit": null,
         "tts": null
       },
@@ -39541,7 +39541,7 @@
       "name": "LTX-2.3 Pro",
       "shortName": "LTX-2.3 Pro",
       "mediaKind": "video",
-      "intelligenceIndex": 3.1,
+      "intelligenceIndex": 11.48,
       "cost": 0.4,
       "creator": {
         "name": "Lightricks",
@@ -39552,8 +39552,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 4.23,
-        "i2v": 1.97,
+        "t2v": 14.11,
+        "i2v": 8.85,
         "vidEdit": null,
         "tts": null
       },
@@ -39573,7 +39573,7 @@
       "name": "Vidu Q4 Preview",
       "shortName": "Vidu Q4 Preview",
       "mediaKind": "video",
-      "intelligenceIndex": 32.92,
+      "intelligenceIndex": 45,
       "cost": 0.42,
       "creator": {
         "name": "Vidu",
@@ -39585,7 +39585,7 @@
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
-        "i2v": 32.92,
+        "i2v": 45,
         "vidEdit": null,
         "tts": null
       },
@@ -39605,7 +39605,7 @@
       "name": "P-Video-2-Pro",
       "shortName": "P-Video-2-Pro",
       "mediaKind": "video",
-      "intelligenceIndex": 68.53,
+      "intelligenceIndex": 68.85,
       "cost": 0.475,
       "creator": {
         "name": "Pruna AI",
@@ -39616,8 +39616,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 70.45,
-        "i2v": 66.61,
+        "t2v": 70.13,
+        "i2v": 67.58,
         "vidEdit": null,
         "tts": null
       },
@@ -39638,7 +39638,7 @@
       "name": "HiDream-O1-Video-1.0",
       "shortName": "HiDream-O1-Video-1.0",
       "mediaKind": "video",
-      "intelligenceIndex": 60.4,
+      "intelligenceIndex": 63.54,
       "cost": 0.48333,
       "creator": {
         "name": "HiDream",
@@ -39650,7 +39650,7 @@
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
-        "i2v": 60.4,
+        "i2v": 63.54,
         "vidEdit": null,
         "tts": null
       },
@@ -39670,7 +39670,7 @@
       "name": "Gemini Omni Flash 1.2",
       "shortName": "Gemini Omni Flash 1.2",
       "mediaKind": "video",
-      "intelligenceIndex": 71.22,
+      "intelligenceIndex": 70.94,
       "cost": 0.52167,
       "creator": {
         "name": "Google",
@@ -39681,9 +39681,9 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 77.73,
-        "i2v": 54.28,
-        "vidEdit": 81.65,
+        "t2v": 75.17,
+        "i2v": 59.59,
+        "vidEdit": 78.06,
         "tts": null
       },
       "mediaRaw": {
@@ -39703,7 +39703,7 @@
       "name": "PixVerse V6",
       "shortName": "PixVerse V6",
       "mediaKind": "video",
-      "intelligenceIndex": 15.11,
+      "intelligenceIndex": 29.32,
       "cost": 0.575,
       "creator": {
         "name": "PixVerse",
@@ -39714,8 +39714,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 17.13,
-        "i2v": 13.1,
+        "t2v": 31.5,
+        "i2v": 27.14,
         "vidEdit": null,
         "tts": null
       },
@@ -39735,7 +39735,7 @@
       "name": "Veo 3.1 Fast",
       "shortName": "Veo 3.1 Fast",
       "mediaKind": "video",
-      "intelligenceIndex": 10.57,
+      "intelligenceIndex": 24,
       "cost": 0.6,
       "creator": {
         "name": "Google",
@@ -39746,8 +39746,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 12.01,
-        "i2v": 9.13,
+        "t2v": 25.85,
+        "i2v": 22.14,
         "vidEdit": null,
         "tts": null
       },
@@ -39767,7 +39767,7 @@
       "name": "Vidu Q3 Pro",
       "shortName": "Vidu Q3 Pro",
       "mediaKind": "video",
-      "intelligenceIndex": 8.68,
+      "intelligenceIndex": 21.48,
       "cost": 0.6,
       "creator": {
         "name": "Vidu",
@@ -39778,8 +39778,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 9.39,
-        "i2v": 7.96,
+        "t2v": 22.5,
+        "i2v": 20.46,
         "vidEdit": null,
         "tts": null
       },
@@ -39799,7 +39799,7 @@
       "name": "LTX-2.5 Fast",
       "shortName": "LTX-2.5 Fast",
       "mediaKind": "video",
-      "intelligenceIndex": 8.03,
+      "intelligenceIndex": 20.44,
       "cost": 0.65,
       "creator": {
         "name": "Lightricks",
@@ -39810,8 +39810,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 9.67,
-        "i2v": 6.39,
+        "t2v": 22.87,
+        "i2v": 18.01,
         "vidEdit": null,
         "tts": null
       },
@@ -39831,7 +39831,7 @@
       "name": "Kling 3.0 Omni 1080p (Pro)",
       "shortName": "Kling 3.0 Omni 1080p (Pro)",
       "mediaKind": "video",
-      "intelligenceIndex": 24.57,
+      "intelligenceIndex": 38.34,
       "cost": 0.7,
       "creator": {
         "name": "KlingAI",
@@ -39842,9 +39842,9 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 27.49,
-        "i2v": 23.65,
-        "vidEdit": 22.56,
+        "t2v": 40.8,
+        "i2v": 37.58,
+        "vidEdit": 36.63,
         "tts": null
       },
       "mediaRaw": {
@@ -39863,7 +39863,7 @@
       "name": "Grok Imagine Video 1.5 Lite",
       "shortName": "Grok Imagine Video 1.5 Lite",
       "mediaKind": "video",
-      "intelligenceIndex": 20.64,
+      "intelligenceIndex": 34.86,
       "cost": 0.7,
       "creator": {
         "name": "SpaceXAI",
@@ -39874,8 +39874,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 18.92,
-        "i2v": 22.35,
+        "t2v": 33.27,
+        "i2v": 36.44,
         "vidEdit": null,
         "tts": null
       },
@@ -39895,7 +39895,7 @@
       "name": "FLUX 3 Max",
       "shortName": "FLUX 3 Max",
       "mediaKind": "video",
-      "intelligenceIndex": 62.52,
+      "intelligenceIndex": 65.11,
       "cost": 0.725,
       "creator": {
         "name": "Fal",
@@ -39906,8 +39906,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 78,
-        "i2v": 47.03,
+        "t2v": 75.36,
+        "i2v": 54.86,
         "vidEdit": null,
         "tts": null
       },
@@ -39928,7 +39928,7 @@
       "name": "Hyperflow H3",
       "shortName": "Hyperflow H3",
       "mediaKind": "video",
-      "intelligenceIndex": 73.33,
+      "intelligenceIndex": 72.18,
       "cost": 0.75,
       "creator": {
         "name": "Video Rebirth",
@@ -39940,8 +39940,8 @@
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
-        "i2v": 67.45,
-        "vidEdit": 79.2,
+        "i2v": 68.13,
+        "vidEdit": 76.23,
         "tts": null
       },
       "mediaRaw": {
@@ -39961,7 +39961,7 @@
       "name": "Wan2.7-260612",
       "shortName": "Wan2.7-260612",
       "mediaKind": "video",
-      "intelligenceIndex": 34.19,
+      "intelligenceIndex": 45.95,
       "cost": 0.75,
       "creator": {
         "name": "Alibaba",
@@ -39972,7 +39972,7 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 34.19,
+        "t2v": 45.95,
         "i2v": null,
         "vidEdit": null,
         "tts": null
@@ -39993,7 +39993,7 @@
       "name": "Gemini Omni Flash 1.1",
       "shortName": "Gemini Omni Flash 1.1",
       "mediaKind": "video",
-      "intelligenceIndex": 61.5,
+      "intelligenceIndex": 64.28,
       "cost": 0.76,
       "creator": {
         "name": "Google",
@@ -40004,9 +40004,9 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 69.37,
-        "i2v": 37.56,
-        "vidEdit": 77.57,
+        "t2v": 69.41,
+        "i2v": 48.38,
+        "vidEdit": 75.05,
         "tts": null
       },
       "mediaRaw": {
@@ -40026,7 +40026,7 @@
       "name": "MiniMax H3 Max",
       "shortName": "MiniMax H3 Max",
       "mediaKind": "video",
-      "intelligenceIndex": 70.78,
+      "intelligenceIndex": 70.39,
       "cost": 0.8,
       "creator": {
         "name": "Fal",
@@ -40037,8 +40037,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 75.31,
-        "i2v": 66.24,
+        "t2v": 73.45,
+        "i2v": 67.33,
         "vidEdit": null,
         "tts": null
       },
@@ -40059,7 +40059,7 @@
       "name": "Kling 3.0 1080p (Pro)",
       "shortName": "Kling 3.0 1080p (Pro)",
       "mediaKind": "video",
-      "intelligenceIndex": 22.56,
+      "intelligenceIndex": 36.63,
       "cost": 0.84,
       "creator": {
         "name": "KlingAI",
@@ -40070,8 +40070,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 22.56,
-        "i2v": 22.56,
+        "t2v": 36.63,
+        "i2v": 36.63,
         "vidEdit": null,
         "tts": null
       },
@@ -40091,7 +40091,7 @@
       "name": "LTX-2.5 Pro",
       "shortName": "LTX-2.5 Pro",
       "mediaKind": "video",
-      "intelligenceIndex": 7.93,
+      "intelligenceIndex": 20.31,
       "cost": 0.85,
       "creator": {
         "name": "Lightricks",
@@ -40102,8 +40102,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 9.45,
-        "i2v": 6.41,
+        "t2v": 22.58,
+        "i2v": 18.04,
         "vidEdit": null,
         "tts": null
       },
@@ -40123,7 +40123,7 @@
       "name": "HappyHorse-1.1",
       "shortName": "HappyHorse-1.1",
       "mediaKind": "video",
-      "intelligenceIndex": 36.2,
+      "intelligenceIndex": 47.39,
       "cost": 0.9,
       "creator": {
         "name": "Alibaba-ATH",
@@ -40134,8 +40134,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 38.41,
-        "i2v": 34,
+        "t2v": 48.98,
+        "i2v": 45.8,
         "vidEdit": null,
         "tts": null
       },
@@ -40155,7 +40155,7 @@
       "name": "Wan 3.0",
       "shortName": "Wan 3.0",
       "mediaKind": "video",
-      "intelligenceIndex": 78.41,
+      "intelligenceIndex": 76.17,
       "cost": 1,
       "creator": {
         "name": "Alibaba",
@@ -40166,9 +40166,9 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 83.63,
-        "i2v": 63.45,
-        "vidEdit": 88.16,
+        "t2v": 79.6,
+        "i2v": 65.52,
+        "vidEdit": 83.38,
         "tts": null
       },
       "mediaRaw": {
@@ -40188,7 +40188,7 @@
       "name": "HappyHorse-1.0",
       "shortName": "HappyHorse-1.0",
       "mediaKind": "video",
-      "intelligenceIndex": 38.82,
+      "intelligenceIndex": 48.92,
       "cost": 1.2,
       "creator": {
         "name": "Alibaba-ATH",
@@ -40199,9 +40199,9 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 32.35,
-        "i2v": 29.36,
-        "vidEdit": 54.74,
+        "t2v": 44.58,
+        "i2v": 42.28,
+        "vidEdit": 59.89,
         "tts": null
       },
       "mediaRaw": {
@@ -40221,7 +40221,7 @@
       "name": "Grok Imagine Video 1.5",
       "shortName": "Grok Imagine Video 1.5",
       "mediaKind": "video",
-      "intelligenceIndex": 39.6,
+      "intelligenceIndex": 49.81,
       "cost": 1.25,
       "creator": {
         "name": "SpaceXAI",
@@ -40232,8 +40232,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 40.33,
-        "i2v": 38.87,
+        "t2v": 50.33,
+        "i2v": 49.3,
         "vidEdit": null,
         "tts": null
       },
@@ -40253,7 +40253,7 @@
       "name": "Aleph 2.0",
       "shortName": "Aleph 2.0",
       "mediaKind": "video",
-      "intelligenceIndex": 24.67,
+      "intelligenceIndex": 38.46,
       "cost": 1.4,
       "creator": {
         "name": "Runway",
@@ -40266,7 +40266,7 @@
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
-        "vidEdit": 24.67,
+        "vidEdit": 38.46,
         "tts": null
       },
       "mediaRaw": {
@@ -40285,7 +40285,7 @@
       "name": "Wan 2.7",
       "shortName": "Wan 2.7",
       "mediaKind": "video",
-      "intelligenceIndex": 49.51,
+      "intelligenceIndex": 56.49,
       "cost": 1.40833,
       "creator": {
         "name": "Alibaba",
@@ -40298,7 +40298,7 @@
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
-        "vidEdit": 49.51,
+        "vidEdit": 56.49,
         "tts": null
       },
       "mediaRaw": {
@@ -40318,7 +40318,7 @@
       "name": "FLUX 3",
       "shortName": "FLUX 3",
       "mediaKind": "video",
-      "intelligenceIndex": 60.45,
+      "intelligenceIndex": 63.64,
       "cost": 1.45,
       "creator": {
         "name": "Black Forest Labs",
@@ -40329,8 +40329,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 73.2,
-        "i2v": 47.71,
+        "t2v": 71.99,
+        "i2v": 55.3,
         "vidEdit": null,
         "tts": null
       },
@@ -40351,7 +40351,7 @@
       "name": "SkyReels V4",
       "shortName": "SkyReels V4",
       "mediaKind": "video",
-      "intelligenceIndex": 70.95,
+      "intelligenceIndex": 70.47,
       "cost": 1.75,
       "creator": {
         "name": "Skywork AI",
@@ -40362,7 +40362,7 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 72.44,
+        "t2v": 71.47,
         "i2v": 69.46,
         "vidEdit": null,
         "tts": null
@@ -40384,7 +40384,7 @@
       "name": "Dreamina Seedance 2.0",
       "shortName": "Dreamina Seedance 2.0",
       "mediaKind": "video",
-      "intelligenceIndex": 65.9,
+      "intelligenceIndex": 67.22,
       "cost": 1.87083,
       "creator": {
         "name": "ByteDance Seed",
@@ -40395,9 +40395,9 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 72.05,
-        "i2v": 74.67,
-        "vidEdit": 50.97,
+        "t2v": 71.21,
+        "i2v": 73,
+        "vidEdit": 57.44,
         "tts": null
       },
       "mediaRaw": {
@@ -40417,7 +40417,7 @@
       "name": "Veo 3.1",
       "shortName": "Veo 3.1",
       "mediaKind": "video",
-      "intelligenceIndex": 12.96,
+      "intelligenceIndex": 26.98,
       "cost": 2,
       "creator": {
         "name": "Google",
@@ -40428,8 +40428,8 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 13.66,
-        "i2v": 12.27,
+        "t2v": 27.79,
+        "i2v": 26.16,
         "vidEdit": null,
         "tts": null
       },
@@ -40449,7 +40449,7 @@
       "name": "Dreamina Seedance 2.5",
       "shortName": "Dreamina Seedance 2.5",
       "mediaKind": "video",
-      "intelligenceIndex": 79.2,
+      "intelligenceIndex": 76.24,
       "cost": 2.84333,
       "creator": {
         "name": "ByteDance Seed",
@@ -40460,9 +40460,9 @@
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
-        "t2v": 79.16,
-        "i2v": 80.55,
-        "vidEdit": 77.89,
+        "t2v": 76.21,
+        "i2v": 77.23,
+        "vidEdit": 75.28,
         "tts": null
       },
       "mediaRaw": {
@@ -40479,121 +40479,204 @@
   ],
   "diffEvents": [
     {
-      "date": "2026-11-18",
-      "kind": "new",
-      "tab": "models",
-      "id": "09fea5f5-7217-452d-b693-fcca01e07bdf",
-      "name": "Gemini 4 Neon (low)",
-      "score": 44.1,
-      "cost": 0.7452
-    },
-    {
-      "date": "2026-11-18",
-      "kind": "new",
-      "tab": "models",
-      "id": "2ba1a8f6-e052-4a33-b178-4db1e86157e4",
-      "name": "Gemini 4 Neon (medium)",
-      "score": 54.9,
-      "cost": 1.9046
-    },
-    {
-      "date": "2026-11-18",
-      "kind": "new",
-      "tab": "models",
-      "id": "9b696f5b-b5d2-4b1f-9ed5-7c1446ec8421",
-      "name": "Gemini 4 Neon (high)",
-      "score": 59.6,
-      "cost": 3.7427
-    },
-    {
-      "date": "2026-11-18",
-      "kind": "new",
-      "tab": "models",
-      "id": "7c667f2d-0149-4eb1-864c-7e66c166ad88",
-      "name": "Gemini 4 Neon (xhigh)",
-      "score": 61.4,
-      "cost": 6.4448
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "tts:3b322e37-a016-4b2e-aacb-1aef8df00829",
+      "name": "StyleTTS 2",
+      "oldScore": 4.1,
+      "score": 15.9,
+      "delta": 11.8
     },
     {
       "date": "2026-11-19",
-      "kind": "new",
-      "tab": "coding-agents",
-      "id": "f547ba043e9627fd184c2e7e5fb35998",
-      "name": "Antigravity CLI - Gemini 4 Neon (xhigh)",
-      "score": 58.6,
-      "cost": 6.8603
+      "kind": "score",
+      "tab": "media",
+      "id": "img:74606b04-5682-4ff2-85ce-56999ef61acb",
+      "name": "Step Image Edit 2",
+      "oldScore": 21.5,
+      "score": 46.7,
+      "delta": 25.2
     },
     {
-      "date": "2026-11-17",
-      "kind": "new",
-      "tab": "models",
-      "id": "75c1b0b8-9db3-4c7e-95be-d74e59defee4",
-      "name": "GPT-6.2 Astra (max)",
-      "score": 62.1,
-      "cost": 3.9979
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "img:e2fa2f78-4a0c-4e2f-b3cf-53d213a18872",
+      "name": "P-Image-Ideogram (Very Low)",
+      "oldScore": 7.8,
+      "score": 32.4,
+      "delta": 24.5
     },
     {
-      "date": "2026-11-17",
-      "kind": "new",
-      "tab": "models",
-      "id": "a1a84b18-e8c9-48fb-8e04-6003bd9f6ff4",
-      "name": "GPT-6.2 Sol (max)",
-      "score": 57.3,
-      "cost": 1.0144
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "img:d77cfc0a-2fa1-4f8e-9f7f-a666b348b1e9",
+      "name": "FLUX.1 [schnell]",
+      "oldScore": 0.7,
+      "score": 11.4,
+      "delta": 10.7
     },
     {
-      "date": "2026-11-16",
-      "kind": "new",
-      "tab": "models",
-      "id": "fef6625d-9097-45f6-95c0-bcaa06e3d8e1",
-      "name": "Qwen4 Max",
-      "score": 42.9,
-      "cost": 3.2681
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "tts:16ad3e89-cc78-4478-a5a0-a048b5c72cfb",
+      "name": "WaveNet",
+      "oldScore": 6.2,
+      "score": 18.9,
+      "delta": 12.7
     },
     {
-      "date": "2026-11-12",
-      "kind": "new",
-      "tab": "models",
-      "id": "dad0e3b1-e3e7-477a-99f9-c14457a91114",
-      "name": "Gemini 4 Hydrogen (xhigh)",
-      "score": 53.9,
-      "cost": 3.1602
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "tts:7efc9790-17f6-44a5-8b4f-897deaeb0088",
+      "name": "Standard",
+      "oldScore": 3.8,
+      "score": 15.5,
+      "delta": 11.7
     },
     {
-      "date": "2026-11-09",
-      "kind": "new",
-      "tab": "models",
-      "id": "593f2d23-247b-41c9-a679-cebd225f0a9a",
-      "name": "Claude Fable 5.2 (max)",
-      "score": 64.6,
-      "cost": 26.5386
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "tts:d3f9b298-8e1a-4328-a2bd-ce3ceea6db1f",
+      "name": "Standard",
+      "oldScore": 1.6,
+      "score": 10.8,
+      "delta": 9.2
     },
     {
-      "date": "2026-11-09",
-      "kind": "new",
-      "tab": "models",
-      "id": "dbf63365-127f-41ee-9e51-81173adb3502",
-      "name": "Muse Ember (max)",
-      "score": 36,
-      "cost": 0.1359
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "img:0413f436-9aa3-4f92-aa34-9432841c1830",
+      "name": "FLUX.2 [dev] Flash",
+      "oldScore": 20.9,
+      "score": 46.3,
+      "delta": 25.3
     },
     {
-      "date": "2026-11-07",
-      "kind": "new",
-      "tab": "models",
-      "id": "d4dd600d-0d8e-4d6e-ad18-0cb8f7d6c4d0",
-      "name": "Agnes 2.5 Pro Theta",
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "img:d48735c9-9f0f-45b6-ad45-cc03eec252c8",
+      "name": "Z-Image Turbo",
+      "oldScore": 10.6,
+      "score": 36.3,
+      "delta": 25.7
+    },
+    {
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "img:c404f12b-b1a8-47d2-bbff-3aa5f73be475",
+      "name": "P-Image",
+      "oldScore": 6,
+      "score": 29.3,
+      "delta": 23.2
+    },
+    {
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "img:9cb8045c-3c85-4023-8585-88ca0eff8452",
+      "name": "HiDream-O1-Image-Dev",
+      "oldScore": 2.8,
+      "score": 21.1,
+      "delta": 18.3
+    },
+    {
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "img:61ace12c-0fb5-4262-a0b7-80845c84b40d",
+      "name": "Luma Photon Flash",
+      "oldScore": 1.1,
+      "score": 14,
+      "delta": 13
+    },
+    {
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "tts:f65ccaf3-a765-4f09-9813-acbac77de69e",
+      "name": "Simba 3.5",
+      "oldScore": 97.1,
+      "score": 80.9,
+      "delta": -16.2
+    },
+    {
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "tts:5177af39-8605-4e2f-b13a-b97f94cb8022",
+      "name": "Simba 3.2",
+      "oldScore": 94.4,
+      "score": 75.6,
+      "delta": -18.9
+    },
+    {
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "tts:fd453d8f-75f5-45b4-84ba-47cfd5ca2a93",
+      "name": "SIMBA 3.0",
+      "oldScore": 63.2,
+      "score": 51.5,
+      "delta": -11.7
+    },
+    {
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "img:2106ec2e-158c-4978-82e0-9049e3d8d90f",
+      "name": "Recraft V4.1 Flash",
+      "oldScore": 12.5,
+      "score": 38.5,
+      "delta": 26
+    },
+    {
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "img:740929c5-09b6-4a81-b98e-00e903e27d84",
+      "name": "Ideogram 4.0 Instant",
+      "oldScore": 19.4,
+      "score": 45.1,
+      "delta": 25.7
+    },
+    {
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "img:d5a99ffc-7fb6-48c3-8543-75c4c07706f0",
+      "name": "P-Image-Ideogram (Low)",
+      "oldScore": 15.4,
+      "score": 41.6,
+      "delta": 26.1
+    },
+    {
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "img:db7a9087-0b50-41f8-ac41-fb48db3aa459",
+      "name": "FLUX.2 [dev] Turbo",
+      "oldScore": 22.7,
+      "score": 47.6,
+      "delta": 24.9
+    },
+    {
+      "date": "2026-11-19",
+      "kind": "score",
+      "tab": "media",
+      "id": "tts:80791fbe-7454-4719-9063-bedfcde606c7",
+      "name": "OpenVoice v2",
+      "oldScore": 11.3,
       "score": 24,
-      "cost": 0.5747
-    },
-    {
-      "date": "2026-11-05",
-      "kind": "new",
-      "tab": "models",
-      "id": "e2ed7885-d46b-4da7-a873-f12f88af0081",
-      "name": "Inkling 2 Small",
-      "score": 30.6,
-      "cost": 1.1784
+      "delta": 12.7
     }
   ]
 }

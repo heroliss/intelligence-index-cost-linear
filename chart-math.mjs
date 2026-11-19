@@ -382,11 +382,11 @@ export const SCENARIO_PILLARS = Object.freeze([
 
 export const SCENARIO_PRESETS = Object.freeze([
   Object.freeze({id: 'default', zh: '官方默认基准', en: 'Official Default', weights: null}),
-  Object.freeze({id: 'fullstack', zh: '💻 全栈研发与终端', en: '💻 Full-Stack & CLI', weights: Object.freeze({coding: 5, reasoning: 3, visual: 2, vibe: 1, rigor: 2})}),
-  Object.freeze({id: 'aesthetic', zh: '🎨 审美设计与前端', en: '🎨 Design & UI Craft', weights: Object.freeze({coding: 2, reasoning: 1, visual: 5, vibe: 3, rigor: 1})}),
-  Object.freeze({id: 'research', zh: '📊 严肃投研与办公', en: '📊 Research & Docs', weights: Object.freeze({coding: 1, reasoning: 4, visual: 1, vibe: 1, rigor: 5})}),
-  Object.freeze({id: 'assistant', zh: '💬 高人味去套话助理', en: '💬 Natural Chat', weights: Object.freeze({coding: 1, reasoning: 2, visual: 2, vibe: 5, rigor: 2})}),
-  Object.freeze({id: 'longvision', zh: '👁️ 长文档与图文全能', en: '👁️ Long-Doc & Vision', weights: Object.freeze({coding: 1, reasoning: 5, visual: 4, vibe: 1, rigor: 3})})
+  Object.freeze({id: 'fullstack', zh: '全栈研发与终端', en: 'Full-Stack & CLI', weights: Object.freeze({coding: 5, reasoning: 3, visual: 2, vibe: 1, rigor: 2})}),
+  Object.freeze({id: 'aesthetic', zh: '审美设计与前端', en: 'Design & UI Craft', weights: Object.freeze({coding: 2, reasoning: 1, visual: 5, vibe: 3, rigor: 1})}),
+  Object.freeze({id: 'research', zh: '严肃投研与办公', en: 'Research & Docs', weights: Object.freeze({coding: 1, reasoning: 4, visual: 1, vibe: 1, rigor: 5})}),
+  Object.freeze({id: 'assistant', zh: '高人味去套话助理', en: 'Natural Chat', weights: Object.freeze({coding: 1, reasoning: 2, visual: 2, vibe: 5, rigor: 2})}),
+  Object.freeze({id: 'longvision', zh: '长文档与图文全能', en: 'Long-Doc & Vision', weights: Object.freeze({coding: 1, reasoning: 5, visual: 4, vibe: 1, rigor: 3})})
 ]);
 
 export const COST_PROFILES = Object.freeze([
@@ -419,44 +419,63 @@ export function computeScenarioScore(row, weights) {
   const dm = row.domainScores || {};
   const exp = row.expertElo || {};
   const pb = row.personality || {};
+  const lb = row.livebench || {};
+  const fallback = 0.65 * baseScore + 0.35 * 45;
+
+  const daUnified = meanFinite([hs.designWeb, hs.designUi, hs.creativeCraft]);
+  const spatialVal = hs.spatialMotion ?? meanFinite([eloPct(exp.aa3d, 1030, 380), eloPct(exp.code2video, 1050, 580)]);
+  const aestheticCore = meanFinite([
+    daUnified,
+    spatialVal,
+    lb.design != null ? lb.design * 0.85 : null
+  ]);
+  // Prevent models missing all aesthetic arenas from winning visual scenarios on MMMU-Pro alone
+  const mmmuScaled = sub.mmmuPro != null ? sub.mmmuPro * 0.80 : null;
+  const visualVal = aestheticCore !== null && mmmuScaled !== null
+    ? 0.72 * aestheticCore + 0.28 * mmmuScaled
+    : aestheticCore !== null
+      ? aestheticCore
+      : mmmuScaled !== null
+        ? 0.58 * mmmuScaled + 0.42 * fallback
+        : null;
+
+  const antiSlopRaw = hs.antiSlop ?? (pb.slop != null ? Math.max(0, 100 - pb.slop) : null);
+  const antiSlopCal = antiSlopRaw !== null ? 12 + 0.75 * antiSlopRaw : null;
+  const vibeCore = meanFinite([hs.chatVibe, antiSlopCal]);
+  const personalityTone = meanFinite([pb.warmth, pb.expressiveness]);
+  const vibeVal = vibeCore !== null && personalityTone !== null
+    ? 0.78 * vibeCore + 0.22 * personalityTone
+    : vibeCore ?? (personalityTone !== null ? 0.55 * personalityTone + 0.45 * fallback : null);
 
   const pillarVals = {
     coding: meanFinite([
       sub.frontierCode ?? fr.frontierCode,
       sub.terminalBench ?? fr.terminal4,
       fr.itBenchSre != null ? Math.min(100, fr.itBenchSre * 1.45) : null,
-      hs.webdev
+      hs.webdev,
+      lb.coding != null ? lb.coding * 0.78 : null,
+      lb.longAgentic != null ? lb.longAgentic * 0.82 : null
     ]),
     reasoning: meanFinite([
       sub.hleDiamond ?? fr.hleDiamond,
       sub.critptAgentic ?? fr.critptAgent,
       sub.science ?? fr.science,
       (sub.mlcr ?? fr.mlcr) != null ? Math.min(100, (sub.mlcr ?? fr.mlcr) * 1.8) : null,
-      fr.automation
+      fr.automation,
+      lb.reasoning != null ? lb.reasoning * 0.78 : null
     ]),
-    visual: meanFinite([
-      hs.designWeb,
-      hs.designUi,
-      hs.creativeCraft,
-      hs.spatialMotion ?? meanFinite([eloPct(exp.aa3d, 1120, 175), eloPct(exp.code2video, 1340, 220)]),
-      sub.mmmuPro
-    ]),
-    vibe: meanFinite([
-      hs.chatVibe,
-      hs.antiSlop ?? (pb.slop != null ? Math.max(0, 100 - pb.slop) : null),
-      pb.warmth,
-      pb.expressiveness
-    ]),
+    visual: visualVal,
+    vibe: vibeVal,
     rigor: meanFinite([
       fr.gdpPdf != null ? Math.min(100, fr.gdpPdf * 2.1) : null,
-      hs.deliverable ?? meanFinite([eloPct(exp.gdpval, 1480, 480), eloPct(exp.briefcase, 1480, 480)]),
+      hs.deliverable ?? meanFinite([eloPct(exp.gdpval, 1580, 390), eloPct(exp.briefcase, 1500, 420)]),
       sub.omniscience,
       sub.hallucination != null ? Math.max(0, 100 - sub.hallucination) : null,
-      meanFinite([dm.finance, dm.legal, dm.healthcare, dm.strategy])
+      meanFinite([dm.finance, dm.legal, dm.healthcare, dm.strategy]),
+      lb.research != null ? lb.research * 0.78 : null
     ])
   };
 
-  const fallback = 0.65 * baseScore + 0.35 * 45;
   let weightedSum = 0, totalW = 0;
   for (const [k, w] of wEntries) {
     const val = pillarVals[k] ?? fallback;

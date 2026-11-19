@@ -29,7 +29,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261119-05';
+} from './chart-math.mjs?v=20261119-07';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -1498,7 +1498,8 @@ addEventListener('hashchange', () => {
 
 function renderLegend() {
   const companies = new Map();
-  for (const row of licenseFilteredRows(state.rows)) {
+  const legendSource = state.mode === 'orgs' && snapshot?.models?.length ? snapshot.models : state.rows;
+  for (const row of licenseFilteredRows(legendSource)) {
     const name = row.creator?.name || 'Other';
     if (!companies.has(name)) companies.set(name, {name, color: row.creator?.color, count: 0});
     companies.get(name).count++;
@@ -1523,6 +1524,7 @@ function renderLegend() {
       syncUrlHash();
       if (state.mode === 'table') renderTable();
       else if (state.mode === 'sub') renderSubTable();
+      else if (state.mode === 'orgs') renderOrgLeaderboards();
       scheduleDraw();
     });
     fragment.append(button);
@@ -7042,8 +7044,10 @@ function showView(mode) {
   endPointerInteractions();
   clearLasso();
   clearHover();
+  const prevMode = state.mode;
   state.mode = mode;
   valueDetailsOpen = false;
+  if (prevMode === 'orgs' || mode === 'orgs') renderLegend();
   syncControls();
   renderStatus();
   syncUrlHash();
@@ -7846,6 +7850,15 @@ new ResizeObserver(() => {
   scheduleDraw();
 }).observe(host);
 new ResizeObserver(scheduleDraw).observe($('#curveHost'));
+let orgBumpResizeTimer = 0;
+new ResizeObserver(() => {
+  if (state?.mode === 'orgs' && orgFocus === 'bump') {
+    clearTimeout(orgBumpResizeTimer);
+    orgBumpResizeTimer = setTimeout(() => {
+      if (state?.mode === 'orgs' && orgFocus === 'bump') renderOrgLeaderboards();
+    }, 120);
+  }
+}).observe($('#orgContent'));
 
 function showLoadError(error) {
   host.hidden = false;
@@ -8622,8 +8635,8 @@ function renderOrgBumpChart(container) {
   hCopy.append(
     html('strong', t('跨机构独立排名轨迹图（Bump Chart）', 'Cross-Organization Official Rank Trajectory')),
     html('span', t(
-      '纵轴越靠上排名越靠前；一眼识别「全机构通吃旗舰」与「单榜偏科模型」。单击锁定一条曲线，悬停另一模型即可双线对照；点击顶部机构标题可进入单机构精析。',
-      'Higher = better official rank. Spot consensus flagships vs. single-arena specialists instantly. Click to pin one line, hover another to compare; click any org header to drill down.'
+      '纵轴越靠上排名越靠前；实心圆为精确匹配，虚线环为同系列相邻档位。单击锁定基准曲线，悬停另一模型即可双线对照；点击机构标题可进入精析。',
+      'Higher = better official rank · Solid dot = exact model, dashed ring = sibling variant · Click to pin one line, hover another to compare; click any org header to inspect.'
     ), 'org-meta-count')
   );
   const ctrl = html('div', null, 'org-bump-controls');
@@ -8705,16 +8718,17 @@ function renderOrgBumpChart(container) {
   const mapRankVal = r => (r <= rankCap ? r : rankCap + Math.min(3.5, Math.log2(r - rankCap + 1) * 1.4));
   const maxMapped = Math.max(rankCap, ...series.flatMap(s => orgBoards.map(b => s.rec.ranks[b.id] ? mapRankVal(s.rec.ranks[b.id].rank) : 0)));
 
-  const svgW = 1180;
-  const svgH = Math.max(430, Math.min(540, 320 + series.length * 14));
-  const padL = 204, padR = 186, padT = 56, padB = 26;
+  const availW = container.clientWidth || 1200;
+  const svgW = Math.max(920, Math.min(1360, Math.round(availW - 22)));
+  const svgH = Math.max(460, Math.min(550, 336 + series.length * 14));
+  const padL = 202, padR = 190, padT = 58, padB = 26;
   const innerW = svgW - padL - padR;
   const innerH = svgH - padT - padB;
   const colX = i => padL + (orgBoards.length > 1 ? (i * innerW) / (orgBoards.length - 1) : innerW / 2);
   const rankY = r => padT + ((mapRankVal(r) - 1) / Math.max(1, maxMapped - 1)) * innerH;
 
   const chartHost = html('div', null, 'org-bump-scroll');
-  const svgEl = node('svg', {class: 'org-bump-svg', viewBox: `0 0 ${svgW} ${svgH}`, role: 'img', 'aria-label': t('跨机构官方排名轨迹图', 'Cross-organization rank bump chart')});
+  const svgEl = node('svg', {class: 'org-bump-svg', viewBox: `0 0 ${svgW} ${svgH}`, style: `max-width:${svgW}px`, role: 'img', 'aria-label': t('跨机构官方排名轨迹图', 'Cross-organization rank bump chart')});
 
   // Subtle horizontal rank guide lines (#1, #5, #10, #20, #30)
   const gridG = node('g', {class: 'bump-grid'});
@@ -8749,19 +8763,26 @@ function renderOrgBumpChart(container) {
   });
 
   // Collision-avoidance resolver for left & right end labels
-  const resolveLabelYs = (items, minGap = 17) => {
+  const resolveLabelYs = (items, minGap = 19.5) => {
     const sorted = [...items].sort((a, b) => a.rawY - b.rawY);
+    const minY = padT - 8;
+    const maxY = svgH - padB + 8;
     for (let i = 0; i < sorted.length; i++) {
-      sorted[i].y = sorted[i].rawY;
+      sorted[i].y = Math.max(minY, sorted[i].rawY);
       if (i > 0 && sorted[i].y - sorted[i - 1].y < minGap) {
         sorted[i].y = sorted[i - 1].y + minGap;
       }
     }
-    const maxY = svgH - padB + 4;
     for (let i = sorted.length - 1; i >= 0; i--) {
       if (i === sorted.length - 1 && sorted[i].y > maxY) sorted[i].y = maxY;
       if (i < sorted.length - 1 && sorted[i + 1].y - sorted[i].y < minGap) {
         sorted[i].y = sorted[i + 1].y - minGap;
+      }
+    }
+    for (let i = 0; i < sorted.length; i++) {
+      if (i === 0 && sorted[i].y < minY) sorted[i].y = minY;
+      if (i > 0 && sorted[i].y - sorted[i - 1].y < minGap) {
+        sorted[i].y = sorted[i - 1].y + minGap;
       }
     }
     return new Map(sorted.map(x => [x.id, x.y]));
@@ -8885,7 +8906,7 @@ function buildOrgTopBarChart(board, rows) {
   const head = html('div', null, 'org-viz-head');
   head.append(
     html('span', t(
-      `Top ${top.length} 可视化分差与成本对照（${board.scoreLabelZh}）`,
+      `Top ${top.length} 分差与成本对照（${board.scoreLabelZh}）`,
       `Top ${top.length} Score Spread & API Cost (${board.scoreLabelEn})`
     ), 'org-viz-title')
   );
@@ -8906,78 +8927,63 @@ function buildOrgTopBarChart(board, rows) {
   const floor = Math.max(0, minS - span * 0.28);
   const scaleSpan = Math.max(0.5, maxS - floor);
 
-  const rowH = 25;
-  const padT = 8, padB = 8, leftW = 228, rightW = 192;
-  const svgW = 1040;
-  const barAreaW = svgW - leftW - rightW;
-  const svgH = padT + padB + top.length * rowH;
-
-  const svgHost = html('div', null, 'org-viz-scroll');
-  const svgEl = node('svg', {class: 'org-bar-svg', viewBox: `0 0 ${svgW} ${svgH}`, role: 'img', 'aria-label': t(`${board.titleZh} Top ${top.length} 柱状对比图`, `${board.titleEn} Top ${top.length} bar chart`)});
-
-  // Subtle vertical scale lines (25%, 50%, 75%, 100%)
-  for (const frac of [0.25, 0.5, 0.75, 1]) {
-    const gx = leftW + frac * barAreaW;
-    svgEl.append(node('line', {x1: gx.toFixed(1), x2: gx.toFixed(1), y1: padT, y2: svgH - padB, class: 'org-viz-grid'}));
-  }
+  const scroller = html('div', null, 'org-viz-scroll');
+  const list = html('ol', null, 'org-bar-list');
+  const frag = document.createDocumentFragment();
 
   top.forEach((row, i) => {
-    const cy = padT + i * rowH;
     const spotKey = orgRowSpotKey(row);
     const fillCol = orgCreatorColor(row.creator, row.creatorColor);
-    const frac = Math.max(0.06, Math.min(1, (row.score - floor) / scaleSpan));
-    const bw = Math.max(6, frac * barAreaW);
+    const pct = Math.max(6, Math.min(100, ((row.score - floor) / scaleSpan) * 100));
 
-    const g = node('g', {class: 'org-viz-row', 'data-spot-key': spotKey});
-    if (row.familySlug) g.dataset.familySlug = row.familySlug;
-    g.append(node('rect', {x: 0, y: cy + 1, width: svgW, height: rowH - 2, rx: 5, class: 'org-viz-bg'}));
+    const li = html('li', null, 'org-bar-item');
+    li.dataset.spotKey = spotKey;
+    if (row.familySlug) li.dataset.familySlug = row.familySlug;
+    li.style.setProperty('--bar-color', fillCol);
 
-    // Rank + dot + name
-    g.append(
-      node('text', {x: 28, y: cy + 16, 'text-anchor': 'end', class: `org-viz-rank${row.rank <= 3 ? ' is-top' : ''}`}, `#${row.rank}`),
-      node('circle', {cx: 38, cy: cy + 12.5, r: 3.5, fill: fillCol})
-    );
+    const rankEl = html('span', `#${row.rank}`, `org-bar-rank${row.rank <= 3 ? ' is-top' : ''}`);
+    const dot = html('i', null, 'creator-dot');
+    dot.style.background = fillCol;
+    dot.setAttribute('aria-hidden', 'true');
+
     const disp = orgDisplayName(row);
-    const shortDisp = disp.length > 23 ? disp.slice(0, 22) + '…' : disp;
-    g.append(node('text', {x: 48, y: cy + 16, class: 'org-viz-name'}, shortDisp));
+    const nameEl = html('span', disp, 'org-bar-name');
+    nameEl.title = row.rawName && row.rawName !== disp ? `${disp} (${row.rawName})` : disp;
 
-    // Bar track + proportional bar + leading cap
-    g.append(
-      node('rect', {x: leftW, y: cy + 6, width: barAreaW, height: 13, rx: 3.5, class: 'org-viz-track'}),
-      node('rect', {x: leftW, y: cy + 6, width: bw.toFixed(1), height: 13, rx: 3.5, fill: fillCol, class: 'org-viz-fill'}),
-      node('rect', {x: (leftW + bw - 2.5).toFixed(1), y: cy + 6, width: 2.5, height: 13, rx: 1, fill: fillCol, class: 'org-viz-cap'})
-    );
+    const track = html('span', null, 'org-bar-track');
+    track.setAttribute('aria-hidden', 'true');
+    const fill = html('span', null, 'org-bar-fill');
+    fill.style.width = `${pct.toFixed(1)}%`;
+    track.append(fill);
 
-    // Score + gap behind #1 + cost pill
-    const scoreStr = format(row.score, board.scoreDecimals);
+    const scoreEl = html('span', format(row.score, board.scoreDecimals), 'org-bar-score');
     const gap = maxS - row.score;
-    const gapStr = i === 0 ? t('榜首', '#1') : `−${format(gap, board.scoreDecimals)}`;
+    const gapEl = html('span', i === 0 ? t('榜首', '#1') : `−${format(gap, board.scoreDecimals)}`, `org-bar-gap${i === 0 ? ' is-lead' : ''}`);
     const costStr = board.id === 'livebench' && row.lbCost != null
       ? `LB ${money(row.lbCost)}`
       : row.cost != null && row.cost > 0 ? money(row.cost) : '—';
-    g.append(
-      node('text', {x: leftW + barAreaW + 10, y: cy + 16, class: 'org-viz-score'}, scoreStr),
-      node('text', {x: leftW + barAreaW + 76, y: cy + 16, class: i === 0 ? 'org-viz-gap is-lead' : 'org-viz-gap'}, gapStr),
-      node('text', {x: svgW - 8, y: cy + 16, 'text-anchor': 'end', class: 'org-viz-cost'}, costStr)
-    );
+    const costEl = html('span', costStr, 'org-bar-cost');
 
-    g.addEventListener('pointerenter', () => {
+    li.addEventListener('pointerenter', () => {
       orgSpotlightKey = spotKey;
       applyOrgSpotlight(spotKey, row);
     });
-    g.addEventListener('pointerleave', () => {
+    li.addEventListener('pointerleave', () => {
       orgSpotlightKey = null;
       applyOrgSpotlight(null);
     });
-    g.addEventListener('click', () => {
+    li.addEventListener('click', () => {
       orgPinnedKey = orgPinnedKey === spotKey ? null : spotKey;
       applyOrgSpotlight(orgPinnedKey, row);
     });
-    svgEl.append(g);
+
+    li.append(rankEl, dot, nameEl, track, scoreEl, gapEl, costEl);
+    frag.append(li);
   });
 
-  svgHost.append(svgEl);
-  panel.append(svgHost);
+  list.append(frag);
+  scroller.append(list);
+  panel.append(scroller);
   return panel;
 }
 

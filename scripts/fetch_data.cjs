@@ -1354,8 +1354,8 @@ function buildMediaModels({ imagePayload = null, videoPayload = null, ttsRows = 
 
     for (const [rawId, rec] of byId.entries()) {
       const meta = lbMeta.get(rawId);
-      const t2i = rec.t2iElo !== null ? eloToWinPct(rec.t2iElo, 1080, 155) : null;
-      const imgEdit = rec.editElo !== null ? eloToWinPct(rec.editElo, 1095, 155) : null;
+      const t2i = rec.t2iElo !== null ? eloToWinPct(rec.t2iElo, 1010, 300) : null;
+      const imgEdit = rec.editElo !== null ? eloToWinPct(rec.editElo, 1025, 300) : null;
       const parts = [t2i, imgEdit].filter(v => v !== null);
       if (!parts.length) continue;
       const idxScore = Number((parts.reduce((a, b) => a + b, 0) / parts.length).toFixed(2));
@@ -1414,9 +1414,9 @@ function buildMediaModels({ imagePayload = null, videoPayload = null, ttsRows = 
 
     for (const [rawId, rec] of byId.entries()) {
       const meta = lbMeta.get(rawId);
-      const t2v = rec.t2vElo !== null ? eloToWinPct(rec.t2vElo, 1075, 140) : null;
-      const i2v = rec.i2vElo !== null ? eloToWinPct(rec.i2vElo, 1075, 140) : null;
-      const vidEdit = rec.vidEditElo !== null ? eloToWinPct(rec.vidEditElo, 1075, 140) : null;
+      const t2v = rec.t2vElo !== null ? eloToWinPct(rec.t2vElo, 1050, 210) : null;
+      const i2v = rec.i2vElo !== null ? eloToWinPct(rec.i2vElo, 1050, 210) : null;
+      const vidEdit = rec.vidEditElo !== null ? eloToWinPct(rec.vidEditElo, 1050, 210) : null;
       const parts = [t2v, i2v, vidEdit].filter(v => v !== null);
       if (!parts.length) continue;
       const idxScore = Number((parts.reduce((a, b) => a + b, 0) / parts.length).toFixed(2));
@@ -1460,7 +1460,7 @@ function buildMediaModels({ imagePayload = null, videoPayload = null, ttsRows = 
     }
     for (const [mId, h] of byModelId.entries()) {
       const m = h.model;
-      const ttsScore = eloToWinPct(m.qualityElo, 1080, 140);
+      const ttsScore = eloToWinPct(m.qualityElo, 1105, 300);
       const timeSec = Number.isFinite(h.performance?.medianGenerationTimeSeconds) && h.performance.medianGenerationTimeSeconds > 0
         ? Number(h.performance.medianGenerationTimeSeconds.toFixed(2))
         : null;
