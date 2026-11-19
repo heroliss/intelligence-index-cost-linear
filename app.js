@@ -29,7 +29,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261119-07';
+} from './chart-math.mjs?v=20261119-09';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -131,6 +131,23 @@ const BENCHMARKS = {
     source: 'https://artificialanalysis.ai/image',
     defaultX: 0.35,
     defaultTimeMin: 1
+  },
+  orgs: {
+    key: 'models',
+    isOrgs: true,
+    zhTitle: '各测评机构独立原榜对照',
+    enTitle: 'Independent Evaluation Organization Leaderboards',
+    zhSub: '6 份权威榜单原序原分呈现 · 悬停或点击任意模型跨机构同步高亮排名',
+    enSub: '6 un-blended official org leaderboards · Hover or click any model to spotlight ranks across orgs',
+    zhAxis: '官方原榜分',
+    enAxis: 'Official Score',
+    zhUnit: '份独立机构原榜',
+    enUnit: 'org boards',
+    zhCostNote: '各机构原榜严格保留官方原始排名与计分口径，绝不混算改序',
+    enCostNote: 'Each org leaderboard preserves its exact official ranking & scoring methodology without blending',
+    source: 'https://livebench.ai/',
+    defaultX: 4.5,
+    defaultTimeMin: 25
   }
 };
 
@@ -153,7 +170,8 @@ const DEFAULT_SETTINGS = {
   'human-arena': {labels: true, smartLabels: true, labelSize: 10, labelDistance: 7},
   'coding-agents': {labels: true, smartLabels: true, labelSize: 10, labelDistance: 12},
   cyber: {labels: true, smartLabels: true, labelSize: 10, labelDistance: 8},
-  media: {labels: true, smartLabels: true, labelSize: 9.5, labelDistance: 5}
+  media: {labels: true, smartLabels: true, labelSize: 9.5, labelDistance: 5},
+  orgs: {labels: true, smartLabels: true, labelSize: 9.5, labelDistance: 4}
 };
 
 const Y_LENSES = {
@@ -235,12 +253,18 @@ function parseHash() {
   const ampIndex = raw.indexOf('&');
   const chartPart = ampIndex === -1 ? raw : raw.slice(0, ampIndex);
   const queryPart = ampIndex === -1 ? '' : raw.slice(ampIndex + 1);
-  const chart = ['frontier', 'human-arena', 'coding-agents', 'cyber', 'media'].includes(chartPart) ? chartPart : 'models';
-  return {chart, params: new URLSearchParams(queryPart)};
+  const params = new URLSearchParams(queryPart);
+  let chart = ['frontier', 'human-arena', 'coding-agents', 'cyber', 'media', 'orgs'].includes(chartPart) ? chartPart : 'models';
+  if (params.get('view') === 'orgs') {
+    chart = 'orgs';
+    params.delete('view');
+  }
+  return {chart, params};
 }
 
 const initialRoute = parseHash();
 let snapshot, activeKey = initialRoute.chart;
+let lastArenaMode = 'chart';
 const states = new Map();
 let crossTabIndex = new Map();
 let orgBoards = [];
@@ -625,7 +649,7 @@ function makeState(key, routeParams = null) {
     isoCurve: false,
     subLine: false,
     ...DEFAULT_SETTINGS[key],
-    mode: 'chart',
+    mode: key === 'orgs' ? 'orgs' : 'chart',
     compareVis: 'radar',
     radarScale: 'zoom',
     stripScale: 'zoom',
@@ -660,7 +684,11 @@ function makeState(key, routeParams = null) {
 
 function applyRouteParams(target, params) {
   const view = params.get('view');
-  if (['chart', 'table', 'orgs', 'curve', 'sub', 'compare'].includes(view)) target.mode = view;
+  if (target.benchKey === 'orgs') {
+    target.mode = 'orgs';
+  } else if (['chart', 'table', 'curve', 'sub', 'compare'].includes(view)) {
+    target.mode = view;
+  }
   const org = params.get('org');
   if (['all', 'bump', 'aa', 'livebench', 'arenaChat', 'arenaWebdev', 'designArena', 'aaGdpval'].includes(org)) orgFocus = org;
   if (params.get('orgm') === '1') orgMatchedOnly = true;
@@ -765,7 +793,7 @@ function applyRouteParams(target, params) {
 function syncUrlHash() {
   if (!state) return;
   const params = new URLSearchParams();
-  if (state.mode !== 'chart') params.set('view', state.mode);
+  if (activeKey !== 'orgs' && state.mode !== 'chart') params.set('view', state.mode);
   if (state.scenarioId && state.scenarioId !== 'default') {
     if (state.scenarioId === 'custom' && state.scenarioWeights) {
       params.set('sw', SCENARIO_PILLARS.map(p => state.scenarioWeights[p.key] ?? 0).join(','));
@@ -1115,6 +1143,7 @@ function syncStaticText() {
   $('#tab-coding-agents').textContent = t('编程智能体', 'Coding Agents');
   $('#tab-cyber').textContent = t('网络安全', 'Cyber');
   $('#tab-media').textContent = t('多模态生成', 'Media Arena');
+  $('#tab-orgs').textContent = t('机构分榜', 'Org Ranks');
   $('#guideLink').textContent = t('上手指南 ↗', 'Guide ↗');
   $('#guideLink').title = t(
     '查看一分钟上手教学、功能亮点与作者作品站 Liss Works',
@@ -1156,7 +1185,6 @@ function syncStaticText() {
 
   $('[data-i18n="scatterView"]').textContent = t('散点图', 'Scatter');
   $('[data-i18n="tableView"]').textContent = t('数据表', 'Table');
-  $('[data-i18n="orgView"]').textContent = t('机构分榜', 'Org Ranks');
   $('[data-i18n="curveView"]').textContent = t('权重曲线', 'Curve');
   $('[data-i18n="subView"]').textContent = t('订阅回本', 'Sub vs API');
   $('[data-i18n="compareView"]').textContent = t('剖析对比', 'Compare');
@@ -1439,6 +1467,7 @@ function chooseChart(key, {changeHash = true, routeParams = null} = {}) {
   if (comparePickerOpen) setComparePickerOpen(false);
   if (viewToolsOpen) setViewToolsOpen(false);
   const previousMode = state?.mode;
+  if (previousMode && previousMode !== 'orgs') lastArenaMode = previousMode;
   endPointerInteractions();
   clearHover();
   activeKey = key;
@@ -1457,7 +1486,11 @@ function chooseChart(key, {changeHash = true, routeParams = null} = {}) {
     else if (routeParams) applyRouteParams(states.get(key), routeParams);
     state = states.get(key);
     if (state.starredOnly && !state.rows.some(isStarred)) state.starredOnly = false;
-    if (!routeParams?.has('view') && previousMode) state.mode = previousMode;
+    if (key === 'orgs') {
+      state.mode = 'orgs';
+    } else if (!routeParams?.has('view')) {
+      state.mode = (previousMode && previousMode !== 'orgs') ? previousMode : lastArenaMode;
+    }
     $('#loading').hidden = true;
     host.setAttribute('aria-busy', 'false');
     if (changeHash) syncUrlHash();
@@ -1952,7 +1985,7 @@ function syncControls() {
   syncSubControls();
   syncHistoryControls();
 
-  const isOrgs = state.mode === 'orgs';
+  const isOrgs = activeKey === 'orgs' || state.mode === 'orgs';
   const hideFilterChrome = state.mode === 'curve' || state.mode === 'compare';
   if (isOrgs) {
     $('#yLensWrap').hidden = true;
@@ -1963,6 +1996,8 @@ function syncControls() {
   $('#extraFilter').closest('.extra-filter-wrap').hidden = isOrgs;
   $('#frontier').hidden = isOrgs;
   syncViewToolsControls();
+  $('#viewSwitch').hidden = isOrgs;
+  $('#orgModeSwitch').hidden = !isOrgs;
   for (const button of document.querySelectorAll('[data-view]')) {
     button.setAttribute('aria-pressed', String(button.dataset.view === state.mode));
   }
@@ -6214,7 +6249,7 @@ function renderPinned() {
         orgFocus = 'livebench';
         orgPinnedKey = row.id;
         orgSpotlightKey = row.id;
-        showView('orgs');
+        chooseChart('orgs');
       });
       cFrag.append(lbPill);
     }
@@ -6226,7 +6261,7 @@ function renderPinned() {
         orgFocus = 'all';
         orgPinnedKey = row.id;
         orgSpotlightKey = row.id;
-        showView('orgs');
+        chooseChart('orgs');
       });
       cFrag.append(orgPill);
     }
@@ -7036,24 +7071,30 @@ $('#resetSettings').addEventListener('click', () => {
 });
 
 function showView(mode) {
-  if (!state || !['chart', 'table', 'orgs', 'curve', 'sub', 'compare'].includes(mode)) return;
+  if (mode === 'orgs') {
+    chooseChart('orgs');
+    return;
+  }
+  if (!state || !['chart', 'table', 'curve', 'sub', 'compare'].includes(mode)) return;
+  if (activeKey === 'orgs') {
+    chooseChart('models', {changeHash: false});
+    if (!state) return;
+  }
   stopHistoryPlay();
   if (comparePickerOpen && mode !== 'compare') setComparePickerOpen(false);
   if (viewToolsOpen) setViewToolsOpen(false);
-  if (scenarioOpen && (mode === 'curve' || mode === 'compare' || mode === 'orgs')) setScenarioOpen(false);
+  if (scenarioOpen && (mode === 'curve' || mode === 'compare')) setScenarioOpen(false);
   endPointerInteractions();
   clearLasso();
   clearHover();
-  const prevMode = state.mode;
   state.mode = mode;
+  lastArenaMode = mode;
   valueDetailsOpen = false;
-  if (prevMode === 'orgs' || mode === 'orgs') renderLegend();
   syncControls();
   renderStatus();
   syncUrlHash();
   if (mode === 'chart') buildPlot();
   else if (mode === 'table') renderTable();
-  else if (mode === 'orgs') renderOrgLeaderboards();
   else if (mode === 'sub') renderSubTable();
   else if (mode === 'compare') renderCompare();
   scheduleDraw();
@@ -7732,7 +7773,7 @@ document.addEventListener('keydown', event => {
   }
   const tag = event.target?.tagName;
   const typing = tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || event.target?.isContentEditable;
-  if (!typing && event.altKey && !event.ctrlKey && !event.metaKey && ['1', '2', '3', '4', '5', '6'].includes(event.key)) {
+  if (!typing && event.altKey && !event.ctrlKey && !event.metaKey && ['1', '2', '3', '4', '5', '6', '7'].includes(event.key)) {
     const visibleTabs = [...document.querySelectorAll('[role=tab]')].filter(el => !el.hidden);
     const targetTab = visibleTabs[Number(event.key) - 1];
     if (targetTab && targetTab.dataset.chart !== activeKey) {
@@ -7742,8 +7783,19 @@ document.addEventListener('keydown', event => {
     return;
   }
   if (!typing && !event.ctrlKey && !event.metaKey && !event.altKey) {
-    if (state && ['1', '2', '3', '4', '5', '6'].includes(event.key)) {
-      const modes = ['chart', 'table', 'orgs', 'curve', 'sub', 'compare'];
+    if (state && activeKey === 'orgs' && ['1', '2'].includes(event.key)) {
+      const nextFocus = event.key === '1' ? 'all' : 'bump';
+      if (orgFocus !== nextFocus) {
+        event.preventDefault();
+        orgFocus = nextFocus;
+        syncUrlHash();
+        renderOrgLeaderboards();
+        updateSummary();
+      }
+      return;
+    }
+    if (state && activeKey !== 'orgs' && ['1', '2', '3', '4', '5'].includes(event.key)) {
+      const modes = ['chart', 'table', 'curve', 'sub', 'compare'];
       const targetMode = modes[Number(event.key) - 1];
       if (targetMode && state.mode !== targetMode) {
         event.preventDefault();
@@ -8310,7 +8362,7 @@ function locateOrgModel(row, board) {
 
 function toggleOrgCompare(row, board, openCompare = false) {
   if (!row?.modelId) return;
-  const preferredTab = !['coding-agents', 'media'].includes(activeKey)
+  const preferredTab = !['coding-agents', 'media', 'orgs'].includes(activeKey)
     ? activeKey
     : (board?.scatterTarget?.tab || 'models');
   const preferredArr = snapshot?.[BENCHMARKS[preferredTab]?.key] || [];
@@ -8341,7 +8393,7 @@ function toggleOrgCompare(row, board, openCompare = false) {
 
 function isInCompareAnyModelTab(modelId) {
   if (!modelId) return false;
-  if (state && !['coding-agents', 'media'].includes(activeKey) && state.compareIds.includes(modelId)) return true;
+  if (state && !['coding-agents', 'media', 'orgs'].includes(activeKey) && state.compareIds.includes(modelId)) return true;
   const ms = states.get('models');
   return !!(ms && ms.compareIds.includes(modelId));
 }
@@ -8356,12 +8408,13 @@ function renderOrgSpotlightBar(spotKey, spotRow = null) {
   const activeSpot = spotKey || orgPinnedKey;
   if (!activeSpot) {
     bar.classList.remove('is-active');
-    bar.replaceChildren(
-      html('span', t(
-        '悬停或点击任意模型，即可跨 6 家独立测评机构原榜同步高亮其真实排名（点击行可锁定，按 Esc 取消）。',
-        'Hover or click any model to spotlight its exact un-blended rank across all 6 independent org leaderboards (click to pin, Esc to clear).'
-      ), 'org-spot-hint')
+    const hintTxt = t(
+      '悬停或点击任意模型，即可跨 6 家独立测评机构原榜同步高亮其真实排名（点击行可锁定，按 Esc 取消）。',
+      'Hover or click any model to spotlight its exact un-blended rank across all 6 independent org leaderboards (click to pin, Esc to clear).'
     );
+    const hint = html('span', hintTxt, 'org-spot-hint');
+    hint.title = hintTxt;
+    bar.replaceChildren(hint);
     return;
   }
 
@@ -8382,6 +8435,12 @@ function renderOrgSpotlightBar(spotKey, spotRow = null) {
   }
 
   const pills = html('div', null, 'org-spot-ranks');
+  pills.addEventListener('wheel', event => {
+    if (pills.scrollWidth > pills.clientWidth + 2 && Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+      pills.scrollLeft += event.deltaY;
+      event.preventDefault();
+    }
+  }, {passive: false});
   let pillCount = 0;
   for (const board of orgBoards) {
     const info = rec?.ranks?.[board.id] || (() => {
@@ -8424,8 +8483,9 @@ function renderOrgSpotlightBar(spotKey, spotRow = null) {
     actions.append(locBtn, cmpBtn);
   }
   if (orgPinnedKey) {
-    const clearBtn = html('button', t('取消锁定 ×', 'Clear ×'), 'org-mini-btn is-clear');
+    const clearBtn = html('button', t('解锁 ×', 'Unpin ×'), 'org-mini-btn is-clear');
     clearBtn.type = 'button';
+    clearBtn.title = t('取消锁定 (Esc)', 'Clear pin (Esc)');
     clearBtn.addEventListener('click', () => {
       orgPinnedKey = null;
       orgSpotlightKey = null;
@@ -9231,12 +9291,27 @@ function renderOrgLeaderboards() {
   const modeSwitch = $('#orgModeSwitch');
   const mFrag = document.createDocumentFragment();
   for (const [id, zh, en] of [
-    ['all', `6 机构并排`, `Side-by-Side`],
-    ['bump', `跨机构轨迹图`, `Rank Trajectory`]
+    ['all', '6 机构并排', 'Side-by-Side'],
+    ['bump', '跨机构轨迹图', 'Rank Trajectory']
   ]) {
-    const b = html('button', t(zh, en));
+    const b = html('button');
     b.type = 'button';
     b.setAttribute('aria-pressed', String(orgFocus === id));
+    const ic = node('svg', {viewBox: '0 0 16 16', width: 14, height: 14, 'aria-hidden': 'true'});
+    if (id === 'all') {
+      ic.append(
+        node('rect', {x: 1.8, y: 2.5, width: 3.4, height: 11, rx: 0.9, fill: 'none', stroke: 'currentColor', 'stroke-width': 1.25}),
+        node('rect', {x: 6.3, y: 2.5, width: 3.4, height: 11, rx: 0.9, fill: 'none', stroke: 'currentColor', 'stroke-width': 1.25}),
+        node('rect', {x: 10.8, y: 2.5, width: 3.4, height: 11, rx: 0.9, fill: 'none', stroke: 'currentColor', 'stroke-width': 1.25})
+      );
+    } else {
+      ic.append(
+        node('path', {d: 'M2 11.5 C5.2 11.5, 5.8 4.5, 8 4.5 C10.2 4.5, 10.8 10, 14 6', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.4, 'stroke-linecap': 'round'}),
+        node('path', {d: 'M2 5.5 C5.2 5.5, 5.8 11, 8 11 C10.2 11, 10.8 4.8, 14 11.2', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.15, 'stroke-dasharray': '2 2', opacity: 0.72, 'stroke-linecap': 'round'}),
+        node('circle', {cx: 8, cy: 4.5, r: 1.4, fill: 'currentColor'})
+      );
+    }
+    b.append(ic, html('span', t(zh, en)));
     b.addEventListener('click', () => {
       if (orgFocus === id) return;
       orgFocus = id;
@@ -9330,6 +9405,7 @@ async function loadData() {
     $('#tab-human-arena').hidden = !hasHumanArena;
     $('#tab-cyber').hidden = !hasCyber;
     $('#tab-media').hidden = !hasMedia;
+    $('#tab-orgs').hidden = !orgBoards.length;
     if (changelogOpen) renderChangelog();
     if (cmdOpen) renderCmdList();
     const parsed = parseHash();
