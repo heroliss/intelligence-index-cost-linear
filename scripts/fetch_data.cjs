@@ -457,11 +457,11 @@ const LIVEBENCH_SUITE_KEYS = {
   Design: 'design'
 };
 const DESIGN_ARENA_CALIBRATION = {
-  website: { center: 1220, scale: 195 },
-  uicomponent: { center: 1220, scale: 210 },
-  dataviz: { center: 1225, scale: 200 },
-  gamedev: { center: 1220, scale: 285 },
-  svg: { center: 1220, scale: 300 }
+  website: { center: 1285, scale: 135 },
+  uicomponent: { center: 1295, scale: 155 },
+  dataviz: { center: 1265, scale: 175 },
+  gamedev: { center: 1305, scale: 260 },
+  svg: { center: 1265, scale: 215 }
 };
 
 function slimDerivedBase(m) {
@@ -750,23 +750,25 @@ function buildHumanArenaModels(models, external = {}) {
     const briefcaseElo = model.expertElo?.briefcase ?? null;
     if (gdpvalElo !== null || briefcaseElo !== null) sources.add('aa-expert');
 
-    const shrinkBySample = (rawScore, count, prior = 54, k = 220) => {
+    const shrinkBySample = (rawScore, count, prior = 50, k = 180) => {
       if (rawScore === null) return null;
       if (typeof count !== 'number' || !Number.isFinite(count) || count <= 0) return rawScore;
       const w = count / (count + k);
       return Number((w * rawScore + (1 - w) * prior).toFixed(2));
     };
 
-    const chatVibe = chat ? shrinkBySample(eloToWinPct(chat.elo, 1360, 220), chat.votes, 54, 600) : null;
-    const docCraft = doc ? shrinkBySample(eloToWinPct(doc.elo, 1360, 200), doc.votes, 54, 400) : null;
-    const webdevScore = webdev ? shrinkBySample(eloToWinPct(webdev.elo, 1490, 440), webdev.votes, 54, 500) : null;
+    // 2026 empirical median-centered calibrations so median ≈ 50–55 and global SOTA ≈ 80–86
+    const chatVibe = chat ? shrinkBySample(eloToWinPct(chat.elo, 1445, 115), chat.votes, 50, 450) : null;
+    const docCraft = doc ? shrinkBySample(eloToWinPct(doc.elo, 1445, 115), doc.votes, 50, 300) : null;
+    const webdevScore = webdev ? shrinkBySample(eloToWinPct(webdev.elo, 1640, 250), webdev.votes, 50, 350) : null;
 
     const designScore = cat => {
       const entry = design[cat];
       if (!entry) return null;
       const cal = DESIGN_ARENA_CALIBRATION[cat] || DESIGN_ARENA_CALIBRATION.website;
       const raw = eloToWinPct(entry.elo, cal.center, cal.scale);
-      return shrinkBySample(raw, entry.battles, 53, 220);
+      const k = cat === 'uicomponent' ? 140 : 180;
+      return shrinkBySample(raw, entry.battles, 50, k);
     };
 
     const designWeb = designScore('website');
@@ -783,8 +785,8 @@ function buildHumanArenaModels(models, external = {}) {
       : null;
 
     const expParts = [
-      gdpvalElo !== null ? eloToWinPct(gdpvalElo, 1480, 480) : null,
-      briefcaseElo !== null ? eloToWinPct(briefcaseElo, 1480, 480) : null
+      gdpvalElo !== null ? eloToWinPct(gdpvalElo, 1580, 390) : null,
+      briefcaseElo !== null ? eloToWinPct(briefcaseElo, 1500, 420) : null
     ].filter(v => v !== null);
     const deliverable = expParts.length ? Number((expParts.reduce((a, b) => a + b, 0) / expParts.length).toFixed(2)) : null;
 
@@ -792,7 +794,7 @@ function buildHumanArenaModels(models, external = {}) {
       .map(designScore)
       .filter(v => typeof v === 'number' && Number.isFinite(v));
     const pureVisual = allDesignParts.length
-      ? Number(((allDesignParts.reduce((a, b) => a + b, 0) + 0.5 * 54) / (allDesignParts.length + 0.5)).toFixed(2))
+      ? Number(((allDesignParts.reduce((a, b) => a + b, 0) + 0.35 * 50) / (allDesignParts.length + 0.35)).toFixed(2))
       : null;
 
     const langParts = [chatVibe, docCraft].filter(v => typeof v === 'number' && Number.isFinite(v));
@@ -803,14 +805,15 @@ function buildHumanArenaModels(models, external = {}) {
     const aa3dElo = model.expertElo?.aa3d ?? null;
     const code2videoElo = model.expertElo?.code2video ?? null;
     const spatialParts = [
-      aa3dElo !== null ? eloToWinPct(aa3dElo, 1120, 175) : null,
-      code2videoElo !== null ? eloToWinPct(code2videoElo, 1340, 220) : null
+      aa3dElo !== null ? eloToWinPct(aa3dElo, 1030, 380) : null,
+      code2videoElo !== null ? eloToWinPct(code2videoElo, 1050, 580) : null
     ].filter(v => v !== null);
     const spatialMotion = spatialParts.length
       ? Number((spatialParts.reduce((a, b) => a + b, 0) / spatialParts.length).toFixed(2))
       : null;
     const slopVal = model.personality?.slop ?? null;
     const antiSlop = slopVal !== null ? Number(Math.max(0, Math.min(100, 100 - slopVal)).toFixed(2)) : null;
+    const calAntiSlop = antiSlop !== null ? Number((12 + 0.75 * antiSlop).toFixed(2)) : null;
 
     const humanScores = {
       chatVibe: langVibe,
@@ -825,11 +828,55 @@ function buildHumanArenaModels(models, external = {}) {
       spatialMotion,
       antiSlop
     };
-    const headlineKeys = ['chatVibe', 'webdev', 'designWeb', 'designUi', 'creativeCraft', 'deliverable'];
-    const compositeParts = headlineKeys.map(k => humanScores[k]).filter(v => typeof v === 'number' && Number.isFinite(v));
-    if (!compositeParts.length) continue;
-    const rawSum = compositeParts.reduce((a, b) => a + b, 0);
-    const humanIndex = Number(((rawSum + 1.0 * 55) / (compositeParts.length + 1.0)).toFixed(2));
+
+    // Balanced 4-Pillar Composite (prevents single crowd arena from dominating 50% and factors in Anti-Slop & 3D/Motion):
+    // 1. Visual, Creative & Spatial (0.30): Design Arena 5D unified (72%) + AA-3D/Code2Video (28%)
+    // 2. Chat Vibe & Naturalness (0.25): Arena.ai Style-Ctrl Chat/Doc (65%) + Calibrated Anti-Slop (35%)
+    // 3. Expert Real Deliverables (0.25): GDPval + Briefcase 44-occupation expert grading
+    // 4. Interactive WebDev Craft (0.20): Arena.ai WebDev
+    const daPillars = [designWeb, designUi, creativeCraft].filter(v => typeof v === 'number' && Number.isFinite(v));
+    const daUnified = daPillars.length ? daPillars.reduce((a, b) => a + b, 0) / daPillars.length : null;
+
+    let pVisual = null, wVisual = 0;
+    if (daUnified !== null && spatialMotion !== null) {
+      pVisual = 0.72 * daUnified + 0.28 * spatialMotion;
+      wVisual = 0.30;
+    } else if (daUnified !== null) {
+      pVisual = daUnified;
+      wVisual = 0.25;
+    } else if (spatialMotion !== null) {
+      pVisual = spatialMotion;
+      wVisual = 0.14;
+    }
+
+    let pChat = null, wChat = 0;
+    if (langVibe !== null && calAntiSlop !== null) {
+      pChat = 0.65 * langVibe + 0.35 * calAntiSlop;
+      wChat = 0.25;
+    } else if (langVibe !== null) {
+      pChat = langVibe;
+      wChat = 0.21;
+    } else if (calAntiSlop !== null) {
+      pChat = calAntiSlop;
+      wChat = 0.14;
+    }
+
+    const pDeliv = deliverable;
+    const wDeliv = pDeliv !== null ? 0.25 : 0;
+    const pWeb = webdevScore;
+    const wWeb = pWeb !== null ? 0.20 : 0;
+
+    let wSum = 0, sSum = 0;
+    for (const [val, w] of [[pVisual, wVisual], [pChat, wChat], [pDeliv, wDeliv], [pWeb, wWeb]]) {
+      if (val !== null && w > 0) {
+        wSum += w;
+        sSum += val * w;
+      }
+    }
+    if (wSum <= 0) continue;
+    // Gentle coverage shrinkage only when total pillar weight < 0.85 (avoids penalizing fresh flagships missing 1 sub-source)
+    const priorW = Math.max(0, 0.85 - wSum) * 0.45;
+    const humanIndex = Number(((sSum + priorW * 50) / (wSum + priorW)).toFixed(2));
     const aaIndex = Number(model.intelligenceIndex.toFixed(2));
 
     const designSub = {
@@ -862,7 +909,7 @@ function buildHumanArenaModels(models, external = {}) {
       aa3dElo,
       code2videoElo,
       slop: slopVal,
-      dimensionCount: compositeParts.length,
+      dimensionCount: [pVisual, pChat, pDeliv, pWeb].filter(v => v !== null).length,
       sources: [...sources]
     };
 

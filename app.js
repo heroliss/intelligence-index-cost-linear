@@ -29,7 +29,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261119-04';
+} from './chart-math.mjs?v=20261119-05';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -247,9 +247,13 @@ let orgBoards = [];
 let orgRankIndex = new Map();
 let orgCreatorColors = new Map();
 let orgFocus = 'all';
+let orgBumpLimit = 14;
+let orgChartCollapsed = false;
+let orgDetailSort = {boardId: null, colKey: null, dir: 'desc'};
 let orgMatchedOnly = false;
 let orgSpotlightKey = null;
 let orgPinnedKey = null;
+let viewToolsOpen = false;
 let globalCatalog = [];
 let lastModelCompareIds = null;
 const starredKeys = new Set((() => {
@@ -658,7 +662,7 @@ function applyRouteParams(target, params) {
   const view = params.get('view');
   if (['chart', 'table', 'orgs', 'curve', 'sub', 'compare'].includes(view)) target.mode = view;
   const org = params.get('org');
-  if (['all', 'aa', 'livebench', 'arenaChat', 'arenaWebdev', 'designArena', 'aaGdpval'].includes(org)) orgFocus = org;
+  if (['all', 'bump', 'aa', 'livebench', 'arenaChat', 'arenaWebdev', 'designArena', 'aaGdpval'].includes(org)) orgFocus = org;
   if (params.get('orgm') === '1') orgMatchedOnly = true;
   const yl = params.get('ylens') || '';
   const scen = params.get('scen') || '';
@@ -1176,10 +1180,15 @@ function syncStaticText() {
 
   $('#reset').textContent = t('重置视图', 'Reset view');
   $('#fit').textContent = t('显示全部', 'Fit all');
-  $('#boxSelectBtn').textContent = boxSelectMode ? t('⬚ 框选 ✓', '⬚ Box ✓') : t('⬚ 框选', '⬚ Box');
+  $('#boxSelectBtn').textContent = boxSelectMode ? t('框选模式 ✓', 'Box select ✓') : t('框选模式', 'Box select');
   $('#boxSelectBtn').title = t('开启拉框模式（或按住 Shift 在图中拖拽）框选局部放大或批量加入对比', 'Toggle box-select mode (or Shift+drag on chart) to zoom or batch-compare');
-  $('#lassoZoomBtn').textContent = t('🔍 放大此区', '🔍 Zoom here');
-  $('#lassoCompareBtn').textContent = t('⚖️ 框内前沿对比', '⚖️ Compare frontier');
+  $('#lassoZoomBtn').textContent = t('放大此区', 'Zoom here');
+  $('#lassoCompareBtn').textContent = t('框内前沿对比', 'Compare frontier');
+  $('#toolsFiltersTitle').textContent = t('成本负载与专项筛选', 'Cost Profile & Filters');
+  $('#toolsOverlaysTitle').textContent = t('分析辅助图层', 'Chart Overlays');
+  $('#toolsNavTitle').textContent = t('视图缩放与拉框', 'Zoom & Box Select');
+  $('#toolsLabelsTitle').textContent = t('标签密度与排版', 'Labels & Layout');
+  $('#orgModeSwitch').setAttribute('aria-label', t('机构分榜展示模式', 'Org leaderboard display mode'));
   $('#scenarioTitle').textContent = t('自定义工作流场景配方', 'Custom Workload Scenario');
   $('#scenarioResetBtn').textContent = t('恢复官方', 'Official');
   $('#xminus').setAttribute('aria-label', t('缩小横轴', 'Zoom X out'));
@@ -1332,7 +1341,7 @@ function syncStaticText() {
   $('#stripZoomBtn').textContent = t('微距区间', 'Zoomed');
   $('#stripFullBtn').textContent = t('0–100 全程', '0–100 Full');
   $('#deltaBaseLabel').textContent = t('基准', 'Ref');
-  $('#radarInfoBtn').textContent = radarInfoOpen ? t('收起口径', 'Hide sources') : t('ⓘ 指标口径', 'ⓘ Sources');
+  $('#radarInfoBtn').textContent = radarInfoOpen ? t('收起口径', 'Hide sources') : t('指标口径', 'Sources');
   $('#radarHeading').textContent = t('细分基准能力雷达与分项对比', 'Sub-benchmark Capability Radar & Breakdown');
   $('#anatomyHeading').textContent = t('单任务成本结构拆解与耗时剖析', 'Per-Task Cost Anatomy & Latency Profile');
   $('#matrixHeading').textContent = t('核心指标并排对决表', 'Head-to-Head Metrics Matrix');
@@ -1428,6 +1437,7 @@ function chooseChart(key, {changeHash = true, routeParams = null} = {}) {
   }
   stopHistoryPlay();
   if (comparePickerOpen) setComparePickerOpen(false);
+  if (viewToolsOpen) setViewToolsOpen(false);
   const previousMode = state?.mode;
   endPointerInteractions();
   clearHover();
@@ -1548,8 +1558,8 @@ function syncScenarioControls() {
   const btn = $('#scenarioBtn');
   btn.classList.toggle('is-active', !!activeScen);
   btn.textContent = activeScen
-    ? (presetObj ? `${t(presetObj.zh, presetObj.en)} ✓` : t('⚡ 自定义配方 ✓', '⚡ Custom ✓'))
-    : t('⚡ 场景配方', '⚡ Scenarios');
+    ? (presetObj ? `${t(presetObj.zh, presetObj.en)} ✓` : t('自定义配方 ✓', 'Custom ✓'))
+    : t('场景配方', 'Scenarios');
   btn.setAttribute('aria-expanded', String(scenarioOpen));
   if (!scenarioOpen) return;
 
@@ -1602,7 +1612,7 @@ function syncScenarioControls() {
       syncUrlHash();
       buildPlot();
       btn.classList.add('is-active');
-      btn.textContent = t('⚡ 自定义配方 ✓', '⚡ Custom ✓');
+      btn.textContent = t('自定义配方 ✓', 'Custom ✓');
       $('#scenarioResetBtn').disabled = false;
       for (const pb of document.querySelectorAll('#scenarioPresetGroup button')) {
         pb.setAttribute('aria-pressed', 'false');
@@ -1618,8 +1628,57 @@ function syncScenarioControls() {
   );
 }
 
+function setViewToolsOpen(open) {
+  viewToolsOpen = open;
+  $('#viewToolsBtn').setAttribute('aria-expanded', String(open));
+  const pop = $('#viewToolsPopover');
+  pop.hidden = !open;
+  if (open) {
+    if (mobileLayout.matches) {
+      pop.style.left = '';
+      pop.style.right = '';
+      pop.style.width = '';
+    } else {
+      clampAnchoredPopover(pop, $('#viewToolsBtn'), 360);
+    }
+  }
+}
+
+$('#viewToolsBtn').addEventListener('click', () => {
+  if (scenarioOpen) setScenarioOpen(false);
+  setViewToolsOpen(!viewToolsOpen);
+});
+
+function syncViewToolsControls() {
+  if (!state) return;
+  const isChart = state.mode === 'chart';
+  const isOrgs = state.mode === 'orgs';
+  const isTimeAxis = state.xMetric === 'time';
+  const showTools = state.mode === 'chart' || state.mode === 'table' || state.mode === 'sub';
+  $('#toolsWrap').hidden = !showTools;
+  if (!showTools && viewToolsOpen) setViewToolsOpen(false);
+  $('#toolsSecFilters').hidden = isOrgs;
+  $('#toolsSecOverlays').hidden = !isChart;
+  $('#toolsSecNav').hidden = !isChart;
+  $('#optionsPanel').hidden = !isChart;
+  $('#toolsSecExport').hidden = !isChart;
+  $('#interactionHelp').hidden = !isChart;
+
+  const defaults = DEFAULT_SETTINGS[activeKey];
+  const labelChanged = !!(defaults && (state.labels !== defaults.labels || state.smartLabels !== defaults.smartLabels || state.labelSize !== defaults.labelSize || state.labelDistance !== defaults.labelDistance));
+  const activeTools = Number(!!(state.costProfile && state.costProfile !== 'benchmark' && activeKey !== 'media'))
+    + Number(!!state.extraFilter)
+    + (isChart
+      ? Number(!!state.effortCurves) + Number(!!state.historyMode) + Number(!!(state.isoCurve && !isTimeAxis)) + Number(!!(state.subLine && !isTimeAxis)) + Number(!!boxSelectMode) + Number(labelChanged)
+      : 0);
+  const baseLabel = isChart ? t('图层与视图', 'View & Layers') : t('成本与筛选', 'Cost & Filters');
+  $('#viewToolsLabel').textContent = activeTools > 0 ? `${baseLabel} · ${activeTools}` : baseLabel;
+  $('#viewToolsBtn').classList.toggle('is-active', activeTools > 0);
+}
+
 function setScenarioOpen(open) {
   scenarioOpen = open;
+  if (open && viewToolsOpen) setViewToolsOpen(false);
   $('#scenarioBtn').setAttribute('aria-expanded', String(open));
   $('#scenarioPopover').hidden = !open;
   if (open) {
@@ -1835,7 +1894,7 @@ function syncControls() {
   syncCostProfileOptions();
 
   $('#boxSelectBtn').setAttribute('aria-pressed', String(boxSelectMode));
-  $('#boxSelectBtn').textContent = boxSelectMode ? t('⬚ 框选 ✓', '⬚ Box ✓') : t('⬚ 框选', '⬚ Box');
+  $('#boxSelectBtn').textContent = boxSelectMode ? t('框选模式 ✓', 'Box select ✓') : t('框选模式', 'Box select');
   host.classList.toggle('box-mode', boxSelectMode);
 
   const starCountOnTab = state.rows.filter(isStarred).length;
@@ -1901,7 +1960,7 @@ function syncControls() {
   }
   $('#extraFilter').closest('.extra-filter-wrap').hidden = isOrgs;
   $('#frontier').hidden = isOrgs;
-  $('#optionsPanel').hidden = state.mode !== 'chart';
+  syncViewToolsControls();
   for (const button of document.querySelectorAll('[data-view]')) {
     button.setAttribute('aria-pressed', String(button.dataset.view === state.mode));
   }
@@ -1913,8 +1972,8 @@ function syncControls() {
   $('#curvePanel').hidden = state.mode !== 'curve';
   $('#valueSettings').hidden = !(state.mode === 'table' || state.mode === 'curve' || (state.mode === 'chart' && (state.isoCurve || state.minScore > 0 || state.maxCost > 0) && !isTimeAxis));
   $('#subSettings').hidden = !(state.mode === 'sub' || (state.mode === 'chart' && state.subLine && !isTimeAxis));
-  $('#interactionHelp').hidden = state.mode !== 'chart';
   $('#viewControls').hidden = state.mode !== 'chart';
+  $('#subStrip').hidden = hideFilterChrome;
   $('#legend').hidden = hideFilterChrome;
   $('#filterControls').hidden = hideFilterChrome;
   $('#toolbar').hidden = hideFilterChrome;
@@ -1987,7 +2046,7 @@ function syncResponsiveChrome() {
   if (mobileLayout.matches) {
     app.insertBefore(tabs, $('#chart-panel'));
     $('#controlPanel').prepend(topbar);
-    $('#controlPanel').insertBefore(heading, $('#readingKey'));
+    $('#controlPanel').insertBefore(heading, $('#toolbar'));
     $('#controlPanel').append(footer);
   } else {
     topbar.insertBefore(tabs, document.querySelector('.top-actions'));
@@ -2011,6 +2070,7 @@ function syncSettingsReset() {
   const restored = Object.entries(defaults).every(([key, value]) => state[key] === value);
   $('#resetSettings').disabled = restored;
   $('#resetSettings').textContent = restored ? t('默认标签', 'Default') : t('恢复默认', 'Reset labels');
+  syncViewToolsControls();
 }
 
 function syncValueControls() {
@@ -3396,7 +3456,7 @@ function renderRadarInfo() {
   const panel = $('#radarInfoPanel');
   const btn = $('#radarInfoBtn');
   btn.setAttribute('aria-expanded', String(radarInfoOpen));
-  btn.textContent = radarInfoOpen ? t('收起口径', 'Hide sources') : t('ⓘ 指标口径', 'ⓘ Sources');
+  btn.textContent = radarInfoOpen ? t('收起口径', 'Hide sources') : t('指标口径', 'Sources');
   panel.hidden = !radarInfoOpen;
   if (!radarInfoOpen) return;
 
@@ -3467,10 +3527,10 @@ function renderRadarInfo() {
     );
     const p2 = html('p');
     p2.append(
-      html('strong', t('全维度保留 + 分池独立标尺校准与样本置信度：', 'Full 5D Preservation, Per-Pool Calibration & Sample Credibility: ')),
+      html('strong', t('四大独立支柱均衡配权 + 2026 真实中位标尺校准：', 'Balanced 4-Pillar Weighting & 2026 Median-Centered Calibration: ')),
       document.createTextNode(t(
-        '完整保留 Design Arena 全部五大审美测试（Website、UI 组件、DataViz、GameDev 交互创意、SVG 矢量造型），在总分与「体验六维」中均衡归纳为「整站视觉审美」「UI 与图表美感」「SVG 与游戏创意」三大视觉支柱（与交流人味、WebDev、专家办公交付共同构成等权六维）。针对 GameDev（原始最高 1466）与 SVG（最高 1494）离散度远大于 Website（最高 1375）的统计特性，系统按各子池真实中位数与标准差分别校准至同一 0–100 标尺，并对低场次新模型（<400 场）施加经验贝叶斯样本量收缩，既保留 SVG/游戏创意权重，又消除跨池量纲膨胀。',
-        'All 5 Design Arena suites (Website, UI Component, DataViz, GameDev, SVG) are preserved across three balanced visual pillars (Website, UI & DataViz, SVG & GameDev) alongside Chat Vibe, WebDev, and Expert Deliverables. Each pool is calibrated by its own empirical Elo center and spread (preventing wider-spread GameDev/SVG Elos from inflating scores) with empirical Bayes shrinkage for low-sample (<400 battle) models.'
+        '总分按 4 大独立信号均衡合成，防止单一众包平台占比过高导致“套话讨好型”模型虚高：① 视觉与创意审美（30%）：完整保留 Design Arena 全部 5 维（Website、UI、DataViz、GameDev、SVG，占 72%）+ AA-3D 与 Code2Video 空间动效（28%）；② 交流人味与自然度（25%）：Arena.ai 去水份聊天/文档（65%）+ PersonalityBench Anti-Slop 去 AI 套话分（35%）；③ 专家真实交付（25%）：GDPval + Briefcase 44 职业盲评；④ 前端交互实操（20%）：Arena.ai WebDev。各分池 Elo 均按 2026 全榜真实中位数对齐至 50 分锚点、顶尖旗舰落在 78–86 分，并对低样本场次施加温和贝叶斯收缩。',
+        'The headline index balances 4 independent pillars so no single crowd arena dominates: (1) Visual, Creative & Spatial (30%): all 5 Design Arena suites (Website, UI, DataViz, GameDev, SVG at 72%) + AA-3D & Code2Video (28%); (2) Chat Vibe & Naturalness (25%): Arena.ai style-controlled Chat/Doc (65%) + PersonalityBench Anti-Slop (35%); (3) Expert Deliverables (25%): GDPval + Briefcase; (4) Interactive WebDev (20%): Arena.ai WebDev. Every Elo pool is calibrated to its 2026 empirical median (~50) with SOTA around 78–86 and mild low-sample Bayes shrinkage.'
       ))
     );
     const p3 = html('p');
@@ -6409,7 +6469,12 @@ function updateSummary() {
     );
   } else if (state.mode === 'orgs') {
     const activeOrg = orgBoards.find(b => b.id === orgFocus);
-    if (activeOrg) {
+    if (orgFocus === 'bump') {
+      $('#viewStatus').textContent = t(
+        `跨 ${orgBoards.length} 份独立机构原榜排名轨迹图 · 单击锁定基准曲线，悬停另一模型即可双线对照`,
+        `Cross-org rank trajectory across ${orgBoards.length} official boards · Click to pin one trajectory, hover another to compare`
+      );
+    } else if (activeOrg) {
       const shownOrgRows = filterOrgRows(activeOrg.rows).length;
       $('#viewStatus').textContent = t(
         `${activeOrg.orgZh} · ${activeOrg.titleZh}：显示 ${shownOrgRows}/${activeOrg.rows.length} 项${activeOrg.date ? ' · 原榜日期 ' + activeOrg.date : ''}`,
@@ -6972,6 +7037,7 @@ function showView(mode) {
   if (!state || !['chart', 'table', 'orgs', 'curve', 'sub', 'compare'].includes(mode)) return;
   stopHistoryPlay();
   if (comparePickerOpen && mode !== 'compare') setComparePickerOpen(false);
+  if (viewToolsOpen) setViewToolsOpen(false);
   if (scenarioOpen && (mode === 'curve' || mode === 'compare' || mode === 'orgs')) setScenarioOpen(false);
   endPointerInteractions();
   clearLasso();
@@ -7615,6 +7681,9 @@ document.addEventListener('pointerdown', event => {
   if (scenarioOpen && !event.target.closest('.scenario-wrap')) {
     setScenarioOpen(false);
   }
+  if (viewToolsOpen && !event.target.closest('.tools-wrap')) {
+    setViewToolsOpen(false);
+  }
   if (comparePickerOpen && !event.target.closest('.compare-picker-wrap')) {
     setComparePickerOpen(false);
   }
@@ -7724,6 +7793,9 @@ document.addEventListener('keydown', event => {
   } else if (scenarioOpen) {
     setScenarioOpen(false);
     $('#scenarioBtn').focus({preventScroll: true});
+  } else if (viewToolsOpen) {
+    setViewToolsOpen(false);
+    $('#viewToolsBtn').focus({preventScroll: true});
   } else if (comparePickerOpen) {
     setComparePickerOpen(false);
     $('#compareAddBtn').focus({preventScroll: true});
@@ -7760,6 +7832,7 @@ document.addEventListener('keydown', event => {
 addEventListener('resize', () => {
   if (changelogOpen) clampAnchoredPopover($('#changelogPopover'), $('#updateBadge'), 340);
   if (scenarioOpen) clampAnchoredPopover($('#scenarioPopover'), $('#scenarioBtn'), 340);
+  if (viewToolsOpen) clampAnchoredPopover($('#viewToolsPopover'), $('#viewToolsBtn'), 360);
   if (comparePickerOpen) clampAnchoredPopover($('#comparePickerPopover'), $('#compareAddBtn'), 360);
 });
 
@@ -8155,7 +8228,7 @@ function buildStandaloneOrgBoards(snap) {
       }
     }
   }
-  if (orgFocus !== 'all' && !orgBoards.some(b => b.id === orgFocus)) {
+  if (orgFocus !== 'all' && orgFocus !== 'bump' && !orgBoards.some(b => b.id === orgFocus)) {
     orgFocus = 'all';
   }
 }
@@ -8353,16 +8426,53 @@ function renderOrgSpotlightBar(spotKey, spotRow = null) {
 
 function applyOrgSpotlight(hoverKey, hoverRow = null) {
   const activeKey = hoverKey || orgPinnedKey;
+  const hasAnySpot = !!(hoverKey || orgPinnedKey);
   const activeFamily = hoverRow?.familySlug || (activeKey ? orgRankIndex.get(activeKey)?.familySlug : null) || null;
   const nodesEl = document.querySelectorAll('#orgContent [data-spot-key]');
   for (const el of nodesEl) {
     const ek = el.dataset.spotKey;
     const ef = el.dataset.familySlug || '';
-    const exact = !!(activeKey && ek === activeKey);
+    const isHover = !!(hoverKey && ek === hoverKey);
+    const isPin = !!(orgPinnedKey && ek === orgPinnedKey);
+    const exact = isHover || isPin;
     const fam = !!(activeFamily && !exact && ef && ef === activeFamily);
     el.classList.toggle('is-spotlit', exact);
     el.classList.toggle('is-family-spotlit', fam);
-    el.classList.toggle('is-pinned-spot', !!(orgPinnedKey && ek === orgPinnedKey));
+    el.classList.toggle('is-pinned-spot', isPin);
+    el.classList.toggle('is-dimmed', hasAnySpot && !exact && !fam);
+  }
+  const bumpSvg = document.querySelector('#orgContent .org-bump-svg');
+  if (bumpSvg) {
+    bumpSvg.classList.toggle('has-focus', hasAnySpot);
+    // Reset any dynamic dual-callout collision offsets
+    for (const c of bumpSvg.querySelectorAll('.bump-callout')) c.removeAttribute('transform');
+    // Re-order highlighted trajectories to top of SVG paint order & prevent pinned vs hovered callout collisions
+    if (hasAnySpot) {
+      const seriesLayer = bumpSvg.querySelector('.bump-series-layer');
+      if (seriesLayer) {
+        const pinG = orgPinnedKey ? seriesLayer.querySelector(`g[data-spot-key="${CSS.escape(orgPinnedKey)}"]`) : null;
+        const hovG = hoverKey && hoverKey !== orgPinnedKey ? seriesLayer.querySelector(`g[data-spot-key="${CSS.escape(hoverKey)}"]`) : null;
+        if (pinG && !hovG && pinG !== seriesLayer.lastElementChild) seriesLayer.append(pinG);
+        if (hovG) {
+          if (pinG && pinG.nextElementSibling !== hovG && pinG !== seriesLayer.lastElementChild) seriesLayer.append(pinG);
+          if (hovG !== seriesLayer.lastElementChild) seriesLayer.append(hovG);
+          if (pinG) {
+            const pinBoxes = new Map();
+            for (const pc of pinG.querySelectorAll('.bump-callout')) {
+              pinBoxes.set(pc.dataset.colIdx, Number(pc.dataset.py));
+            }
+            for (const hc of hovG.querySelectorAll('.bump-callout')) {
+              const pY = pinBoxes.get(hc.dataset.colIdx);
+              const hY = Number(hc.dataset.py);
+              if (pY != null && Math.abs(pY - hY) < 22) {
+                const shift = hY >= pY ? 22 : -22;
+                hc.setAttribute('transform', `translate(0, ${shift})`);
+              }
+            }
+          }
+        }
+      }
+    }
   }
   renderOrgSpotlightBar(activeKey, hoverRow);
 }
@@ -8376,6 +8486,12 @@ function renderOrgSideBySide(container) {
   const grid = html('div', null, 'org-grid');
   for (const board of orgBoards) {
     const rows = filterOrgRows(board.rows);
+    const allScores = board.rows.map(r => r.score).filter(v => typeof v === 'number' && Number.isFinite(v));
+    const maxS = allScores.length ? Math.max(...allScores) : 100;
+    const minS = allScores.length ? Math.min(...allScores) : 0;
+    const floorS = minS - (maxS - minS) * 0.14;
+    const spanS = Math.max(1e-6, maxS - floorS);
+
     const card = html('section', null, 'org-card');
     card.dataset.orgId = board.id;
 
@@ -8398,11 +8514,12 @@ function renderOrgSideBySide(container) {
     titleWrap.append(topLine, subLine);
 
     const headBtns = html('div', null, 'org-card-actions');
-    const expandBtn = html('button', t('看全榜', 'Full table'), 'org-mini-btn');
+    const expandBtn = html('button', t('精析', 'Inspect'), 'org-mini-btn');
     expandBtn.type = 'button';
-    expandBtn.title = t('展开该机构完整分项数据表', 'Expand full detail table with all sub-metrics');
+    expandBtn.title = t('展开该机构可视化榜图与完整分项表', 'Open single-org chart & full sub-metric table');
     expandBtn.addEventListener('click', () => {
       orgFocus = board.id;
+      orgDetailSort = {boardId: board.id, colKey: null, dir: 'desc'};
       syncUrlHash();
       renderOrgLeaderboards();
       updateSummary();
@@ -8426,6 +8543,8 @@ function renderOrgSideBySide(container) {
         li.dataset.spotKey = spotKey;
         if (row.familySlug) li.dataset.familySlug = row.familySlug;
         if (!row.modelId) li.classList.add('is-unmatched');
+        const pct = Math.max(8, Math.min(100, ((row.score - floorS) / spanS) * 100));
+        li.style.setProperty('--bar-pct', `${pct.toFixed(1)}%`);
 
         const rankSpan = html('span', `#${row.rank}`, `org-rank${row.rank <= 3 ? ' rank-' + row.rank : ''}`);
         const dot = html('i', null, 'creator-dot');
@@ -8496,8 +8615,374 @@ function renderOrgSideBySide(container) {
   container.replaceChildren(grid);
 }
 
+function renderOrgBumpChart(container) {
+  const wrap = html('div', null, 'org-bump-wrap');
+  const head = html('div', null, 'org-bump-head');
+  const hCopy = html('div', null, 'org-bump-copy');
+  hCopy.append(
+    html('strong', t('跨机构独立排名轨迹图（Bump Chart）', 'Cross-Organization Official Rank Trajectory')),
+    html('span', t(
+      '纵轴越靠上排名越靠前；一眼识别「全机构通吃旗舰」与「单榜偏科模型」。单击锁定一条曲线，悬停另一模型即可双线对照；点击顶部机构标题可进入单机构精析。',
+      'Higher = better official rank. Spot consensus flagships vs. single-arena specialists instantly. Click to pin one line, hover another to compare; click any org header to drill down.'
+    ), 'org-meta-count')
+  );
+  const ctrl = html('div', null, 'org-bump-controls');
+  const limitSwitch = html('div', null, 'axis-controls');
+  for (const n of [12, 18]) {
+    const b = html('button', `Top ${n}`);
+    b.type = 'button';
+    b.setAttribute('aria-pressed', String(orgBumpLimit === n));
+    b.addEventListener('click', () => {
+      if (orgBumpLimit === n) return;
+      orgBumpLimit = n;
+      renderOrgLeaderboards();
+    });
+    limitSwitch.append(b);
+  }
+  ctrl.append(limitSwitch);
+  head.append(hCopy, ctrl);
+
+  // Collect multi-org candidate models (respecting active search / vendor / license / star filters)
+  const q = (state?.search || '').trim().toLowerCase();
+  const comp = state?.company || null;
+  const lic = state?.license || 'all';
+  const starOnly = !!state?.starredOnly;
+  const baseById = new Map((snapshot?.models || []).map(m => [m.id, m]));
+
+  // Deduplicate by familySlug keeping the strongest flagship model per family so trajectories stay legible
+  const familyPicked = new Map();
+  for (const [modelId, rec] of orgRankIndex.entries()) {
+    const base = baseById.get(modelId);
+    if (comp && rec.creator !== comp) continue;
+    if (lic === 'open' && !base?.isOpenWeights) continue;
+    if (lic === 'closed' && base?.isOpenWeights) continue;
+    if (starOnly && !isStarred({id: modelId, name: rec.name, creator: {name: rec.creator}})) continue;
+    if (q && !`${rec.name} ${rec.shortName} ${rec.creator}`.toLowerCase().includes(q)) continue;
+
+    const covered = orgBoards.filter(b => rec.ranks[b.id]);
+    if (covered.length < 3) continue;
+    const avgRank = covered.reduce((s, b) => s + rec.ranks[b.id].rank, 0) / covered.length;
+    const bestRank = Math.min(...covered.map(b => rec.ranks[b.id].rank));
+    const sortScore = avgRank - covered.length * 0.45;
+    const cand = {modelId, rec, base, coveredCount: covered.length, avgRank, bestRank, sortScore};
+    const fKey = rec.familySlug || modelId;
+    const prev = familyPicked.get(fKey);
+    if (!prev || cand.sortScore < prev.sortScore) {
+      familyPicked.set(fKey, cand);
+    }
+  }
+
+  let series = [...familyPicked.values()]
+    .sort((a, b) => a.sortScore - b.sortScore)
+    .slice(0, orgBumpLimit);
+
+  // Ensure pinned model stays visible if it exists in orgRankIndex
+  if (orgPinnedKey && orgRankIndex.has(orgPinnedKey) && !series.some(s => s.modelId === orgPinnedKey)) {
+    const rec = orgRankIndex.get(orgPinnedKey);
+    const covered = orgBoards.filter(b => rec.ranks[b.id]);
+    if (covered.length >= 2) {
+      series.push({
+        modelId: orgPinnedKey,
+        rec,
+        base: baseById.get(orgPinnedKey),
+        coveredCount: covered.length,
+        avgRank: covered.reduce((s, b) => s + rec.ranks[b.id].rank, 0) / covered.length,
+        bestRank: Math.min(...covered.map(b => rec.ranks[b.id].rank)),
+        sortScore: 99
+      });
+    }
+  }
+
+  if (!series.length) {
+    wrap.append(head, html('div', t('当前筛选条件下暂无跨 3 家以上机构上榜的模型，请放宽筛选或切换到「6 机构并排」。', 'No models ranked across 3+ orgs under current filters. Relax filters or switch to Side-by-Side.'), 'org-empty'));
+    container.replaceChildren(wrap);
+    return;
+  }
+
+  // Compute rank Y-scale (rank 1 at top -> maxRank at bottom, soft-capped visually at 32 so outliers don't crush top 10!)
+  const maxObserved = Math.max(10, ...series.flatMap(s => orgBoards.map(b => s.rec.ranks[b.id]?.rank || 0)));
+  const rankCap = Math.min(35, Math.max(15, maxObserved));
+  const mapRankVal = r => (r <= rankCap ? r : rankCap + Math.min(3.5, Math.log2(r - rankCap + 1) * 1.4));
+  const maxMapped = Math.max(rankCap, ...series.flatMap(s => orgBoards.map(b => s.rec.ranks[b.id] ? mapRankVal(s.rec.ranks[b.id].rank) : 0)));
+
+  const svgW = 1180;
+  const svgH = Math.max(430, Math.min(540, 320 + series.length * 14));
+  const padL = 204, padR = 186, padT = 56, padB = 26;
+  const innerW = svgW - padL - padR;
+  const innerH = svgH - padT - padB;
+  const colX = i => padL + (orgBoards.length > 1 ? (i * innerW) / (orgBoards.length - 1) : innerW / 2);
+  const rankY = r => padT + ((mapRankVal(r) - 1) / Math.max(1, maxMapped - 1)) * innerH;
+
+  const chartHost = html('div', null, 'org-bump-scroll');
+  const svgEl = node('svg', {class: 'org-bump-svg', viewBox: `0 0 ${svgW} ${svgH}`, role: 'img', 'aria-label': t('跨机构官方排名轨迹图', 'Cross-organization rank bump chart')});
+
+  // Subtle horizontal rank guide lines (#1, #5, #10, #20, #30)
+  const gridG = node('g', {class: 'bump-grid'});
+  for (const rTick of [1, 5, 10, 15, 20, 30]) {
+    if (rTick > maxMapped + 0.5) continue;
+    const py = rankY(rTick);
+    gridG.append(
+      node('line', {x1: padL - 10, x2: svgW - padR + 10, y1: py, y2: py, class: rTick === 10 ? 'bump-guide-major' : 'bump-guide'}),
+      node('text', {x: padL - 16, y: py + 3.5, 'text-anchor': 'end', class: 'bump-rank-tick'}, `#${rTick}`)
+    );
+  }
+
+  // Vertical org columns + clickable org headers
+  const colG = node('g', {class: 'bump-cols'});
+  orgBoards.forEach((b, idx) => {
+    const cx = colX(idx);
+    colG.append(node('line', {x1: cx, x2: cx, y1: padT - 12, y2: svgH - padB + 6, class: 'bump-col-line'}));
+    const hdr = node('g', {class: 'bump-col-hdr', tabindex: 0, role: 'button'});
+    hdr.append(
+      node('title', {}, t(`点击进入 ${b.orgZh} · ${b.titleZh} 独立精析`, `Open ${b.orgEn} · ${b.titleEn} deep dive`)),
+      node('text', {x: cx, y: 20, 'text-anchor': 'middle', class: 'bump-col-title'}, t(b.pillZh, b.pillEn)),
+      node('text', {x: cx, y: 35, 'text-anchor': 'middle', class: 'bump-col-sub'}, t(b.tagZh, b.tagEn))
+    );
+    hdr.addEventListener('click', () => {
+      orgFocus = b.id;
+      orgDetailSort = {boardId: b.id, colKey: null, dir: 'desc'};
+      syncUrlHash();
+      renderOrgLeaderboards();
+      updateSummary();
+    });
+    colG.append(hdr);
+  });
+
+  // Collision-avoidance resolver for left & right end labels
+  const resolveLabelYs = (items, minGap = 17) => {
+    const sorted = [...items].sort((a, b) => a.rawY - b.rawY);
+    for (let i = 0; i < sorted.length; i++) {
+      sorted[i].y = sorted[i].rawY;
+      if (i > 0 && sorted[i].y - sorted[i - 1].y < minGap) {
+        sorted[i].y = sorted[i - 1].y + minGap;
+      }
+    }
+    const maxY = svgH - padB + 4;
+    for (let i = sorted.length - 1; i >= 0; i--) {
+      if (i === sorted.length - 1 && sorted[i].y > maxY) sorted[i].y = maxY;
+      if (i < sorted.length - 1 && sorted[i + 1].y - sorted[i].y < minGap) {
+        sorted[i].y = sorted[i + 1].y - minGap;
+      }
+    }
+    return new Map(sorted.map(x => [x.id, x.y]));
+  };
+
+  const leftCandidates = [];
+  const rightCandidates = [];
+  for (const s of series) {
+    const firstIdx = orgBoards.findIndex(b => s.rec.ranks[b.id]);
+    const lastIdx = orgBoards.length - 1 - [...orgBoards].reverse().findIndex(b => s.rec.ranks[b.id]);
+    if (firstIdx === 0) leftCandidates.push({id: s.modelId, rawY: rankY(s.rec.ranks[orgBoards[0].id].rank)});
+    if (lastIdx === orgBoards.length - 1) rightCandidates.push({id: s.modelId, rawY: rankY(s.rec.ranks[orgBoards[lastIdx].id].rank)});
+  }
+  const leftLabelY = resolveLabelYs(leftCandidates);
+  const rightLabelY = resolveLabelYs(rightCandidates);
+
+  const seriesLayer = node('g', {class: 'bump-series-layer'});
+  for (const s of series) {
+    const g = node('g', {class: 'bump-series', 'data-spot-key': s.modelId});
+    if (s.rec.familySlug) g.dataset.familySlug = s.rec.familySlug;
+    const strokeCol = orgCreatorColor(s.rec.creator, s.rec.creatorColor);
+
+    const pts = [];
+    orgBoards.forEach((b, idx) => {
+      const rInfo = s.rec.ranks[b.id];
+      if (!rInfo) return;
+      pts.push({idx, board: b, x: colX(idx), y: rankY(rInfo.rank), rank: rInfo.rank, score: rInfo.score, exact: rInfo.exact});
+    });
+
+    // Draw smooth cubic Bézier segments (dashed if bridging a missing org column)
+    for (let i = 0; i < pts.length - 1; i++) {
+      const a = pts[i], b = pts[i + 1];
+      const dx = (b.x - a.x) * 0.45;
+      const dPath = `M${a.x.toFixed(1)},${a.y.toFixed(1)} C${(a.x + dx).toFixed(1)},${a.y.toFixed(1)} ${(b.x - dx).toFixed(1)},${b.y.toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`;
+      const isGap = b.idx - a.idx > 1;
+      g.append(node('path', {d: dPath, class: 'bump-hit'}));
+      g.append(node('path', {
+        d: dPath,
+        class: isGap ? 'bump-line is-gap' : 'bump-line',
+        stroke: strokeCol
+      }));
+    }
+
+    // Nodes + rank badges + hover score callouts
+    for (const pt of pts) {
+      g.append(node('circle', {
+        cx: pt.x.toFixed(1),
+        cy: pt.y.toFixed(1),
+        r: pt.exact ? 9.5 : 8.5,
+        class: pt.exact ? 'bump-dot' : 'bump-dot is-family',
+        fill: pt.exact ? strokeCol : 'var(--chart)',
+        stroke: strokeCol
+      }));
+      g.append(node('text', {
+        x: pt.x.toFixed(1),
+        y: (pt.y + 3.2).toFixed(1),
+        'text-anchor': 'middle',
+        class: pt.exact ? 'bump-dot-num' : 'bump-dot-num is-family',
+        fill: pt.exact ? '' : strokeCol
+      }, String(pt.rank)));
+
+      // Score pill visible on focus/spotlight
+      const scoreLabel = `${pt.exact ? '' : '~'}#${pt.rank} · ${format(pt.score, pt.board.scoreDecimals)}`;
+      const pillG = node('g', {class: 'bump-callout', 'data-col-idx': pt.idx, 'data-py': (pt.y < padT + 22 ? pt.y + 13 : pt.y - 29).toFixed(1)});
+      const pillW = Math.max(66, scoreLabel.length * 6.5 + 12);
+      const pillY = pt.y < padT + 22 ? pt.y + 13 : pt.y - 29;
+      pillG.append(
+        node('rect', {x: (pt.x - pillW / 2).toFixed(1), y: pillY.toFixed(1), width: pillW, height: 17, rx: 4.5, stroke: strokeCol}),
+        node('text', {x: pt.x.toFixed(1), y: (pillY + 11.8).toFixed(1), 'text-anchor': 'middle'}, scoreLabel)
+      );
+      g.append(pillG);
+    }
+
+    const shortLbl = (s.rec.shortName || s.rec.name).replace(/\s*\(Default Fallback\)/i, '');
+    const trimLbl = shortLbl.length > 22 ? shortLbl.slice(0, 21) + '…' : shortLbl;
+    if (leftLabelY.has(s.modelId)) {
+      const ly = leftLabelY.get(s.modelId);
+      const firstPt = pts[0];
+      if (Math.abs(ly - firstPt.y) > 4) {
+        g.append(node('line', {x1: padL - 44, y1: ly, x2: firstPt.x - 10, y2: firstPt.y, stroke: strokeCol, class: 'bump-lbl-leader'}));
+      }
+      g.append(node('text', {x: padL - 48, y: ly + 3.5, 'text-anchor': 'end', class: 'bump-end-lbl', fill: strokeCol}, trimLbl));
+    }
+    if (rightLabelY.has(s.modelId)) {
+      const ry = rightLabelY.get(s.modelId);
+      const lastPt = pts[pts.length - 1];
+      if (Math.abs(ry - lastPt.y) > 4) {
+        g.append(node('line', {x1: lastPt.x + 10, y1: lastPt.y, x2: svgW - padR + 28, y2: ry, stroke: strokeCol, class: 'bump-lbl-leader'}));
+      }
+      g.append(node('text', {x: svgW - padR + 32, y: ry + 3.5, 'text-anchor': 'start', class: 'bump-end-lbl', fill: strokeCol}, trimLbl));
+    }
+
+    const dummyRow = {modelId: s.modelId, familySlug: s.rec.familySlug, name: s.rec.name, creator: s.rec.creator, creatorColor: s.rec.creatorColor, cost: s.rec.cost};
+    g.addEventListener('pointerenter', () => {
+      orgSpotlightKey = s.modelId;
+      applyOrgSpotlight(s.modelId, dummyRow);
+    });
+    g.addEventListener('pointerleave', () => {
+      orgSpotlightKey = null;
+      applyOrgSpotlight(null);
+    });
+    g.addEventListener('pointerdown', event => {
+      if (event.button !== 0) return;
+      event.stopPropagation();
+      orgPinnedKey = orgPinnedKey === s.modelId ? null : s.modelId;
+      applyOrgSpotlight(orgPinnedKey, dummyRow);
+    });
+
+    seriesLayer.append(g);
+  }
+
+  svgEl.append(gridG, colG, seriesLayer);
+  chartHost.append(svgEl);
+  wrap.append(head, chartHost);
+  container.replaceChildren(wrap);
+}
+
+function buildOrgTopBarChart(board, rows) {
+  const top = rows.slice(0, 15);
+  const panel = html('div', null, 'org-bar-viz');
+  const head = html('div', null, 'org-viz-head');
+  head.append(
+    html('span', t(
+      `Top ${top.length} 可视化分差与成本对照（${board.scoreLabelZh}）`,
+      `Top ${top.length} Score Spread & API Cost (${board.scoreLabelEn})`
+    ), 'org-viz-title')
+  );
+  const toggleBtn = html('button', orgChartCollapsed ? t('展开榜图', 'Show chart') : t('收起榜图', 'Hide chart'), 'org-mini-btn');
+  toggleBtn.type = 'button';
+  toggleBtn.addEventListener('click', () => {
+    orgChartCollapsed = !orgChartCollapsed;
+    renderOrgLeaderboards();
+  });
+  head.append(toggleBtn);
+  panel.append(head);
+  if (orgChartCollapsed || !top.length) return panel;
+
+  const scores = top.map(r => r.score).filter(v => typeof v === 'number' && Number.isFinite(v));
+  const maxS = Math.max(...scores);
+  const minS = Math.min(...scores);
+  const span = Math.max(0.5, maxS - minS);
+  const floor = Math.max(0, minS - span * 0.28);
+  const scaleSpan = Math.max(0.5, maxS - floor);
+
+  const rowH = 25;
+  const padT = 8, padB = 8, leftW = 228, rightW = 192;
+  const svgW = 1040;
+  const barAreaW = svgW - leftW - rightW;
+  const svgH = padT + padB + top.length * rowH;
+
+  const svgHost = html('div', null, 'org-viz-scroll');
+  const svgEl = node('svg', {class: 'org-bar-svg', viewBox: `0 0 ${svgW} ${svgH}`, role: 'img', 'aria-label': t(`${board.titleZh} Top ${top.length} 柱状对比图`, `${board.titleEn} Top ${top.length} bar chart`)});
+
+  // Subtle vertical scale lines (25%, 50%, 75%, 100%)
+  for (const frac of [0.25, 0.5, 0.75, 1]) {
+    const gx = leftW + frac * barAreaW;
+    svgEl.append(node('line', {x1: gx.toFixed(1), x2: gx.toFixed(1), y1: padT, y2: svgH - padB, class: 'org-viz-grid'}));
+  }
+
+  top.forEach((row, i) => {
+    const cy = padT + i * rowH;
+    const spotKey = orgRowSpotKey(row);
+    const fillCol = orgCreatorColor(row.creator, row.creatorColor);
+    const frac = Math.max(0.06, Math.min(1, (row.score - floor) / scaleSpan));
+    const bw = Math.max(6, frac * barAreaW);
+
+    const g = node('g', {class: 'org-viz-row', 'data-spot-key': spotKey});
+    if (row.familySlug) g.dataset.familySlug = row.familySlug;
+    g.append(node('rect', {x: 0, y: cy + 1, width: svgW, height: rowH - 2, rx: 5, class: 'org-viz-bg'}));
+
+    // Rank + dot + name
+    g.append(
+      node('text', {x: 28, y: cy + 16, 'text-anchor': 'end', class: `org-viz-rank${row.rank <= 3 ? ' is-top' : ''}`}, `#${row.rank}`),
+      node('circle', {cx: 38, cy: cy + 12.5, r: 3.5, fill: fillCol})
+    );
+    const disp = orgDisplayName(row);
+    const shortDisp = disp.length > 23 ? disp.slice(0, 22) + '…' : disp;
+    g.append(node('text', {x: 48, y: cy + 16, class: 'org-viz-name'}, shortDisp));
+
+    // Bar track + proportional bar + leading cap
+    g.append(
+      node('rect', {x: leftW, y: cy + 6, width: barAreaW, height: 13, rx: 3.5, class: 'org-viz-track'}),
+      node('rect', {x: leftW, y: cy + 6, width: bw.toFixed(1), height: 13, rx: 3.5, fill: fillCol, class: 'org-viz-fill'}),
+      node('rect', {x: (leftW + bw - 2.5).toFixed(1), y: cy + 6, width: 2.5, height: 13, rx: 1, fill: fillCol, class: 'org-viz-cap'})
+    );
+
+    // Score + gap behind #1 + cost pill
+    const scoreStr = format(row.score, board.scoreDecimals);
+    const gap = maxS - row.score;
+    const gapStr = i === 0 ? t('榜首', '#1') : `−${format(gap, board.scoreDecimals)}`;
+    const costStr = board.id === 'livebench' && row.lbCost != null
+      ? `LB ${money(row.lbCost)}`
+      : row.cost != null && row.cost > 0 ? money(row.cost) : '—';
+    g.append(
+      node('text', {x: leftW + barAreaW + 10, y: cy + 16, class: 'org-viz-score'}, scoreStr),
+      node('text', {x: leftW + barAreaW + 76, y: cy + 16, class: i === 0 ? 'org-viz-gap is-lead' : 'org-viz-gap'}, gapStr),
+      node('text', {x: svgW - 8, y: cy + 16, 'text-anchor': 'end', class: 'org-viz-cost'}, costStr)
+    );
+
+    g.addEventListener('pointerenter', () => {
+      orgSpotlightKey = spotKey;
+      applyOrgSpotlight(spotKey, row);
+    });
+    g.addEventListener('pointerleave', () => {
+      orgSpotlightKey = null;
+      applyOrgSpotlight(null);
+    });
+    g.addEventListener('click', () => {
+      orgPinnedKey = orgPinnedKey === spotKey ? null : spotKey;
+      applyOrgSpotlight(orgPinnedKey, row);
+    });
+    svgEl.append(g);
+  });
+
+  svgHost.append(svgEl);
+  panel.append(svgHost);
+  return panel;
+}
+
 function renderOrgDetailTable(container, board) {
-  const rows = filterOrgRows(board.rows);
+  const baseRows = filterOrgRows(board.rows);
   const wrap = html('div', null, 'org-detail-wrap');
 
   const banner = html('div', null, 'org-detail-banner');
@@ -8506,8 +8991,19 @@ function renderOrgDetailTable(container, board) {
   ext.href = board.sourceUrl;
   ext.target = '_blank';
   ext.rel = 'noopener';
-  const metaTxt = `${rows.length}/${board.rows.length} ${t('款上榜模型', 'ranked models')}${board.date ? ' · ' + t('原榜日期 ', 'Official date ') + board.date : ''}`;
+  const metaTxt = `${baseRows.length}/${board.rows.length} ${t('款上榜模型', 'ranked models')}${board.date ? ' · ' + t('原榜日期 ', 'Official date ') + board.date : ''}`;
   bLeft.append(ext, html('span', metaTxt, 'org-meta-count'));
+
+  const bActs = html('div', null, 'org-card-actions');
+  if (orgDetailSort.boardId === board.id && orgDetailSort.colKey) {
+    const resetSort = html('button', t('恢复原榜排序', 'Official order'), 'org-mini-btn');
+    resetSort.type = 'button';
+    resetSort.addEventListener('click', () => {
+      orgDetailSort = {boardId: board.id, colKey: null, dir: 'desc'};
+      renderOrgLeaderboards();
+    });
+    bActs.append(resetSort);
+  }
   const backBtn = html('button', t('← 返回 6 机构并排', '← All 6 orgs'), 'org-mini-btn');
   backBtn.type = 'button';
   backBtn.addEventListener('click', () => {
@@ -8516,73 +9012,121 @@ function renderOrgDetailTable(container, board) {
     renderOrgLeaderboards();
     updateSummary();
   });
-  banner.append(bLeft, backBtn);
+  bActs.append(backBtn);
+  banner.append(bLeft, bActs);
 
-  // Define org-specific columns faithfully showing every official sub-metric
+  // Define org-specific columns with numeric extractors for sorting + relative heat-tint visualization
   let cols;
   if (board.id === 'livebench') {
     cols = [
-      {zh: 'LB 2.0 总分', en: 'Overall', cls: 'num is-primary', get: r => format(r.score, 2)},
-      {zh: '长程智能体 ×2', en: 'Agentic ×2', cls: 'num', get: r => r.suites?.longAgentic != null ? format(r.suites.longAgentic, 1) : '—'},
-      {zh: '深度推理', en: 'Reasoning', cls: 'num', get: r => r.suites?.reasoning != null ? format(r.suites.reasoning, 1) : '—'},
-      {zh: '真实编程 ×1.5', en: 'Coding ×1.5', cls: 'num', get: r => r.suites?.coding != null ? format(r.suites.coding, 1) : '—'},
-      {zh: '网页浏览', en: 'Browser', cls: 'num', get: r => r.suites?.browser != null ? format(r.suites.browser, 1) : '—'},
-      {zh: '数据分析', en: 'Data', cls: 'num', get: r => r.suites?.dataAnalysis != null ? format(r.suites.dataAnalysis, 1) : '—'},
-      {zh: '深度研究', en: 'Research', cls: 'num', get: r => r.suites?.research != null ? format(r.suites.research, 1) : '—'},
-      {zh: '视觉设计 ×1.5', en: 'Design ×1.5', cls: 'num', get: r => r.suites?.design != null ? format(r.suites.design, 1) : '—'},
-      {zh: 'LB 实测单价', en: 'LB $/task', cls: 'num', get: r => r.lbCost != null ? money(r.lbCost) : '—'},
-      {zh: 'AA 均价', en: 'AA $/task', cls: 'num', get: r => r.cost != null ? money(r.cost) : '—'}
+      {key: 'score', zh: 'LB 2.0 总分', en: 'Overall', cls: 'num is-primary', heat: true, num: r => r.score, get: r => format(r.score, 2)},
+      {key: 'longAgentic', zh: '长程智能体 ×2', en: 'Agentic ×2', cls: 'num', heat: true, num: r => r.suites?.longAgentic ?? null, get: r => r.suites?.longAgentic != null ? format(r.suites.longAgentic, 1) : '—'},
+      {key: 'reasoning', zh: '深度推理', en: 'Reasoning', cls: 'num', heat: true, num: r => r.suites?.reasoning ?? null, get: r => r.suites?.reasoning != null ? format(r.suites.reasoning, 1) : '—'},
+      {key: 'coding', zh: '真实编程 ×1.5', en: 'Coding ×1.5', cls: 'num', heat: true, num: r => r.suites?.coding ?? null, get: r => r.suites?.coding != null ? format(r.suites.coding, 1) : '—'},
+      {key: 'browser', zh: '网页浏览', en: 'Browser', cls: 'num', heat: true, num: r => r.suites?.browser ?? null, get: r => r.suites?.browser != null ? format(r.suites.browser, 1) : '—'},
+      {key: 'dataAnalysis', zh: '数据分析', en: 'Data', cls: 'num', heat: true, num: r => r.suites?.dataAnalysis ?? null, get: r => r.suites?.dataAnalysis != null ? format(r.suites.dataAnalysis, 1) : '—'},
+      {key: 'research', zh: '深度研究', en: 'Research', cls: 'num', heat: true, num: r => r.suites?.research ?? null, get: r => r.suites?.research != null ? format(r.suites.research, 1) : '—'},
+      {key: 'design', zh: '视觉设计 ×1.5', en: 'Design ×1.5', cls: 'num', heat: true, num: r => r.suites?.design ?? null, get: r => r.suites?.design != null ? format(r.suites.design, 1) : '—'},
+      {key: 'lbCost', zh: 'LB 实测单价', en: 'LB $/task', cls: 'num', lowerBetter: true, num: r => r.lbCost ?? null, get: r => r.lbCost != null ? money(r.lbCost) : '—'},
+      {key: 'cost', zh: 'AA 均价', en: 'AA $/task', cls: 'num', lowerBetter: true, num: r => r.cost ?? null, get: r => r.cost != null ? money(r.cost) : '—'}
     ];
   } else if (board.id === 'designArena') {
     cols = [
-      {zh: '整站 Website Elo', en: 'Website Elo', cls: 'num is-primary', get: r => format(r.score, 0)},
-      {zh: '盲测胜率 · 场次', en: 'Win% · Battles', cls: 'num', get: r => `${r.winRate != null ? format(r.winRate, 1) + '%' : '—'}${r.battles ? ' · ' + (r.battles >= 1000 ? format(r.battles / 1000, 1) + 'k' : r.battles) : ''}`},
-      {zh: 'UI 组件 Elo', en: 'UI Comp.', cls: 'num', get: r => r.suites?.uicomponent != null ? format(r.suites.uicomponent, 0) : '—'},
-      {zh: '数据图表 Elo', en: 'DataViz', cls: 'num', get: r => r.suites?.dataviz != null ? format(r.suites.dataviz, 0) : '—'},
-      {zh: '游戏交互 Elo', en: 'GameDev', cls: 'num', get: r => r.suites?.gamedev != null ? format(r.suites.gamedev, 0) : '—'},
-      {zh: 'SVG 矢量 Elo', en: 'SVG', cls: 'num', get: r => r.suites?.svg != null ? format(r.suites.svg, 0) : '—'},
-      {zh: 'AA 均价', en: 'AA $/task', cls: 'num', get: r => r.cost != null ? money(r.cost) : '—'}
+      {key: 'score', zh: '整站 Website Elo', en: 'Website Elo', cls: 'num is-primary', heat: true, num: r => r.score, get: r => format(r.score, 0)},
+      {key: 'winRate', zh: '盲测胜率 · 场次', en: 'Win% · Battles', cls: 'num', num: r => r.winRate ?? null, get: r => `${r.winRate != null ? format(r.winRate, 1) + '%' : '—'}${r.battles ? ' · ' + (r.battles >= 1000 ? format(r.battles / 1000, 1) + 'k' : r.battles) : ''}`},
+      {key: 'uicomponent', zh: 'UI 组件 Elo', en: 'UI Comp.', cls: 'num', heat: true, num: r => r.suites?.uicomponent ?? null, get: r => r.suites?.uicomponent != null ? format(r.suites.uicomponent, 0) : '—'},
+      {key: 'dataviz', zh: '数据图表 Elo', en: 'DataViz', cls: 'num', heat: true, num: r => r.suites?.dataviz ?? null, get: r => r.suites?.dataviz != null ? format(r.suites.dataviz, 0) : '—'},
+      {key: 'gamedev', zh: '游戏交互 Elo', en: 'GameDev', cls: 'num', heat: true, num: r => r.suites?.gamedev ?? null, get: r => r.suites?.gamedev != null ? format(r.suites.gamedev, 0) : '—'},
+      {key: 'svg', zh: 'SVG 矢量 Elo', en: 'SVG', cls: 'num', heat: true, num: r => r.suites?.svg ?? null, get: r => r.suites?.svg != null ? format(r.suites.svg, 0) : '—'},
+      {key: 'cost', zh: 'AA 均价', en: 'AA $/task', cls: 'num', lowerBetter: true, num: r => r.cost ?? null, get: r => r.cost != null ? money(r.cost) : '—'}
     ];
   } else if (board.id === 'arenaChat' || board.id === 'arenaWebdev') {
     cols = [
-      {zh: board.scoreLabelZh, en: board.scoreLabelEn, cls: 'num is-primary', get: r => format(r.score, 1)},
-      {zh: '真人盲测票数', en: 'Blind Votes', cls: 'num', get: r => r.votes != null ? r.votes.toLocaleString() : '—'},
-      {zh: 'AA 综合分', en: 'AA Index', cls: 'num', get: r => r.aaIndex != null ? format(r.aaIndex, 1) : '—'},
-      {zh: 'AA 均价', en: 'AA $/task', cls: 'num', get: r => r.cost != null ? money(r.cost) : '—'},
-      {zh: '其他机构排名', en: 'Other Orgs', cls: 'org-cross-cell', get: r => r.modelId ? formatOrgRankSummary(r.modelId) : '—'}
+      {key: 'score', zh: board.scoreLabelZh, en: board.scoreLabelEn, cls: 'num is-primary', heat: true, num: r => r.score, get: r => format(r.score, 1)},
+      {key: 'votes', zh: '真人盲测票数', en: 'Blind Votes', cls: 'num', num: r => r.votes ?? null, get: r => r.votes != null ? r.votes.toLocaleString() : '—'},
+      {key: 'aaIndex', zh: 'AA 综合分', en: 'AA Index', cls: 'num', heat: true, num: r => r.aaIndex ?? null, get: r => r.aaIndex != null ? format(r.aaIndex, 1) : '—'},
+      {key: 'cost', zh: 'AA 均价', en: 'AA $/task', cls: 'num', lowerBetter: true, num: r => r.cost ?? null, get: r => r.cost != null ? money(r.cost) : '—'},
+      {key: 'cross', zh: '其他机构排名', en: 'Other Orgs', cls: 'org-cross-cell', num: null, get: r => r.modelId ? formatOrgRankSummary(r.modelId) : '—'}
     ];
   } else if (board.id === 'aaGdpval') {
     cols = [
-      {zh: 'GDPval Elo', en: 'GDPval Elo', cls: 'num is-primary', get: r => format(r.score, 0)},
-      {zh: 'Briefcase Elo', en: 'Briefcase', cls: 'num', get: r => r.briefcaseElo != null ? format(r.briefcaseElo, 0) : '—'},
-      {zh: '金融财务', en: 'Finance', cls: 'num', get: r => r.domainScores?.finance != null ? format(r.domainScores.finance, 1) : '—'},
-      {zh: '法律合规', en: 'Legal', cls: 'num', get: r => r.domainScores?.legal != null ? format(r.domainScores.legal, 1) : '—'},
-      {zh: '医疗健康', en: 'Health', cls: 'num', get: r => r.domainScores?.healthcare != null ? format(r.domainScores.healthcare, 1) : '—'},
-      {zh: '工程研发', en: 'Eng.', cls: 'num', get: r => r.domainScores?.engineering != null ? format(r.domainScores.engineering, 1) : '—'},
-      {zh: 'AA 均价', en: 'AA $/task', cls: 'num', get: r => r.cost != null ? money(r.cost) : '—'}
+      {key: 'score', zh: 'GDPval Elo', en: 'GDPval Elo', cls: 'num is-primary', heat: true, num: r => r.score, get: r => format(r.score, 0)},
+      {key: 'briefcase', zh: 'Briefcase Elo', en: 'Briefcase', cls: 'num', heat: true, num: r => r.briefcaseElo ?? null, get: r => r.briefcaseElo != null ? format(r.briefcaseElo, 0) : '—'},
+      {key: 'finance', zh: '金融财务', en: 'Finance', cls: 'num', heat: true, num: r => r.domainScores?.finance ?? null, get: r => r.domainScores?.finance != null ? format(r.domainScores.finance, 1) : '—'},
+      {key: 'legal', zh: '法律合规', en: 'Legal', cls: 'num', heat: true, num: r => r.domainScores?.legal ?? null, get: r => r.domainScores?.legal != null ? format(r.domainScores.legal, 1) : '—'},
+      {key: 'healthcare', zh: '医疗健康', en: 'Health', cls: 'num', heat: true, num: r => r.domainScores?.healthcare ?? null, get: r => r.domainScores?.healthcare != null ? format(r.domainScores.healthcare, 1) : '—'},
+      {key: 'engineering', zh: '工程研发', en: 'Eng.', cls: 'num', heat: true, num: r => r.domainScores?.engineering ?? null, get: r => r.domainScores?.engineering != null ? format(r.domainScores.engineering, 1) : '—'},
+      {key: 'cost', zh: 'AA 均价', en: 'AA $/task', cls: 'num', lowerBetter: true, num: r => r.cost ?? null, get: r => r.cost != null ? money(r.cost) : '—'}
     ];
   } else {
     cols = [
-      {zh: '综合智能 v5', en: 'AA Index v5', cls: 'num is-primary', get: r => format(r.score, 1)},
-      {zh: 'FrontierCode 2', en: 'FrontierCode 2', cls: 'num', get: r => r.subscores?.frontierCode != null ? format(r.subscores.frontierCode, 1) : '—'},
-      {zh: 'Terminal 4.0', en: 'Terminal 4', cls: 'num', get: r => r.subscores?.terminalBench != null ? format(r.subscores.terminalBench, 1) : '—'},
-      {zh: 'HLE Diamond', en: 'HLE', cls: 'num', get: r => r.subscores?.hleDiamond != null ? format(r.subscores.hleDiamond, 1) : '—'},
-      {zh: 'LiveBench 2.0', en: 'LB 2.0', cls: 'num', get: r => r.livebench?.overall != null ? `${format(r.livebench.overall, 1)} (#${r.livebench.rank})` : '—'},
-      {zh: '单任务 API', en: 'API $/task', cls: 'num', get: r => r.cost != null ? money(r.cost) : '—'},
-      {zh: '跨机构原榜排名', en: 'Cross-Org Ranks', cls: 'org-cross-cell', get: r => formatOrgRankSummary(r.modelId)}
+      {key: 'score', zh: '综合智能 v5', en: 'AA Index v5', cls: 'num is-primary', heat: true, num: r => r.score, get: r => format(r.score, 1)},
+      {key: 'frontierCode', zh: 'FrontierCode 2', en: 'FrontierCode 2', cls: 'num', heat: true, num: r => r.subscores?.frontierCode ?? null, get: r => r.subscores?.frontierCode != null ? format(r.subscores.frontierCode, 1) : '—'},
+      {key: 'terminalBench', zh: 'Terminal 4.0', en: 'Terminal 4', cls: 'num', heat: true, num: r => r.subscores?.terminalBench ?? null, get: r => r.subscores?.terminalBench != null ? format(r.subscores.terminalBench, 1) : '—'},
+      {key: 'hleDiamond', zh: 'HLE Diamond', en: 'HLE', cls: 'num', heat: true, num: r => r.subscores?.hleDiamond ?? null, get: r => r.subscores?.hleDiamond != null ? format(r.subscores.hleDiamond, 1) : '—'},
+      {key: 'livebench', zh: 'LiveBench 2.0', en: 'LB 2.0', cls: 'num', heat: true, num: r => r.livebench?.overall ?? null, get: r => r.livebench?.overall != null ? `${format(r.livebench.overall, 1)} (#${r.livebench.rank})` : '—'},
+      {key: 'cost', zh: '单任务 API', en: 'API $/task', cls: 'num', lowerBetter: true, num: r => r.cost ?? null, get: r => r.cost != null ? money(r.cost) : '—'},
+      {key: 'cross', zh: '跨机构原榜排名', en: 'Cross-Org Ranks', cls: 'org-cross-cell', num: null, get: r => formatOrgRankSummary(r.modelId)}
     ];
   }
+
+  // Apply optional sub-column sort
+  let rows = [...baseRows];
+  if (orgDetailSort.boardId === board.id && orgDetailSort.colKey) {
+    const sortCol = cols.find(c => c.key === orgDetailSort.colKey && c.num);
+    if (sortCol) {
+      const mul = orgDetailSort.dir === 'asc' ? 1 : -1;
+      rows.sort((a, b) => {
+        const va = sortCol.num(a), vb = sortCol.num(b);
+        if (va == null && vb == null) return a.rank - b.rank;
+        if (va == null) return 1;
+        if (vb == null) return -1;
+        return (va - vb) * mul || a.rank - b.rank;
+      });
+    }
+  }
+
+  // Precompute column [min, max] for heat-tint visualization & #1 badge
+  const colRanges = cols.map(c => {
+    if (!c.heat || !c.num) return null;
+    const vals = rows.map(c.num).filter(v => typeof v === 'number' && Number.isFinite(v));
+    if (vals.length < 2) return null;
+    return {min: Math.min(...vals), max: Math.max(...vals)};
+  });
+
+  const vizPanel = buildOrgTopBarChart(board, baseRows);
 
   const scroller = html('div', null, 'org-detail-scroll');
   const table = html('table', null, 'org-detail-table');
   const thead = html('thead');
   const trHead = html('tr');
   trHead.append(
-    html('th', t('排名', 'Rank'), 'num'),
-    html('th', t('模型（原榜条目）', 'Model (Official Entry)')),
-    ...cols.map(c => html('th', t(c.zh, c.en), c.cls.includes('num') ? 'num' : '')),
-    html('th', t('操作', 'Action'), 'num')
+    html('th', t('原榜', 'Rank'), 'num'),
+    html('th', t('模型（原榜条目）', 'Model (Official Entry)'))
   );
+  cols.forEach(c => {
+    const th = html('th', null, c.cls.includes('num') ? 'num' : '');
+    if (c.num) {
+      const activeSort = orgDetailSort.boardId === board.id && orgDetailSort.colKey === c.key;
+      const arrow = activeSort ? (orgDetailSort.dir === 'asc' ? ' ↑' : ' ↓') : '';
+      const btn = html('button', `${t(c.zh, c.en)}${arrow}`, `org-th-sort${activeSort ? ' is-sorted' : ''}`);
+      btn.type = 'button';
+      btn.title = t('点击按此列排序', 'Click to sort by this column');
+      btn.addEventListener('click', () => {
+        if (orgDetailSort.boardId === board.id && orgDetailSort.colKey === c.key) {
+          orgDetailSort.dir = orgDetailSort.dir === 'desc' ? 'asc' : 'desc';
+        } else {
+          orgDetailSort = {boardId: board.id, colKey: c.key, dir: c.lowerBetter ? 'asc' : 'desc'};
+        }
+        renderOrgLeaderboards();
+      });
+      th.append(btn);
+    } else {
+      th.textContent = t(c.zh, c.en);
+    }
+    trHead.append(th);
+  });
+  trHead.append(html('th', t('操作', 'Action'), 'num'));
   thead.append(trHead);
 
   const tbody = html('tbody');
@@ -8618,7 +9162,20 @@ function renderOrgDetailTable(container, board) {
       nameWrap.append(dot, copy);
       tdName.append(nameWrap);
 
-      const valTds = cols.map(c => html('td', c.get(row), c.cls));
+      const valTds = cols.map((c, ci) => {
+        const td = html('td', c.get(row), c.cls);
+        const range = colRanges[ci];
+        if (range && c.num) {
+          const val = c.num(row);
+          if (typeof val === 'number' && Number.isFinite(val)) {
+            const norm = range.max > range.min ? (val - range.min) / (range.max - range.min) : 0.5;
+            td.classList.add('has-heat');
+            td.style.setProperty('--heat', `${Math.max(6, Math.round(norm * 100))}%`);
+            if (Math.abs(val - range.max) < 1e-6) td.classList.add('is-col-best');
+          }
+        }
+        return td;
+      });
 
       const tdAct = html('td', null, 'num org-act-cell');
       if (row.modelId) {
@@ -8659,26 +9216,34 @@ function renderOrgDetailTable(container, board) {
   }
   table.append(thead, tbody);
   scroller.append(table);
-  wrap.append(banner, scroller);
+  wrap.append(banner, vizPanel, scroller);
   container.replaceChildren(wrap);
 }
 
 function renderOrgLeaderboards() {
   if (!state || !orgBoards.length) return;
+  const modeSwitch = $('#orgModeSwitch');
+  const mFrag = document.createDocumentFragment();
+  for (const [id, zh, en] of [
+    ['all', `6 机构并排`, `Side-by-Side`],
+    ['bump', `跨机构轨迹图`, `Rank Trajectory`]
+  ]) {
+    const b = html('button', t(zh, en));
+    b.type = 'button';
+    b.setAttribute('aria-pressed', String(orgFocus === id));
+    b.addEventListener('click', () => {
+      if (orgFocus === id) return;
+      orgFocus = id;
+      syncUrlHash();
+      renderOrgLeaderboards();
+      updateSummary();
+    });
+    mFrag.append(b);
+  }
+  modeSwitch.replaceChildren(mFrag);
+
   const selGroup = $('#orgSelectGroup');
   const pFrag = document.createDocumentFragment();
-  const allBtn = html('button', t(`并排全览 (${orgBoards.length} 机构)`, `Side-by-Side (${orgBoards.length})`));
-  allBtn.type = 'button';
-  allBtn.setAttribute('aria-pressed', String(orgFocus === 'all'));
-  allBtn.addEventListener('click', () => {
-    if (orgFocus === 'all') return;
-    orgFocus = 'all';
-    syncUrlHash();
-    renderOrgLeaderboards();
-    updateSummary();
-  });
-  pFrag.append(allBtn);
-
   for (const board of orgBoards) {
     const btn = html('button', t(board.pillZh, board.pillEn));
     btn.type = 'button';
@@ -8687,6 +9252,7 @@ function renderOrgLeaderboards() {
     btn.addEventListener('click', () => {
       if (orgFocus === board.id) return;
       orgFocus = board.id;
+      orgDetailSort = {boardId: board.id, colKey: null, dir: 'desc'};
       syncUrlHash();
       renderOrgLeaderboards();
       updateSummary();
@@ -8696,6 +9262,7 @@ function renderOrgLeaderboards() {
   selGroup.replaceChildren(pFrag);
 
   const matchBtn = $('#orgMatchedToggle');
+  matchBtn.hidden = orgFocus === 'bump';
   matchBtn.setAttribute('aria-pressed', String(orgMatchedOnly));
   matchBtn.textContent = orgMatchedOnly
     ? t('仅看可对齐全站模型 ✓', 'Aligned models only ✓')
@@ -8711,7 +9278,9 @@ function renderOrgLeaderboards() {
   }
 
   const content = $('#orgContent');
-  if (activeBoard) {
+  if (orgFocus === 'bump') {
+    renderOrgBumpChart(content);
+  } else if (activeBoard) {
     renderOrgDetailTable(content, activeBoard);
   } else {
     renderOrgSideBySide(content);

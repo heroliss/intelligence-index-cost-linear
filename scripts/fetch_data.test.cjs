@@ -296,6 +296,39 @@ test('buildHumanArenaModels matches effort-aware variants without cloning onto l
   assert.ok(qw.humanScores.creativeCraft > 50 && qw.humanScores.creativeCraft < 70, 'creativeCraft preserves gamedev/svg with low-sample shrinkage');
   assert.equal(qw.humanScores.creativeCraft, qw.designSub.gamedev);
 
+  // Balanced 4-pillar anti-slop & 3D/Motion weighting: heavy AI-slop crowd pleaser should rank below balanced low-slop flagship
+  const slopPleaser = simplifyModel({
+    id: 'slop-m', slug: 'slop-pleaser', name: 'Slop Pleaser (Max)', shortName: 'Slop Pleaser (max)',
+    intelligenceIndex: 36.6, intelligenceIndexCostPerTask: { total: 2.3 },
+    gdpvalElo: 1680, aa3dElo: 1030, code2videoElo: 1020,
+    personalityBench: { indexScores: { slop: 75.3 } }
+  });
+  const balancedFlag = simplifyModel({
+    id: 'flag-m', slug: 'balanced-flag', name: 'Balanced Flag (Max)', shortName: 'Balanced Flag (max)',
+    intelligenceIndex: 62.0, intelligenceIndexCostPerTask: { total: 4.0 },
+    gdpvalElo: 1830, aa3dElo: 1270, code2videoElo: 1450,
+    personalityBench: { indexScores: { slop: 7.0 } }
+  });
+  const balancedArena = buildHumanArenaModels([slopPleaser, balancedFlag], {
+    chatRows: [
+      { category: 'overall', model_name: 'Slop Pleaser (Max)', rating: 1498, vote_count: 20000 },
+      { category: 'overall', model_name: 'Balanced Flag (Max)', rating: 1498, vote_count: 20000 }
+    ],
+    webdevRows: [
+      { category: 'overall', model_name: 'Slop Pleaser (Max)', rating: 1654, vote_count: 10000 },
+      { category: 'overall', model_name: 'Balanced Flag (Max)', rating: 1820, vote_count: 2000 }
+    ],
+    designByCat: {
+      website: [
+        { modelId: 'slop-pleaser', elo: 1357, battles: 20000 },
+        { modelId: 'balanced-flag', elo: 1348, battles: 1500 }
+      ]
+    }
+  });
+  const spRes = balancedArena.find(x => x.id === 'slop-m');
+  const bfRes = balancedArena.find(x => x.id === 'flag-m');
+  assert.ok(bfRes.humanIndex - spRes.humanIndex > 12, 'balanced low-slop flagship should lead heavy-slop crowd pleaser by >12 pts');
+
   // Fault tolerance: network error falls back cleanly to previous snapshot
   const fallbackPrev = { humanArenaModels: arenaRows, lmArenaPublishDate: '2026-11-11' };
   const degraded = await fetchHumanArenas([museMax], fallbackPrev, async () => { throw new Error('offline'); });
