@@ -29,16 +29,16 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261120-02';
+} from './chart-math.mjs?v=20261120-03';
 import {
   RECOMMEND_USE_CASES,
-  RECOMMEND_BUDGETS,
+  RECOMMEND_BILLING,
   RECOMMEND_LICENSES,
   recommendModels
-} from './modules/recommend.mjs?v=20261120-02';
-import {computeOrgDivergence} from './modules/divergence.mjs?v=20261120-02';
-import {createNavHistory} from './modules/nav-history.mjs?v=20261120-02';
-import {GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261120-02';
+} from './modules/recommend.mjs?v=20261120-03';
+import {computeOrgDivergence} from './modules/divergence.mjs?v=20261120-03';
+import {createNavHistory} from './modules/nav-history.mjs?v=20261120-03';
+import {GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261120-03';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -412,7 +412,7 @@ let orgCreatorColors = new Map();
 let pendingUrlTimer = 0;
 let orgFocus = 'all';
 let orgDivFilter = 'all';
-const pickerChoice = {useCase: 'general', budget: 'balanced', license: 'all'};
+const pickerChoice = {useCase: 'general', billing: 'api-balanced', license: 'all'};
 let orgBumpLimit = 12;
 let orgChartCollapsed = false;
 const orgExpandedCards = new Set();
@@ -1754,10 +1754,10 @@ function syncStaticText() {
     '6 家权威测评机构原始榜单原序对照（AA / LiveBench 2.0 / Arena.ai / Design Arena / GDPval），支持跨榜轨迹与单榜精析',
     '6 un-blended official organization leaderboards side-by-side with cross-org rank trajectories and sub-metric inspection'
   );
-  $('#pickerBtnText').textContent = t('帮我选', 'Pick');
+  $('#pickerBtnText').textContent = t('选型参考', 'Shortlist');
   $('#pickerBtn').title = t(
-    '3 步帮我选模型：按用途、预算与开源偏好一键推荐 3 款候选并支持直接剖析对比',
-    '3-Step Model Picker: answer 3 quick choices for 3 tailored recommendations'
+    '3 步缩小候选范围：按真实用途、付费方式与开源要求，对比不同流派参照并标注实测证据与风险提示',
+    '3-Step Shortlist Builder: compare distinct model archetypes with proof badges & honest caveats'
   );
   $('#guideBtnText').textContent = t('读懂榜单', 'Guide');
   $('#guideBtn').title = t(
@@ -11291,7 +11291,7 @@ function syncOnboardingStrip() {
       '看图口诀：越靠左上越理想（高分且低价）· 虚线为帕累托前沿（同价位无可替代）· 单击圆点看跨榜详情',
       'Quick read: Upper-left is best (high score, low cost) · Dashed line = Pareto frontier (unbeaten at its price) · Click dots for details'
     );
-  $('#onboardingPickerBtn').textContent = t('3 步帮我选模型', '3-Step Model Picker');
+  $('#onboardingPickerBtn').textContent = t('3 步缩小候选', '3-Step Shortlist');
   $('#onboardingGuideBtn').textContent = t('读懂榜单', 'Guide');
   $('#onboardingDismissBtn').textContent = t('知道了', 'Got it');
   $('#onboardingDismissBtn').setAttribute('aria-label', t('关闭新手读图提示', 'Dismiss quick-read hint'));
@@ -11804,7 +11804,7 @@ function renderPickerTab(frag) {
   const s1Lbl = html('div', null, 'picker-step-label');
   s1Lbl.append(
     document.createTextNode(t('1. 你主要拿模型做什么？', '1. What is your primary use case?')),
-    html('span', t('单选场景，实时重算', 'Pick one — updates live'))
+    html('span', t('写代码区分「编程智能体」与「纯 API」', 'Separates Coding Agents from raw Code APIs'))
   );
   const s1Chips = html('div', null, 'picker-chips');
   for (const uc of RECOMMEND_USE_CASES) {
@@ -11822,14 +11822,14 @@ function renderPickerTab(frag) {
   // Step 2 & Step 3 side-by-side
   const row23 = html('div', null, 'picker-step-row');
   const s2 = html('div', null, 'picker-step');
-  s2.append(html('div', t('2. 预算与付费偏好？', '2. Cost vs. capability priority?'), 'picker-step-label'));
+  s2.append(html('div', t('2. 付费与使用方式？', '2. How will you pay / use it?'), 'picker-step-label'));
   const s2Chips = html('div', null, 'picker-chips');
-  for (const bud of RECOMMEND_BUDGETS) {
-    const b = html('button', t(bud.zh, bud.en), 'picker-chip');
+  for (const bill of RECOMMEND_BILLING) {
+    const b = html('button', t(bill.zh, bill.en), 'picker-chip');
     b.type = 'button';
-    b.setAttribute('aria-pressed', String(pickerChoice.budget === bud.id));
+    b.setAttribute('aria-pressed', String(pickerChoice.billing === bill.id));
     b.addEventListener('click', () => {
-      pickerChoice.budget = bud.id;
+      pickerChoice.billing = bill.id;
       renderGuideDialog();
     });
     s2Chips.append(b);
@@ -11854,10 +11854,13 @@ function renderPickerTab(frag) {
   steps.append(s1, row23);
   frag.append(steps);
 
-  const rec = recommendModels(snapshot, pickerChoice);
+  const divRows = orgBoards.length
+    ? computeOrgDivergence(orgBoards, orgRankIndex, new Map((snapshot?.models || []).map(m => [m.id, m]))).rows
+    : [];
+  const rec = recommendModels(snapshot, pickerChoice, {orgRankIndex, divergenceRows: divRows});
   const secHead = html('div', null, 'guide-sec-head');
   secHead.append(
-    html('h3', t(`为你从 ${rec.totalPool} 款候选中挑出 3 个参考方案`, `3 Curated Picks from ${rec.totalPool} Models`)),
+    html('h3', t(`从 ${rec.totalPool} 款实测中挑出 ${rec.picks.length} 类不同取向参照`, `${rec.picks.length} Contrasting References from ${rec.totalPool} Entries`)),
     html('span', t(rec.useCase.descZh, rec.useCase.descEn))
   );
   frag.append(secHead);
@@ -11895,6 +11898,14 @@ function renderPickerTab(frag) {
     mCost.append(html('span', t(`单${unitTxt}成本`, `Cost/${unitTxt}`)), html('b', money(pick.row.cost)));
     metrics.append(mScore, mCost);
 
+    const signals = html('div', null, 'picker-signals');
+    for (const pr of (pick.proofs || [])) {
+      signals.append(html('span', `✓ ${t(pr.zh, pr.en)}`, 'picker-sig is-proof'));
+    }
+    for (const cv of (pick.caveats || [])) {
+      signals.append(html('span', `△ ${t(cv.zh, cv.en)}`, 'picker-sig is-warn'));
+    }
+
     const reason = html('p', t(pick.reason.zh, pick.reason.en), 'picker-reason');
 
     const acts = html('div', null, 'picker-card-acts');
@@ -11903,16 +11914,40 @@ function renderPickerTab(frag) {
     locBtn.addEventListener('click', () => applyPickerContext(rec, {targetRow: pick.row}));
     acts.append(locBtn);
 
-    card.append(top, modelLine, meta, metrics, reason, acts);
+    if (signals.childNodes.length) {
+      card.append(top, modelLine, meta, metrics, signals, reason, acts);
+    } else {
+      card.append(top, modelLine, meta, metrics, reason, acts);
+    }
     grid.append(card);
   }
   frag.append(grid);
 
   const footBar = html('div', null, 'picker-footer-bar');
   footBar.append(
-    html('span', t('想进一步看雷达分项、幻觉率与多云比价？直接将这几款送进剖析对比', 'Want radar breakdowns, hallucination rates & multi-cloud pricing? Compare them side-by-side'), 'picker-footer-note')
+    html('span', t('跑分与体感可能存在落差：建议送入剖析对比核验分项，或结合争议分歧榜做决定', 'Scores & real feel can diverge: compare breakdowns side-by-side or inspect the Org Divergence board'), 'picker-footer-note')
   );
   const footActs = html('div', null, 'picker-footer-acts');
+  if (orgBoards.length && ['models', 'human-arena'].includes(rec.useCase.tab)) {
+    const divBtn = html('button', t('去争议分歧榜核验', 'Check Divergence'), 'org-mini-btn');
+    divBtn.type = 'button';
+    divBtn.addEventListener('click', () => {
+      setGuideOpen(false);
+      runNavAction(() => {
+        chooseChart('orgs', {changeHash: false});
+        orgFocus = 'divergence';
+        orgDivFilter = 'all';
+        syncUrlHash();
+        renderOrgLeaderboards();
+        selectionNotice = t(
+          '已切至「争议分歧榜」：核验各模型在自动化硬考与真人盲测间的真实口碑差异（点左上 ‹ 返回可退回）',
+          'Opened Org Divergence board: inspect automated-eval vs. human-vote gaps (click ‹ Back to return)'
+        );
+        updateSummary();
+      });
+    });
+    footActs.append(divBtn);
+  }
   const scatterBtn = html('button', t('看场景前沿散点', 'View Frontier'), 'org-mini-btn');
   scatterBtn.type = 'button';
   scatterBtn.addEventListener('click', () => applyPickerContext(rec, {toCompare: false}));
@@ -11922,16 +11957,21 @@ function renderPickerTab(frag) {
   footActs.append(scatterBtn, cmpBtn);
   footBar.append(footActs);
   frag.append(footBar);
+
+  frag.append(html('p', t(
+    '说明：以上候选严格基于公开 API 基准与跨机构盲测实时筛选，不代表“唯一标准答案”。各厂商月度订阅的包含范围、动态限流与 IDE 交互手感会随产品迭代变化，建议优先在 2–3 款候选中用自己的真实任务小规模实测。',
+    'Note: Picks are computed live from public API telemetry and cross-org blind benchmarks — not an absolute verdict. Monthly plan inclusions, rate limits, and IDE feel evolve continuously; always trial 2–3 finalists on your own tasks.'
+  ), 'picker-disclaimer'));
 }
 
 function renderGuideDialog() {
   $('#guideDialogTitle').textContent = guideTab === 'picker'
-    ? t('3 步帮我选模型', '3-Step Model Picker')
+    ? t('3 步缩小候选范围（多流派对照）', '3-Step Shortlist Builder (Multi-Archetype)')
     : t('读懂榜单与隐藏洞察', 'Benchmark Guide & Hidden Insights');
   $('#guideDialogSub').textContent = guideTab === 'picker'
-    ? t('不用看懂坐标轴与术语：按真实用途、预算与开源偏好，实时推荐 3 款代表模型', 'Skip the jargon: choose your use case, budget & license for 3 data-backed recommendations')
+    ? t('榜单跑分≠全部体验：这里只帮你快速缩小到 3 类不同取向候选，并摊开跨榜证据与高价/缺盲测风险', 'Benchmarks aren’t the whole story: narrow down to 3 contrasting archetypes with proof badges & caveats upfront')
     : t('了解各测评机构侧重、避开常见误区，一键实操发现数据背后的规律', 'Understand what each agency tests, avoid common traps, and explore hidden data patterns in one click');
-  $('#gtabPicker').textContent = t('3 步选模型', '3-Step Picker');
+  $('#gtabPicker').textContent = t('3 步缩小候选', '3-Step Shortlist');
   $('#gtabCurrent').textContent = t('当前榜与隐藏玩法', 'Current Tab & Insights');
   $('#gtabOrgs').textContent = t('测评机构特点', 'Eval Agencies');
   $('#gtabGlossary').textContent = t('看图与指标速查', 'Chart & Metrics');

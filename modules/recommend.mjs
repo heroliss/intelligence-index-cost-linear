@@ -3,43 +3,55 @@ import {
   valuePerDollar,
   computeScenarioScore,
   SCENARIO_PRESETS
-} from '../chart-math.mjs?v=20261120-02';
+} from '../chart-math.mjs?v=20261120-03';
 
 export const RECOMMEND_USE_CASES = [
   {
     id: 'general',
-    zh: '日常全能主力',
+    zh: '日常综合主力',
     en: 'Daily All-Rounder',
     tab: 'models',
     yLens: '',
     scenarioId: 'default',
     unitZh: '任务',
     unitEn: 'task',
-    descZh: '均衡代码、推理、文档与日常问答，优先人工与综合体验双稳的模型',
-    descEn: 'Balanced coding, reasoning, docs & everyday chat on the main value frontier'
+    descZh: '按「跨机构口碑稳健」「API 效率前沿」「能力上限参照」三类流派对照，避免只看单榜跑分踩坑',
+    descEn: 'Contrasts Cross-Org Consensus, API Efficiency, and Top Ceiling picks so single-board scores never mislead'
   },
   {
-    id: 'coding',
-    zh: '编程与代码工程',
-    en: 'Coding & Engineering',
+    id: 'coding-agent',
+    zh: '编程智能体（端到端实战）',
+    en: 'Coding Agents (End-to-End)',
+    tab: 'coding-agents',
+    yLens: '',
+    scenarioId: 'default',
+    unitZh: '任务',
+    unitEn: 'task',
+    descZh: '直接读取「模型 + IDE/Agent 框架」端到端修仓库实测（Antigravity / Claude Code / Codex 等），更贴近真实写代码手感',
+    descEn: 'Reads real end-to-end Model + Agent Harness benchmarks (Antigravity, Claude Code, Codex) instead of raw single-turn scores'
+  },
+  {
+    id: 'coding-api',
+    zh: '纯代码 API（裸模型）',
+    en: 'Code API (Raw Model)',
     tab: 'models',
     yLens: '',
     scenarioId: 'fullstack',
     unitZh: '任务',
     unitEn: 'task',
-    descZh: '按全栈工程配方加权 FrontierCode 2.0、Terminal 4.0 与 WebDev 实战表现',
-    descEn: 'Weighted toward FrontierCode 2.0, Terminal 4.0, and WebDev engineering tasks'
+    descZh: '适合自建工具链或直接调 API 写代码，按全栈工程配方加权 FrontierCode 2.0、Terminal 4.0 与 WebDev',
+    descEn: 'For custom API pipelines: weights FrontierCode 2.0, Terminal 4.0, and WebDev on raw models'
   },
   {
     id: 'writing',
-    zh: '聊天写作与高人味',
+    zh: '聊天写作与自然人味',
     en: 'Writing & Natural Chat',
     tab: 'human-arena',
     yLens: 'chatVibe',
     scenarioId: 'default',
     unitZh: '任务',
     unitEn: 'task',
-    descZh: '聚焦 Arena.ai 去水份盲投人味与去 AI 套话自然度，写文章聊思路不机械',
+    descZh: '聚焦 Arena.ai 去水份真人盲投人味与去 AI 套话自然度，写文章聊思路更自然',
     descEn: 'Prioritizes Arena.ai style-controlled human preference and Anti-Slop naturalness'
   },
   {
@@ -51,7 +63,7 @@ export const RECOMMEND_USE_CASES = [
     scenarioId: 'default',
     unitZh: '任务',
     unitEn: 'task',
-    descZh: '聚焦 Design Arena 五维视觉盲测（整站 / UI 组件 / 图表 / SVG），拒绝土味页面',
+    descZh: '聚焦 Design Arena 五维视觉盲测（整站 / UI 组件 / 图表 / SVG），拒绝模板土味页面',
     descEn: 'Prioritizes Design Arena 5D aesthetic Elo across websites, UI, DataViz & SVG'
   },
   {
@@ -63,7 +75,7 @@ export const RECOMMEND_USE_CASES = [
     scenarioId: 'research',
     unitZh: '任务',
     unitEn: 'task',
-    descZh: '加权 44 职业 GDPval 交付、长文档检索与低盲区幻觉率，适合严谨专业工作',
+    descZh: '加权 44 职业 GDPval 专家交付、长文档检索与低盲区幻觉率，适合严谨专业工作',
     descEn: 'Weights GDPval professional deliverables, long-context rigor, and low hallucination'
   },
   {
@@ -102,25 +114,28 @@ export const RECOMMEND_USE_CASES = [
     scenarioId: 'default',
     unitZh: '千字',
     unitEn: '1k ch',
-    descZh: 'AA Speech Arena 盲听自然度，按每千字成本（$/千字）与延迟独立筛选',
-    descEn: 'AA Speech Arena naturalness Elo ranked strictly on USD per 1k chars & latency'
+    descZh: 'AA Speech Arena 盲听自然度，按每千字成本（$/千字）与首包延迟独立筛选',
+    descEn: 'AA Speech Arena naturalness Elo ranked strictly on USD per 1k chars & TTFA latency'
   }
 ];
 
-export const RECOMMEND_BUDGETS = [
-  {id: 'budget', zh: '极致省钱', en: 'Lowest Cost', alpha: 1.4},
-  {id: 'balanced', zh: '均衡甜点（推荐）', en: 'Balanced (Recommended)', alpha: 3.5},
-  {id: 'flagship', zh: '追最强上限', en: 'Top Capability', alpha: 12}
+export const RECOMMEND_BILLING = [
+  {id: 'sub', zh: '月卡 / 订阅工具', en: 'Monthly Plan / IDE', alpha: 8},
+  {id: 'api-balanced', zh: '按量 API 均衡（推荐）', en: 'API Balanced (Rec.)', alpha: 3.2},
+  {id: 'api-budget', zh: '极致低价跑批', en: 'API Lowest Cost', alpha: 1.4}
 ];
 
 export const RECOMMEND_LICENSES = [
   {id: 'all', zh: '不限（推荐）', en: 'Any (Recommended)'},
   {id: 'open', zh: '仅开源可自部署', en: 'Open-Weights Only'},
-  {id: 'closed', zh: '仅商业闭源 API', en: 'Proprietary API Only'}
+  {id: 'closed', zh: '仅商业闭源', en: 'Proprietary Only'}
 ];
 
+// Backward-compatible export alias if external callers reference RECOMMEND_BUDGETS
+export const RECOMMEND_BUDGETS = RECOMMEND_BILLING;
+
 function scoreForUseCase(row, useCase) {
-  if (useCase.id === 'coding') {
+  if (useCase.id === 'coding-api') {
     const preset = SCENARIO_PRESETS.find(p => p.id === 'fullstack');
     return computeScenarioScore({...row, _baseIndex: row._baseIndex ?? row.intelligenceIndex}, preset?.weights) ?? row.intelligenceIndex;
   }
@@ -143,22 +158,179 @@ function formatPctDelta(cheapCost, refCost) {
 }
 
 /**
- * Compute up to 3 curated, strictly deduplicated model recommendations
- * (Primary Match, Top Ceiling / Runner-Up, Budget Saver / Step-Up) from snapshot data.
+ * Build fast telemetry lookups from snapshot + optional runtime orgRankIndex / divergenceMap
+ * so every shortlist candidate carries objective proof badges & honest risk caveats.
  */
-export function recommendModels(snapshot, {useCase = 'general', budget = 'balanced', license = 'all'} = {}) {
+function buildEvidenceLookup(snapshot, context = {}) {
+  const chatRankById = new Map();
+  const chatRankByFam = new Map();
+  const webdevRankById = new Map();
+  const designRankById = new Map();
+  const lbRankById = new Map();
+  const codingRankById = new Map();
+  const aaRankById = new Map();
+
+  const models = Array.isArray(snapshot?.models) ? snapshot.models : [];
+  const famById = new Map(models.map(m => [m.id, m.family?.slug || null]));
+  const modelFamilies = new Set(models.map(m => m.family?.slug).filter(Boolean));
+  [...models]
+    .sort((a, b) => b.intelligenceIndex - a.intelligenceIndex)
+    .forEach((m, i) => aaRankById.set(m.id, i + 1));
+
+  const coding = Array.isArray(snapshot?.codingAgents) ? snapshot.codingAgents : [];
+  [...coding]
+    .sort((a, b) => b.intelligenceIndex - a.intelligenceIndex)
+    .forEach((a, i) => codingRankById.set(a.id, i + 1));
+
+  const ext = snapshot?.orgLeaderboards || {};
+  (ext.arenaChat?.rows || []).forEach((r, i) => {
+    const rank = r.rank || (i + 1);
+    if (r.modelId && !chatRankById.has(r.modelId)) {
+      chatRankById.set(r.modelId, rank);
+      const fam = famById.get(r.modelId);
+      if (fam && !chatRankByFam.has(fam)) chatRankByFam.set(fam, rank);
+    }
+  });
+  (ext.arenaWebdev?.rows || []).forEach((r, i) => {
+    const rank = r.rank || (i + 1);
+    if (r.modelId && !webdevRankById.has(r.modelId)) webdevRankById.set(r.modelId, rank);
+  });
+  (ext.designArena?.rows || []).forEach((r, i) => {
+    const rank = r.rank || (i + 1);
+    if (r.modelId && !designRankById.has(r.modelId)) designRankById.set(r.modelId, rank);
+  });
+  (ext.livebench?.rows || []).forEach((r, i) => {
+    const rank = r.rank || (i + 1);
+    if (r.modelId && !lbRankById.has(r.modelId)) lbRankById.set(r.modelId, rank);
+  });
+
+  // Also check orgRankIndex passed by app.js for family fallback chat ranks
+  const orgRankIndex = context.orgRankIndex instanceof Map ? context.orgRankIndex : null;
+  const divById = new Map();
+  const divByFam = new Map();
+  if (Array.isArray(context.divergenceRows)) {
+    for (const r of context.divergenceRows) {
+      divById.set(r.modelId, r);
+      if (r.familySlug && !divByFam.has(r.familySlug)) divByFam.set(r.familySlug, r);
+    }
+  }
+
+  function getChatRank(row) {
+    const direct = chatRankById.get(row.id);
+    if (direct != null) return {rank: direct, exact: true};
+    const canInheritSibling = !row.effort || row.effort.level >= 25;
+    if (!canInheritSibling) return null;
+    const rec = orgRankIndex?.get(row.id)?.ranks?.arenaChat;
+    if (rec && (rec.exact || canInheritSibling)) return {rank: rec.rank, exact: !!rec.exact};
+    const fam = row.family?.slug;
+    if (fam && chatRankByFam.has(fam)) return {rank: chatRankByFam.get(fam), exact: false};
+    return null;
+  }
+
+  function getSignals(row, uc, isFrontier) {
+    const proofs = [];
+    const caveats = [];
+    const isMedia = uc.tab === 'media';
+    const isCodingAgent = uc.tab === 'coding-agents';
+
+    if (isCodingAgent) {
+      const cRank = codingRankById.get(row.id);
+      if (cRank != null && cRank <= 5) proofs.push({zh: `端到端编程 #${cRank}`, en: `Coding Agent #${cRank}`});
+      if (row.agentStats?.cacheHitRate >= 90) proofs.push({zh: `缓存命中 ${Math.round(row.agentStats.cacheHitRate)}%`, en: `${Math.round(row.agentStats.cacheHitRate)}% cache`});
+      if (isFrontier && proofs.length < 2) proofs.push({zh: '帕累托前沿', en: 'Pareto frontier'});
+
+      // Data-driven lookup of underlying LLM family's Arena.ai Chat blind coverage via `Harness:model-family` slug
+      const baseSlug = (row.family?.slug || '').split(':')[1] || '';
+      const baseKnown = !!(baseSlug && modelFamilies.has(baseSlug));
+      const baseHasChat = baseKnown && chatRankByFam.has(baseSlug);
+      if (row.cost >= 14) {
+        caveats.push({zh: '超高单价 · 常规月卡多不含或易限流', en: 'Very high cost · often API-only / tight quota'});
+      }
+      if (row.costPercentiles?.p95 && row.cost > 0 && row.costPercentiles.p95 / row.cost >= 2.8) {
+        caveats.push({zh: `P95 长尾可达 $${row.costPercentiles.p95.toFixed(1)}`, en: `P95 tail up to $${row.costPercentiles.p95.toFixed(1)}`});
+      }
+      if (baseKnown && !baseHasChat) {
+        caveats.push({zh: '底层缺 Arena 聊天盲测 · 建议先试手感', en: 'Underlying model lacks Arena Chat votes'});
+      }
+      if (row.timeSec >= 2400) {
+        caveats.push({zh: `单任务耗时偏长 (${Math.round(row.timeSec / 60)}分)`, en: `Long runs (~${Math.round(row.timeSec / 60)}m)`});
+      }
+      return {proofs: proofs.slice(0, 2), caveats: caveats.slice(0, 2)};
+    }
+
+    if (isMedia) {
+      if (isFrontier) proofs.push({zh: '帕累托前沿', en: 'Pareto frontier'});
+      if (uc.mediaTrack === 'image' && row.mediaScores?.t2i != null && row.mediaScores?.imgEdit != null) {
+        proofs.push({zh: '文生图 + 修图双全', en: 'T2I + Edit'});
+      } else if (uc.mediaTrack === 'video' && row.mediaScores?.i2v != null && row.mediaScores?.t2v != null) {
+        proofs.push({zh: '文生 + 图生双覆盖', en: 'T2V + I2V'});
+      } else if (uc.mediaTrack === 'tts') {
+        const ttfa = row.mediaRaw?.ttfaMs;
+        if (ttfa != null && ttfa <= 250) proofs.push({zh: `低首包 ${Math.round(ttfa)}ms`, en: `Fast TTFA ${Math.round(ttfa)}ms`});
+        else if (ttfa != null && ttfa >= 600) caveats.push({zh: `首包较慢 (${Math.round(ttfa)}ms)`, en: `Slow TTFA (${Math.round(ttfa)}ms)`});
+      }
+      if (uc.mediaTrack === 'image' && row.cost >= 0.15) caveats.push({zh: '单张偏贵 · 批量出图慎选', en: 'High $/img for bulk batches'});
+      if (uc.mediaTrack === 'video' && row.cost >= 1.5) caveats.push({zh: '单段偏贵 · 建议先用低价档试分镜', en: 'High $/5s — storyboard cheaply first'});
+      return {proofs: proofs.slice(0, 2), caveats: caveats.slice(0, 2)};
+    }
+
+    // Standard LLM tabs (models, human-arena)
+    const chat = getChatRank(row);
+    const lb = lbRankById.get(row.id) ?? orgRankIndex?.get(row.id)?.ranks?.livebench?.rank ?? null;
+    const des = designRankById.get(row.id) ?? orgRankIndex?.get(row.id)?.ranks?.designArena?.rank ?? null;
+    const web = webdevRankById.get(row.id) ?? orgRankIndex?.get(row.id)?.ranks?.arenaWebdev?.rank ?? null;
+    const div = divById.get(row.id) || (row.family?.slug ? divByFam.get(row.family.slug) : null);
+
+    if (chat && chat.rank <= 10) proofs.push({zh: `Arena 聊天 ${chat.exact ? '' : '~'}#${chat.rank}`, en: `Arena Chat ${chat.exact ? '' : '~'}#${chat.rank}`});
+    if (uc.id === 'design' && des && des <= 10) proofs.push({zh: `Design 审美 #${des}`, en: `Design #${des}`});
+    else if (uc.id === 'coding-api' && web && web <= 10) proofs.push({zh: `WebDev #${web}`, en: `WebDev #${web}`});
+    else if (lb && lb <= 10) proofs.push({zh: `LB2 防污染 #${lb}`, en: `LiveBench #${lb}`});
+    if (div?.kind === 'consensus' && chat && proofs.length < 2) proofs.push({zh: '全机构共识', en: 'Cross-org consensus'});
+    if (isFrontier && proofs.length < 2) proofs.push({zh: '帕累托前沿', en: 'Pareto frontier'});
+
+    // Objective Risk / Caveat Flags
+    if (row.cost >= 8) {
+      caveats.push({zh: '高消耗 · 常规月卡多不含或限流极严', en: 'Very high cost · mostly API-only / tight quota'});
+    }
+    if (!chat && ['general', 'coding-api', 'research'].includes(uc.id)) {
+      caveats.push({zh: '缺 Arena 聊天盲测 · 实测体感待自验', en: 'No Arena Chat blind votes yet'});
+    } else if (div && div.gap <= -12) {
+      caveats.push({zh: `硬考明显强于盲测体感 (存在偏科分歧)`, en: 'Hard exams outpace human vibe ratings'});
+    }
+    if (row.subscores?.hallucination != null && row.subscores.hallucination >= 65 && ['general', 'research'].includes(uc.id)) {
+      caveats.push({zh: `盲区幻觉率 ${Math.round(row.subscores.hallucination)}%`, en: `${Math.round(row.subscores.hallucination)}% blind-spot hallucination`});
+    }
+    if (row.timeSec >= 1800 && ['general', 'coding-api', 'research'].includes(uc.id) && caveats.length < 2) {
+      caveats.push({zh: `复杂任务思考耗时偏长 (${Math.round(row.timeSec / 60)}分)`, en: `Slow on heavy tasks (~${Math.round(row.timeSec / 60)}m)`});
+    }
+
+    return {proofs: proofs.slice(0, 2), caveats: caveats.slice(0, 2)};
+  }
+
+  return {getChatRank, getSignals, aaRankById, codingRankById, divById, divByFam};
+}
+
+/**
+ * Compute up to 3 transparent, multi-archetype shortlist candidates (NOT an opaque single verdict!)
+ * with objective cross-org proof tags and honest risk/billing caveats.
+ */
+export function recommendModels(snapshot, {useCase = 'general', billing = null, budget = null, license = 'all'} = {}, context = {}) {
   const uc = RECOMMEND_USE_CASES.find(x => x.id === useCase) || RECOMMEND_USE_CASES[0];
-  const bud = RECOMMEND_BUDGETS.find(x => x.id === budget) || RECOMMEND_BUDGETS[1];
+  // Support legacy `budget` param values cleanly (`balanced` -> `api-balanced`, `budget` -> `api-budget`, `flagship` -> `sub`)
+  const rawBilling = billing || (budget === 'flagship' ? 'sub' : budget === 'budget' ? 'api-budget' : budget === 'balanced' ? 'api-balanced' : 'api-balanced');
+  const bill = RECOMMEND_BILLING.find(x => x.id === rawBilling) || RECOMMEND_BILLING[1];
   const lic = RECOMMEND_LICENSES.find(x => x.id === license) || RECOMMEND_LICENSES[0];
 
   const sourceKey = uc.tab === 'human-arena'
     ? 'humanArenaModels'
-    : uc.tab === 'media'
-      ? 'mediaModels'
-      : 'models';
+    : uc.tab === 'coding-agents'
+      ? 'codingAgents'
+      : uc.tab === 'media'
+        ? 'mediaModels'
+        : 'models';
   const rawList = Array.isArray(snapshot?.[sourceKey]) ? snapshot[sourceKey] : [];
 
-  let pool = rawList
+  const pool = rawList
     .filter(r => !uc.mediaTrack || r.mediaKind === uc.mediaTrack)
     .filter(r => {
       if (lic.id === 'open') return !!r.isOpenWeights;
@@ -172,171 +344,265 @@ export function recommendModels(snapshot, {useCase = 'general', budget = 'balanc
     })
     .filter(Boolean);
 
-  // Deduplicate by family keeping strongest or best-value variants? Keep full pool for Pareto,
-  // but ensure the 3 final picks come from distinct model families whenever possible.
   const totalPool = pool.length;
   if (!totalPool) {
-    return {useCase: uc, budget: bud, license: lic, totalPool: 0, picks: []};
+    return {useCase: uc, billing: bill, budget: bill, license: lic, totalPool: 0, picks: []};
   }
 
+  const evidence = buildEvidenceLookup(snapshot, context);
   const projected = pool.map(r => ({...r, intelligenceIndex: r._pickScore}));
   const frontier = paretoFrontier(projected, r => r.cost);
   const frontierIds = new Set(frontier.map(r => r.id));
-
   const sortedByScore = [...projected].sort((a, b) => b.intelligenceIndex - a.intelligenceIndex || a.cost - b.cost);
   const maxScore = sortedByScore[0].intelligenceIndex;
+  const scoreVal = (row, alpha) => valuePerDollar(row, alpha, 0, 0) ?? -1;
 
-  // Minimum reasonable capability floor so "budget" doesn't pick a broken tiny model
-  const floorRatio = bud.id === 'budget' ? 0.62 : bud.id === 'balanced' ? 0.78 : 0.90;
-  const minScoreFloor = Math.max(0, maxScore * floorRatio);
-
-  const scoreVal = (row, alpha, minS = 0) => valuePerDollar(row, alpha, minS, 0) ?? -1;
-
-  // 1. Primary pick tailored to budget preference
-  let primary;
-  if (bud.id === 'flagship') {
-    primary = sortedByScore[0];
-  } else {
-    const eligible = projected.filter(r => r.intelligenceIndex >= minScoreFloor);
-    const candidates = eligible.length ? eligible : projected;
-    candidates.sort((a, b) =>
-      scoreVal(b, bud.alpha, 0) - scoreVal(a, bud.alpha, 0)
-      || b.intelligenceIndex - a.intelligenceIndex
-      || a.cost - b.cost
-    );
-    primary = candidates[0];
-  }
-
-  const usedIds = new Set([primary.id]);
-  const usedFamilies = new Set([primary.family?.slug || primary.id]);
-  const isFresh = (r, preferDiffFamily = true) => {
-    if (usedIds.has(r.id)) return false;
-    if (preferDiffFamily && r.family?.slug && usedFamilies.has(r.family.slug)) return false;
+  const usedIds = new Set();
+  const usedFamilies = new Set();
+  const familyKeyOf = r => {
+    if (uc.tab === 'coding-agents') return r.agentName ? `${r.agentName}|${r.creator?.name || ''}` : r.id;
+    return r.family?.slug || r.id;
+  };
+  const isFresh = (r, diffFam = true) => {
+    if (!r || usedIds.has(r.id)) return false;
+    if (diffFam && usedFamilies.has(familyKeyOf(r))) return false;
     return true;
   };
   const claim = r => {
+    if (!r) return null;
     usedIds.add(r.id);
-    usedFamilies.add(r.family?.slug || r.id);
+    usedFamilies.add(familyKeyOf(r));
     return r;
   };
 
-  // 2. Top Ceiling (Flagship) or Runner-Up if Primary is already #1
-  let flagship = null;
-  let flagshipIsRunnerUp = false;
-  if (sortedByScore[0].id !== primary.id) {
-    flagship = claim(sortedByScore[0]);
-  } else {
-    flagshipIsRunnerUp = true;
-    const alt = sortedByScore.find(r => isFresh(r, true)) || sortedByScore.find(r => isFresh(r, false));
-    if (alt) flagship = claim(alt);
-  }
-
-  // 3. Budget Saver (cheaper alternative retaining solid quality) or Value Sweet Spot if Primary is already ultra-cheap
-  let saver = null;
-  let saverIsBalancedStepUp = false;
-  const saverFloor = Math.max(maxScore * 0.65, primary.intelligenceIndex * 0.78);
-  const cheaperPool = projected
-    .filter(r => isFresh(r, true) && r.cost < primary.cost * 0.85 && r.intelligenceIndex >= saverFloor)
-    .sort((a, b) => scoreVal(b, 1.8, 0) - scoreVal(a, 1.8, 0) || a.cost - b.cost);
-  if (cheaperPool.length) {
-    saver = claim(cheaperPool[0]);
-  } else {
-    const cheaperAnyFam = projected
-      .filter(r => isFresh(r, false) && r.cost < primary.cost * 0.9 && r.intelligenceIndex >= maxScore * 0.55)
-      .sort((a, b) => scoreVal(b, 1.8, 0) - scoreVal(a, 1.8, 0) || a.cost - b.cost);
-    if (cheaperAnyFam.length) {
-      saver = claim(cheaperAnyFam[0]);
-    } else {
-      // Primary is already among the cheapest: offer a balanced mid-tier sweet spot as 3rd option
-      saverIsBalancedStepUp = true;
-      const stepUp = projected
-        .filter(r => isFresh(r, true) && r.intelligenceIndex > primary.intelligenceIndex)
-        .sort((a, b) => scoreVal(b, 3.5, 0) - scoreVal(a, 3.5, 0) || b.intelligenceIndex - a.intelligenceIndex);
-      const fallback = stepUp[0] || projected.find(r => isFresh(r, true)) || projected.find(r => isFresh(r, false));
-      if (fallback) saver = claim(fallback);
-    }
-  }
-
-  const refFlagship = flagship && !flagshipIsRunnerUp ? flagship : primary;
+  // Cost ceiling for standard monthly-plan-friendly picks (avoids recommending $26/$44 API-only max tiers as daily sub driver)
+  const subFriendlyCap = uc.tab === 'coding-agents' ? 12 : uc.tab === 'media' ? Infinity : 8.5;
   const picks = [];
 
-  const makeReasonPrimary = () => {
-    const onFront = frontierIds.has(primary.id);
-    if (bud.id === 'flagship') {
-      return {
-        zh: `该场景最高能力分（${primary._pickScore.toFixed(1)}）${onFront ? ' · 位于帕累托前沿' : ''}`,
-        en: `Highest score in this track (${primary._pickScore.toFixed(1)})${onFront ? ' · On Pareto frontier' : ''}`
-      };
-    }
-    const savePct = formatPctDelta(primary.cost, refFlagship.cost);
-    const keepPct = refFlagship.intelligenceIndex > 0 ? Math.round((primary.intelligenceIndex / refFlagship.intelligenceIndex) * 100) : 100;
-    if (savePct >= 15) {
-      return {
-        zh: `${onFront ? '帕累托前沿 · ' : ''}比顶级旗舰省 ${savePct}% 成本，保留约 ${keepPct}% 能力`,
-        en: `${onFront ? 'Pareto frontier · ' : ''}${savePct}% cheaper than top flagship while keeping ~${keepPct}% score`
-      };
-    }
-    return {
-      zh: `${onFront ? '帕累托前沿 · ' : ''}当前预算偏好下的综合性价比最优解`,
-      en: `${onFront ? 'Pareto frontier · ' : ''}Top score-to-cost balance for your chosen preference`
-    };
-  };
-
-  picks.push({
-    slot: 'primary',
-    badgeZh: bud.id === 'flagship' ? '最强主力' : '主力推荐',
-    badgeEn: bud.id === 'flagship' ? 'Top Flagship' : 'Best Match',
-    row: primary,
-    score: primary._pickScore,
-    isFrontier: frontierIds.has(primary.id),
-    reason: makeReasonPrimary()
-  });
-
-  if (flagship) {
-    const gap = Math.abs(flagship.intelligenceIndex - primary.intelligenceIndex);
-    const ratio = primary.cost > 0 ? flagship.cost / primary.cost : 1;
-    const reason = flagshipIsRunnerUp
-      ? {
-        zh: `紧随榜首（分差 ${gap.toFixed(1)}），${flagship.cost < primary.cost ? `单价便宜 ${formatPctDelta(flagship.cost, primary.cost)}%` : '可作同档备选参照'}`,
-        en: `Runner-up (${gap.toFixed(1)} pts behind)${flagship.cost < primary.cost ? `, ${formatPctDelta(flagship.cost, primary.cost)}% cheaper` : ' as top-tier alternative'}`
-      }
-      : {
-        zh: `场景最高分（+${gap.toFixed(1)} 分），成本约为主力的 ${ratio >= 1.2 ? ratio.toFixed(1) + '×' : '同档'}`,
-        en: `Track ceiling (+${gap.toFixed(1)} pts), ${ratio >= 1.2 ? `~${ratio.toFixed(1)}× the cost of Best Match` : 'at comparable price'}`
-      };
-    picks.push({
-      slot: 'flagship',
-      badgeZh: flagshipIsRunnerUp ? '强力备选' : '能力上限',
-      badgeEn: flagshipIsRunnerUp ? 'Runner-Up' : 'Top Ceiling',
-      row: flagship,
-      score: flagship._pickScore,
-      isFrontier: frontierIds.has(flagship.id),
-      reason
+  if (uc.tab === 'models') {
+    // 3 DISTINCT ARCHETYPES FOR LLMs:
+    // 1. Cross-Org Consensus / Verified Taste (requires genuine Arena.ai Chat blind votes + strong hard-eval standing!)
+    const consensusCandidates = projected.filter(r => {
+      const chat = evidence.getChatRank(r);
+      const hasChatProof = (chat && chat.rank <= 20) || (r.humanScores?.chatVibe >= 68);
+      if (!hasChatProof) return false;
+      if (bill.id === 'sub' && r.cost > subFriendlyCap) return false;
+      return r.intelligenceIndex >= maxScore * (bill.id === 'api-budget' ? 0.62 : 0.78);
     });
+    const consensusSortAlpha = bill.id === 'api-budget' ? 1.8 : 4.2;
+    consensusCandidates.sort((a, b) => {
+      const ca = evidence.getChatRank(a), cb = evidence.getChatRank(b);
+      if (bill.id === 'sub') {
+        const scoreA = a.intelligenceIndex + (ca?.exact && ca.rank <= 5 ? 2.5 : ca && ca.rank <= 10 ? 1.2 : 0);
+        const scoreB = b.intelligenceIndex + (cb?.exact && cb.rank <= 5 ? 2.5 : cb && cb.rank <= 10 ? 1.2 : 0);
+        return scoreB - scoreA || a.cost - b.cost;
+      }
+      const bonusA = (ca?.exact && ca.rank <= 10 ? 1.18 : 1);
+      const bonusB = (cb?.exact && cb.rank <= 10 ? 1.18 : 1);
+      return (scoreVal(b, consensusSortAlpha) * bonusB) - (scoreVal(a, consensusSortAlpha) * bonusA)
+        || b.intelligenceIndex - a.intelligenceIndex;
+    });
+
+    const slot1 = claim(consensusCandidates[0]) || claim(
+      (bill.id === 'sub' ? sortedByScore.find(r => r.cost <= subFriendlyCap) : null) || sortedByScore[0]
+    );
+
+    if (slot1) {
+      const hasConsensus = consensusCandidates.length > 0 && slot1.id === consensusCandidates[0].id;
+      const chat = evidence.getChatRank(slot1);
+      picks.push({
+        slot: 'primary',
+        badgeZh: hasConsensus ? '跨机构口碑稳健' : '综合实力代表',
+        badgeEn: hasConsensus ? 'Cross-Org Consensus' : 'Balanced Pick',
+        row: slot1,
+        score: slot1._pickScore,
+        isFrontier: frontierIds.has(slot1.id),
+        ...evidence.getSignals(slot1, uc, frontierIds.has(slot1.id)),
+        reason: {
+          zh: hasConsensus
+            ? `同时通过自动化硬考与真人盲测验证${chat ? `（Arena 聊天 ${chat.exact ? '' : '~'}#${chat.rank}）` : ''}，不易出现“高分低体感”落差`
+            : `当前筛选条件下能力与可用性最均衡的综合代表`,
+          en: hasConsensus
+            ? `Backed by both hard exams and blind human votes${chat ? ` (Arena Chat ${chat.exact ? '' : '~'}#${chat.rank})` : ''}, minimizing score-vs-vibe surprises`
+            : `Most balanced all-round candidate under your active filter`
+        }
+      });
+    }
+
+    // 2. Pure API Cost-Efficiency Frontier Pick (explicitly labeled as paper efficiency — caveats show if chat votes missing!)
+    const effAlpha = bill.id === 'api-budget' ? 1.3 : 3.2;
+    const effFloor = maxScore * (bill.id === 'api-budget' ? 0.58 : 0.74);
+    const effCandidates = projected
+      .filter(r => isFresh(r, true) && r.intelligenceIndex >= effFloor)
+      .sort((a, b) => scoreVal(b, effAlpha) - scoreVal(a, effAlpha) || a.cost - b.cost);
+    const slot2 = claim(effCandidates[0]) || claim(projected.find(r => isFresh(r, false)));
+    if (slot2) {
+      const saveVs1 = slot1 ? formatPctDelta(slot2.cost, slot1.cost) : 0;
+      const keepVs1 = slot1 && slot1.intelligenceIndex > 0 ? Math.round((slot2.intelligenceIndex / slot1.intelligenceIndex) * 100) : 100;
+      picks.push({
+        slot: 'saving',
+        badgeZh: 'API 效率前沿派',
+        badgeEn: 'API Efficiency',
+        row: slot2,
+        score: slot2._pickScore,
+        isFrontier: frontierIds.has(slot2.id),
+        ...evidence.getSignals(slot2, uc, frontierIds.has(slot2.id)),
+        reason: {
+          zh: saveVs1 >= 15
+            ? `按量 API 成本比口碑款低 ${saveVs1}%，纸面保留约 ${keepVs1}% 能力分，适合高频调用与先小量实测`
+            : `线性美元前沿高效率点位，适合看重按量 API 单次成本的工程流水线`,
+          en: saveVs1 >= 15
+            ? `${saveVs1}% cheaper per API task than Consensus while keeping ~${keepVs1}% paper score — great to trial for high-volume API calls`
+            : `Strong linear-USD efficiency on the Pareto frontier for pay-as-you-go pipelines`
+        }
+      });
+    }
+
+    // 3. Top Capability Ceiling Reference (transparently flags $26 API-only cost!)
+    const slot3 = claim(sortedByScore.find(r => isFresh(r, true))) || claim(sortedByScore.find(r => isFresh(r, false)));
+    if (slot3) {
+      const isCeiling = slot3.id === sortedByScore[0].id;
+      const gap = slot1 ? slot3.intelligenceIndex - slot1.intelligenceIndex : 0;
+      picks.push({
+        slot: 'flagship',
+        badgeZh: isCeiling ? '能力上限参照' : '高分进阶参照',
+        badgeEn: isCeiling ? 'Capability Ceiling' : 'High-Tier Alt',
+        row: slot3,
+        score: slot3._pickScore,
+        isFrontier: frontierIds.has(slot3.id),
+        ...evidence.getSignals(slot3, uc, frontierIds.has(slot3.id)),
+        reason: {
+          zh: slot3.cost >= 8
+            ? `全榜纸面最高梯队（${gap >= 0 ? '+' : ''}${gap.toFixed(1)} 分），但单次 API 昂贵且常规月卡多不含，建议仅作疑难攻坚兜底`
+            : `高分梯队参照（${gap >= 0 ? '+' : ''}${gap.toFixed(1)} 分），可与前两款直接进「剖析对比」看各维分差`,
+          en: slot3.cost >= 8
+            ? `Peak paper score (${gap >= 0 ? '+' : ''}${gap.toFixed(1)} pts), but very expensive and rarely included in flat plans — best reserved as an escalation fallback`
+            : `High-capability reference (${gap >= 0 ? '+' : ''}${gap.toFixed(1)} pts) to compare side-by-side in Compare view`
+        }
+      });
+    }
+  } else {
+    // Coding Agents, Human Arena (Writing / Design), and Media (Image / Video / TTS)
+    const floorRatio = bill.id === 'api-budget' ? 0.62 : bill.id === 'api-balanced' ? 0.78 : 0.88;
+    const minScoreFloor = maxScore * floorRatio;
+
+    let slot1;
+    if (bill.id === 'sub') {
+      // Monthly plan / IDE users care about top real-world capability without extreme API-only burn
+      const subPool = projected.filter(r => r.cost <= subFriendlyCap);
+      const subBest = (subPool.length ? subPool : projected).sort((a, b) => b.intelligenceIndex - a.intelligenceIndex || a.cost - b.cost);
+      slot1 = claim(subBest[0]);
+    } else {
+      const elig = projected.filter(r => r.intelligenceIndex >= minScoreFloor);
+      const cands = (elig.length ? elig : projected).sort((a, b) =>
+        scoreVal(b, bill.alpha) - scoreVal(a, bill.alpha)
+        || b.intelligenceIndex - a.intelligenceIndex
+        || a.cost - b.cost
+      );
+      slot1 = claim(cands[0]);
+    }
+
+    const topCeiling = sortedByScore[0];
+    let slot2 = null;
+    let slot2IsRunnerUp = false;
+    if (topCeiling && isFresh(topCeiling, false)) {
+      slot2 = claim(topCeiling);
+    } else {
+      slot2IsRunnerUp = true;
+      slot2 = claim(sortedByScore.find(r => isFresh(r, true))) || claim(sortedByScore.find(r => isFresh(r, false)));
+    }
+
+    // 3rd slot: cheaper Pareto alternative (or balanced step-up if slot1 is already ultra-cheap)
+    const saverFloor = Math.max(maxScore * 0.65, (slot1?.intelligenceIndex || 0) * 0.78);
+    const cheaper = projected
+      .filter(r => isFresh(r, true) && r.cost < (slot1?.cost || Infinity) * 0.85 && r.intelligenceIndex >= saverFloor)
+      .sort((a, b) => scoreVal(b, 1.8) - scoreVal(a, 1.8) || a.cost - b.cost);
+    let slot3IsStepUp = false;
+    let slot3 = claim(cheaper[0]);
+    if (!slot3) {
+      const cheaperAny = projected
+        .filter(r => isFresh(r, false) && r.cost < (slot1?.cost || Infinity) * 0.9 && r.intelligenceIndex >= maxScore * 0.55)
+        .sort((a, b) => scoreVal(b, 1.8) - scoreVal(a, 1.8) || a.cost - b.cost);
+      slot3 = claim(cheaperAny[0]);
+    }
+    if (!slot3) {
+      slot3IsStepUp = true;
+      const stepUp = projected
+        .filter(r => isFresh(r, true) && r.intelligenceIndex > (slot1?.intelligenceIndex || 0))
+        .sort((a, b) => scoreVal(b, 3.2) - scoreVal(a, 3.2) || b.intelligenceIndex - a.intelligenceIndex);
+      slot3 = claim(stepUp[0]) || claim(projected.find(r => isFresh(r, true))) || claim(projected.find(r => isFresh(r, false)));
+    }
+
+    const refHigh = slot2 && !slot2IsRunnerUp ? slot2 : slot1;
+    if (slot1) {
+      const savePct = refHigh ? formatPctDelta(slot1.cost, refHigh.cost) : 0;
+      const keepPct = refHigh && refHigh.intelligenceIndex > 0 ? Math.round((slot1.intelligenceIndex / refHigh.intelligenceIndex) * 100) : 100;
+      picks.push({
+        slot: 'primary',
+        badgeZh: uc.tab === 'coding-agents' && bill.id === 'sub' ? '端到端实战首选' : bill.id === 'sub' ? '体验优先参照' : '均衡甜点参照',
+        badgeEn: uc.tab === 'coding-agents' && bill.id === 'sub' ? 'End-to-End Leader' : bill.id === 'sub' ? 'Experience Pick' : 'Balanced Pick',
+        row: slot1,
+        score: slot1._pickScore,
+        isFrontier: frontierIds.has(slot1.id),
+        ...evidence.getSignals(slot1, uc, frontierIds.has(slot1.id)),
+        reason: {
+          zh: bill.id === 'sub'
+            ? `在常规可承受消耗带内拿到最高实测表现（${slot1._pickScore.toFixed(1)} 分），避开天价 API 专用档`
+            : savePct >= 15
+              ? `较最高分项省 ${savePct}% 成本，保留约 ${keepPct}% 实测表现，位于当前赛道性价比甜点区`
+              : `当前付费偏好下实测表现与单次成本最均衡的参照方案`,
+          en: bill.id === 'sub'
+            ? `Top measured score (${slot1._pickScore.toFixed(1)}) within mainstream plan-friendly burn, avoiding API-only spikes`
+            : savePct >= 15
+              ? `${savePct}% cheaper than track ceiling while keeping ~${keepPct}% measured score`
+              : `Strongest score-to-cost balance in this track for your preference`
+        }
+      });
+    }
+
+    if (slot2) {
+      const gap = slot1 ? slot2.intelligenceIndex - slot1.intelligenceIndex : 0;
+      picks.push({
+        slot: 'flagship',
+        badgeZh: slot2IsRunnerUp ? '同级强力对照' : '赛道上限参照',
+        badgeEn: slot2IsRunnerUp ? 'Top Peer Alt' : 'Track Ceiling',
+        row: slot2,
+        score: slot2._pickScore,
+        isFrontier: frontierIds.has(slot2.id),
+        ...evidence.getSignals(slot2, uc, frontierIds.has(slot2.id)),
+        reason: {
+          zh: slot2IsRunnerUp
+            ? `不同家族/框架的高分参照（分差 ${Math.abs(gap).toFixed(1)}），建议与第一款对比交互手感与生态适配`
+            : `赛道最高分上限（+${Math.abs(gap).toFixed(1)} 分），用来判断多花成本换取的边际提升是否值得`,
+          en: slot2IsRunnerUp
+            ? `Cross-vendor/harness peer (${Math.abs(gap).toFixed(1)} pts apart) to compare real workflow fit`
+            : `Track score ceiling (+${Math.abs(gap).toFixed(1)} pts) to benchmark whether paying more is worth it`
+        }
+      });
+    }
+
+    if (slot3) {
+      const savePct = slot1 ? formatPctDelta(slot3.cost, slot1.cost) : 0;
+      const keepPct = slot1 && slot1.intelligenceIndex > 0 ? Math.round((slot3.intelligenceIndex / slot1.intelligenceIndex) * 100) : 100;
+      picks.push({
+        slot: 'saving',
+        badgeZh: slot3IsStepUp ? '进阶参照' : '低价效率参照',
+        badgeEn: slot3IsStepUp ? 'Step-Up Alt' : 'Low-Cost Alt',
+        row: slot3,
+        score: slot3._pickScore,
+        isFrontier: frontierIds.has(slot3.id),
+        ...evidence.getSignals(slot3, uc, frontierIds.has(slot3.id)),
+        reason: {
+          zh: slot3IsStepUp
+            ? `小幅提高预算可再涨 +${(slot3.intelligenceIndex - (slot1?.intelligenceIndex || 0)).toFixed(1)} 分`
+            : `单次成本再低 ${Math.max(1, savePct)}%，保留约 ${keepPct}% 实测表现，适合轻量日常或批量跑任务`,
+          en: slot3IsStepUp
+            ? `Modest budget step-up adding +${(slot3.intelligenceIndex - (slot1?.intelligenceIndex || 0)).toFixed(1)} pts`
+            : `${Math.max(1, savePct)}% lower unit cost while keeping ~${keepPct}% score for lighter or batch workloads`
+        }
+      });
+    }
   }
 
-  if (saver) {
-    const savePct = formatPctDelta(saver.cost, primary.cost);
-    const keepPct = primary.intelligenceIndex > 0 ? Math.round((saver.intelligenceIndex / primary.intelligenceIndex) * 100) : 100;
-    const reason = saverIsBalancedStepUp
-      ? {
-        zh: `加一点预算换取 +${(saver.intelligenceIndex - primary.intelligenceIndex).toFixed(1)} 分的甜点升级档`,
-        en: `Balanced step-up gaining +${(saver.intelligenceIndex - primary.intelligenceIndex).toFixed(1)} pts on the frontier`
-      }
-      : {
-        zh: `比主力再省 ${Math.max(1, savePct)}% 费用，仍保留约 ${keepPct}% 表现，适合高频跑批`,
-        en: `${Math.max(1, savePct)}% cheaper than Best Match while keeping ~${keepPct}% score for bulk runs`
-      };
-    picks.push({
-      slot: 'saving',
-      badgeZh: saverIsBalancedStepUp ? '甜点进阶' : '低价平替',
-      badgeEn: saverIsBalancedStepUp ? 'Balanced Step-Up' : 'Budget Saver',
-      row: saver,
-      score: saver._pickScore,
-      isFrontier: frontierIds.has(saver.id),
-      reason
-    });
-  }
-
-  return {useCase: uc, budget: bud, license: lic, totalPool, picks};
+  return {useCase: uc, billing: bill, budget: bill, license: lic, totalPool, picks};
 }

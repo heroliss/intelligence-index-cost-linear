@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {
   RECOMMEND_USE_CASES,
-  RECOMMEND_BUDGETS,
+  RECOMMEND_BILLING,
   RECOMMEND_LICENSES,
   recommendModels
 } from '../modules/recommend.mjs';
@@ -11,9 +11,9 @@ import {computeOrgDivergence} from '../modules/divergence.mjs';
 import {createNavHistory} from '../modules/nav-history.mjs';
 import {GUIDE_TAB_META, GUIDE_GLOSSARY} from '../modules/guide-content.mjs';
 
-test('recommendModels returns strictly distinct, license-compliant picks across all 72 live combinations', async () => {
+test('recommendModels returns distinct multi-archetype picks with objective proofs & caveats across all 81 live combinations', async () => {
   const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
-  // Hydrate humanScores onto models just like the app does for coding/research scenarios
+  // Hydrate humanScores onto models just like the app does for coding-api/research scenarios
   const humanById = new Map((snapshot.humanArenaModels || []).map(h => [h.id, h]));
   snapshot.models = snapshot.models.map(m => {
     const h = humanById.get(m.id);
@@ -22,31 +22,67 @@ test('recommendModels returns strictly distinct, license-compliant picks across 
 
   let comboCount = 0;
   for (const uc of RECOMMEND_USE_CASES) {
-    for (const bud of RECOMMEND_BUDGETS) {
+    for (const bill of RECOMMEND_BILLING) {
       for (const lic of RECOMMEND_LICENSES) {
         comboCount++;
-        const res = recommendModels(snapshot, {useCase: uc.id, budget: bud.id, license: lic.id});
+        const res = recommendModels(snapshot, {useCase: uc.id, billing: bill.id, license: lic.id});
         assert.equal(res.useCase.id, uc.id);
-        assert.equal(res.budget.id, bud.id);
+        assert.equal(res.billing.id, bill.id);
         assert.equal(res.license.id, lic.id);
         if (res.totalPool > 0) {
-          assert.ok(res.picks.length >= 1 && res.picks.length <= 3, `expected 1..3 picks for ${uc.id}/${bud.id}/${lic.id}`);
+          assert.ok(res.picks.length >= 1 && res.picks.length <= 3, `expected 1..3 picks for ${uc.id}/${bill.id}/${lic.id}`);
           const ids = new Set(res.picks.map(p => p.row.id));
-          assert.equal(ids.size, res.picks.length, `picks must be unique for ${uc.id}/${bud.id}/${lic.id}`);
+          assert.equal(ids.size, res.picks.length, `picks must be unique for ${uc.id}/${bill.id}/${lic.id}`);
           for (const p of res.picks) {
             assert.ok(p.row.cost > 0 && Number.isFinite(p.score), 'every pick has valid cost & score');
             if (lic.id === 'open') assert.equal(!!p.row.isOpenWeights, true, `open filter respected in ${uc.id}`);
             if (lic.id === 'closed') assert.equal(!!p.row.isOpenWeights, false, `closed filter respected in ${uc.id}`);
             assert.ok(p.reason.zh.length > 4 && p.reason.en.length > 4, 'pick has bilingual rationale');
-          }
-          if (bud.id === 'flagship' && res.picks.length >= 2) {
-            assert.ok(res.picks[0].score >= res.picks[1].score - 1e-6, 'flagship budget puts highest score first');
+            assert.ok(Array.isArray(p.proofs) && Array.isArray(p.caveats), 'pick exposes proofs & caveats arrays');
           }
         }
       }
     }
   }
-  assert.equal(comboCount, 72);
+  assert.equal(comboCount, 81);
+
+  // Verify real-world multi-archetype & honest-caveat guarantees on current snapshot:
+  // 1. General Daily All-Rounder separates Arena-Chat-verified consensus from missing-chat efficiency & high-cost ceiling
+  const gen = recommendModels(snapshot, {useCase: 'general', billing: 'api-balanced', license: 'all'});
+  assert.equal(gen.picks.length, 3);
+  assert.equal(gen.picks[0].badgeZh, '跨机构口碑稳健');
+  assert.ok(
+    gen.picks[0].proofs.some(pr => pr.zh.includes('Arena 聊天')),
+    `consensus pick (${gen.picks[0].row.name}) must carry verified Arena Chat proof`
+  );
+  assert.ok(
+    !gen.picks[0].caveats.some(cv => cv.zh.includes('缺 Arena 聊天')),
+    'consensus pick must not lack Arena Chat blind coverage'
+  );
+  for (const p of gen.picks) {
+    if (p.row.cost >= 8) {
+      assert.ok(
+        p.caveats.some(cv => cv.zh.includes('常规月卡')),
+        `high-cost model (${p.row.name}, $${p.row.cost}) must carry subscription/API-only caveat`
+      );
+    }
+  }
+
+  // 2. End-to-end Coding Agents under monthly plan mode picks top real-world Coding Agent within mainstream burn
+  const ca = recommendModels(snapshot, {useCase: 'coding-agent', billing: 'sub', license: 'all'});
+  assert.equal(ca.picks.length, 3);
+  assert.equal(ca.picks[0].badgeZh, '端到端实战首选');
+  assert.ok(ca.picks[0].proofs.some(pr => pr.zh.includes('端到端编程 #1')), 'coding-agent leader displays #1 rank proof');
+  assert.ok(ca.picks[0].row.cost <= 12, 'monthly plan pick stays within mainstream burn cap');
+  for (const p of ca.picks) {
+    if (p.row.cost >= 14) {
+      assert.ok(p.caveats.some(cv => cv.zh.includes('常规月卡')), `extreme-cost coding agent (${p.row.name}) carries caveat`);
+    }
+  }
+
+  // 3. Legacy `budget` option still maps cleanly to `billing`
+  const legacy = recommendModels(snapshot, {useCase: 'general', budget: 'flagship', license: 'all'});
+  assert.equal(legacy.billing.id, 'sub');
 });
 
 test('computeOrgDivergence eliminates board-size bias and surfaces human favorites, hard specialists, and consensus leaders', async () => {

@@ -30,8 +30,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261120-02">
-  <script type="module" src="app.js?v=20261120-02"></script>
+  <link rel="stylesheet" href="styles.css?v=20261120-03">
+  <script type="module" src="app.js?v=20261120-03"></script>
 </head>
 <body>
 <main class="app">
@@ -61,9 +61,9 @@
     </nav>
 
     <div class="top-actions">
-      <button id="pickerBtn" type="button" class="guide-pill picker-pill" aria-haspopup="dialog" aria-controls="guideBackdrop" title="纯新手 3 步选模型向导：按用途、预算与开源偏好一键给出 3 款推荐">
+      <button id="pickerBtn" type="button" class="guide-pill picker-pill" aria-haspopup="dialog" aria-controls="guideBackdrop" title="3 步快速缩小候选：按用途、付费方式与开源偏好给出多流派对照，并标注盲测覆盖与高价 API 风险">
         <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M8 1.8l1.6 3.7 3.9.4-2.9 2.6.9 3.9L8 10.4l-3.5 2 .9-3.9L2.5 5.9l3.9-.4L8 1.8z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round"/></svg>
-        <span id="pickerBtnText">帮我选</span>
+        <span id="pickerBtnText">选型参考</span>
       </button>
       <button id="guideBtn" type="button" class="guide-pill" aria-haspopup="dialog" aria-controls="guideBackdrop" title="读懂榜单特点、测评机构差异与隐藏数据玩法（快捷键 ?）">
         <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.35"/><path d="M6.4 6.1a1.75 1.75 0 1 1 2.75 1.44c-.58.38-.95.73-.95 1.38v.28" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/><circle cx="8.2" cy="11.4" r="0.85" fill="currentColor"/></svg>
@@ -150,7 +150,7 @@
         <span id="onboardingText"></span>
       </div>
       <div class="onboarding-actions">
-        <button id="onboardingPickerBtn" type="button" class="onboarding-cta">3 步帮我选模型</button>
+        <button id="onboardingPickerBtn" type="button" class="onboarding-cta">3 步缩小候选</button>
         <button id="onboardingGuideBtn" type="button" class="onboarding-dismiss">读懂榜单</button>
         <button id="onboardingDismissBtn" type="button" class="onboarding-dismiss" aria-label="关闭新手提示">知道了</button>
       </div>
@@ -596,7 +596,7 @@
       <button id="guideCloseBtn" type="button" class="ghost-btn">Esc</button>
     </div>
     <div id="guideTabs" class="guide-tabs" role="tablist" aria-label="导览分区">
-      <button type="button" role="tab" data-gtab="picker" aria-selected="false" id="gtabPicker">3 步选模型</button>
+      <button type="button" role="tab" data-gtab="picker" aria-selected="false" id="gtabPicker">3 步缩小候选</button>
       <button type="button" role="tab" data-gtab="current" aria-selected="true" id="gtabCurrent">当前榜与隐藏玩法</button>
       <button type="button" role="tab" data-gtab="orgs" aria-selected="false" id="gtabOrgs">测评机构特点</button>
       <button type="button" role="tab" data-gtab="glossary" aria-selected="false" id="gtabGlossary">看图与指标速查</button>
