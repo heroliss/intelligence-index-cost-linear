@@ -26,6 +26,29 @@ export function paretoFrontier(rows, xOf = d => d.cost) {
     });
 }
 
+export function paretoFrontiersByGroup(rows, groupOf = null, xOf = d => d.cost) {
+  if (typeof groupOf !== 'function') {
+    const single = paretoFrontier(rows, xOf);
+    return single.length ? [{key: 'all', points: single}] : [];
+  }
+  const buckets = new Map();
+  for (const row of rows) {
+    const k = groupOf(row) || 'default';
+    if (!buckets.has(k)) buckets.set(k, []);
+    buckets.get(k).push(row);
+  }
+  if (buckets.size <= 1) {
+    const single = paretoFrontier(rows, xOf);
+    return single.length ? [{key: [...buckets.keys()][0] || 'all', points: single}] : [];
+  }
+  const groups = [];
+  for (const [key, list] of buckets.entries()) {
+    const pts = paretoFrontier(list, xOf);
+    if (pts.length) groups.push({key, points: pts});
+  }
+  return groups;
+}
+
 export function dataBounds(rows, xOf = d => d.cost) {
   const xs = rows.map(xOf).filter(v => Number.isFinite(v) && v >= 0);
   const rawMaxX = xs.length ? Math.max(...xs) : 1;
@@ -422,58 +445,103 @@ export function computeScenarioScore(row, weights) {
   const lb = row.livebench || {};
   const fallback = 0.65 * baseScore + 0.35 * 45;
 
+  // 1. Visual & Multimodal: anchor on blind Design Arena 5D, supported by WebDev interactive craft,
+  //    3D/Motion & LiveBench Design; models missing all 5 Design Arena suites blend WebDev with fallback.
   const daUnified = meanFinite([hs.designWeb, hs.designUi, hs.creativeCraft]);
+  const webCraft = typeof hs.webdev === 'number' && Number.isFinite(hs.webdev) ? hs.webdev : null;
+  const uiTasteCore = daUnified !== null
+    ? (webCraft !== null ? 0.72 * daUnified + 0.28 * webCraft : daUnified)
+    : (webCraft !== null ? 0.56 * webCraft + 0.44 * fallback : null);
   const spatialVal = hs.spatialMotion ?? meanFinite([eloPct(exp.aa3d, 1030, 380), eloPct(exp.code2video, 1050, 580)]);
-  const aestheticCore = meanFinite([
-    daUnified,
-    spatialVal,
-    lb.design != null ? lb.design * 0.85 : null
-  ]);
+  const lbDesignCal = lb.design != null ? Math.max(0, Math.min(100, (lb.design - 38) * 1.48)) : null;
+  const visualAux = meanFinite([spatialVal, lbDesignCal]);
+  const aestheticCore = uiTasteCore !== null
+    ? (visualAux !== null ? 0.76 * uiTasteCore + 0.24 * visualAux : uiTasteCore)
+    : (visualAux !== null ? 0.62 * visualAux + 0.38 * fallback : null);
   // Prevent models missing all aesthetic arenas from winning visual scenarios on MMMU-Pro alone
-  const mmmuScaled = sub.mmmuPro != null ? sub.mmmuPro * 0.80 : null;
+  const mmmuScaled = sub.mmmuPro != null ? Math.max(0, Math.min(100, (sub.mmmuPro - 30) * 1.15)) : null;
   const visualVal = aestheticCore !== null && mmmuScaled !== null
-    ? 0.72 * aestheticCore + 0.28 * mmmuScaled
+    ? 0.76 * aestheticCore + 0.24 * mmmuScaled
     : aestheticCore !== null
       ? aestheticCore
       : mmmuScaled !== null
         ? 0.58 * mmmuScaled + 0.42 * fallback
         : null;
 
+  // 2. Chat Vibe & Anti-Slop: penalize high-slop sycophancy without punishing clean flagships,
+  //    and blend with fallback when blind human chat votes are absent.
   const antiSlopRaw = hs.antiSlop ?? (pb.slop != null ? Math.max(0, 100 - pb.slop) : null);
-  const antiSlopCal = antiSlopRaw !== null ? 12 + 0.75 * antiSlopRaw : null;
-  const vibeCore = meanFinite([hs.chatVibe, antiSlopCal]);
+  const antiSlopCal = antiSlopRaw !== null ? 14 + 0.72 * antiSlopRaw : null;
+  const vibeCore = hs.chatVibe != null && antiSlopCal !== null
+    ? 0.68 * hs.chatVibe + 0.32 * antiSlopCal
+    : hs.chatVibe != null
+      ? hs.chatVibe
+      : antiSlopCal !== null
+        ? 0.58 * antiSlopCal + 0.42 * fallback
+        : null;
   const personalityTone = meanFinite([pb.warmth, pb.expressiveness]);
   const vibeVal = vibeCore !== null && personalityTone !== null
-    ? 0.78 * vibeCore + 0.22 * personalityTone
+    ? 0.82 * vibeCore + 0.18 * personalityTone
     : vibeCore ?? (personalityTone !== null ? 0.55 * personalityTone + 0.45 * fallback : null);
 
+  // 3. Coding & CLI: align core SWE/Terminal ceilings (~49% / ~67%) with optional WebDev/LiveBench/SRE scales
+  //    so missing an optional external table neither penalizes nor inflates a model by +12 pts.
+  const fcRaw = sub.frontierCode ?? fr.frontierCode;
+  const tbRaw = sub.terminalBench ?? fr.terminal4;
+  const codingCore = meanFinite([
+    fcRaw != null ? Math.min(100, fcRaw * 1.38) : null,
+    tbRaw != null ? Math.min(100, tbRaw * 1.12) : null
+  ]);
+  const codingExt = meanFinite([
+    fr.itBenchSre != null ? Math.min(100, fr.itBenchSre * 1.28) : null,
+    webCraft,
+    lb.coding != null ? Math.max(0, Math.min(100, (lb.coding - 32) * 1.15)) : null,
+    lb.longAgentic != null ? Math.min(100, lb.longAgentic * 0.88) : null
+  ]);
+  const codingVal = codingCore !== null && codingExt !== null
+    ? 0.62 * codingCore + 0.38 * codingExt
+    : (codingCore ?? codingExt);
+
+  // 4. Complex Reasoning & Long-Context: align LiveBench Reasoning (74-95% raw) to AA hard reasoning distribution.
+  const mlcrRaw = sub.mlcr ?? fr.mlcr;
+  const reasoningCore = meanFinite([
+    sub.hleDiamond ?? fr.hleDiamond,
+    sub.critptAgentic ?? fr.critptAgent,
+    sub.science ?? fr.science,
+    mlcrRaw != null ? Math.min(100, mlcrRaw * 1.75) : null,
+    fr.automation
+  ]);
+  const lbRsnCal = lb.reasoning != null ? Math.max(0, Math.min(100, (lb.reasoning - 52) * 1.6)) : null;
+  const reasoningVal = reasoningCore !== null && lbRsnCal !== null
+    ? 0.78 * reasoningCore + 0.22 * lbRsnCal
+    : (reasoningCore ?? lbRsnCal);
+
+  // 5. Deliverables & Rigor: gate conditional non-hallucination (100 - H) by factual competence
+  //    so tiny models that abstain on 93% of questions cannot score 90+ on professional rigor.
+  const omniAcc = sub.omniscience ?? null;
+  const rawAntiHalluc = sub.hallucination != null ? Math.max(0, 100 - sub.hallucination) : null;
+  const competenceGate = omniAcc !== null ? Math.min(1, omniAcc / 42) : Math.min(1, baseScore / 42);
+  const epistemicRigor = rawAntiHalluc !== null
+    ? (omniAcc !== null ? 0.45 * omniAcc + 0.55 * rawAntiHalluc * competenceGate : rawAntiHalluc * competenceGate)
+    : omniAcc;
+  const rigorCore = meanFinite([
+    fr.gdpPdf != null ? Math.min(100, fr.gdpPdf * 2.15) : null,
+    hs.deliverable ?? meanFinite([eloPct(exp.gdpval, 1580, 390), eloPct(exp.briefcase, 1500, 420)]),
+    omniAcc,
+    epistemicRigor,
+    meanFinite([dm.finance, dm.legal, dm.healthcare, dm.strategy])
+  ]);
+  const lbResCal = lb.research != null ? Math.max(0, Math.min(100, (lb.research - 35) * 1.18)) : null;
+  const rigorVal = rigorCore !== null && lbResCal !== null
+    ? 0.80 * rigorCore + 0.20 * lbResCal
+    : (rigorCore ?? lbResCal);
+
   const pillarVals = {
-    coding: meanFinite([
-      sub.frontierCode ?? fr.frontierCode,
-      sub.terminalBench ?? fr.terminal4,
-      fr.itBenchSre != null ? Math.min(100, fr.itBenchSre * 1.45) : null,
-      hs.webdev,
-      lb.coding != null ? lb.coding * 0.78 : null,
-      lb.longAgentic != null ? lb.longAgentic * 0.82 : null
-    ]),
-    reasoning: meanFinite([
-      sub.hleDiamond ?? fr.hleDiamond,
-      sub.critptAgentic ?? fr.critptAgent,
-      sub.science ?? fr.science,
-      (sub.mlcr ?? fr.mlcr) != null ? Math.min(100, (sub.mlcr ?? fr.mlcr) * 1.8) : null,
-      fr.automation,
-      lb.reasoning != null ? lb.reasoning * 0.78 : null
-    ]),
+    coding: codingVal,
+    reasoning: reasoningVal,
     visual: visualVal,
     vibe: vibeVal,
-    rigor: meanFinite([
-      fr.gdpPdf != null ? Math.min(100, fr.gdpPdf * 2.1) : null,
-      hs.deliverable ?? meanFinite([eloPct(exp.gdpval, 1580, 390), eloPct(exp.briefcase, 1500, 420)]),
-      sub.omniscience,
-      sub.hallucination != null ? Math.max(0, 100 - sub.hallucination) : null,
-      meanFinite([dm.finance, dm.legal, dm.healthcare, dm.strategy]),
-      lb.research != null ? lb.research * 0.78 : null
-    ])
+    rigor: rigorVal
   };
 
   let weightedSum = 0, totalW = 0;
@@ -500,9 +568,9 @@ export function simulateWorkloadCost(row, profileId = 'benchmark') {
     }
     if (profileId === 'longdoc') {
       const docIn = hasGranularCache
-        ? Math.max(0, cb.nonCacheInput) * 6.0 + Math.max(0, cb.cacheRead || 0) * 1.6 + Math.max(0, cb.cacheWrite || 0) * 1.4
-        : inp * 2.20;
-      return Number(Math.max(0.0001, docIn + rsn * 0.25 + ans * 0.40).toFixed(6));
+        ? Math.max(0, cb.nonCacheInput) * 8.5 + Math.max(0, cb.cacheRead || 0) * 1.65 + Math.max(0, cb.cacheWrite || 0) * 1.45
+        : inp * 2.50;
+      return Number(Math.max(0.0001, docIn + rsn * 0.55 + ans * 0.65).toFixed(6));
     }
     if (profileId === 'reasoning') {
       return Number(Math.max(0.0001, inp * 1.15 + rsn * 1.75 + ans * 1.05).toFixed(6));
@@ -511,8 +579,15 @@ export function simulateWorkloadCost(row, profileId = 'benchmark') {
   const pct = row.costPercentiles;
   if (pct && Number.isFinite(pct.p50) && pct.p50 > 0) {
     if (profileId === 'chat') return Number(Math.max(0.0001, pct.p25 || pct.p50 * 0.6).toFixed(6));
-    if (profileId === 'longdoc') return Number(Math.max(0.0001, pct.p50).toFixed(6));
+    if (profileId === 'longdoc') return Number(Math.max(0.0001, pct.p75 ? (pct.p50 + pct.p75) / 2 : pct.p50 * 1.15).toFixed(6));
     if (profileId === 'reasoning') return Number(Math.max(0.0001, pct.p75 || pct.p95 || baseCost * 1.35).toFixed(6));
+  }
+  // Empirical median scaling fallback when granular token breakdown & percentiles are absent (e.g. Cyber-only models)
+  if (baseCost > 0) {
+    const isRsn = row.isReasoning !== false;
+    if (profileId === 'chat') return Number(Math.max(0.0001, baseCost * (isRsn ? 0.082 : 0.086)).toFixed(6));
+    if (profileId === 'longdoc') return Number(Math.max(0.0001, baseCost * (isRsn ? 1.39 : 1.52)).toFixed(6));
+    if (profileId === 'reasoning') return Number(Math.max(0.0001, baseCost * (isRsn ? 1.23 : 1.13)).toFixed(6));
   }
   return baseCost;
 }

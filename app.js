@@ -1,6 +1,7 @@
 import {
   ticks,
   paretoFrontier,
+  paretoFrontiersByGroup,
   dataBounds,
   effortTrajectories,
   historicalFrontierSummary,
@@ -29,7 +30,7 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261119-09';
+} from './chart-math.mjs?v=20261119-15';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -254,6 +255,11 @@ function parseHash() {
   const chartPart = ampIndex === -1 ? raw : raw.slice(0, ampIndex);
   const queryPart = ampIndex === -1 ? '' : raw.slice(ampIndex + 1);
   const params = new URLSearchParams(queryPart);
+  const urlLang = params.get('lang');
+  if (urlLang === 'en' || urlLang === 'zh') {
+    lang = urlLang;
+    document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
+  }
   let chart = ['frontier', 'human-arena', 'coding-agents', 'cyber', 'media', 'orgs'].includes(chartPart) ? chartPart : 'models';
   if (params.get('view') === 'orgs') {
     chart = 'orgs';
@@ -269,15 +275,19 @@ const states = new Map();
 let crossTabIndex = new Map();
 let orgBoards = [];
 let orgRankIndex = new Map();
+let orgFamilyIndex = new Map();
 let orgCreatorColors = new Map();
+let pendingUrlTimer = 0;
 let orgFocus = 'all';
-let orgBumpLimit = 14;
+let orgBumpLimit = 12;
 let orgChartCollapsed = false;
+const orgExpandedCards = new Set();
 let orgDetailSort = {boardId: null, colKey: null, dir: 'desc'};
 let orgMatchedOnly = false;
 let orgSpotlightKey = null;
 let orgPinnedKey = null;
 let viewToolsOpen = false;
+let pinCollapsed = false;
 let globalCatalog = [];
 let lastModelCompareIds = null;
 const starredKeys = new Set((() => {
@@ -419,10 +429,10 @@ function median(values) {
 
 function formatTime(sec) {
   if (typeof sec !== 'number' || !Number.isFinite(sec) || sec <= 0) return '—';
-  if (sec < 60) return t(`${format(sec, 1)} 秒`, `${format(sec, 1)}s`);
+  if (sec < 60) return t(`${format(sec, 1)}\u00A0秒`, `${format(sec, 1)}s`);
   const mins = sec / 60;
-  if (mins < 60) return t(`${format(mins, 1)} 分`, `${format(mins, 1)}m`);
-  return t(`${format(mins / 60, 2)} 小时`, `${format(mins / 60, 2)}h`);
+  if (mins < 60) return t(`${format(mins, 1)}\u00A0分`, `${format(mins, 1)}m`);
+  return t(`${format(mins / 60, 2)}\u00A0小时`, `${format(mins / 60, 2)}h`);
 }
 
 function xValOf(row, metric = state?.xMetric || 'cost') {
@@ -692,6 +702,8 @@ function applyRouteParams(target, params) {
   const org = params.get('org');
   if (['all', 'bump', 'aa', 'livebench', 'arenaChat', 'arenaWebdev', 'designArena', 'aaGdpval'].includes(org)) orgFocus = org;
   if (params.get('orgm') === '1') orgMatchedOnly = true;
+  const bl = Number(params.get('bl'));
+  if (bl === 12 || bl === 18) orgBumpLimit = bl;
   const yl = params.get('ylens') || '';
   const scen = params.get('scen') || '';
   const cprof = params.get('cprof') || '';
@@ -779,6 +791,23 @@ function applyRouteParams(target, params) {
   if (params.get('iso') === '1') target.isoCurve = true;
   if (params.get('subline') === '1') target.subLine = true;
   const validIds = new Set(target.rows.map(r => r.id));
+  if (params.get('rt') === '1') target.routerOpen = true;
+  const rf = params.get('rf');
+  if (rf && validIds.has(rf)) target.routerFastId = rf;
+  const rs = params.get('rs');
+  if (rs && validIds.has(rs)) target.routerStrongId = rs;
+  const rsh = Number(params.get('rsh'));
+  if (params.has('rsh') && Number.isFinite(rsh) && rsh >= 50 && rsh <= 95) target.routerShare = Math.round(rsh / 5) * 5;
+  if (params.get('fit') === '1' && target.bounds) {
+    target.view = {...target.bounds};
+    target.views[target.xMetric] = {...target.view};
+  } else if (params.has('vp') && target.bounds) {
+    const vp = params.get('vp').split(',').map(Number);
+    if (vp.length === 4 && vp.every(Number.isFinite) && vp[2] > 0 && vp[3] > 0) {
+      target.view = clampView({x: vp[0], y: vp[1], width: vp[2], height: vp[3]}, target.bounds);
+      target.views[target.xMetric] = {...target.view};
+    }
+  }
   const cmp = params.get('cmp');
   if (cmp) {
     const parsed = [...new Set(cmp.split(',').filter(id => validIds.has(id)))].slice(0, MAX_COMPARE);
@@ -790,9 +819,10 @@ function applyRouteParams(target, params) {
   if (rpin && target.compareIds.includes(rpin)) target.radarPinnedId = rpin;
 }
 
-function syncUrlHash() {
+function syncUrlHash({includeLang = false} = {}) {
   if (!state) return;
   const params = new URLSearchParams();
+  if (includeLang && lang === 'en') params.set('lang', 'en');
   if (activeKey !== 'orgs' && state.mode !== 'chart') params.set('view', state.mode);
   if (state.scenarioId && state.scenarioId !== 'default') {
     if (state.scenarioId === 'custom' && state.scenarioWeights) {
@@ -811,6 +841,32 @@ function syncUrlHash() {
   if (state.mode === 'orgs') {
     if (orgFocus && orgFocus !== 'all') params.set('org', orgFocus);
     if (orgMatchedOnly) params.set('orgm', '1');
+    if (orgFocus === 'bump' && orgBumpLimit !== 12) params.set('bl', String(orgBumpLimit));
+  }
+  if (state.mode === 'chart' && state.view && state.defaultView && state.bounds) {
+    const v = state.view, dv = state.defaultView, bd = state.bounds;
+    const isDef = Math.abs(v.x - dv.x) <= Math.max(1e-5, dv.width * 0.015)
+      && Math.abs(v.width - dv.width) <= Math.max(1e-5, dv.width * 0.015)
+      && Math.abs(v.y - dv.y) <= Math.max(0.1, dv.height * 0.015)
+      && Math.abs(v.height - dv.height) <= Math.max(0.1, dv.height * 0.015);
+    if (!isDef) {
+      const isFit = Math.abs(v.x - bd.x) <= Math.max(1e-5, bd.width * 0.01)
+        && Math.abs(v.width - bd.width) <= Math.max(1e-5, bd.width * 0.01)
+        && Math.abs(v.y - bd.y) <= Math.max(0.1, bd.height * 0.01)
+        && Math.abs(v.height - bd.height) <= Math.max(0.1, bd.height * 0.01);
+      if (isFit) {
+        params.set('fit', '1');
+      } else {
+        const fmtN = n => Number(n.toPrecision(5));
+        params.set('vp', [fmtN(v.x), fmtN(v.y), fmtN(v.width), fmtN(v.height)].join(','));
+      }
+    }
+  }
+  if (state.mode === 'sub' && state.routerOpen) {
+    params.set('rt', '1');
+    if (state.routerFastId) params.set('rf', state.routerFastId);
+    if (state.routerStrongId) params.set('rs', state.routerStrongId);
+    if (state.routerShare !== 80) params.set('rsh', String(state.routerShare));
   }
   if (state.mode === 'compare') {
     if (state.radarMode === 'domain' || state.radarMode === 'livebench') params.set('radar', state.radarMode);
@@ -913,10 +969,20 @@ function activePool() {
 
 function activeFrontierSet() {
   const metric = state.mode === 'chart' && state.xMetric === 'time' ? 'time' : 'cost';
-  const cacheKey = `${state.license}|${state.extraFilter}|${metric}`;
+  const isMultiMedia = activeKey === 'media' && !state.extraFilter && !state.yLens;
+  const cacheKey = `${state.license}|${state.extraFilter}|${state.yLens}|${metric}|${isMultiMedia ? 'grp' : 'flat'}`;
   if (state._frontierCache?.key === cacheKey) return state._frontierCache;
-  const list = paretoFrontier(activePool(), currentXOf());
-  const entry = {key: cacheKey, list, idSet: new Set(list.map(row => row.id))};
+  const pool = activePool();
+  const xOf = currentXOf();
+  let list, groups = null;
+  if (isMultiMedia) {
+    const rawGroups = paretoFrontiersByGroup(pool, r => r.mediaKind || 'other', xOf);
+    groups = new Map(rawGroups.map(g => [g.key, g.points]));
+    list = ['image', 'video', 'tts'].flatMap(k => groups.get(k) || []);
+  } else {
+    list = paretoFrontier(pool, xOf);
+  }
+  const entry = {key: cacheKey, list, groups, idSet: new Set(list.map(row => row.id))};
   state._frontierCache = entry;
   return entry;
 }
@@ -944,12 +1010,14 @@ function filteredRows() {
 function computeRankings(rows = licenseFilteredRows(state.rows)) {
   const defaultPool = licenseFilteredRows(state.rows);
   const useCache = rows === defaultPool;
-  const cacheKey = `${state.license}|${state.extraFilter}|${state.valueWeight}|${state.minScore}|${state.maxCost}`;
+  const cacheKey = `${state.license}|${state.extraFilter}|${state.yLens}|${state.valueWeight}|${state.minScore}|${state.maxCost}`;
   if (useCache && state._rankCache?.key === cacheKey) return state._rankCache.val;
   const ranked = sortRows(rows, 'valuePerDollar', 'desc', state.valueWeight, state.minScore, state.maxCost);
   const rankMap = new Map();
   let qualifiedCount = 0, champion = null, championValue = null;
+  const mediaKindsPresent = new Set();
   for (const row of ranked) {
+    if (row.mediaKind) mediaKindsPresent.add(row.mediaKind);
     const val = valuePerDollar(row, state.valueWeight, state.minScore, state.maxCost);
     if (val !== null) {
       qualifiedCount++;
@@ -960,7 +1028,37 @@ function computeRankings(rows = licenseFilteredRows(state.rows)) {
       }
     }
   }
-  const result = {rankMap, qualifiedCount, champion, championValue};
+  const kindRankMap = new Map();
+  const kindMaxValues = new Map();
+  const kindChampions = new Map();
+  if (mediaKindsPresent.size >= 2) {
+    const kindTotals = new Map();
+    for (const row of ranked) {
+      const k = row.mediaKind;
+      if (!k || !rankMap.has(row.id)) continue;
+      kindTotals.set(k, (kindTotals.get(k) || 0) + 1);
+    }
+    const kindSeen = new Map();
+    for (const row of ranked) {
+      const k = row.mediaKind;
+      const info = rankMap.get(row.id);
+      if (!k || !info) continue;
+      const nextRank = (kindSeen.get(k) || 0) + 1;
+      kindSeen.set(k, nextRank);
+      if (nextRank === 1) {
+        kindChampions.set(k, row);
+        kindMaxValues.set(k, info.value);
+      }
+      kindRankMap.set(row.id, {
+        rank: nextRank,
+        total: kindTotals.get(k) || nextRank,
+        value: info.value,
+        kind: k,
+        isChampion: nextRank === 1
+      });
+    }
+  }
+  const result = {rankMap, qualifiedCount, champion, championValue, kindRankMap, kindMaxValues, kindChampions};
   if (useCache) state._rankCache = {key: cacheKey, val: result};
   return result;
 }
@@ -984,7 +1082,13 @@ function renderChangelog() {
       const li = html('li', null, 'changelog-item');
       const btn = html('button', null, 'diff-jump-btn');
       btn.type = 'button';
-      const left = html('span', `${ev.date.slice(5)} · ${ev.name}`, 'diff-jump-name');
+      const tabTag = ev.tab === 'coding-agents'
+        ? t('智能体', 'Agent')
+        : ev.tab === 'media'
+          ? (ev.mediaKind === 'image' ? t('图像', 'Image') : ev.mediaKind === 'video' ? t('视频', 'Video') : 'TTS')
+          : t('大模型', 'LLM');
+      const creatorBit = ev.creator ? `${ev.creator} · ` : '';
+      const left = html('span', `${ev.date.slice(5)} · [${tabTag}] ${creatorBit}${ev.name}`, 'diff-jump-name');
       let badgeTxt = '', badgeCls = 'diff-badge is-good';
       if (ev.kind === 'new') {
         badgeTxt = `${t('新上榜', 'NEW')} ${ev.score}`;
@@ -1103,11 +1207,32 @@ function renderPresets() {
   $('#taskPresetGroup').replaceChildren(taskFrag);
 }
 
-function formatTaskCount(tasks) {
+function mediaKindShortLabel(kind) {
+  if (kind === 'image') return t('图像', 'Img');
+  if (kind === 'video') return t('视频', 'Video');
+  if (kind === 'tts') return t('语音', 'TTS');
+  return '';
+}
+
+function formatTaskCount(tasks, row = null) {
   if (tasks === null) return '—';
-  if (tasks < 1) return t(`< 1 次 (${format(tasks, 2)})`, `< 1 (${format(tasks, 2)})`);
-  if (tasks >= 100) return `${Math.round(tasks).toLocaleString('en-US')}${t(' 次', '')}`;
-  return `${format(tasks, 1)}${t(' 次', '')}`;
+  const unitZh = row?.mediaKind === 'image'
+    ? '\u00A0张'
+    : row?.mediaKind === 'video'
+      ? '\u00A0段'
+      : row?.mediaKind === 'tts'
+        ? '\u00A0千字'
+        : '\u00A0次';
+  const unitEn = row?.mediaKind === 'image'
+    ? '\u00A0img'
+    : row?.mediaKind === 'video'
+      ? '\u00A0clips'
+      : row?.mediaKind === 'tts'
+        ? '\u00A0k-ch'
+        : '';
+  if (tasks < 1) return t(`< 1${unitZh} (${format(tasks, 2)})`, `< 1${unitEn} (${format(tasks, 2)})`);
+  if (tasks >= 100) return `${Math.round(tasks).toLocaleString('en-US')}${t(unitZh, unitEn)}`;
+  return `${format(tasks, 1)}${t(unitZh, unitEn)}`;
 }
 
 function compactMoney(value) {
@@ -1196,6 +1321,9 @@ function syncStaticText() {
   $('#keyLinear').textContent = t('线性美元横轴', 'Linear USD axis');
   $('#keyQuadrant').textContent = t('优于中位参考区', 'Above-median score & below-median cost');
   $('#keyFrontier').textContent = t('帕累托前沿', 'Pareto frontier');
+  $('#keyFrontImg').textContent = t('图像前沿', 'Image Pareto');
+  $('#keyFrontVid').textContent = t('视频前沿', 'Video Pareto');
+  $('#keyFrontTts').textContent = t('语音前沿', 'TTS Pareto');
   $('#keyIso').textContent = t('最优等性价比切线', 'Best-value iso-curve');
   $('#keySub').textContent = t('订阅回本成本线', 'Subscription break-even');
   $('#keyEffort').textContent = t('同系列推理轨迹', 'Reasoning effort trajectory');
@@ -1205,6 +1333,18 @@ function syncStaticText() {
   $('#xMetricSwitch').setAttribute('aria-label', t('横轴维度', 'Horizontal axis metric'));
   $('#xMetricCost').textContent = t('成本', 'Cost');
   $('#xMetricTime').textContent = t('耗时', 'Time');
+  $('#mediaKindSwitch').setAttribute('aria-label', t('多模态生成分类', 'Generative modality filter'));
+  const mkindLabels = {
+    '': t('全部', 'All'),
+    'media:image': t('图像 $/张', 'Image $/img'),
+    'media:video': t('视频 $/5秒', 'Video $/5s'),
+    'media:tts': t('语音 $/千字', 'TTS $/1k ch')
+  };
+  for (const btn of document.querySelectorAll('#mediaKindSwitch [data-mkind]')) {
+    btn.textContent = mkindLabels[btn.dataset.mkind] || btn.textContent;
+  }
+  $('#legendPrevBtn').setAttribute('aria-label', t('向左滚动厂商列表', 'Scroll creators left'));
+  $('#legendNextBtn').setAttribute('aria-label', t('向右滚动厂商列表', 'Scroll creators right'));
 
   $('#reset').textContent = t('重置视图', 'Reset view');
   $('#fit').textContent = t('显示全部', 'Fit all');
@@ -1252,9 +1392,9 @@ function syncStaticText() {
     document.createTextNode(t('键盘：', 'Keys: ')),
     html('kbd', 'Ctrl+K'),
     document.createTextNode(t(' 速查 · ', ' jump · ')),
-    html('kbd', '1–6'),
+    html('kbd', '1–5'),
     document.createTextNode(t(' 切视图 · ', ' views · ')),
-    html('kbd', 'Alt+1–6'),
+    html('kbd', 'Alt+1–7'),
     document.createTextNode(t(' 切榜单 · ', ' tabs · ')),
     html('kbd', '/'),
     document.createTextNode(t(' 搜索 · ', ' search · ')),
@@ -1289,6 +1429,8 @@ function syncStaticText() {
 
   $('#pinnedBadge').textContent = t('已锁定节点', 'Pinned');
   $('#pinGoCompareBtn').textContent = t('去剖析 →', 'Analyze →');
+  $('#pinCollapseBtn').textContent = pinCollapsed ? t('展开', 'Expand') : t('收起', 'Compact');
+  $('#pinCollapseBtn').setAttribute('aria-expanded', String(!pinCollapsed));
   $('#unpin').textContent = t('取消 · Esc', 'Unpin · Esc');
   $('#pinScoreLabel').textContent = t('指数', 'Index');
   $('#pinCostLabel').textContent = t('单次成本', 'Cost / task');
@@ -1389,6 +1531,7 @@ function syncStaticText() {
 
 function applyThemeText() {
   const dark = document.documentElement.dataset.theme !== 'light';
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0d1626' : '#f5f7fa');
   $('#themeLabel').textContent = dark ? t('深色', 'Dark') : t('浅色', 'Light');
   $('#theme').setAttribute('aria-pressed', String(dark));
   $('#theme').setAttribute('aria-label', dark ? t('切换为浅色主题', 'Switch to light theme') : t('切换为深色主题', 'Switch to dark theme'));
@@ -1421,7 +1564,7 @@ $('#updateBadge').addEventListener('click', () => {
 });
 
 $('#shareBtn').addEventListener('click', async () => {
-  syncUrlHash();
+  syncUrlHash({includeLang: true});
   const url = location.href;
   let copied = false;
   try {
@@ -1466,6 +1609,7 @@ function chooseChart(key, {changeHash = true, routeParams = null} = {}) {
   stopHistoryPlay();
   if (comparePickerOpen) setComparePickerOpen(false);
   if (viewToolsOpen) setViewToolsOpen(false);
+  radarInfoOpen = false;
   const previousMode = state?.mode;
   if (previousMode && previousMode !== 'orgs') lastArenaMode = previousMode;
   endPointerInteractions();
@@ -1476,6 +1620,9 @@ function chooseChart(key, {changeHash = true, routeParams = null} = {}) {
     tab.setAttribute('aria-selected', String(selected));
     tab.tabIndex = selected ? 0 : -1;
     if (!selected && document.activeElement === tab) tab.blur();
+    if (selected) {
+      requestAnimationFrame(() => tab.scrollIntoView({inline: 'nearest', block: 'nearest'}));
+    }
   }
   $('#chart-panel').setAttribute('aria-labelledby', `tab-${key}`);
   $('#chartTitle').textContent = t(BENCHMARKS[key].zhTitle, BENCHMARKS[key].enTitle);
@@ -1529,6 +1676,34 @@ addEventListener('hashchange', () => {
   chooseChart(parsed.chart, {changeHash: false, routeParams: parsed.params});
 });
 
+function syncLegendNav() {
+  const leg = $('#legend');
+  const prevBtn = $('#legendPrevBtn');
+  const nextBtn = $('#legendNextBtn');
+  if (!leg || !prevBtn || !nextBtn) return;
+  const maxScroll = Math.max(0, leg.scrollWidth - leg.clientWidth);
+  const hasOverflow = maxScroll > 4;
+  prevBtn.hidden = !hasOverflow || leg.scrollLeft <= 2;
+  nextBtn.hidden = !hasOverflow || leg.scrollLeft >= maxScroll - 2;
+  leg.classList.toggle('is-at-end', !hasOverflow || leg.scrollLeft >= maxScroll - 2);
+}
+
+$('#legendPrevBtn')?.addEventListener('click', () => {
+  $('#legend')?.scrollBy({left: -240, behavior: 'smooth'});
+});
+$('#legendNextBtn')?.addEventListener('click', () => {
+  $('#legend')?.scrollBy({left: 240, behavior: 'smooth'});
+});
+$('#legend')?.addEventListener('scroll', syncLegendNav, {passive: true});
+$('#legend')?.addEventListener('wheel', event => {
+  const leg = $('#legend');
+  if (!leg || leg.scrollWidth <= leg.clientWidth + 2) return;
+  if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+    event.preventDefault();
+    leg.scrollLeft += event.deltaY;
+  }
+}, {passive: false});
+
 function renderLegend() {
   const companies = new Map();
   const legendSource = state.mode === 'orgs' && snapshot?.models?.length ? snapshot.models : state.rows;
@@ -1563,6 +1738,41 @@ function renderLegend() {
     fragment.append(button);
   }
   $('#legend').replaceChildren(fragment);
+  requestAnimationFrame(syncLegendNav);
+}
+
+function syncDynamicTableHeaders() {
+  if (!state) return;
+  const hasCustomAxis = !!(state.yLens || (state.scenarioId && state.scenarioId !== 'default' && !['coding-agents', 'media'].includes(activeKey)));
+  const idxHdr = hasCustomAxis ? currentAxisLabel() : t('指数 (0–100)', 'Index (0–100)');
+  $('#thIndex').textContent = idxHdr;
+  $('#subThIndex').textContent = idxHdr;
+
+  let costHdr = t('每任务成本 (USD)', 'Cost / task (USD)');
+  let subCostHdr = t('单任务 API', 'API / task');
+  if (activeKey === 'media') {
+    const xf = state.extraFilter || '';
+    const yl = state.yLens || '';
+    if (xf === 'media:image' || ['t2i', 'imgEdit'].includes(yl)) {
+      costHdr = t('每张图成本 (USD)', 'Cost / Image (USD)');
+      subCostHdr = t('单张图 API', 'API / img');
+    } else if (xf === 'media:video' || ['t2v', 'i2v', 'vidEdit'].includes(yl)) {
+      costHdr = t('每 5 秒视频成本 (USD)', 'Cost / 5s Video (USD)');
+      subCostHdr = t('单段 5 秒 API', 'API / 5s');
+    } else if (xf === 'media:tts' || yl === 'tts') {
+      costHdr = t('每千字成本 (USD)', 'Cost / 1k Chars (USD)');
+      subCostHdr = t('每千字 API', 'API / 1k ch');
+    } else {
+      costHdr = t('单次生成成本 (USD)', 'Unit Cost (USD)');
+      subCostHdr = t('单次生成 API', 'Unit API');
+    }
+  } else if (state.costProfile && state.costProfile !== 'benchmark') {
+    const shortCp = state.costProfile === 'chat' ? t('轻量问答', 'Light Q&A') : state.costProfile === 'longdoc' ? t('长文档', 'Long-Doc') : t('重推理', 'Heavy Rsn');
+    costHdr = t(`模拟成本 · ${shortCp} (USD)`, `Sim Cost · ${shortCp} (USD)`);
+    subCostHdr = t(`模拟单次 · ${shortCp}`, `Sim / ${shortCp}`);
+  }
+  $('#thCost').textContent = costHdr;
+  $('#subThCost').textContent = subCostHdr;
 }
 
 function syncYLensOptions() {
@@ -1927,6 +2137,7 @@ function syncControls() {
   syncYLensOptions();
   syncScenarioControls();
   syncCostProfileOptions();
+  syncDynamicTableHeaders();
 
   $('#boxSelectBtn').setAttribute('aria-pressed', String(boxSelectMode));
   $('#boxSelectBtn').textContent = boxSelectMode ? t('框选模式 ✓', 'Box select ✓') : t('框选模式', 'Box select');
@@ -1961,8 +2172,9 @@ function syncControls() {
   $('#subLineToggle').textContent = state.subLine ? t('回本线 ✓', 'Sub line ✓') : t('回本线', 'Sub line');
   $('#keySubWrap').hidden = !(state.subLine && !isTimeAxis);
 
-  $('#exportPng').hidden = state.mode !== 'chart';
-  $('#exportCsv').hidden = !(state.mode === 'table' || state.mode === 'sub');
+  const isOrgsMode = activeKey === 'orgs' || state.mode === 'orgs';
+  $('#exportPng').hidden = !(state.mode === 'chart' || (isOrgsMode && orgFocus === 'bump'));
+  $('#exportCsv').hidden = !(state.mode === 'table' || state.mode === 'sub' || isOrgsMode);
 
   $('#labels').setAttribute('aria-pressed', String(state.labels));
   $('#labels').textContent = state.labels ? t('显示标签 ✓', 'Labels ✓') : t('标签已关', 'Labels off');
@@ -2009,12 +2221,26 @@ function syncControls() {
   $('#curvePanel').hidden = state.mode !== 'curve';
   $('#valueSettings').hidden = !(state.mode === 'table' || state.mode === 'curve' || (state.mode === 'chart' && (state.isoCurve || state.minScore > 0 || state.maxCost > 0) && !isTimeAxis));
   $('#subSettings').hidden = !(state.mode === 'sub' || (state.mode === 'chart' && state.subLine && !isTimeAxis));
-  $('#viewControls').hidden = state.mode !== 'chart';
+  const showMediaSwitch = activeKey === 'media' && !hideFilterChrome && !isOrgs;
+  $('#xMetricSwitch').hidden = state.mode !== 'chart';
+  $('#mediaKindSwitch').hidden = !showMediaSwitch;
+  if (showMediaSwitch) {
+    for (const btn of document.querySelectorAll('#mediaKindSwitch [data-mkind]')) {
+      btn.setAttribute('aria-pressed', String(btn.dataset.mkind === (state.extraFilter || '')));
+    }
+  }
+  $('#viewControls').hidden = state.mode !== 'chart' && !showMediaSwitch;
   $('#subStrip').hidden = hideFilterChrome;
+  $('#legendStrip').hidden = hideFilterChrome;
   $('#legend').hidden = hideFilterChrome;
   $('#filterControls').hidden = hideFilterChrome;
   $('#toolbar').hidden = hideFilterChrome;
   $('#readingKey').hidden = state.mode !== 'chart';
+  const isMixedMediaChart = state.mode === 'chart' && activeKey === 'media' && !state.extraFilter && !state.yLens && !(canHistoryMode() && state.historyMode);
+  $('#keyMediaFrontiers').hidden = !isMixedMediaChart;
+  $('#keyFrontierWrap').hidden = isMixedMediaChart;
+  $('#keyQuadrantWrap').hidden = isMixedMediaChart;
+  requestAnimationFrame(syncLegendNav);
 
   const topScore = state.bounds.y + state.bounds.height;
   $('#curveRangeToggle').setAttribute('aria-pressed', String(state.curveRealRange));
@@ -2077,16 +2303,33 @@ $('#valueMore').addEventListener('click', () => {
 function syncResponsiveChrome() {
   const app = document.querySelector('.app');
   const topbar = document.querySelector('.topbar');
+  const topActions = document.querySelector('.top-actions');
   const tabs = document.querySelector('.tabs');
   const footer = document.querySelector('.app-footer');
   const heading = document.querySelector('.panel-heading');
+  let secBox = document.getElementById('mobileSecActions');
+  if (!secBox) {
+    secBox = html('div', null, 'mobile-secondary-actions');
+    secBox.id = 'mobileSecActions';
+  }
+  const guideEl = $('#guideLink');
+  const updateWrapEl = document.querySelector('.update-wrap');
+  const shareEl = $('#shareBtn');
+  const cmdEl = $('#cmdPaletteBtn');
+  const langEl = $('#langToggle');
+
   if (mobileLayout.matches) {
+    app.insertBefore(topbar, $('#chart-panel'));
     app.insertBefore(tabs, $('#chart-panel'));
-    $('#controlPanel').prepend(topbar);
+    secBox.append(guideEl, updateWrapEl, shareEl);
     $('#controlPanel').insertBefore(heading, $('#toolbar'));
-    $('#controlPanel').append(footer);
+    $('#controlPanel').append(secBox, footer);
   } else {
-    topbar.insertBefore(tabs, document.querySelector('.top-actions'));
+    topActions.insertBefore(guideEl, cmdEl);
+    topActions.insertBefore(updateWrapEl, langEl);
+    topActions.insertBefore(shareEl, langEl);
+    if (secBox.parentNode) secBox.remove();
+    topbar.insertBefore(tabs, topActions);
     app.insertBefore(topbar, $('#chart-panel'));
     document.querySelector('.workspace-bar').insertBefore(heading, $('#controlsToggle'));
     $('#chart-panel').append(footer);
@@ -2182,13 +2425,26 @@ function syncValueControls() {
     `Elasticity: 45→55 utility ×${format(ratio45to55, 2)} · 55→62 utility ×${format(ratio55to62, 2)} · 2× cost halves value`
   );
 
-  const {champion, championValue} = computeRankings();
-  $('#valueChampion').textContent = champion
-    ? t(
-      `当前参数榜首：${champion.name}（指数 ${format(champion.intelligenceIndex, 2)} · ${money(champion.cost)} · 性价比 ${valueLabel(championValue)}）`,
-      `Current #1 leader: ${champion.name} (Index ${format(champion.intelligenceIndex, 2)} · ${money(champion.cost)} · Value ${valueLabel(championValue)})`
-    )
-    : t('当前门槛或预算限制过严，暂无达标条目', 'No entries meet the current score floor or budget cap');
+  const {champion, championValue, kindChampions} = computeRankings();
+  if (kindChampions.size >= 2) {
+    const parts = ['image', 'video', 'tts']
+      .map(mk => {
+        const kc = kindChampions.get(mk);
+        return kc ? `${mediaKindShortLabel(mk)} ${kc.shortName || kc.name} (${money(kc.cost)})` : null;
+      })
+      .filter(Boolean);
+    $('#valueChampion').textContent = t(
+      `分模态性价比榜首：${parts.join(' · ')}`,
+      `Per-modality #1 value: ${parts.join(' · ')}`
+    );
+  } else {
+    $('#valueChampion').textContent = champion
+      ? t(
+        `当前参数榜首：${champion.name}（指数 ${format(champion.intelligenceIndex, 2)} · ${money(champion.cost)} · 性价比 ${valueLabel(championValue)}）`,
+        `Current #1 leader: ${champion.name} (Index ${format(champion.intelligenceIndex, 2)} · ${money(champion.cost)} · Value ${valueLabel(championValue)})`
+      )
+      : t('当前门槛或预算限制过严，暂无达标条目', 'No entries meet the current score floor or budget cap');
+  }
 
   $('#valueHint').textContent = t(
     '说明：该曲线结合多步达标率幂次与 IRT 高分失误率压缩，反映主观质量偏好而非官方实测收益；仅限同一榜单、同一参数内横向比较。',
@@ -2240,11 +2496,11 @@ function syncRouterControls() {
   const res = cascadingRouteSummary(fastRow, strongRow, state.routerShare / 100, state.monthlyTasks);
   if (res) {
     const subCmp = res.monthlyBlendedBill < state.subFee
-      ? t(`比 $${state.subFee} 订阅还省 ${compactMoney(state.subFee - res.monthlyBlendedBill)}/月`, `saves ${compactMoney(state.subFee - res.monthlyBlendedBill)} vs $${state.subFee}/mo`)
-      : t(`高于 $${state.subFee} 订阅 +${compactMoney(res.monthlyBlendedBill - state.subFee)}（配额够用则订阅更省）`, `+${compactMoney(res.monthlyBlendedBill - state.subFee)} vs $${state.subFee}/mo (sub wins if quota suffices)`);
+      ? t(`比 $${state.subFee} 订阅省 ${compactMoney(state.subFee - res.monthlyBlendedBill)}/月`, `saves ${compactMoney(state.subFee - res.monthlyBlendedBill)} vs $${state.subFee}/mo`)
+      : t(`较 $${state.subFee} 订阅高 +${compactMoney(res.monthlyBlendedBill - state.subFee)}，配额够用则订阅更省`, `+${compactMoney(res.monthlyBlendedBill - state.subFee)} vs $${state.subFee}/mo, sub wins if quota suffices`);
     $('#routerReadout').textContent = t(
-      `混合均价 ${money(res.blendedCost)}/次（较纯旗舰省 ${Math.round(Math.max(0, res.savingsVsStrong) * 100)}%）· 月账单 ${compactMoney(res.monthlyBlendedBill)}（${subCmp}）`,
-      `Blended ${money(res.blendedCost)}/task (−${Math.round(Math.max(0, res.savingsVsStrong) * 100)}% vs flagship) · ${compactMoney(res.monthlyBlendedBill)}/mo (${subCmp})`
+      `混合均价 ${money(res.blendedCost)}/次（较纯旗舰省 ${Math.round(Math.max(0, res.savingsVsStrong) * 100)}%）· 月账单 ${compactMoney(res.monthlyBlendedBill)} · ${subCmp}`,
+      `Blended ${money(res.blendedCost)}/task (−${Math.round(Math.max(0, res.savingsVsStrong) * 100)}% vs flagship) · ${compactMoney(res.monthlyBlendedBill)}/mo · ${subCmp}`
     );
   }
 }
@@ -2270,16 +2526,19 @@ function syncSubControls() {
 
   const rows = filteredRows();
   const thresholdCost = fee / tasks;
-  let apiCount = 0, subCount = 0;
+  let apiCount = 0, subCount = 0, evenCount = 0;
   for (const row of rows) {
     const verdict = subscriptionVerdict(row.cost, tasks, fee);
     if (!verdict) continue;
     if (verdict.status === 'api-cheaper') apiCount++;
     else if (verdict.status === 'sub-cheaper') subCount++;
+    else evenCount++;
   }
+  const evenZh = evenCount > 0 ? `，${evenCount} 项约持平` : '';
+  const evenEn = evenCount > 0 ? `, ${evenCount} near even` : '';
   $('#subBreakevenSummary').textContent = t(
-    `盈亏平衡单价：${money(thresholdCost)}/任务 · 当前 ${subCount} 项买 $${fee}/月订阅已回本，${apiCount} 项未回本（按量 API 更省）`,
-    `Break-even: ${money(thresholdCost)}/task · ${subCount} worth $${fee}/mo sub, ${apiCount} unmet (API cheaper)`
+    `盈亏平衡单价：${money(thresholdCost)}/任务 · 当前 ${subCount} 项买 $${fee}/月订阅已回本${evenZh}，${apiCount} 项未回本（按量 API 更省）`,
+    `Break-even: ${money(thresholdCost)}/task · ${subCount} worth $${fee}/mo sub${evenEn}, ${apiCount} unmet (API cheaper)`
   );
   $('#subDisclaimer').textContent = activeKey === 'media'
     ? t(
@@ -2432,6 +2691,7 @@ function buildPlot() {
   const budgetRect = node('rect', {class: 'budget-rect'});
   const budgetGuide = node('line', {class: 'budget-guide'});
   const paretoPath = node('path', {class: 'pareto'});
+  const paretoGroupLayer = node('g', {class: 'pareto-group-layer'});
   const paretoHistoryPath = node('path', {class: 'pareto-history'});
   const effortLayer = node('g', {class: 'effort-layer'});
   const isoPath = node('path', {class: 'iso-curve'});
@@ -2449,7 +2709,7 @@ function buildPlot() {
     node('rect', {class: 'lasso-rect', style: 'display:none'})
   );
 
-  plot.append(quadrant, quadrantBorder, floorRect, floorGuide, budgetRect, budgetGuide, paretoPath, paretoHistoryPath, effortLayer, isoPath, subGuide, connectors, points, labels);
+  plot.append(quadrant, quadrantBorder, floorRect, floorGuide, budgetRect, budgetGuide, paretoPath, paretoGroupLayer, paretoHistoryPath, effortLayer, isoPath, subGuide, connectors, points, labels);
   svg.replaceChildren(defs, node('g', {class: 'grid'}), plot, node('g', {class: 'axis'}), emphasis);
 
   const axisName = currentAxisLabel();
@@ -2616,8 +2876,9 @@ function renderTable(rows = filteredRows()) {
     `Linear bar scale (${scaleSource === pool && state.license === 'all' ? 'full benchmark' : 'filtered set'}): Index 0–100 · Cost $0–${format(maxCost)} · Time 0–${formatTime(maxTime)} · Value ${valueRange}`
   );
 
-  const frontierIds = new Set(paretoFrontier(pool).map(row => row.id));
-  const {champion} = computeRankings(pool);
+  const {idSet: frontierIds} = activeFrontierSet();
+  const {champion, kindMaxValues, kindChampions} = computeRankings(pool);
+  const isMixedKind = kindChampions.size >= 2;
 
   for (const row of sortRows(rows, state.sortKey, state.sortDirection, state.valueWeight, state.minScore, state.maxCost)) {
     const tr = html('tr');
@@ -2635,7 +2896,10 @@ function renderTable(rows = filteredRows()) {
     dot.setAttribute('aria-hidden', 'true');
     wrap.append(dot, html('span', row.name));
 
-    if (champion && champion.id === row.id) {
+    const kindChamp = isMixedKind && row.mediaKind ? kindChampions.get(row.mediaKind) : null;
+    if (kindChamp && kindChamp.id === row.id) {
+      wrap.append(html('span', `#1 ${mediaKindShortLabel(row.mediaKind)}`, 'row-tag tag-top'));
+    } else if (!isMixedKind && champion && champion.id === row.id) {
       wrap.append(html('span', '#1', 'row-tag tag-top'));
     }
     if (isRecentRelease(row)) {
@@ -2666,7 +2930,9 @@ function renderTable(rows = filteredRows()) {
       event.stopPropagation();
       locateRowInChart(row);
     });
-    wrap.append(locateBtn, makeCompareRowBtn(row), makeStarRowBtn(row));
+    const actGroup = html('span', null, 'row-actions');
+    actGroup.append(locateBtn, makeCompareRowBtn(row), makeStarRowBtn(row));
+    wrap.append(actGroup);
     nameTd.append(wrap);
 
     const hasTime = typeof row.timeSec === 'number' && Number.isFinite(row.timeSec) && row.timeSec > 0;
@@ -2679,7 +2945,8 @@ function renderTable(rows = filteredRows()) {
       : overBudget
         ? t('超出预算', '> Cap')
         : valueLabel(value);
-    const valueCell = comparisonCell(displayVal, value !== null && maxValue > 0 ? value / maxValue : 0, displayColor);
+    const denomVal = (isMixedKind && row.mediaKind && kindMaxValues.get(row.mediaKind)) || maxValue;
+    const valueCell = comparisonCell(displayVal, value !== null && denomVal > 0 ? value / denomVal : 0, displayColor);
     valueCell.className = 'value-column';
     valueCell.title = belowFloor
       ? t(`低于最低门槛 ${state.minScore} 分`, `Below minimum score ${state.minScore}`)
@@ -2738,9 +3005,8 @@ function comparisonCell(value, ratio, displayColor) {
 }
 
 function renderSubTable(rows = filteredRows()) {
-  const pool = licenseFilteredRows(state.rows);
   const fragment = document.createDocumentFragment();
-  const frontierIds = new Set(paretoFrontier(pool).map(row => row.id));
+  const {idSet: frontierIds} = activeFrontierSet();
   const fee = state.subFee, tasks = state.monthlyTasks;
   const collator = new Intl.Collator('zh-CN', {numeric: true, sensitivity: 'base'});
   const sign = state.subSortDirection === 'asc' ? 1 : -1;
@@ -2789,7 +3055,9 @@ function renderSubTable(rows = filteredRows()) {
       event.stopPropagation();
       locateRowInChart(row);
     });
-    wrap.append(locateBtn, makeCompareRowBtn(row), makeStarRowBtn(row));
+    const actGroup = html('span', null, 'row-actions');
+    actGroup.append(locateBtn, makeCompareRowBtn(row), makeStarRowBtn(row));
+    wrap.append(actGroup);
     nameTd.append(wrap);
 
     const costTd = html('td', money(row.cost));
@@ -2797,7 +3065,7 @@ function renderSubTable(rows = filteredRows()) {
 
     const verdict = subscriptionVerdict(row.cost, tasks, fee);
     const beRatio = verdict ? Math.min(1, Math.min(500, verdict.breakeven) / maxBe) : 0;
-    const beTd = comparisonCell(verdict ? formatTaskCount(verdict.breakeven) : '—', beRatio, displayColor);
+    const beTd = comparisonCell(verdict ? formatTaskCount(verdict.breakeven, row) : '—', beRatio, displayColor);
     beTd.title = tierBreakevenText(row.cost, row);
 
     const billTd = html('td');
@@ -2861,6 +3129,46 @@ function renderSubTable(rows = filteredRows()) {
 
 function exportCsv() {
   if (!state) return;
+  const escapeCsv = val => {
+    if (val === null || val === undefined) return '';
+    const str = String(val);
+    return /[",\n\r]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
+  };
+  if (activeKey === 'orgs' || state.mode === 'orgs') {
+    const activeBoard = orgBoards.find(b => b.id === orgFocus) || null;
+    const targetBoards = activeBoard ? [activeBoard] : orgBoards;
+    const headers = ['Org', 'Board', 'Date', 'Rank', 'Model', 'RawEntry', 'Creator', 'Score', 'CostUSD', 'MatchType', 'MatchedModel'];
+    const lines = [headers.join(',')];
+    for (const b of targetBoards) {
+      for (const r of filterOrgRows(b.rows)) {
+        const matchType = r.modelId ? 'Exact' : (r.siblingId || r.cyberId) ? 'Sibling' : 'OrgOnly';
+        const matchedName = r.modelId ? r.name : (r.siblingName || r.cyberName || '');
+        lines.push([
+          b.orgEn,
+          b.titleEn,
+          b.date || '',
+          r.rank,
+          orgDisplayName(r),
+          r.rawName || r.name,
+          r.creator || '',
+          typeof r.score === 'number' ? r.score.toFixed(b.scoreDecimals) : '',
+          r.lbCost ?? r.cost ?? '',
+          matchType,
+          matchedName
+        ].map(escapeCsv).join(','));
+      }
+    }
+    const blob = new Blob(['\uFEFF' + lines.join('\r\n')], {type: 'text/csv;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `intelligence-vs-cost-orgs-${activeBoard ? activeBoard.id : 'all'}.csv`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    return;
+  }
   const rawRows = filteredRows();
   let rows;
   if (state.mode === 'sub') {
@@ -2879,11 +3187,7 @@ function exportCsv() {
   } else {
     rows = sortRows(rawRows, state.sortKey, state.sortDirection, state.valueWeight, state.minScore, state.maxCost);
   }
-  const escapeCsv = val => {
-    if (val === null || val === undefined) return '';
-    const str = String(val);
-    return /[",\n\r]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
-  };
+  const {kindRankMap} = computeRankings();
   const headers = [
     'Name',
     'Creator',
@@ -2899,7 +3203,7 @@ function exportCsv() {
     ...(activeKey === 'human-arena' ? ['ArenaAI_ChatElo', 'ArenaAI_WebDevElo', 'DesignArena_WebElo', 'AA_GDPvalElo', 'AntiSlop_Pct', 'AA3D_Elo', 'Code2Video_Elo'] : []),
     ...(activeKey === 'coding-agents' ? ['AgentHarness', 'BaseModel', 'CostP50_USD', 'CostP95_USD', 'CacheHit_Pct'] : []),
     ...(activeKey === 'cyber' ? ['SafetyRefusalPct'] : []),
-    ...(activeKey === 'media' ? ['MediaKind', 'BillingUnit', 'T2I_Elo', 'ImageEdit_Elo', 'T2V_Elo', 'I2V_Elo', 'TTS_Elo', 'TTS_TTFA_ms'] : []),
+    ...(activeKey === 'media' ? ['MediaKind', 'BillingUnit', 'ModalityValueRank', 'T2I_Elo', 'ImageEdit_Elo', 'T2V_Elo', 'I2V_Elo', 'TTS_Elo', 'TTS_TTFA_ms'] : []),
     `WeightedValue_w${state.valueWeight.toFixed(1)}`,
     `BreakEvenTasks_$${state.subFee}`,
     `EstMonthlyApiUSD_${state.monthlyTasks}tasks`,
@@ -2910,6 +3214,7 @@ function exportCsv() {
     const val = valuePerDollar(row, state.valueWeight, state.minScore, state.maxCost);
     const be = breakEvenTasks(row.cost, state.subFee);
     const verdict = subscriptionVerdict(row.cost, state.monthlyTasks, state.subFee);
+    const kInfo = kindRankMap.get(row.id);
     const verdictCode = !verdict
       ? ''
       : verdict.status === 'sub-cheaper'
@@ -2964,6 +3269,7 @@ function exportCsv() {
       ...(activeKey === 'media' ? [
         row.mediaKind ?? '',
         row.mediaRaw?.unitEn?.replace(/^\/\s*/, '') ?? '',
+        kInfo ? `${kInfo.rank}/${kInfo.total}` : '',
         row.mediaRaw?.t2iElo ?? '',
         row.mediaRaw?.imgEditElo ?? '',
         row.mediaRaw?.t2vElo ?? '',
@@ -2997,8 +3303,9 @@ function shortEvalLabel(name) {
 
 function exportChartPng(kind = state?.mode) {
   if (!state) return;
-  const targetSvg = kind === 'curve' ? $('#curveSvg') : kind === 'compare' ? $('#radarSvg') : $('#svg');
-  const vb = targetSvg.getAttribute('viewBox')?.split(/\s+/).map(Number);
+  const isBump = (kind === 'orgs' || activeKey === 'orgs') && orgFocus === 'bump';
+  const targetSvg = isBump ? $('#orgContent .org-bump-svg') : kind === 'curve' ? $('#curveSvg') : kind === 'compare' ? $('#radarSvg') : $('#svg');
+  const vb = targetSvg?.getAttribute('viewBox')?.split(/\s+/).map(Number);
   if (!vb || vb.length !== 4 || !(vb[2] > 0 && vb[3] > 0)) return;
   const [, , svgW, svgH] = vb;
 
@@ -3022,7 +3329,9 @@ function exportChartPng(kind = state?.mode) {
     .floor-rect, .budget-rect { fill: ${v('--floor-shade')}; }
     .floor-guide, .budget-guide { stroke: ${v('--floor-line')}; stroke-width: 1.2; stroke-dasharray: 5 4; }
     .budget-guide-label { fill: ${v('--floor-line')}; font-size: 11px; font-weight: 600; }
-    .pareto { stroke: ${v('--frontier')}; stroke-width: 1.6; stroke-dasharray: 2 5; fill: none; }
+    .pareto, .pareto-sub { stroke: ${v('--frontier')}; stroke-width: 1.6; stroke-dasharray: 2 5; fill: none; }
+    .pareto-sub.kind-video { stroke: ${v('--amber')}; stroke-dasharray: 5 4; }
+    .pareto-sub.kind-tts { stroke: ${v('--accent')}; stroke-dasharray: 2 4; }
     .pareto-history { stroke: ${v('--accent')}; stroke-width: 2.3; fill: none; }
     .effort-line { fill: none; stroke-width: 1.6; stroke-dasharray: 4 3; opacity: 0.6; }
     .effort-line.is-highlighted { stroke-width: 2.3; stroke-dasharray: none; opacity: 0.95; }
@@ -3062,6 +3371,30 @@ function exportChartPng(kind = state?.mode) {
     .radar-svg.has-focus .radar-series:not(.is-focused) { opacity: 0.18; }
     .radar-series.is-focused polygon, .radar-series.is-focused path, .radar-series.is-focused line { stroke-width: 3.4; fill-opacity: 0.25; }
     .radar-vertex-val { font-size: 11px; font-weight: 600; stroke: ${v('--halo')}; stroke-width: 3px; paint-order: stroke; }
+    .bump-guide { stroke: ${v('--grid')}; stroke-width: 1; }
+    .bump-guide-major { stroke: ${v('--border-strong')}; stroke-width: 1; stroke-dasharray: 4 4; }
+    .bump-rank-tick { fill: ${v('--muted')}; font-size: 10.5px; }
+    .bump-col-line { stroke: ${v('--border')}; stroke-width: 1; stroke-dasharray: 2 3; }
+    .bump-col-title { fill: ${v('--ink')}; font-size: 12.5px; font-weight: 600; }
+    .bump-col-sub { fill: ${v('--muted')}; font-size: 10.5px; }
+    .bump-series.is-dimmed { opacity: 0.18; }
+    .bump-hit { fill: none; stroke: none; }
+    .bump-line { fill: none; stroke-width: 2.2; stroke-linecap: round; opacity: 0.85; }
+    .bump-line.is-gap { stroke-dasharray: 4 4; opacity: 0.52; }
+    .bump-series.is-hover-spot .bump-line, .bump-series.is-pinned-spot .bump-line { stroke-width: 3.4; opacity: 1; }
+    .bump-dot { stroke-width: 1.8; }
+    .bump-series.is-pinned-spot .bump-dot { stroke: ${v('--amber')}; stroke-width: 2.5; }
+    .bump-dot.is-family { stroke-dasharray: 2.5 2; }
+    .bump-dot-num { fill: ${v('--chart')}; font-size: 9.5px; font-weight: 700; }
+    .bump-dot-num.is-family { font-weight: 600; }
+    .bump-lbl-leader { stroke-width: 1; opacity: 0.45; stroke-dasharray: 2 2; }
+    .bump-end-lbl { font-size: 11.5px; font-weight: 500; }
+    .bump-series.is-hover-spot .bump-end-lbl, .bump-series.is-pinned-spot .bump-end-lbl { font-weight: 700; }
+    .bump-callout { opacity: 0; }
+    .bump-series.is-hover-spot .bump-callout, .bump-series.is-pinned-spot .bump-callout { opacity: 1; }
+    .bump-callout rect { fill: ${v('--surface-elevated')}; stroke-width: 1.1; }
+    .bump-series.is-pinned-spot .bump-callout rect { stroke: ${v('--amber')}; stroke-width: 1.6; }
+    .bump-callout text { fill: ${v('--ink')}; font-size: 10px; font-weight: 600; }
   `;
   const styleNode = node('style', {}, styleText);
   clone.prepend(styleNode);
@@ -3079,6 +3412,7 @@ function exportChartPng(kind = state?.mode) {
     measureCtx.font = '500 12px "IBM Plex Sans", "Segoe UI", sans-serif';
     const legendPlaced = [];
     let legendRows = 0;
+    const isMixedMediaPng = !isBump && kind === 'chart' && activeKey === 'media' && !state.extraFilter && !state.yLens && !(canHistoryMode() && state.historyMode);
     if (kind === 'compare') {
       const rowMap = new Map(state.rows.map(r => [r.id, r]));
       let lx = padX, rowIdx = 0;
@@ -3094,8 +3428,10 @@ function exportChartPng(kind = state?.mode) {
         lx += itemW;
       });
       legendRows = legendPlaced.length ? rowIdx + 1 : 0;
+    } else if (isMixedMediaPng) {
+      legendRows = 1;
     }
-    const headH = kind === 'compare' ? 56 + legendRows * 20 : 54;
+    const headH = (kind === 'compare' || isMixedMediaPng) ? 56 + legendRows * 20 : 54;
     const outH = svgH + headH + footH;
     const canvas = document.createElement('canvas');
     canvas.width = outW * scale;
@@ -3109,7 +3445,9 @@ function exportChartPng(kind = state?.mode) {
     const maxTextW = outW - padX * 2;
     ctx.fillStyle = v('--ink');
     ctx.font = '600 16px "IBM Plex Sans", "Segoe UI", sans-serif';
-    const titleStr = kind === 'compare' ? $('#radarHeading').textContent : $('#chartTitle').textContent;
+    const titleStr = isBump
+      ? t('跨测评机构独立排名轨迹图（Bump Chart）', 'Cross-Organization Official Rank Trajectory')
+      : kind === 'compare' ? $('#radarHeading').textContent : $('#chartTitle').textContent;
     ctx.fillText(titleStr, padX, 28, maxTextW);
 
     ctx.fillStyle = v('--muted');
@@ -3127,17 +3465,41 @@ function exportChartPng(kind = state?.mode) {
         ctx.font = '500 12px "IBM Plex Sans", "Segoe UI", sans-serif';
         ctx.fillText(item.nameTxt, item.x + 12, ly);
       }
+    } else if (isMixedMediaPng) {
+      let lx = padX;
+      const ly = 64;
+      for (const [col, dash, lbl] of [
+        [v('--frontier'), [2, 4], t('图像前沿 ($/张)', 'Image Frontier ($/img)')],
+        [v('--amber'), [5, 4], t('视频前沿 ($/5秒)', 'Video Frontier ($/5s)')],
+        [v('--accent'), [2, 4], t('语音前沿 ($/千字)', 'TTS Frontier ($/1k ch)')]
+      ]) {
+        ctx.save();
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 2;
+        ctx.setLineDash(dash);
+        ctx.beginPath();
+        ctx.moveTo(lx, ly - 4);
+        ctx.lineTo(lx + 18, ly - 4);
+        ctx.stroke();
+        ctx.restore();
+        ctx.fillStyle = v('--ink');
+        ctx.font = '500 12px "IBM Plex Sans", "Segoe UI", sans-serif';
+        ctx.fillText(lbl, lx + 24, ly);
+        lx += measureCtx.measureText(lbl).width + 44;
+      }
     }
 
     ctx.drawImage(img, (outW - svgW) / 2, headH, svgW, svgH);
 
-    const srcFoot = activeKey === 'human-arena'
-      ? 'Arena.ai (LMArena) + Design Arena + Artificial Analysis'
-      : activeKey === 'media'
-        ? 'Artificial Analysis Image / Video / Speech Arenas'
-        : state.yLens === 'livebench' || state.yLens === 'lbLongAgentic' || state.radarMode === 'livebench'
-          ? 'LiveBench 2.0 + Artificial Analysis'
-          : 'Artificial Analysis';
+    const srcFoot = isBump
+      ? 'Artificial Analysis + LiveBench 2.0 + Arena.ai (LMArena) + Design Arena'
+      : activeKey === 'human-arena'
+        ? 'Arena.ai (LMArena) + Design Arena + Artificial Analysis'
+        : activeKey === 'media'
+          ? 'Artificial Analysis Image / Video / Speech Arenas'
+          : state.yLens === 'livebench' || state.yLens === 'lbLongAgentic' || state.radarMode === 'livebench'
+            ? 'LiveBench 2.0 + Artificial Analysis'
+            : 'Artificial Analysis';
     ctx.fillStyle = v('--muted');
     ctx.font = '400 11.5px "IBM Plex Sans", "Segoe UI", sans-serif';
     ctx.fillText(`${srcFoot} · Intelligence vs. Cost (${new Date().toISOString().slice(0, 10)})`, padX, outH - 11, maxTextW);
@@ -3148,7 +3510,7 @@ function exportChartPng(kind = state?.mode) {
       const dlUrl = URL.createObjectURL(pngBlob);
       const a = document.createElement('a');
       a.href = dlUrl;
-      a.download = `intelligence-vs-cost-${activeKey}-${kind}.png`;
+      a.download = isBump ? 'intelligence-vs-cost-orgs-bump.png' : `intelligence-vs-cost-${activeKey}-${kind}.png`;
       document.body.append(a);
       a.click();
       a.remove();
@@ -3317,10 +3679,11 @@ function syncRadarSpotlight(hoverSeriesIdx = null, hoverAxisKey = null) {
   }
 
   // Render crisp vertex/strip score badges
+  const metricUnit = m => (m?.unit !== undefined ? m.unit : '%');
   calloutLayer.replaceChildren();
   if (visMode === 'radar' && activeIdx >= 0 && verticesBySeries[activeIdx]) {
     const sc = compareColor(activeIdx);
-    verticesBySeries[activeIdx].forEach(v => {
+    verticesBySeries[activeIdx].forEach((v, vIdx) => {
       if (!v || v.val === null) return;
       const radialShift = v.ratio > 0.82 ? -13 : 12;
       const tx = v.x + Math.cos(v.ang) * radialShift;
@@ -3331,12 +3694,12 @@ function syncRadarSpotlight(hoverSeriesIdx = null, hoverAxisKey = null) {
         y: ty,
         fill: sc,
         'text-anchor': 'middle'
-      }, `${format(v.val, 1)}%`));
+      }, `${format(v.val, 1)}${metricUnit(axes[vIdx])}`));
     });
   } else if (visMode === 'strip') {
     if (activeIdx >= 0 && verticesBySeries[activeIdx]) {
       const sc = compareColor(activeIdx);
-      verticesBySeries[activeIdx].forEach(v => {
+      verticesBySeries[activeIdx].forEach((v, vIdx) => {
         if (!v || v.val === null) return;
         const tx = Math.max(178, Math.min(542, v.x));
         const ty = v.y - 9;
@@ -3346,10 +3709,11 @@ function syncRadarSpotlight(hoverSeriesIdx = null, hoverAxisKey = null) {
           y: ty,
           fill: sc,
           'text-anchor': 'middle'
-        }, `#${v.rank} · ${format(v.val, 1)}%`));
+        }, `#${v.rank} · ${format(v.val, 1)}${metricUnit(axes[vIdx])}`));
       });
     } else {
       for (const ld of stripLeaders) {
+        const u = metricUnit(axes[ld.axisIdx]);
         if (ld.best) {
           calloutLayer.append(node('text', {
             class: 'radar-vertex-val',
@@ -3357,7 +3721,7 @@ function syncRadarSpotlight(hoverSeriesIdx = null, hoverAxisKey = null) {
             y: ld.best.y - 9,
             fill: compareColor(ld.best.sIdx),
             'text-anchor': 'middle'
-          }, `${format(ld.best.val, 1)}%`));
+          }, `${format(ld.best.val, 1)}${u}`));
         }
         if (ld.worst && ld.best && Math.abs(ld.best.x - ld.worst.x) >= 44) {
           calloutLayer.append(node('text', {
@@ -3366,7 +3730,7 @@ function syncRadarSpotlight(hoverSeriesIdx = null, hoverAxisKey = null) {
             y: ld.worst.y - 9,
             fill: 'var(--muted)',
             'text-anchor': 'middle'
-          }, `${format(ld.worst.val, 1)}%`));
+          }, `${format(ld.worst.val, 1)}${u}`));
         }
       }
     }
@@ -3419,9 +3783,10 @@ function syncRadarSpotlight(hoverSeriesIdx = null, hoverAxisKey = null) {
         'Per-axis normalized: each spoke stretches its own [min–max%] spread (shown under spoke labels)'
       );
     } else if (scaleMin > 0) {
+      const floorUnit = axes.every(a => (a?.unit !== undefined ? a.unit : '%') === '%') ? '%' : '';
       hintEl.textContent = t(
-        `微距去底雷达（内圈虚线 = ${scaleMin}% 起点）：剥离圆心空白死区放大前沿差距 · 也可切换上方「微距跑道」或「胜负分差 Δ」`,
-        `Zoomed radar (dashed inner ring = ${scaleMin}% floor) · Switch to "Dot Strip" or "Delta Δ" above for horizontal precision`
+        `微距去底雷达（内圈虚线 = ${scaleMin}${floorUnit} 起点）：剥离圆心空白死区放大前沿差距 · 也可切换上方「微距跑道」或「胜负分差 Δ」`,
+        `Zoomed radar (dashed inner ring = ${scaleMin}${floorUnit} floor) · Switch to "Dot Strip" or "Delta Δ" above for horizontal precision`
       );
     } else {
       hintEl.textContent = t(
@@ -3462,7 +3827,8 @@ function showMetricTip(metric, event, focusSeriesIdx = null, clusterCount = 0) {
     left.append(dot, document.createTextNode(row.shortName || row.name));
     if (idx === focusSeriesIdx) left.style.fontWeight = '600';
 
-    let textVal = val === null ? '—' : `${format(val, 1)}%`;
+    const mUnit = metric?.unit !== undefined ? metric.unit : '%';
+    let textVal = val === null ? '—' : `${format(val, 1)}${mUnit}`;
     if (metric.key === 'hallucination' && val !== null && row.subscores?.omniscience != null) {
       const totalWrong = ((100 - row.subscores.omniscience) * val) / 100;
       textVal += t(`（全题错答 ${format(totalWrong, 1)}%）`, ` (${format(totalWrong, 1)}% total)`);
@@ -3745,9 +4111,10 @@ async function copyCompareMarkdown() {
     if (cells.length) lines.push(`| ${cells.join(' | ')} |`);
   }
   for (const m of barMetrics) {
+    const mUnit = m?.unit !== undefined ? m.unit : '%';
     const vals = selectedRows.map(r => {
       const v = m.get(r);
-      return v === null ? '—' : `${format(v, 1)}%`;
+      return v === null ? '—' : `${format(v, 1)}${mUnit}`;
     });
     lines.push(`| ${esc(t(m.zh, m.en))} | ${vals.join(' | ')} |`);
   }
@@ -3870,7 +4237,7 @@ function renderCompare() {
       {key: 'design', zh: '视觉设计 (×1.5)', en: 'Design (×1.5)', srcZh: 'LiveBench 2.0 Design · 前端视觉排版与界面设计实现能力（官方权重 ×1.5）', srcEn: 'LiveBench 2.0 Design · UI layout & visual frontend craft (weight ×1.5)', get: r => r.livebench?.design ?? null}
     ];
     barMetrics = [
-      {key: 'lbOverall', zh: 'LB 2.0 总分', en: 'LB 2.0 Overall', srcZh: 'LiveBench 2.0 官方加权综合分', srcEn: 'LiveBench 2.0 official weighted overall score', get: r => r.livebench?.overall ?? null},
+      {key: 'lbOverall', unit: '', zh: 'LB 2.0 总分', en: 'LB 2.0 Overall', srcZh: 'LiveBench 2.0 官方加权综合分', srcEn: 'LiveBench 2.0 official weighted overall score', get: r => r.livebench?.overall ?? null},
       ...axes
     ];
   } else if (activeKey === 'frontier') {
@@ -3910,53 +4277,56 @@ function renderCompare() {
     if (state.radarMode === 'domain') {
       $('#radarHeading').textContent = t('Design Arena 视觉审美与交互创意五维盲测雷达', 'Design Arena 5-Axis Blind Visual Aesthetic & UX Taste Radar');
       axes = [
-        {key: 'website', zh: '整站网页审美', en: 'Website Design', srcZh: 'Design Arena Website · 真人双盲对决评测整站排版、配色、留白与现代设计感', srcEn: 'Design Arena Website · Blind human battles on layout, typography & visual polish', get: r => r.designSub?.website ?? null},
-        {key: 'uicomponent', zh: 'UI 组件质感', en: 'UI Component', srcZh: 'Design Arena UI Component · 交互控件细节、微动效与组件级视觉完成度盲测', srcEn: 'Design Arena UI Component · Blind human grading of component craft & micro-UX', get: r => r.designSub?.uicomponent ?? null},
-        {key: 'dataviz', zh: '数据图表审美', en: 'DataViz Taste', srcZh: 'Design Arena DataViz · 复杂仪表盘与数据可视化的可读性与审美盲测', srcEn: 'Design Arena DataViz · Blind human preference on dashboards & data visualization', get: r => r.designSub?.dataviz ?? null},
-        {key: 'gamedev', zh: '游戏交互创意', en: 'GameDev UX', srcZh: 'Design Arena GameDev · 可玩性、交互反馈与视觉创意真人盲测', srcEn: 'Design Arena GameDev · Blind human testing of playable mini-games & feel', get: r => r.designSub?.gamedev ?? null},
-        {key: 'svg', zh: 'SVG 矢量造型', en: 'SVG Craft', srcZh: 'Design Arena SVG · 纯代码生成矢量插画、构图美感与几何造型盲测', srcEn: 'Design Arena SVG · Blind human preference on vector illustration & geometry', get: r => r.designSub?.svg ?? null}
+        {key: 'website', unit: '', zh: '整站网页审美', en: 'Website Design', srcZh: 'Design Arena Website · 真人双盲对决评测整站排版、配色、留白与现代设计感', srcEn: 'Design Arena Website · Blind human battles on layout, typography & visual polish', get: r => r.designSub?.website ?? null},
+        {key: 'uicomponent', unit: '', zh: 'UI 组件质感', en: 'UI Component', srcZh: 'Design Arena UI Component · 交互控件细节、微动效与组件级视觉完成度盲测', srcEn: 'Design Arena UI Component · Blind human grading of component craft & micro-UX', get: r => r.designSub?.uicomponent ?? null},
+        {key: 'dataviz', unit: '', zh: '数据图表审美', en: 'DataViz Taste', srcZh: 'Design Arena DataViz · 复杂仪表盘与数据可视化的可读性与审美盲测', srcEn: 'Design Arena DataViz · Blind human preference on dashboards & data visualization', get: r => r.designSub?.dataviz ?? null},
+        {key: 'gamedev', unit: '', zh: '游戏交互创意', en: 'GameDev UX', srcZh: 'Design Arena GameDev · 可玩性、交互反馈与视觉创意真人盲测', srcEn: 'Design Arena GameDev · Blind human testing of playable mini-games & feel', get: r => r.designSub?.gamedev ?? null},
+        {key: 'svg', unit: '', zh: 'SVG 矢量造型', en: 'SVG Craft', srcZh: 'Design Arena SVG · 纯代码生成矢量插画、构图美感与几何造型盲测', srcEn: 'Design Arena SVG · Blind human preference on vector illustration & geometry', get: r => r.designSub?.svg ?? null}
       ];
       barMetrics = [...axes];
     } else {
       $('#radarHeading').textContent = t('人类盲测六维体感雷达（交流人味 · 视觉创意 · 真实交付）', '6-Axis Human Preference Radar (Chat Vibe · Visual & Creative · Deliverables)');
       axes = [
-        {key: 'chatVibe', zh: '交流人味 (Chat)', en: 'Chat Vibe', srcZh: 'Arena.ai (LMArena) Text & Doc Style-Controlled · 剔除长篇堆砌与排版讨好后的纯人类对话与行文偏好', srcEn: 'Arena.ai (LMArena) Style-Controlled · Blind chat & writing preference controlling for verbosity bias', get: r => r.humanScores?.chatVibe ?? null},
-        {key: 'webdev', zh: '全栈体感 (WebDev)', en: 'WebDev Arena', srcZh: 'Arena.ai (LMArena) WebDev · 真人实测构建可交互前端/全栈应用盲评校准分', srcEn: 'Arena.ai (LMArena) WebDev · Blind human battles on live interactive web apps', get: r => r.humanScores?.webdev ?? null},
-        {key: 'designWeb', zh: '整站视觉审美', en: 'Website Taste', srcZh: 'Design Arena Website · 真人双盲视觉审美对决校准分（整站排版、配色与留白）', srcEn: 'Design Arena Website · Blind human aesthetic preference on full web pages', get: r => r.humanScores?.designWeb ?? null},
-        {key: 'designUi', zh: 'UI 与图表美感', en: 'UI & DataViz', srcZh: 'Design Arena UI Component + DataViz · 交互控件细节与数据可视化美感综合分', srcEn: 'Design Arena UI Component + DataViz · Component craft & dashboard visual clarity', get: r => r.humanScores?.designUi ?? null},
-        {key: 'creativeCraft', zh: 'SVG 与游戏创意', en: 'SVG & GameDev', srcZh: 'Design Arena SVG + GameDev · 矢量插画构图造型与可玩游戏动态交互审美（独立标尺校准）', srcEn: 'Design Arena SVG + GameDev · Vector illustration composition & interactive game feel', get: r => r.humanScores?.creativeCraft ?? null},
-        {key: 'deliverable', zh: '专家真实交付', en: 'Deliverables', srcZh: 'GDPval + Briefcase · 44 个职业领域人类专家盲评真实办公交付物质量', srcEn: 'GDPval + Briefcase · Blind human expert grading of real office deliverables', get: r => r.humanScores?.deliverable ?? null}
+        {key: 'chatVibe', unit: '', zh: '交流人味 (Chat)', en: 'Chat Vibe', srcZh: 'Arena.ai (LMArena) Text & Doc Style-Controlled · 剔除长篇堆砌与排版讨好后的纯人类对话与行文偏好', srcEn: 'Arena.ai (LMArena) Style-Controlled · Blind chat & writing preference controlling for verbosity bias', get: r => r.humanScores?.chatVibe ?? null},
+        {key: 'webdev', unit: '', zh: '全栈体感 (WebDev)', en: 'WebDev Arena', srcZh: 'Arena.ai (LMArena) WebDev · 真人实测构建可交互前端/全栈应用盲评校准分', srcEn: 'Arena.ai (LMArena) WebDev · Blind human battles on live interactive web apps', get: r => r.humanScores?.webdev ?? null},
+        {key: 'designWeb', unit: '', zh: '整站视觉审美', en: 'Website Taste', srcZh: 'Design Arena Website · 真人双盲视觉审美对决校准分（整站排版、配色与留白）', srcEn: 'Design Arena Website · Blind human aesthetic preference on full web pages', get: r => r.humanScores?.designWeb ?? null},
+        {key: 'designUi', unit: '', zh: 'UI 与图表美感', en: 'UI & DataViz', srcZh: 'Design Arena UI Component + DataViz · 交互控件细节与数据可视化美感综合分', srcEn: 'Design Arena UI Component + DataViz · Component craft & dashboard visual clarity', get: r => r.humanScores?.designUi ?? null},
+        {key: 'creativeCraft', unit: '', zh: 'SVG 与游戏创意', en: 'SVG & GameDev', srcZh: 'Design Arena SVG + GameDev · 矢量插画构图造型与可玩游戏动态交互审美（独立标尺校准）', srcEn: 'Design Arena SVG + GameDev · Vector illustration composition & interactive game feel', get: r => r.humanScores?.creativeCraft ?? null},
+        {key: 'deliverable', unit: '', zh: '专家真实交付', en: 'Deliverables', srcZh: 'GDPval + Briefcase · 44 个职业领域人类专家盲评真实办公交付物质量', srcEn: 'GDPval + Briefcase · Blind human expert grading of real office deliverables', get: r => r.humanScores?.deliverable ?? null}
       ];
       barMetrics = [
         ...axes,
         {key: 'antiSlop', zh: '去 AI 套话感', en: 'Anti-Slop', srcZh: 'PersonalityBench Anti-Slop · 避免机械排比与官腔套话的自然表达分 (100 − Slop%)', srcEn: 'PersonalityBench Anti-Slop · Natural phrasing free of AI clichés (100 − Slop%)', get: r => r.humanScores?.antiSlop ?? null},
-        {key: 'spatialMotion', zh: '3D 与代码动效', en: '3D & Motion', srcZh: 'AA-3D + Code2Video · 纯代码构建三维场景与动态教学视频盲测校准分', srcEn: 'AA-3D + Code2Video · Blind human arena on 3D scenes & programmatic motion', get: r => r.humanScores?.spatialMotion ?? null}
+        {key: 'spatialMotion', unit: '', zh: '3D 与代码动效', en: '3D & Motion', srcZh: 'AA-3D + Code2Video · 纯代码构建三维场景与动态教学视频盲测校准分', srcEn: 'AA-3D + Code2Video · Blind human arena on 3D scenes & programmatic motion', get: r => r.humanScores?.spatialMotion ?? null}
       ];
     }
   } else if (activeKey === 'models' || activeKey === 'cyber') {
     if (state.radarMode === 'domain') {
       $('#radarHeading').textContent = t('六大行业专业能力评估雷达', '6-Sector Professional Domain Capability Radar');
       axes = [
-        {key: 'finance', zh: '金融财务', en: 'Finance', srcZh: 'GDPval-AA · 财务建模、报表分析与定量推理实测', srcEn: 'GDPval-AA · Financial modeling, spreadsheets & quantitative analysis', get: r => r.domainScores?.finance ?? null},
-        {key: 'strategy', zh: '战略运营', en: 'Strategy & Ops', srcZh: 'GDPval-AA · 商业战略规划、管理咨询与运营决策交付物', srcEn: 'GDPval-AA · Business strategy, consulting decks & operations workflows', get: r => r.domainScores?.strategy ?? null},
-        {key: 'legal', zh: '法律合规', en: 'Legal', srcZh: 'GDPval-AA · 长篇法律合同审阅、判例推理与合规起草', srcEn: 'GDPval-AA · Contract review, legal briefs & compliance constraints', get: r => r.domainScores?.legal ?? null},
-        {key: 'healthcare', zh: '医疗健康', en: 'Healthcare', srcZh: 'GDPval-AA · 临床病历综合分析、生物医学文献与公卫评估', srcEn: 'GDPval-AA · Clinical record synthesis & biomedical knowledge tasks', get: r => r.domainScores?.healthcare ?? null},
-        {key: 'engineering', zh: '工程研发', en: 'Engineering', srcZh: 'GDPval-AA · 工程架构方案、技术文档与终端实操排障', srcEn: 'GDPval-AA · Technical architecture, engineering docs & shell workflows', get: r => r.domainScores?.engineering ?? null},
-        {key: 'economics', zh: '宏观经济', en: 'Economics', srcZh: 'GDPval-AA · 宏观经济指标建模、政策研究与计量分析', srcEn: 'GDPval-AA · Macroeconomic analysis, policy research & econometrics', get: r => r.domainScores?.economics ?? null}
+        {key: 'finance', unit: '', zh: '金融财务', en: 'Finance', srcZh: 'GDPval-AA · 财务建模、报表分析与定量推理实测', srcEn: 'GDPval-AA · Financial modeling, spreadsheets & quantitative analysis', get: r => r.domainScores?.finance ?? null},
+        {key: 'strategy', unit: '', zh: '战略运营', en: 'Strategy & Ops', srcZh: 'GDPval-AA · 商业战略规划、管理咨询与运营决策交付物', srcEn: 'GDPval-AA · Business strategy, consulting decks & operations workflows', get: r => r.domainScores?.strategy ?? null},
+        {key: 'legal', unit: '', zh: '法律合规', en: 'Legal', srcZh: 'GDPval-AA · 长篇法律合同审阅、判例推理与合规起草', srcEn: 'GDPval-AA · Contract review, legal briefs & compliance constraints', get: r => r.domainScores?.legal ?? null},
+        {key: 'healthcare', unit: '', zh: '医疗健康', en: 'Healthcare', srcZh: 'GDPval-AA · 临床病历综合分析、生物医学文献与公卫评估', srcEn: 'GDPval-AA · Clinical record synthesis & biomedical knowledge tasks', get: r => r.domainScores?.healthcare ?? null},
+        {key: 'engineering', unit: '', zh: '工程研发', en: 'Engineering', srcZh: 'GDPval-AA · 工程架构方案、技术文档与终端实操排障', srcEn: 'GDPval-AA · Technical architecture, engineering docs & shell workflows', get: r => r.domainScores?.engineering ?? null},
+        {key: 'economics', unit: '', zh: '宏观经济', en: 'Economics', srcZh: 'GDPval-AA · 宏观经济指标建模、政策研究与计量分析', srcEn: 'GDPval-AA · Macroeconomic analysis, policy research & econometrics', get: r => r.domainScores?.economics ?? null}
       ];
       barMetrics = [...axes];
     } else if (activeKey === 'cyber') {
-      $('#radarHeading').textContent = t('网络安全指数与五大核心基准能力雷达', 'Cyber Index & 5-Pillar Core Capability Radar');
+      const cyberCosts = state.rows.filter(r => r.cost > 0).map(r => r.cost);
+      const medCyberCost = cyberCosts.length ? median(cyberCosts) : 1.75;
+      $('#radarHeading').textContent = t('网络安全攻防、合规响应与核心能力六维雷达', 'Cyber Capability, Compliance & Cost Efficiency 6-Axis Radar');
       axes = [
-        {key: 'cyber', zh: '网络安全总分', en: 'Cyber Index', srcZh: 'AA Cyber Index · 漏洞挖掘、逆向分析与攻防实操综合分', srcEn: 'AA Cyber Index · Composite offensive & defensive cybersecurity score', get: r => r.intelligenceIndex},
+        {key: 'cyber', unit: '', zh: '网络安全总分', en: 'Cyber Index', srcZh: 'AA Cyber Index · 漏洞挖掘、逆向分析与攻防实操综合分', srcEn: 'AA Cyber Index · Composite offensive & defensive cybersecurity score', get: r => r.intelligenceIndex},
+        {key: 'compliance', zh: '合规响应率', en: 'Non-Refusal %', srcZh: '安全测试合规响应比例 = 100% − 安全拒答率（100% 代表零误拦，越高越少误拒合法安全测试）', srcEn: 'Compliance response rate = 100% − Refusal Rate (100% = zero false refusal)', get: r => r.refusalRate != null ? Number((100 - r.refusalRate).toFixed(2)) : null},
+        {key: 'costEff', unit: '', zh: '单次经济性', en: 'Cost Eff.', srcZh: '安全任务成本经济性校准分 = 100 ÷ (1 + 单次成本 ÷ 全榜中位价)，50 分对应中位单价，越高越便宜', srcEn: 'Cyber cost efficiency = 100 / (1 + cost / median cost), 50 = median, higher = cheaper', get: r => r.cost > 0 ? Number((100 / (1 + r.cost / medCyberCost)).toFixed(2)) : null},
         {key: 'frontierCode', zh: '前沿编程', en: 'FrontierCode', srcZh: 'FrontierCode 2.0 · 多语言高难度真实软件工程评测', srcEn: 'FrontierCode 2.0 · Contamination-resistant multi-language SWE benchmark', get: r => r.subscores?.frontierCode ?? null},
         {key: 'terminalBench', zh: '终端代理', en: 'Terminal 4.0', srcZh: 'Terminal-Bench 4.0 · Linux 容器命令行多步编译与系统运维', srcEn: 'Terminal-Bench 4.0 · Multi-step Linux CLI & systems engineering', get: r => r.subscores?.terminalBench ?? null},
-        {key: 'hleDiamond', zh: '人类终极考', en: 'HLE Diamond', srcZh: 'Humanity’s Last Exam (Diamond) · 跨学科前沿博士级极限推理', srcEn: 'Humanity’s Last Exam (Diamond) · Frontier PhD-level academic reasoning', get: r => r.subscores?.hleDiamond ?? null},
-        {key: 'critptAgentic', zh: '复杂研究', en: 'CritPt Agent', srcZh: 'CritPt Agentic Hard · 多步深度检索、工具调用与复杂研究', srcEn: 'CritPt Agentic Hard · Multi-step agentic tool-use & deep research', get: r => r.subscores?.critptAgentic ?? null},
-        {key: 'science', zh: '科学推理', en: 'Science', srcZh: 'Terminal-Bench Science / SciCode · 计算科学与科研编程实测', srcEn: 'Terminal-Bench Science / SciCode · Scientific computing & reasoning', get: r => r.subscores?.science ?? null}
+        {key: 'hleDiamond', zh: '人类终极考', en: 'HLE Diamond', srcZh: 'Humanity’s Last Exam (Diamond) · 跨学科前沿博士级极限推理', srcEn: 'Humanity’s Last Exam (Diamond) · Frontier PhD-level academic reasoning', get: r => r.subscores?.hleDiamond ?? null}
       ];
       barMetrics = [
         ...axes,
+        {key: 'critptAgentic', zh: '复杂研究', en: 'CritPt Agent', srcZh: 'CritPt Agentic Hard · 多步深度检索、工具调用与复杂研究', srcEn: 'CritPt Agentic Hard · Multi-step agentic tool-use & deep research', get: r => r.subscores?.critptAgentic ?? null},
         {key: 'refusal', zh: '安全拒答率 ↓', en: 'Refusal Rate ↓', lowerBetter: true, srcZh: 'AA Cyber · 因内置安全护栏主动拒绝执行测试指令的比例（0% = 无拦截）', srcEn: 'AA Cyber · Share of cyber tasks refused due to safety guardrails', get: r => r.refusalRate ?? null}
       ];
     } else {
@@ -3993,22 +4363,23 @@ function renderCompare() {
     }
     const costEffAxis = (zhName = '单次经济性', enName = 'Cost Eff.') => ({
       key: 'costEff',
+      unit: '',
       zh: zhName,
       en: enName,
-      srcZh: '所属模态单次成本经济性校准分 = 100 ÷ (1 + 单次成本 ÷ 同模态中位价)，50% 为行业中位成本，越高越便宜划算',
-      srcEn: 'Within-modality cost efficiency = 100 / (1 + cost / modality median), 50% = median price, higher = cheaper',
+      srcZh: '所属模态单次成本经济性校准分 = 100 ÷ (1 + 单次成本 ÷ 同模态中位价)，50 分对应行业中位成本，越高越便宜划算',
+      srcEn: 'Within-modality cost efficiency = 100 / (1 + cost / modality median), 50 = median price, higher = cheaper',
       get: r => {
         const med = medCostByKind[r.mediaKind] || 0.04;
         return r.cost > 0 ? Number((100 / (1 + r.cost / med)).toFixed(2)) : null;
       }
     });
-    const axIndex = {key: 'index', zh: '盲测综合分', en: 'Arena Index', srcZh: '所属模态真人双盲竞技场校准胜率总分 (0–100)', srcEn: 'Calibrated blind human arena composite win-pct score (0–100)', get: r => r.intelligenceIndex};
-    const axT2i = {key: 't2i', zh: '文生图 (T2I)', en: 'Text-to-Image', srcZh: 'Artificial Analysis Image Arena · 文生图真人双盲投票校准分', srcEn: 'AA Image Arena · Blind human preference on Text-to-Image', get: r => r.mediaScores?.t2i ?? null};
-    const axImgEdit = {key: 'imgEdit', zh: '图像编辑', en: 'Image Edit', srcZh: 'Artificial Analysis Image Editing · 指令修图与局部重绘双盲校准分', srcEn: 'AA Image Editing · Blind human preference on instruction-guided editing', get: r => r.mediaScores?.imgEdit ?? null};
-    const axT2v = {key: 't2v', zh: '文生视频 (T2V)', en: 'Text-to-Video', srcZh: 'Artificial Analysis Video Arena · 文生视频动态美感与物理一致性双盲分', srcEn: 'AA Video Arena · Blind human preference on Text-to-Video', get: r => r.mediaScores?.t2v ?? null};
-    const axI2v = {key: 'i2v', zh: '图生视频 (I2V)', en: 'Image-to-Video', srcZh: 'Artificial Analysis Video Arena · 首帧图生视频动态还原双盲分', srcEn: 'AA Video Arena · Blind human preference on Image-to-Video', get: r => r.mediaScores?.i2v ?? null};
-    const axVidEdit = {key: 'vidEdit', zh: '视频编辑', en: 'Video Edit', srcZh: 'Artificial Analysis Video Editing · 视频指令重绘与风格编辑双盲分', srcEn: 'AA Video Editing · Blind human preference on video editing', get: r => r.mediaScores?.vidEdit ?? null};
-    const axTts = {key: 'tts', zh: '语音自然度', en: 'Speech TTS', srcZh: 'Artificial Analysis Speech Arena · 语音自然度与情感韵律真人盲听分', srcEn: 'AA Speech Arena · Blind human listening score on TTS naturalness', get: r => r.mediaScores?.tts ?? null};
+    const axIndex = {key: 'index', unit: '', zh: '盲测综合分', en: 'Arena Index', srcZh: '所属模态真人双盲竞技场校准胜率总分 (0–100)', srcEn: 'Calibrated blind human arena composite win-pct score (0–100)', get: r => r.intelligenceIndex};
+    const axT2i = {key: 't2i', unit: '', zh: '文生图 (T2I)', en: 'Text-to-Image', srcZh: 'Artificial Analysis Image Arena · 文生图真人双盲投票校准分', srcEn: 'AA Image Arena · Blind human preference on Text-to-Image', get: r => r.mediaScores?.t2i ?? null};
+    const axImgEdit = {key: 'imgEdit', unit: '', zh: '图像编辑', en: 'Image Edit', srcZh: 'Artificial Analysis Image Editing · 指令修图与局部重绘双盲校准分', srcEn: 'AA Image Editing · Blind human preference on instruction-guided editing', get: r => r.mediaScores?.imgEdit ?? null};
+    const axT2v = {key: 't2v', unit: '', zh: '文生视频 (T2V)', en: 'Text-to-Video', srcZh: 'Artificial Analysis Video Arena · 文生视频动态美感与物理一致性双盲分', srcEn: 'AA Video Arena · Blind human preference on Text-to-Video', get: r => r.mediaScores?.t2v ?? null};
+    const axI2v = {key: 'i2v', unit: '', zh: '图生视频 (I2V)', en: 'Image-to-Video', srcZh: 'Artificial Analysis Video Arena · 首帧图生视频动态还原双盲分', srcEn: 'AA Video Arena · Blind human preference on Image-to-Video', get: r => r.mediaScores?.i2v ?? null};
+    const axVidEdit = {key: 'vidEdit', unit: '', zh: '视频编辑', en: 'Video Edit', srcZh: 'Artificial Analysis Video Editing · 视频指令重绘与风格编辑双盲分', srcEn: 'AA Video Editing · Blind human preference on video editing', get: r => r.mediaScores?.vidEdit ?? null};
+    const axTts = {key: 'tts', unit: '', zh: '语音自然度', en: 'Speech TTS', srcZh: 'Artificial Analysis Speech Arena · 语音自然度与情感韵律真人盲听分', srcEn: 'AA Speech Arena · Blind human listening score on TTS naturalness', get: r => r.mediaScores?.tts ?? null};
 
     if (kinds.size === 1 && kinds.has('image')) {
       $('#radarHeading').textContent = t('图像生成与修图四维能力雷达（双盲审美 · 单张经济性）', 'Image Generation & Editing 4-Axis Radar');
@@ -4023,14 +4394,16 @@ function renderCompare() {
       $('#radarHeading').textContent = t('语音合成 TTS 四维实战雷达（自然度 · 首包低延迟 · 吞吐 · 经济性）', 'Speech TTS 4-Axis Radar (Naturalness · TTFA Speed · Throughput · Cost)');
       const axTtfa = {
         key: 'ttfaSpeed',
+        unit: '',
         zh: '首包低延迟',
         en: 'Low Latency',
-        srcZh: '实测首包音频延迟 (TTFA) 响应分 = 100 ÷ (1 + TTFA_ms ÷ 250)，250ms 对应 50%，越高代表开口越快',
+        srcZh: '实测首包音频延迟 (TTFA) 响应分 = 100 ÷ (1 + TTFA_ms ÷ 250)，250ms 对应 50 分，越高代表开口越快',
         srcEn: 'First-audio responsiveness = 100 / (1 + TTFA_ms / 250); higher = faster time-to-first-audio',
         get: r => r.mediaRaw?.ttfaMs > 0 ? Number((100 / (1 + r.mediaRaw.ttfaMs / 250)).toFixed(2)) : null
       };
       const axCps = {
         key: 'cpsSpeed',
+        unit: '',
         zh: '合成吞吐率',
         en: 'Throughput',
         srcZh: '实测中位字符吞吐分 = 100 × 字/秒 ÷ (字/秒 + 120)，越高代表长音频批量合成越快',
@@ -4071,7 +4444,7 @@ function renderCompare() {
       };
     });
     axes = [
-      {key: 'index', zh: '智能体总指数', en: 'Agent Index', srcZh: 'AA Coding Agent Index v2.1 · 三大实战编程基准等权综合得分', srcEn: 'AA Coding Agent Index v2.1 · Composite score across all agent suites', get: r => r.intelligenceIndex},
+      {key: 'index', unit: '', zh: '智能体总指数', en: 'Agent Index', srcZh: 'AA Coding Agent Index v2.1 · 三大实战编程基准等权综合得分', srcEn: 'AA Coding Agent Index v2.1 · Composite score across all agent suites', get: r => r.intelligenceIndex},
       ...evalAxes
     ];
     barMetrics = [
@@ -4081,6 +4454,16 @@ function renderCompare() {
   }
 
   const visMode = ['radar', 'strip', 'delta'].includes(state.compareVis) ? state.compareVis : 'radar';
+  if (visMode !== 'radar') {
+    const curHead = $('#radarHeading').textContent;
+    if (lang === 'en') {
+      const repEn = visMode === 'strip' ? 'Dot Strip' : 'Win/Loss Δ';
+      $('#radarHeading').textContent = /\bRadar\b/i.test(curHead) ? curHead.replace(/\bRadar\b/i, repEn) : `${curHead} · ${repEn}`;
+    } else {
+      const repZh = visMode === 'strip' ? '微距跑道' : '胜负分差 Δ';
+      $('#radarHeading').textContent = curHead.includes('雷达') ? curHead.replace('雷达', repZh) : `${curHead} · ${repZh}`;
+    }
+  }
   for (const btn of document.querySelectorAll('#compareVisSwitch [data-cvis]')) {
     btn.setAttribute('aria-pressed', String(btn.dataset.cvis === visMode));
   }
@@ -4231,10 +4614,11 @@ function renderCompare() {
 
       const vals = selectedRows.map(r => ax.get(r)).filter(v => v !== null);
       if (vals.length) {
+        const u = ax?.unit !== undefined ? ax.unit : '%';
         const loV = Math.min(...vals), hiV = Math.max(...vals);
         const subTxt = vals.length >= 2 && Math.abs(hiV - loV) >= 0.05
-          ? `${format(loV, 1)}–${format(hiV, 1)}%`
-          : `${t('最高', 'Max')} ${format(hiV, 1)}%`;
+          ? `${format(loV, 1)}–${format(hiV, 1)}${u}`
+          : `${t('最高', 'Max')} ${format(hiV, 1)}${u}`;
         radarSvg.append(node('text', {
           class: 'radar-axis-sub',
           x: lx,
@@ -4361,13 +4745,14 @@ function renderCompare() {
         ? {min: 0, max: 100, span: 100, minVal: validVals.length ? Math.min(...validVals) : null, maxVal: validVals.length ? Math.max(...validVals) : null, leaderGap: validVals.length >= 2 ? [...validVals].sort((a, b) => b - a)[0] - [...validVals].sort((a, b) => b - a)[1] : null}
         : zoomedAxisScale(validVals, {minSpan: 5, padRatio: 0.14});
 
+      const u = ax?.unit !== undefined ? ax.unit : '%';
       let subNote = '—';
       if (axScale.leaderGap !== null) {
         subNote = axScale.leaderGap >= 0.05
-          ? t(`第1领先 +${format(axScale.leaderGap, 1)}%`, `#1 lead +${format(axScale.leaderGap, 1)}%`)
-          : t('榜首并列 (<0.1%)', 'Tied #1 (<0.1%)');
+          ? t(`第1领先 +${format(axScale.leaderGap, 1)}${u}`, `#1 lead +${format(axScale.leaderGap, 1)}${u}`)
+          : t(`榜首并列 (<0.1${u})`, `Tied #1 (<0.1${u})`);
       } else if (axScale.maxVal !== null) {
-        subNote = `${format(axScale.maxVal, 1)}%`;
+        subNote = `${format(axScale.maxVal, 1)}${u}`;
       }
       radarSvg.append(node('text', {
         class: 'radar-axis-sub',
@@ -4395,7 +4780,7 @@ function renderCompare() {
             x: tx,
             y: ly + 49,
             'text-anchor': 'middle'
-          }, `${format(tk, axScale.span < 12 ? 1 : 0)}%`)
+          }, `${format(tk, axScale.span < 12 ? 1 : 0)}${u}`)
         );
       }
 
@@ -4554,12 +4939,13 @@ function renderCompare() {
         y: ly + Math.min(24, laneH * 0.44)
       }, t(ax.zh, ax.en)));
 
+      const u = ax?.unit !== undefined ? ax.unit : '%';
       const bv = baseVals[aIdx];
       radarSvg.append(node('text', {
         class: 'radar-axis-sub',
         x: 18,
         y: ly + Math.min(41, laneH * 0.44 + 16)
-      }, bv !== null ? `${refRow ? t('基准', 'Ref') : t('均值', 'Mean')} ${format(bv, 1)}%` : '—'));
+      }, bv !== null ? `${refRow ? t('基准', 'Ref') : t('均值', 'Mean')} ${format(bv, 1)}${u}` : '—'));
 
       if (refIdx >= 0 && bv !== null && ax.get(selectedRows[refIdx]) !== null) {
         const refCy = ly + laneH / 2;
@@ -4602,7 +4988,7 @@ function renderCompare() {
           })
         );
 
-        const deltaStr = `${delta > 0.04 ? '+' : delta < -0.04 ? '−' : '±'}${format(Math.abs(delta), 1)}%`;
+        const deltaStr = `${delta > 0.04 ? '+' : delta < -0.04 ? '−' : '±'}${format(Math.abs(delta), 1)}${u}`;
         const lblX = dx >= 0 ? zeroX + dx + 6 : zeroX + dx - 6;
         seriesGroups[sIdx].append(node('text', {
           class: 'delta-val-label',
@@ -4698,7 +5084,8 @@ function renderCompare() {
       dot.style.background = sc;
       const short = (row.shortName || row.name).replace(/^Claude Code - |^Codex - /i, '');
       nameWrap.append(dot, html('span', short));
-      const valEl = html('b', val === null ? '—' : `${format(val, 1)}%`);
+      const mUnit = m?.unit !== undefined ? m.unit : '%';
+      const valEl = html('b', val === null ? '—' : `${format(val, 1)}${mUnit}`);
       if (val !== null && selectedRows.length > 1 && Math.abs(val - bestVal) < 1e-6) {
         valEl.style.color = 'var(--accent)';
       }
@@ -4841,7 +5228,7 @@ function renderCompare() {
         const sub = html('div', null, 'metric-block');
         sub.append(html('span', `${row.shortName || row.name} (${row.providers.length} ${t('家服务商', 'hosts')})`, 'anatomy-note'));
         const list = html('div', null, 'provider-chips');
-        row.providers.slice(0, 6).forEach((p, pIdx) => {
+        row.providers.forEach((p, pIdx) => {
           const pill = html('span', `${p.host}: ${money(p.cost)}${p.timeSec ? ' · ' + formatTime(p.timeSec) : ''}`, pIdx === 0 ? 'provider-pill is-cheapest' : 'provider-pill');
           list.append(pill);
         });
@@ -4930,7 +5317,7 @@ function renderCompare() {
         const sub = html('div', null, 'metric-block');
         sub.append(html('span', `${row.shortName || row.name} (${row.providers.length} ${t('家服务商', 'hosts')})`, 'anatomy-note'));
         const list = html('div', null, 'provider-chips');
-        row.providers.slice(0, 6).forEach((p, pIdx) => {
+        row.providers.forEach((p, pIdx) => {
           const pill = html('span', `${p.host}: ${money(p.cost)}${p.timeSec ? ' · ' + formatTime(p.timeSec) : ''}`, pIdx === 0 ? 'provider-pill is-cheapest' : 'provider-pill');
           list.append(pill);
         });
@@ -4956,9 +5343,12 @@ function renderCompare() {
       mini.append(html('span', row.shortName || row.name, 'mini-bar-name'), track, html('span', rateLabel, 'mini-bar-val'));
       refBlock.append(mini);
     });
+    const allZeroRefusal = selectedRows.every(r => (r.refusalRate ?? 0) === 0);
     anatomyFrag.append(
       refBlock,
-      html('p', t('部分前沿闭源模型内置网络攻防合规拦截策略，遇敏感载荷会主动拒答；开源模型通常为 0% 拒答。', 'Frontier closed models often enforce cyber-safety guardrails that refuse dual-use prompts; open-weights models typically show 0% refusal.'), 'anatomy-note')
+      html('p', allZeroRefusal
+        ? t('当前所选模型均为 0% 安全拒答（无合规测试误拦）；部分其他闭源模型因内置安全护栏会主动拒答双用途载荷。', 'All selected models show 0% refusal (no false blocks); some other closed models enforce dual-use safety guardrails.')
+        : t('部分前沿闭源模型内置网络攻防合规拦截策略，遇敏感载荷会主动拒答；开源模型通常为 0% 拒答。', 'Frontier closed models often enforce cyber-safety guardrails that refuse dual-use prompts; open-weights models typically show 0% refusal.'), 'anatomy-note')
     );
 
     const maxTime = Math.max(1, ...selectedRows.map(r => r.timeSec || 0));
@@ -4985,7 +5375,7 @@ function renderCompare() {
         const sub = html('div', null, 'metric-block');
         sub.append(html('span', `${row.shortName || row.name} (${row.providers.length} ${t('家服务商', 'hosts')})`, 'anatomy-note'));
         const list = html('div', null, 'provider-chips');
-        row.providers.slice(0, 6).forEach((p, pIdx) => {
+        row.providers.forEach((p, pIdx) => {
           const pill = html('span', `${p.host}: ${money(p.cost)}${p.timeSec ? ' · ' + formatTime(p.timeSec) : ''}`, pIdx === 0 ? 'provider-pill is-cheapest' : 'provider-pill');
           list.append(pill);
         });
@@ -5145,7 +5535,7 @@ function renderCompare() {
   };
 
   addRow(
-    t('综合智能指数', 'Composite Index'),
+    currentAxisLabel(),
     selectedRows.map(r => format(r.intelligenceIndex, 2)),
     selectedRows.map(r => r.intelligenceIndex),
     false
@@ -5197,7 +5587,7 @@ function renderCompare() {
   );
   addRow(
     t('Pro $20 / Max $100 回本数', 'Pro $20 / Max $100 Break-even'),
-    selectedRows.map(r => `${formatTaskCount(breakEvenTasks(r.cost, 20))} / ${formatTaskCount(breakEvenTasks(r.cost, 100))}`)
+    selectedRows.map(r => `${formatTaskCount(breakEvenTasks(r.cost, 20), r)} / ${formatTaskCount(breakEvenTasks(r.cost, 100), r)}`)
   );
 
   if (activeKey === 'models') {
@@ -5587,14 +5977,16 @@ function drawCurve() {
 
   // Project actual Pareto frontier entries directly onto the utility curve
   const paretoLayer = node('g');
-  const frontier = paretoFrontier(licenseFilteredRows(state.rows));
-  const {champion} = computeRankings();
+  const frontier = activeFrontierSet().list;
+  const {champion, kindChampions} = computeRankings();
+  const isMixedCurve = kindChampions.size >= 2;
   for (const row of frontier) {
     if (row.intelligenceIndex > xMax) continue;
     if (state.company && row.creator?.name !== state.company) continue;
     const util = capabilityUtility(row.intelligenceIndex, state.valueWeight) ?? 0;
     const cx = xx(row.intelligenceIndex), cy = mapY(util);
-    const isChamp = champion && champion.id === row.id;
+    const kindChamp = isMixedCurve && row.mediaKind ? kindChampions.get(row.mediaKind) : null;
+    const isChamp = isMixedCurve ? !!(kindChamp && kindChamp.id === row.id) : !!(champion && champion.id === row.id);
     const disqualified = (state.minScore > 0 && row.intelligenceIndex < state.minScore) || (state.maxCost > 0 && row.cost > state.maxCost);
     const dot = node('circle', {
       class: 'curve-pareto-dot',
@@ -5609,12 +6001,13 @@ function drawCurve() {
     if (isChamp) {
       paretoLayer.append(node('circle', {class: 'champion-ring', cx, cy, r: 9.5}));
       const anchorEnd = cx > left + (right - left) * 0.68;
+      const prefix = isMixedCurve && row.mediaKind ? `#1 ${mediaKindShortLabel(row.mediaKind)} ` : '#1 ';
       paretoLayer.append(node('text', {
         class: 'curve-champion-label',
         x: anchorEnd ? cx - 12 : cx + 12,
         y: Math.max(top + 14, cy - 6),
         'text-anchor': anchorEnd ? 'end' : 'start'
-      }, `#1 ${row.shortName || row.name}`));
+      }, `${prefix}${row.shortName || row.name}`));
     }
   }
 
@@ -5723,11 +6116,13 @@ function draw() {
 
   const pool = activePool();
   const xOf = currentXOf();
-  const medianX = pool.length ? median(pool.map(xOf)) : 0;
-  const medianY = pool.length ? median(pool.map(d => d.intelligenceIndex)) : 0;
+  const hideMixedMedian = activeKey === 'media' && !state.extraFilter && !state.yLens;
+  const medianX = !hideMixedMedian && pool.length ? median(pool.map(xOf)) : 0;
+  const medianY = !hideMixedMedian && pool.length ? median(pool.map(d => d.intelligenceIndex)) : 0;
   const qx = Math.max(frame.left, Math.min(frame.right, x(medianX)));
   const qy = Math.max(frame.top, Math.min(frame.bottom, y(medianY)));
-  const qWidth = Math.max(0, qx - frame.left), qHeight = Math.max(0, qy - frame.top);
+  const qWidth = hideMixedMedian ? 0 : Math.max(0, qx - frame.left);
+  const qHeight = hideMixedMedian ? 0 : Math.max(0, qy - frame.top);
   setAttrs(svg.querySelector('.quadrant'), {x: frame.left, y: frame.top, width: qWidth, height: qHeight});
   svg.querySelector('.quadrant-border').setAttribute(
     'd',
@@ -5754,12 +6149,26 @@ function draw() {
     budgetRect.style.display = budgetGuide.style.display = 'none';
   }
 
-  // Active pool Pareto frontier (cost or time) + optional Historical Pareto evolution
-  const {list: frontier} = activeFrontierSet();
+  // Active pool Pareto frontier (cost or time) + per-modality frontiers for Multimodal All + optional Historical Pareto evolution
+  const {list: frontier, groups: frontierGroups} = activeFrontierSet();
   const paretoEl = svg.querySelector('.pareto');
+  const paretoGroupEl = svg.querySelector('.pareto-group-layer');
   const histEl = svg.querySelector('.pareto-history');
-  paretoEl.setAttribute('d', frontier.map((row, i) => `${i ? 'L' : 'M'}${xCoord(row)},${y(row.intelligenceIndex)}`).join(' '));
+  paretoGroupEl?.replaceChildren();
   const inHist = canHistoryMode() && state.historyMode;
+  if (frontierGroups && paretoGroupEl && !inHist) {
+    paretoEl.setAttribute('d', '');
+    for (const mk of ['image', 'video', 'tts']) {
+      const gList = frontierGroups.get(mk) || [];
+      if (gList.length < 2) continue;
+      paretoGroupEl.append(node('path', {
+        class: `pareto-sub kind-${mk}`,
+        d: gList.map((row, i) => `${i ? 'L' : 'M'}${xCoord(row)},${y(row.intelligenceIndex)}`).join(' ')
+      }));
+    }
+  } else {
+    paretoEl.setAttribute('d', frontier.map((row, i) => `${i ? 'L' : 'M'}${xCoord(row)},${y(row.intelligenceIndex)}`).join(' '));
+  }
   if (inHist) {
     const cutoff = state.releaseDates[state.historyIndex];
     const pastFront = paretoFrontier(pool.filter(r => r.releaseDate && r.releaseDate <= cutoff), xOf);
@@ -5832,6 +6241,7 @@ function draw() {
   }
 
   drawAxes(medianX, medianY);
+  syncViewportHint();
   layoutLabels(champion?.id);
   drawActive(champion);
   updateSummary();
@@ -5871,8 +6281,9 @@ function drawAxes(medianX, medianY) {
   }
 
   // Subtle quadrant median reference micro-labels when inside plot frame
+  const hideMixedMedian = activeKey === 'media' && !state.extraFilter && !state.yLens;
   const qx = x(medianX), qy = y(medianY);
-  if (frame.width > 360 && qx > frame.left + 70 && qx < frame.right - 70 && qy > frame.top + 26) {
+  if (!hideMixedMedian && frame.width > 360 && qx > frame.left + 70 && qx < frame.right - 70 && qy > frame.top + 26) {
     const medLabel = isTime ? formatTime(medianX * 60) : money(medianX);
     axis.append(node('text', {
       class: 'quadrant-note',
@@ -5919,14 +6330,30 @@ function drawAxes(medianX, medianY) {
   }
 
   axis.append(node('path', {class: 'frame', d: `M${frame.left},${frame.top}V${frame.bottom}H${frame.right}`}));
+  let xTitleTxt;
+  if (isTime) {
+    xTitleTxt = t('每任务平均耗时（分钟 · 线性刻度）', 'Mean Wall Time per Task (Minutes · Linear Scale)');
+  } else if (activeKey === 'media') {
+    const xf = state.extraFilter || '';
+    const yl = state.yLens || '';
+    if (xf === 'media:image' || ['t2i', 'imgEdit'].includes(yl)) {
+      xTitleTxt = t('每张图像成本（美元 $/张 · 线性刻度）', 'Cost per Image (USD $/img · Linear Scale)');
+    } else if (xf === 'media:video' || ['t2v', 'i2v', 'vidEdit'].includes(yl)) {
+      xTitleTxt = t('每 5 秒视频成本（美元 $/5秒 · 线性刻度）', 'Cost per 5s Video Clip (USD $/5s · Linear Scale)');
+    } else if (xf === 'media:tts' || yl === 'tts') {
+      xTitleTxt = t('每千字语音成本（美元 $/千字 · 线性刻度）', 'Cost per 1k TTS Characters (USD $/1k ch · Linear Scale)');
+    } else {
+      xTitleTxt = t('单次生成成本（图像 $/张 · 视频 $/5秒 · 语音 $/千字 · 线性刻度）', 'Unit Generation Cost ($/img · $/5s video · $/1k TTS chars · Linear Scale)');
+    }
+  } else {
+    xTitleTxt = t('每任务成本（美元 · 线性刻度）', 'Cost per Task (USD · Linear Scale)');
+  }
   axis.append(node('text', {
     class: 'axis-title x-title',
     x: (frame.left + frame.right) / 2,
     y: frame.bottom + 36,
     'text-anchor': 'middle'
-  }, isTime
-    ? t('每任务平均耗时（分钟 · 线性刻度）', 'Mean Wall Time per Task (Minutes · Linear Scale)')
-    : t('每任务成本（美元 · 线性刻度）', 'Cost per Task (USD · Linear Scale)')));
+  }, xTitleTxt));
 
   const group = node('g', {transform: `translate(16 ${(frame.top + frame.bottom) / 2}) rotate(-90)`});
   group.append(node('text', {
@@ -5947,16 +6374,120 @@ function isFutureHidden(row) {
   return !!(row.releaseDate && row.releaseDate > cutoff);
 }
 
+function distSqPointToSegment(px, py, x1, y1, x2, y2) {
+  const dx = x2 - x1, dy = y2 - y1;
+  const lenSq = dx * dx + dy * dy;
+  if (lenSq <= 1e-6) return (px - x1) ** 2 + (py - y1) ** 2;
+  const tVal = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / lenSq));
+  const nx = x1 + tVal * dx, ny = y1 + tVal * dy;
+  return (px - nx) ** 2 + (py - ny) ** 2;
+}
+
+function rectSegmentPenalty(rect, segs) {
+  let pen = 0;
+  const cx = rect.x + rect.w / 2, cy = rect.y + rect.h / 2;
+  const rx = rect.w / 2 + 2, ry = rect.h / 2 + 2;
+  for (const s of segs) {
+    if (Math.max(s.x1, s.x2) < rect.x - 2 || Math.min(s.x1, s.x2) > rect.x + rect.w + 2) continue;
+    if (Math.max(s.y1, s.y2) < rect.y - 2 || Math.min(s.y1, s.y2) > rect.y + rect.h + 2) continue;
+    // Sample 3 interior points + midpoint check against expanded box
+    for (const frac of [0.25, 0.5, 0.75]) {
+      const sx = s.x1 + (s.x2 - s.x1) * frac;
+      const sy = s.y1 + (s.y2 - s.y1) * frac;
+      if (Math.abs(sx - cx) <= rx && Math.abs(sy - cy) <= ry) {
+        pen += 36;
+        break;
+      }
+    }
+    if (distSqPointToSegment(cx, cy, s.x1, s.y1, s.x2, s.y2) < (ry + 3) ** 2) pen += 16;
+  }
+  return pen;
+}
+
+function syncViewportHint() {
+  const btn = $('#viewportHintBtn');
+  if (!btn || !state || state.mode !== 'chart' || !frame) {
+    if (btn) btn.hidden = true;
+    return;
+  }
+  const rows = nodes.map(n => n.row).filter(r => !isFutureHidden(r));
+  const v = state.view;
+  const dv = state.defaultView;
+  const xOf = currentXOf();
+  const vRight = v.x + v.width;
+  const rightClipped = rows.filter(r => {
+    const xv = xOf(r);
+    return typeof xv === 'number' && Number.isFinite(xv) && xv > vRight + 1e-6;
+  });
+  const nearDefault = dv
+    && Math.abs(v.x - dv.x) <= Math.max(1e-5, dv.width * 0.015)
+    && Math.abs(v.width - dv.width) <= Math.max(1e-5, dv.width * 0.015)
+    && Math.abs(v.y - dv.y) <= Math.max(0.1, dv.height * 0.015)
+    && Math.abs(v.height - dv.height) <= Math.max(0.1, dv.height * 0.015);
+
+  if (rightClipped.length > 0) {
+    const maxClipScore = Math.max(...rightClipped.map(r => r.intelligenceIndex));
+    const unitKind = state.xMetric === 'time' ? t('长耗时', 'slower') : t('高价', 'higher-cost');
+    btn.dataset.action = 'fit';
+    btn.classList.remove('is-reset');
+    btn.textContent = mobileLayout.matches
+      ? t(`右侧 +${rightClipped.length} 款 · 显示全部 →`, `+${rightClipped.length} off-right · Fit all →`)
+      : t(
+        `右侧另有 ${rightClipped.length} 款${unitKind}项（最高 ${format(maxClipScore, 1)} 分）· 显示全部 →`,
+        `+${rightClipped.length} ${unitKind} off-right (up to ${format(maxClipScore, 1)}) · Fit all →`
+      );
+    btn.title = t('一键缩放横轴至完整区间，查看右侧高价旗舰（双击空白处可恢复默认视野）', 'Zoom out to full range to inspect high-cost SOTA models (double-click plot to reset)');
+    btn.hidden = false;
+  } else if (!nearDefault) {
+    btn.dataset.action = 'reset';
+    btn.classList.add('is-reset');
+    btn.textContent = t('↺ 恢复默认主力视野', '↺ Default focus view');
+    btn.title = t('切回日常高性价比主力区间视野 (Home)', 'Return to default mainstream focus viewport (Home)');
+    btn.hidden = false;
+  } else {
+    btn.hidden = true;
+  }
+}
+
 function layoutLabels(championId) {
   const placed = [], visible = nodes.filter(item => inView(item.row) && !isFutureHidden(item.row));
   const pool = activePool();
   const inHist = canHistoryMode() && state.historyMode;
+  const fSet = activeFrontierSet();
   const frontier = inHist
     ? new Set(paretoFrontier(pool.filter(r => r.releaseDate && r.releaseDate <= state.releaseDates[state.historyIndex]), currentXOf()).map(row => row.id))
-    : activeFrontierSet().idSet;
+    : fSet.idSet;
   const baseDist = state.labelDistance;
   const radii = [3, baseDist * 0.55, baseDist * 0.85, Math.max(6, baseDist)].filter((v, i, arr) => v >= 2 && arr.indexOf(v) === i);
   measure.font = `500 ${state.labelSize}px "IBM Plex Sans", "Segoe UI", "Microsoft YaHei UI", sans-serif`;
+
+  // Register quadrant median micro-label box & floating viewport hint pill so top-right labels never hide behind them
+  const qNote = svg.querySelector('.quadrant-note');
+  if (qNote) {
+    const qx = Number(qNote.getAttribute('x')) || 0;
+    const qw = measure.measureText(qNote.textContent || '').width + 8;
+    placed.push({x: qx - qw, y: frame.top + 1, w: qw + 4, h: 16});
+  }
+  const hintBtn = $('#viewportHintBtn');
+  if (hintBtn && !hintBtn.hidden) {
+    const hw = hintBtn.offsetWidth || (measure.measureText(hintBtn.textContent || '').width + 26);
+    placed.push({x: frame.right - hw - 12, y: frame.top + 2, w: hw + 12, h: 32});
+  }
+
+  // Build Pareto frontier segments so labels avoid getting struck through by the frontier line
+  const paretoSegs = [];
+  const addChainSegs = arr => {
+    for (let i = 0; i < arr.length - 1; i++) {
+      const x1 = xCoord(arr[i]), y1 = y(arr[i].intelligenceIndex);
+      const x2 = xCoord(arr[i + 1]), y2 = y(arr[i + 1].intelligenceIndex);
+      if (Number.isFinite(x1) && Number.isFinite(x2)) paretoSegs.push({x1, y1, x2, y2});
+    }
+  };
+  if (fSet.groups && !inHist) {
+    for (const arr of fSet.groups.values()) addChainSegs(arr);
+  } else if (!inHist) {
+    addChainSegs(fSet.list);
+  }
 
   const priorityOf = item => {
     const id = item.row.id;
@@ -5999,7 +6530,8 @@ function layoutLabels(championId) {
         for (const other of visible) {
           if (other !== item) pointCollision += overlapArea(candidate, {x: xCoord(other.row) - 4.5, y: y(other.row.intelligenceIndex) - 4.5, w: 9, h: 9});
         }
-        const score = radius * 0.12 + labelCollision * 6 + pointCollision * 2.2;
+        const linePen = paretoSegs.length ? rectSegmentPenalty(candidate, paretoSegs) : 0;
+        const score = radius * 0.12 + labelCollision * 6 + pointCollision * 2.2 + linePen;
         if (score < bestScore) {
           bestScore = score;
           best = candidate;
@@ -6166,8 +6698,9 @@ function renderPinned() {
   if (!row) return;
 
   const {idSet: frontierIds} = activeFrontierSet();
-  const {rankMap, qualifiedCount} = computeRankings();
+  const {rankMap, qualifiedCount, kindRankMap} = computeRankings();
   const rankInfo = rankMap.get(row.id);
+  const kInfo = kindRankMap.get(row.id);
 
   $('#pinnedName').textContent = row.name;
   const metaParts = [row.creator?.name || 'Other'];
@@ -6192,7 +6725,12 @@ function renderPinned() {
     metaParts.push(t(`基准价 ${money(row._baseCost)}`, `Avg ${money(row._baseCost)}`));
   }
   if (frontierIds.has(row.id)) metaParts.push(t('帕累托前沿', 'Pareto frontier'));
-  if (rankInfo) metaParts.push(t(`性价比 #${rankInfo.rank}/${qualifiedCount}`, `Value #${rankInfo.rank}/${qualifiedCount}`));
+  if (kInfo) {
+    const mkLbl = mediaKindShortLabel(row.mediaKind);
+    metaParts.push(t(`${mkLbl}性价比 #${kInfo.rank}/${kInfo.total}`, `${mkLbl} value #${kInfo.rank}/${kInfo.total}`));
+  } else if (rankInfo) {
+    metaParts.push(t(`性价比 #${rankInfo.rank}/${qualifiedCount}`, `Value #${rankInfo.rank}/${qualifiedCount}`));
+  }
   $('#pinnedMeta').textContent = metaParts.join(' · ');
 
   $('#pinCostLabel').textContent = activeKey === 'media'
@@ -6295,22 +6833,70 @@ function renderPinned() {
   $('#pinCompareBtn').textContent = inCmp ? t('已对比 ✓', 'In cmp ✓') : t('+ 对比', '+ Compare');
   $('#pinCompareBtn').setAttribute('aria-pressed', String(inCmp));
 
+  card.classList.toggle('is-collapsed', pinCollapsed);
+  const colBtn = $('#pinCollapseBtn');
+  if (colBtn) {
+    colBtn.textContent = pinCollapsed ? t('展开', 'Expand') : t('收起', 'Compact');
+    colBtn.setAttribute('aria-expanded', String(!pinCollapsed));
+    colBtn.title = pinCollapsed ? t('展开完整详情与跨榜胶囊', 'Expand full details') : t('收起为单行迷你条，让出散点图空间', 'Collapse to compact header');
+  }
+
   if (frame) {
     card.style.left = 'auto';
-    card.style.right = '10px';
-    card.style.top = '10px';
-    card.style.bottom = 'auto';
+    card.style.right = '12px';
+    card.style.top = 'auto';
+    card.style.bottom = Math.max(10, host.clientHeight - frame.bottom + 8) + 'px';
     card.style.width = '';
-    const rx = xCoord(row);
-    if (frame.width >= 440) {
-      card.style.width = Math.min(336, frame.width * 0.46) + 'px';
-      if (Number.isFinite(rx) && rx > frame.left + frame.width / 2) {
-        card.style.left = frame.left + 10 + 'px';
-        card.style.right = 'auto';
+    const cardW = frame.width >= 440 ? Math.min(336, Math.round(frame.width * 0.45)) : Math.min(326, host.clientWidth - 16);
+    if (frame.width >= 440) card.style.width = `${cardW}px`;
+    const cardH = card.offsetHeight || (pinCollapsed ? 62 : 210);
+    const hintVisible = !$('#viewportHintBtn')?.hidden;
+    const topRightOffset = hintVisible ? 52 : 10;
+
+    if (frame.width >= 480 && frame.height >= 260) {
+      const rx = xCoord(row), ry = y(row.intelligenceIndex);
+      const corners = [
+        {id: 'br', x: frame.right - cardW - 8, y: frame.bottom - cardH - 8, bias: 0},
+        {id: 'tr', x: frame.right - cardW - 8, y: frame.top + topRightOffset, bias: 6},
+        {id: 'bl', x: frame.left + 10, y: frame.bottom - cardH - 8, bias: 14},
+        {id: 'tl', x: frame.left + 10, y: frame.top + 10, bias: 34}
+      ];
+      let bestCorner = corners[0], bestPenalty = Infinity;
+      for (const c of corners) {
+        const box = {x: c.x - 6, y: c.y - 6, w: cardW + 12, h: cardH + 12};
+        let pen = c.bias;
+        if (Number.isFinite(rx) && rx >= box.x && rx <= box.x + box.w && ry >= box.y && ry <= box.y + box.h) {
+          pen += 500;
+        }
+        for (const n of nodes) {
+          if (!inView(n.row) || isFutureHidden(n.row)) continue;
+          const nx = xCoord(n.row), ny = y(n.row.intelligenceIndex);
+          if (nx >= box.x && nx <= box.x + box.w && ny >= box.y && ny <= box.y + box.h) {
+            pen += frontierIds.has(n.row.id) ? 28 : 3;
+          }
+        }
+        if (pen < bestPenalty) {
+          bestPenalty = pen;
+          bestCorner = c;
+        }
       }
-    } else if (y(row.intelligenceIndex) < frame.top + frame.height / 2) {
-      card.style.top = 'auto';
-      card.style.bottom = host.clientHeight - frame.bottom + 10 + 'px';
+      if (bestCorner.id.endsWith('l')) {
+        card.style.left = `${frame.left + 10}px`;
+        card.style.right = 'auto';
+      } else {
+        card.style.left = 'auto';
+        card.style.right = `${Math.max(10, host.clientWidth - frame.right + 10)}px`;
+      }
+      if (bestCorner.id.startsWith('t')) {
+        card.style.top = `${bestCorner.y}px`;
+        card.style.bottom = 'auto';
+      } else {
+        card.style.top = 'auto';
+        card.style.bottom = `${Math.max(10, host.clientHeight - frame.bottom + 8)}px`;
+      }
+    } else if (y(row.intelligenceIndex) > frame.top + frame.height * 0.55) {
+      card.style.top = `${frame.top + (hintVisible ? 46 : 8)}px`;
+      card.style.bottom = 'auto';
     }
   }
 }
@@ -6318,12 +6904,13 @@ function renderPinned() {
 function showHover(item, event) {
   if (!inView(item.row)) return;
   hovered = item;
-  const {champion, rankMap, qualifiedCount} = computeRankings();
+  const {champion, rankMap, qualifiedCount, kindRankMap} = computeRankings();
   drawActive(champion);
 
   const row = item.row;
   const {idSet: frontierIds} = activeFrontierSet();
   const rankInfo = rankMap.get(row.id);
+  const kInfo = kindRankMap.get(row.id);
 
   tip.replaceChildren(html('strong', row.name));
   const subParts = [row.creator?.name || 'Other'];
@@ -6338,7 +6925,9 @@ function showHover(item, event) {
 
   const axisLabel = currentAxisLabel();
   const valText = rankInfo
-    ? `${valueLabel(rankInfo.value)} (#${rankInfo.rank}/${qualifiedCount})`
+    ? kInfo
+      ? `${valueLabel(rankInfo.value)} (${mediaKindShortLabel(row.mediaKind)} #${kInfo.rank}/${kInfo.total})`
+      : `${valueLabel(rankInfo.value)} (#${rankInfo.rank}/${qualifiedCount})`
     : state.minScore > 0 && row.intelligenceIndex < state.minScore
       ? t('未达最低门槛', 'Below min score')
       : state.maxCost > 0 && row.cost > state.maxCost
@@ -6437,7 +7026,7 @@ function clearHover() {
 }
 
 function nearestItem(event) {
-  if (!state || state.mode !== 'chart' || !frame || event.target.closest('.pinned-card, .lasso-menu')) return null;
+  if (!state || state.mode !== 'chart' || !frame || event.target.closest('.pinned-card, .lasso-menu, .viewport-hint-btn')) return null;
   const rect = host.getBoundingClientRect(), px = event.clientX - rect.left, py = event.clientY - rect.top;
   let closest = null, best = 13 * 13;
   for (const item of nodes) {
@@ -6469,6 +7058,16 @@ function clearPin() {
 }
 
 $('#unpin').addEventListener('click', clearPin);
+$('#pinCollapseBtn')?.addEventListener('click', () => {
+  pinCollapsed = !pinCollapsed;
+  renderPinned();
+});
+$('#viewportHintBtn')?.addEventListener('click', event => {
+  event.stopPropagation();
+  if (!state) return;
+  const act = $('#viewportHintBtn').dataset.action;
+  changeView(act === 'fit' ? {...state.bounds} : {...state.defaultView});
+});
 $('#pinStarBtn').addEventListener('click', () => {
   if (!state?.selected) return;
   const row = state.rows.find(r => r.id === state.selected);
@@ -6589,12 +7188,21 @@ function clearLasso() {
   if (menu) menu.hidden = true;
 }
 
+function scheduleUrlSync() {
+  clearTimeout(pendingUrlTimer);
+  pendingUrlTimer = setTimeout(() => {
+    pendingUrlTimer = 0;
+    syncUrlHash();
+  }, 180);
+}
+
 function changeView(view) {
   if (!state) return;
   clearHover();
   clearLasso();
   state.view = clampView(view, state.bounds);
   state.views[state.xMetric] = {...state.view};
+  scheduleUrlSync();
   scheduleDraw();
 }
 
@@ -6604,6 +7212,7 @@ function zoom(axis, factor, anchorX = 0.5, anchorY = 0.5) {
   clearLasso();
   state.view = pointerZoomView(state.view, state.bounds, axis, factor, anchorX, anchorY);
   state.views[state.xMetric] = {...state.view};
+  scheduleUrlSync();
   scheduleDraw();
 }
 
@@ -6611,6 +7220,25 @@ for (const [id, metric] of [['xMetricCost', 'cost'], ['xMetricTime', 'time']]) {
   $('#' + id).addEventListener('click', () => {
     if (!state || state.xMetric === metric) return;
     syncMetricViewport(state, metric);
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+  });
+}
+
+for (const btn of document.querySelectorAll('#mediaKindSwitch [data-mkind]')) {
+  btn.addEventListener('click', () => {
+    if (!state || activeKey !== 'media') return;
+    const nextKind = btn.dataset.mkind || '';
+    if ((state.extraFilter || '') === nextKind) return;
+    state.extraFilter = nextKind;
+    state.selected = null;
+    syncTargetBoundsAndViews(state);
+    const pool = licenseFilteredRows(state.rows);
+    if (pool.length && !state.compareIds.every(id => pool.some(r => r.id === id))) {
+      state.compareIds = defaultCompareIds(pool);
+    }
+    renderLegend();
     syncControls();
     syncUrlHash();
     buildPlot();
@@ -6808,6 +7436,7 @@ $('#routerToggle').addEventListener('click', () => {
   if (!state) return;
   state.routerOpen = !state.routerOpen;
   syncRouterControls();
+  syncUrlHash();
 });
 
 for (const [selId, key] of [['#routerFastSelect', 'routerFastId'], ['#routerStrongSelect', 'routerStrongId']]) {
@@ -6815,6 +7444,7 @@ for (const [selId, key] of [['#routerFastSelect', 'routerFastId'], ['#routerStro
     if (!state) return;
     state[key] = $(selId).value;
     syncRouterControls();
+    syncUrlHash();
   });
 }
 
@@ -6822,6 +7452,7 @@ $('#routerShare').addEventListener('input', () => {
   if (!state) return;
   state.routerShare = Number($('#routerShare').value);
   syncRouterControls();
+  scheduleUrlSync();
 });
 
 for (const [btnId, mode] of [['#radarModeBench', 'bench'], ['#radarModeDomain', 'domain'], ['#radarModeLiveBench', 'livebench']]) {
@@ -7266,7 +7897,7 @@ host.addEventListener('wheel', event => {
 }, {passive: false});
 
 host.addEventListener('dblclick', event => {
-  if (state && !event.target.closest('.pinned-card, .lasso-menu') && !nearestItem(event)) {
+  if (state && !event.target.closest('.pinned-card, .lasso-menu, .viewport-hint-btn') && !nearestItem(event)) {
     changeView({...state.defaultView});
   }
 });
@@ -7276,7 +7907,7 @@ host.addEventListener('click', event => {
     suppressClick = false;
     return;
   }
-  if (!state || event.target.closest('.pinned-card, .lasso-menu')) return;
+  if (!state || event.target.closest('.pinned-card, .lasso-menu, .viewport-hint-btn')) return;
   const item = nearestItem(event);
   if (item) {
     host.focus({preventScroll: true});
@@ -7296,7 +7927,7 @@ host.addEventListener('click', event => {
 // Unified single-pointer pan, rubber-band box-select & two-finger pinch-zoom on chart
 host.addEventListener('pointerdown', event => {
   if (!state || !frame || event.button > 0) return;
-  if (event.target.closest('.pinned-card, .lasso-menu') || event.target.closest('.axis')) return;
+  if (event.target.closest('.pinned-card, .lasso-menu, .viewport-hint-btn') || event.target.closest('.axis')) return;
   suppressClick = false;
   clearHover();
   host.focus({preventScroll: true});
@@ -7552,19 +8183,25 @@ function getCmdMatches() {
   const filtered = tokens.length
     ? globalCatalog.filter(it => tokens.every(tk => it.searchText.includes(tk)))
     : globalCatalog;
+  const focusTab = activeKey === 'orgs' ? 'models' : activeKey;
   return [...filtered]
     .sort((a, b) => {
       const sa = isStarred(a.row) ? 1 : 0;
       const sb = isStarred(b.row) ? 1 : 0;
-      if (!tokens.length && sa !== sb) return sb - sa;
-      if (tokens.length) {
-        const na = (a.row.shortName || a.row.name).toLocaleLowerCase();
-        const nb = (b.row.shortName || b.row.name).toLocaleLowerCase();
-        const pa = na.startsWith(tokens[0]) ? 1 : 0;
-        const pb = nb.startsWith(tokens[0]) ? 1 : 0;
-        if (pa !== pb) return pb - pa;
+      if (!tokens.length) {
         if (sa !== sb) return sb - sa;
+        const ta = a.primaryTab === focusTab ? 2 : a.kind === 'llm' ? 1 : 0;
+        const tb = b.primaryTab === focusTab ? 2 : b.kind === 'llm' ? 1 : 0;
+        if (ta !== tb) return tb - ta;
+        return b.row.intelligenceIndex - a.row.intelligenceIndex;
       }
+      const na = (a.row.shortName || a.row.name).toLocaleLowerCase();
+      const nb = (b.row.shortName || b.row.name).toLocaleLowerCase();
+      const pa = na.startsWith(tokens[0]) ? 1 : 0;
+      const pb = nb.startsWith(tokens[0]) ? 1 : 0;
+      if (pa !== pb) return pb - pa;
+      if (sa !== sb) return sb - sa;
+      if (a.kind !== b.kind && (a.kind === 'llm' || b.kind === 'llm')) return a.kind === 'llm' ? -1 : 1;
       return b.row.intelligenceIndex - a.row.intelligenceIndex;
     })
     .slice(0, 32);
@@ -7879,6 +8516,7 @@ document.addEventListener('keydown', event => {
   } else if (state?.mode === 'orgs' && orgPinnedKey) {
     orgPinnedKey = null;
     orgSpotlightKey = null;
+    lastOrgBarSig = '';
     applyOrgSpotlight(null);
   } else if (state?.selected) {
     clearPin();
@@ -7886,6 +8524,7 @@ document.addEventListener('keydown', event => {
 });
 
 addEventListener('resize', () => {
+  syncLegendNav();
   if (changelogOpen) clampAnchoredPopover($('#changelogPopover'), $('#updateBadge'), 340);
   if (scenarioOpen) clampAnchoredPopover($('#scenarioPopover'), $('#scenarioBtn'), 340);
   if (viewToolsOpen) clampAnchoredPopover($('#viewToolsPopover'), $('#viewToolsBtn'), 360);
@@ -7947,13 +8586,20 @@ function hydrateDerivedModels(snap) {
   if (!snap || !Array.isArray(snap.models)) return snap;
   const humanById = new Map((snap.humanArenaModels || []).map(h => [h.id, h]));
   const humanByFam = new Map();
-  for (const h of (snap.humanArenaModels || [])) {
+  // Prefer the most complete, highest-effort flagship sibling per family (humanArenaModels is sorted by ascending cost!)
+  const sortedHuman = [...(snap.humanArenaModels || [])].sort((a, b) =>
+    (b.arenaRaw?.dimensionCount || 0) - (a.arenaRaw?.dimensionCount || 0)
+    || (b.effort?.level || 0) - (a.effort?.level || 0)
+    || b.humanIndex - a.humanIndex
+  );
+  for (const h of sortedHuman) {
     if (h.family?.slug && !humanByFam.has(h.family.slug)) humanByFam.set(h.family.slug, h);
   }
   const frontById = new Map((snap.frontierModels || []).map(f => [f.id, f]));
   snap.models = snap.models.map(m => {
     const hExact = humanById.get(m.id);
-    const hFam = !hExact && m.family?.slug && (!m.effort || m.effort.level >= 2) ? humanByFam.get(m.family.slug) : null;
+    const canShareFam = m.family?.slug && (!m.effort || m.effort.level >= 30);
+    const hFam = canShareFam ? humanByFam.get(m.family.slug) : null;
     const sharedHumanScores = hFam?.humanScores
       ? {
         chatVibe: hFam.humanScores.chatVibe,
@@ -7961,18 +8607,27 @@ function hydrateDerivedModels(snap) {
         designWeb: hFam.humanScores.designWeb,
         designUi: hFam.humanScores.designUi,
         creativeCraft: hFam.humanScores.creativeCraft,
-        spatialMotion: hFam.humanScores.spatialMotion
+        spatialMotion: hFam.humanScores.spatialMotion,
+        deliverable: hFam.humanScores.deliverable,
+        antiSlop: hFam.humanScores.antiSlop
       }
       : null;
+    let mergedHuman = null;
+    if (hExact?.humanScores) {
+      mergedHuman = {...hExact.humanScores};
+      if (sharedHumanScores && canShareFam) {
+        for (const [k, v] of Object.entries(sharedHumanScores)) {
+          if (mergedHuman[k] == null && v != null) mergedHuman[k] = v;
+        }
+      }
+    } else if (sharedHumanScores) {
+      mergedHuman = sharedHumanScores;
+    }
     const f = frontById.get(m.id);
     return {
       ...m,
       ...(f?.frontierScores ? {frontierScores: f.frontierScores} : {}),
-      ...(hExact?.humanScores
-        ? {humanScores: hExact.humanScores, arenaRaw: hExact.arenaRaw}
-        : sharedHumanScores
-          ? {humanScores: sharedHumanScores}
-          : {})
+      ...(mergedHuman ? {humanScores: mergedHuman, ...(hExact?.arenaRaw ? {arenaRaw: hExact.arenaRaw} : {})} : {})
     };
   });
   const baseById = new Map(snap.models.map(m => [m.id, m]));
@@ -8044,6 +8699,7 @@ function normalizeOrgSpotKey(raw) {
 function buildStandaloneOrgBoards(snap) {
   orgBoards = [];
   orgRankIndex = new Map();
+  orgFamilyIndex = new Map();
   orgCreatorColors = new Map();
   if (!snap || !Array.isArray(snap.models)) return;
 
@@ -8059,6 +8715,22 @@ function buildStandaloneOrgBoards(snap) {
 
   const snapDate = typeof snap.updatedAt === 'string' ? snap.updatedAt.slice(0, 10) : '';
   const aaSorted = sortRows(baseModels, 'intelligenceIndex', 'desc');
+  const familyRepBySlug = new Map();
+  for (const m of aaSorted) {
+    if (m.family?.slug && !familyRepBySlug.has(m.family.slug)) familyRepBySlug.set(m.family.slug, m);
+  }
+  const cyberByFam = new Map();
+  for (const c of sortRows(validRows(snap.cyberModels || []), 'intelligenceIndex', 'desc')) {
+    const cf = c.family?.slug || c.slug;
+    if (cf && !cyberByFam.has(cf)) cyberByFam.set(cf, c);
+  }
+  const normExtFamilySlug = raw => String(raw || '')
+    .replace(/\([^)]*\)/g, ' ')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .replace(/-(max|xhigh|high|medium|low|minimal|thinking|non-reasoning)$/, '');
+
   const aaRows = aaSorted.map((m, i) => ({
     rank: i + 1,
     modelId: m.id,
@@ -8083,20 +8755,28 @@ function buildStandaloneOrgBoards(snap) {
     }
     return rawRows.map((r, i) => {
       const base = r.modelId ? baseById.get(r.modelId) : null;
+      const candFam = !base ? normExtFamilySlug(r.rawName || r.name) : null;
+      const sib = !base && candFam ? (familyRepBySlug.get(candFam) || null) : null;
+      const cyb = !base && candFam ? (cyberByFam.get(candFam) || null) : null;
+      const approxFam = (sib || cyb) ? candFam : null;
       const dupId = !!(r.modelId && (idCount.get(r.modelId) || 0) > 1);
-      const creatorName = r.creator || base?.creator?.name || 'Other';
+      const creatorName = r.creator || base?.creator?.name || sib?.creator?.name || cyb?.creator?.name || 'Other';
       return {
         ...r,
         rank: r.rank ?? (i + 1),
         modelId: r.modelId || null,
-        familySlug: base?.family?.slug || null,
+        familySlug: base?.family?.slug || approxFam,
+        siblingId: sib?.id || null,
+        siblingName: sib ? (sib.shortName || sib.name) : null,
+        cyberId: cyb?.id || null,
+        cyberName: cyb ? (cyb.shortName || cyb.name) : null,
         rawName: r.rawName || r.name || '',
         name: base?.name || r.name || r.rawName || '',
         shortName: base?.shortName || r.name || r.rawName || '',
         dupId,
         creator: creatorName,
-        creatorColor: base?.creator?.color || null,
-        isOpenWeights: base ? !!base.isOpenWeights : null,
+        creatorColor: base?.creator?.color || sib?.creator?.color || cyb?.creator?.color || null,
+        isOpenWeights: base ? !!base.isOpenWeights : sib ? !!sib.isOpenWeights : cyb ? !!cyb.isOpenWeights : null,
         cost: r.cost ?? base?.cost ?? null,
         aaIndex: base?.intelligenceIndex ?? null
       };
@@ -8256,10 +8936,18 @@ function buildStandaloneOrgBoards(snap) {
 
   orgBoards = boards;
 
-  // Index best rank per modelId and per familySlug for O(1) lookup & spotlighting
+  // Index best rank per modelId, spotKey, and familySlug for O(1) lookup & spotlighting
+  orgSpotRowMap = new Map();
+  orgExactBoardMap = new Map();
   const familyBest = new Map();
   for (const board of orgBoards) {
     for (const row of board.rows) {
+      const sk = orgRowSpotKey(row);
+      if (!orgSpotRowMap.has(sk)) orgSpotRowMap.set(sk, row);
+      const ebKey = `${sk}|${board.id}`;
+      if (!orgExactBoardMap.has(ebKey)) {
+        orgExactBoardMap.set(ebKey, {rank: row.rank, total: board.rows.length, score: row.score, rawName: row.rawName, exact: true});
+      }
       if (row.modelId) {
         let rec = orgRankIndex.get(row.modelId);
         if (!rec) {
@@ -8283,6 +8971,7 @@ function buildStandaloneOrgBoards(snap) {
     }
   }
   // Attach family-level fallback rank when exact effort variant wasn't evaluated by an org
+  orgFamilyIndex = familyBest;
   for (const [, rec] of orgRankIndex) {
     if (!rec.familySlug) continue;
     const frec = familyBest.get(rec.familySlug);
@@ -8316,11 +9005,11 @@ function filterOrgRows(rows) {
   const lic = state?.license || 'all';
   const starOnly = !!state?.starredOnly;
   return rows.filter(r => {
-    if (orgMatchedOnly && !r.modelId) return false;
+    if (orgMatchedOnly && !(r.modelId || r.siblingId || r.cyberId)) return false;
     if (comp && r.creator !== comp) return false;
     if (lic === 'open' && r.isOpenWeights !== true) return false;
     if (lic === 'closed' && r.isOpenWeights !== false) return false;
-    if (starOnly && !(r.modelId && isStarred({id: r.modelId, name: r.name, creator: {name: r.creator}}))) return false;
+    if (starOnly && !((r.modelId || r.siblingId) && isStarred({id: r.modelId || r.siblingId, name: r.name, creator: {name: r.creator}}))) return false;
     if (q) {
       const hay = `${r.name} ${r.rawName} ${r.creator}`.toLowerCase();
       if (!hay.includes(q)) return false;
@@ -8340,19 +9029,28 @@ function jumpToOrgScatter(board) {
 }
 
 function locateOrgModel(row, board) {
-  if (!row?.modelId) return;
+  const targetId = row?.modelId || row?.siblingId || null;
+  if (!targetId && row?.cyberId) {
+    chooseChart('cyber', {changeHash: false});
+    if (!state) return;
+    const foundCyber = state.rows.find(r => r.id === row.cyberId);
+    if (foundCyber) locateRowInChart(foundCyber);
+    else showView('chart');
+    return;
+  }
+  if (!targetId) return;
   const preferredTab = board?.scatterTarget?.tab || 'models';
   const preferredArr = snapshot?.[BENCHMARKS[preferredTab]?.key] || [];
-  const hasInPreferred = preferredArr.some(m => m.id === row.modelId);
+  const hasInPreferred = preferredArr.some(m => m.id === targetId);
   const targetTab = hasInPreferred ? preferredTab : 'models';
   chooseChart(targetTab, {changeHash: false});
   if (!state) return;
   const targetLens = hasInPreferred ? (board?.scatterTarget?.yLens || '') : '';
   const testLens = (Y_LENSES[targetTab] || []).find(l => l.id === targetLens);
-  const baseMatch = state.baseRows.find(r => r.id === row.modelId);
+  const baseMatch = state.baseRows.find(r => r.id === targetId);
   const canUseLens = targetLens && testLens && baseMatch && testLens.get(baseMatch) != null;
   applyYLens(state, canUseLens ? targetLens : '');
-  const found = state.rows.find(r => r.id === row.modelId);
+  const found = state.rows.find(r => r.id === targetId);
   if (found) {
     locateRowInChart(found);
   } else {
@@ -8398,19 +9096,107 @@ function isInCompareAnyModelTab(modelId) {
   return !!(ms && ms.compareIds.includes(modelId));
 }
 
+const orgRowByEl = new WeakMap();
+let orgSpotRowMap = new Map();
+let orgExactBoardMap = new Map();
+let lastOrgBarSig = '';
+let orgHoverRaf = 0;
+let orgLeaveTimer = 0;
+let pendingOrgHoverKey = null;
+let pendingOrgHoverRow = null;
+let orgDomIndex = {
+  byKey: new Map(),
+  bestByFamScope: new Map(),
+  cardBadges: new Map(),
+  litEls: new Set(),
+  bumpSvg: null,
+  bumpSeries: []
+};
+
 function orgRowSpotKey(row) {
-  return row.modelId || `raw:${normalizeOrgSpotKey(row.rawName || row.name)}`;
+  return row.modelId || (row.familySlug ? `fam:${row.familySlug}` : `raw:${normalizeOrgSpotKey(row.rawName || row.name)}`);
 }
 
-function renderOrgSpotlightBar(spotKey, spotRow = null) {
+function resolveOrgSpotMeta(spotKey, hintRow = null) {
+  if (!spotKey) return null;
+  const rec = orgRankIndex.get(spotKey) || null;
+  const fallbackRow = hintRow || orgSpotRowMap.get(spotKey) || null;
+  const famSlug = rec?.familySlug || fallbackRow?.familySlug || (spotKey.startsWith('fam:') ? spotKey.slice(4) : null);
+  const famRec = famSlug ? (orgFamilyIndex.get(famSlug) || null) : null;
+  const displayName = rec?.shortName || rec?.name || fallbackRow?.rawName || fallbackRow?.name || '';
+  const creatorName = rec?.creator || fallbackRow?.creator || 'Other';
+  const cColor = orgCreatorColor(creatorName, rec?.creatorColor || fallbackRow?.creatorColor);
+  const costVal = rec?.cost ?? fallbackRow?.cost ?? null;
+  return {spotKey, rec, fallbackRow, famSlug, famRec, displayName, creatorName, cColor, costVal};
+}
+
+function resolveOrgBoardRank(boardId, meta) {
+  if (!meta) return null;
+  if (meta.rec?.ranks?.[boardId]) return meta.rec.ranks[boardId];
+  const exactHit = orgExactBoardMap.get(`${meta.spotKey}|${boardId}`);
+  if (exactHit) return exactHit;
+  return meta.famRec?.[boardId] ? {...meta.famRec[boardId], exact: false} : null;
+}
+
+function rebuildOrgDomIndex(container) {
+  const byKey = new Map();
+  const bestByFamScope = new Map();
+  const cardBadges = new Map();
+  for (const card of container.querySelectorAll('.org-card[data-org-id]')) {
+    const badge = card.querySelector('.org-card-match');
+    if (badge) cardBadges.set(card.dataset.orgId, badge);
+  }
+  for (const el of container.querySelectorAll('[data-spot-key]')) {
+    const sk = el.dataset.spotKey;
+    const scopeId = el.dataset.orgScope || 'default';
+    const scrollHost = el.closest('.org-card-list, .org-detail-scroll, .org-viz-scroll') || null;
+    const item = {el, scopeId, scrollHost};
+    let list = byKey.get(sk);
+    if (!list) {
+      list = [];
+      byKey.set(sk, list);
+    }
+    list.push(item);
+    const fam = el.dataset.familySlug;
+    if (fam && scopeId !== 'bump') {
+      const fKey = `${fam}|${scopeId}`;
+      if (!bestByFamScope.has(fKey)) bestByFamScope.set(fKey, item);
+    }
+  }
+  const bumpSvg = container.querySelector('.org-bump-svg');
+  const bumpSeries = bumpSvg ? [...bumpSvg.querySelectorAll('.bump-series')] : [];
+  orgDomIndex = {byKey, bestByFamScope, cardBadges, litEls: new Set(), bumpSvg, bumpSeries};
+  lastOrgBarSig = '';
+}
+
+function scrollOrgMatchIntoContainer(targetEl, scrollHost) {
+  if (!targetEl || !scrollHost) return;
+  const hostRect = scrollHost.getBoundingClientRect();
+  const elRect = targetEl.getBoundingClientRect();
+  if (hostRect.height <= 0) return;
+  const relTop = elRect.top - hostRect.top;
+  const relBottom = elRect.bottom - hostRect.top;
+  if (relTop >= 18 && relBottom <= hostRect.height - 18) return;
+  const nextTop = scrollHost.scrollTop + relTop - (hostRect.height - elRect.height) / 2;
+  scrollHost.scrollTo({top: Math.max(0, nextTop), behavior: 'smooth'});
+}
+
+function renderOrgSpotlightBar(hovKey, hoverRow = null) {
   const bar = $('#orgSpotlightBar');
   if (!bar) return;
-  const activeSpot = spotKey || orgPinnedKey;
-  if (!activeSpot) {
-    bar.classList.remove('is-active');
+  const pinKey = orgPinnedKey;
+  const isDual = !!(hovKey && pinKey && hovKey !== pinKey);
+  const displayKey = hovKey || pinKey;
+  const isShowingPin = !!(pinKey && displayKey === pinKey);
+  const sig = `${displayKey || ''}|${pinKey || ''}|${isDual ? 1 : 0}|${lang}|${orgFocus}`;
+  if (sig === lastOrgBarSig) return;
+  lastOrgBarSig = sig;
+
+  if (!displayKey) {
+    bar.classList.remove('is-hovering', 'is-pinned');
     const hintTxt = t(
-      '悬停或点击任意模型，即可跨 6 家独立测评机构原榜同步高亮其真实排名（点击行可锁定，按 Esc 取消）。',
-      'Hover or click any model to spotlight its exact un-blended rank across all 6 independent org leaderboards (click to pin, Esc to clear).'
+      '悬停预览跨榜排名（青绿） · 单击任意行锁定基准并自动对齐 6 榜视野（琥珀金，Esc 解锁）',
+      'Hover any row to preview cross-org ranks (Teal) · Click to lock baseline & auto-align all 6 lists (Amber, Esc to unpin)'
     );
     const hint = html('span', hintTxt, 'org-spot-hint');
     hint.title = hintTxt;
@@ -8418,20 +9204,28 @@ function renderOrgSpotlightBar(spotKey, spotRow = null) {
     return;
   }
 
-  bar.classList.add('is-active');
-  const rec = orgRankIndex.get(activeSpot);
-  const displayName = rec?.shortName || rec?.name || spotRow?.rawName || spotRow?.name || '';
-  const creatorName = rec?.creator || spotRow?.creator || 'Other';
-  const cColor = orgCreatorColor(creatorName, rec?.creatorColor || spotRow?.creatorColor);
-  const costVal = rec?.cost ?? spotRow?.cost ?? null;
+  bar.classList.toggle('is-pinned', isShowingPin);
+  bar.classList.toggle('is-hovering', !isShowingPin);
+
+  const meta = resolveOrgSpotMeta(displayKey, displayKey === hovKey ? hoverRow : null);
+  if (!meta) return;
 
   const left = html('div', null, 'org-spot-identity');
+  const stateBadge = html(
+    'span',
+    isShowingPin
+      ? t('已锁定', 'Pinned')
+      : isDual
+        ? t('对比预览', 'Preview')
+        : t('悬停预览', 'Preview'),
+    `org-state-badge ${isShowingPin ? 'is-pin' : 'is-hover'}`
+  );
   const dot = html('i', null, 'creator-dot');
-  dot.style.background = cColor;
+  dot.style.background = meta.cColor;
   dot.setAttribute('aria-hidden', 'true');
-  left.append(dot, html('strong', displayName), html('span', creatorName, 'org-spot-creator'));
-  if (costVal != null && costVal > 0) {
-    left.append(html('span', money(costVal), 'org-spot-cost'));
+  left.append(stateBadge, dot, html('strong', meta.displayName), html('span', meta.creatorName, 'org-spot-creator'));
+  if (meta.costVal != null && meta.costVal > 0) {
+    left.append(html('span', money(meta.costVal), 'org-spot-cost'));
   }
 
   const pills = html('div', null, 'org-spot-ranks');
@@ -8443,10 +9237,7 @@ function renderOrgSpotlightBar(spotKey, spotRow = null) {
   }, {passive: false});
   let pillCount = 0;
   for (const board of orgBoards) {
-    const info = rec?.ranks?.[board.id] || (() => {
-      const m = board.rows.find(r => orgRowSpotKey(r) === activeSpot);
-      return m ? {rank: m.rank, total: board.rows.length, score: m.score, exact: true} : null;
-    })();
+    const info = resolveOrgBoardRank(board.id, meta);
     if (!info) continue;
     pillCount++;
     const scoreTxt = format(info.score, board.scoreDecimals);
@@ -8454,14 +9245,14 @@ function renderOrgSpotlightBar(spotKey, spotRow = null) {
     pill.type = 'button';
     if (!info.exact) {
       pill.classList.add('is-family');
-      pill.title = t('同系列其他推理档位在该机构的最佳排名（点击展开该机构全榜）', 'Best rank by sibling effort variant in this org (click to open full org table)');
+      pill.title = t('同系列相邻推理档位在该机构的最佳排名（点击展开该机构全榜）', 'Best rank by sibling effort variant in this org (click to open full org table)');
     } else {
       pill.title = t(`点击展开 ${board.orgZh} · ${board.titleZh} 完整分项表`, `Open full ${board.orgEn} · ${board.titleEn} table`);
     }
     pill.addEventListener('click', () => {
       orgFocus = board.id;
-      orgPinnedKey = activeSpot;
-      orgSpotlightKey = activeSpot;
+      orgPinnedKey = displayKey;
+      orgSpotlightKey = null;
       syncUrlHash();
       renderOrgLeaderboards();
       updateSummary();
@@ -8473,58 +9264,141 @@ function renderOrgSpotlightBar(spotKey, spotRow = null) {
   }
 
   const actions = html('div', null, 'org-spot-actions');
-  if (rec) {
-    const locBtn = html('button', t('定位散点', 'Locate'), 'org-mini-btn');
-    locBtn.type = 'button';
-    locBtn.addEventListener('click', () => locateOrgModel({modelId: activeSpot}, orgBoards.find(b => b.id === orgFocus) || orgBoards[0]));
-    const cmpBtn = html('button', t('去剖析 →', 'Compare →'), 'org-mini-btn');
-    cmpBtn.type = 'button';
-    cmpBtn.addEventListener('click', () => toggleOrgCompare({modelId: activeSpot}, orgBoards.find(b => b.id === orgFocus) || orgBoards[0], true));
-    actions.append(locBtn, cmpBtn);
-  }
-  if (orgPinnedKey) {
-    const clearBtn = html('button', t('解锁 ×', 'Unpin ×'), 'org-mini-btn is-clear');
-    clearBtn.type = 'button';
-    clearBtn.title = t('取消锁定 (Esc)', 'Clear pin (Esc)');
-    clearBtn.addEventListener('click', () => {
+  if (isDual) {
+    const pinMeta = resolveOrgSpotMeta(pinKey);
+    const pinShort = pinMeta?.displayName || '';
+    const anchorBtn = html('button', `${t('锁定中', 'Pinned')}: ${pinShort} ×`, 'org-pin-anchor-btn');
+    anchorBtn.type = 'button';
+    anchorBtn.title = t('点击取消琥珀金锁定基准 (Esc)', 'Click to clear pinned Amber baseline (Esc)');
+    anchorBtn.addEventListener('click', () => {
       orgPinnedKey = null;
-      orgSpotlightKey = null;
-      applyOrgSpotlight(null);
+      lastOrgBarSig = '';
+      applyOrgSpotlight(orgSpotlightKey);
     });
-    actions.append(clearBtn);
+    actions.append(anchorBtn);
+  } else {
+    if (meta.rec) {
+      const locBtn = html('button', t('定位散点', 'Locate'), 'org-mini-btn');
+      locBtn.type = 'button';
+      locBtn.addEventListener('click', () => locateOrgModel({modelId: displayKey}, orgBoards.find(b => b.id === orgFocus) || orgBoards[0]));
+      const cmpBtn = html('button', t('去剖析 →', 'Compare →'), 'org-mini-btn');
+      cmpBtn.type = 'button';
+      cmpBtn.addEventListener('click', () => toggleOrgCompare({modelId: displayKey}, orgBoards.find(b => b.id === orgFocus) || orgBoards[0], true));
+      actions.append(locBtn, cmpBtn);
+    } else if (meta.fallbackRow?.siblingId || meta.fallbackRow?.cyberId) {
+      const locBtn = html('button', t('~定位同系', '~Locate sib'), 'org-mini-btn');
+      locBtn.type = 'button';
+      locBtn.title = t(`定位同系列 ${meta.fallbackRow.siblingName || meta.fallbackRow.cyberName}`, `Locate sibling ${meta.fallbackRow.siblingName || meta.fallbackRow.cyberName}`);
+      locBtn.addEventListener('click', () => locateOrgModel(meta.fallbackRow, orgBoards.find(b => b.id === orgFocus) || orgBoards[0]));
+      actions.append(locBtn);
+    }
+    if (pinKey) {
+      const clearBtn = html('button', t('解锁 ×', 'Unpin ×'), 'org-mini-btn is-clear');
+      clearBtn.type = 'button';
+      clearBtn.title = t('取消锁定 (Esc)', 'Clear pin (Esc)');
+      clearBtn.addEventListener('click', () => {
+        orgPinnedKey = null;
+        orgSpotlightKey = null;
+        lastOrgBarSig = '';
+        applyOrgSpotlight(null);
+      });
+      actions.append(clearBtn);
+    }
   }
 
   bar.replaceChildren(left, pills, actions);
 }
 
-function applyOrgSpotlight(hoverKey, hoverRow = null) {
-  const activeKey = hoverKey || orgPinnedKey;
-  const hasAnySpot = !!(hoverKey || orgPinnedKey);
-  const activeFamily = hoverRow?.familySlug || (activeKey ? orgRankIndex.get(activeKey)?.familySlug : null) || null;
-  const nodesEl = document.querySelectorAll('#orgContent [data-spot-key]');
-  for (const el of nodesEl) {
-    const ek = el.dataset.spotKey;
-    const ef = el.dataset.familySlug || '';
-    const isHover = !!(hoverKey && ek === hoverKey);
-    const isPin = !!(orgPinnedKey && ek === orgPinnedKey);
-    const exact = isHover || isPin;
-    const fam = !!(activeFamily && !exact && ef && ef === activeFamily);
-    el.classList.toggle('is-spotlit', exact);
-    el.classList.toggle('is-family-spotlit', fam);
-    el.classList.toggle('is-pinned-spot', isPin);
-    el.classList.toggle('is-dimmed', hasAnySpot && !exact && !fam);
+function collectSpotMatches(targetKey, hintRow, clsName) {
+  if (!targetKey) return [];
+  const matched = [];
+  const coveredScopes = new Set();
+  const exactHits = orgDomIndex.byKey.get(targetKey) || [];
+  for (const hit of exactHits) {
+    hit.el.classList.add(clsName);
+    orgDomIndex.litEls.add(hit.el);
+    coveredScopes.add(hit.scopeId);
+    matched.push(hit);
   }
-  const bumpSvg = document.querySelector('#orgContent .org-bump-svg');
+  const meta = resolveOrgSpotMeta(targetKey, hintRow);
+  if (meta?.famSlug) {
+    for (const sc of ['aa', 'livebench', 'arenaChat', 'arenaWebdev', 'designArena', 'aaGdpval', 'viz', 'table']) {
+      if (coveredScopes.has(sc)) continue;
+      const sibHit = orgDomIndex.bestByFamScope.get(`${meta.famSlug}|${sc}`);
+      if (sibHit) {
+        sibHit.el.classList.add(clsName, 'is-family-spotlit');
+        orgDomIndex.litEls.add(sibHit.el);
+        coveredScopes.add(sc);
+        matched.push(sibHit);
+      }
+    }
+  }
+  return matched;
+}
+
+function applyOrgSpotlight(hoverKey, hoverRow = null, {scrollPinned = false, sourceScope = null} = {}) {
+  for (const el of orgDomIndex.litEls) {
+    el.classList.remove('is-hover-spot', 'is-pinned-spot', 'is-family-spotlit');
+  }
+  orgDomIndex.litEls.clear();
+
+  const pinKey = orgPinnedKey;
+  const hovKey = hoverKey && hoverKey !== pinKey ? hoverKey : null;
+  const hasAnySpot = !!(pinKey || hovKey);
+
+  const pinHits = pinKey ? collectSpotMatches(pinKey, null, 'is-pinned-spot') : [];
+  if (hovKey) collectSpotMatches(hovKey, hoverRow, 'is-hover-spot');
+
+  if (scrollPinned && pinHits.length) {
+    const scrolledScopes = new Set();
+    for (const hit of pinHits) {
+      if (sourceScope && hit.scopeId === sourceScope) continue;
+      if (scrolledScopes.has(hit.scopeId)) continue;
+      scrolledScopes.add(hit.scopeId);
+      scrollOrgMatchIntoContainer(hit.el, hit.scrollHost);
+    }
+  }
+
+  // Update per-card header live rank badges in 6-org side-by-side view
+  if (orgDomIndex.cardBadges.size) {
+    const focusKey = hovKey || pinKey;
+    const isPinBadge = !hovKey && !!pinKey;
+    const focusMeta = focusKey ? resolveOrgSpotMeta(focusKey, focusKey === hovKey ? hoverRow : null) : null;
+    for (const [boardId, badge] of orgDomIndex.cardBadges) {
+      if (!focusMeta) {
+        badge.hidden = true;
+        delete badge.dataset.targetKey;
+        continue;
+      }
+      const info = resolveOrgBoardRank(boardId, focusMeta);
+      badge.hidden = false;
+      if (info) {
+        badge.textContent = info.exact ? `#${info.rank}` : `${t('同系', 'Sib')} ~#${info.rank}`;
+        badge.className = `org-card-match ${isPinBadge ? 'is-pin' : 'is-hover'}${info.exact ? '' : ' is-approx'}`;
+        badge.dataset.targetKey = focusKey;
+        badge.title = t('点击将本卡滚动至该模型所在行', 'Click to scroll this card to the matching row');
+      } else {
+        badge.textContent = t('未上榜', 'Unranked');
+        badge.className = 'org-card-match is-none';
+        badge.title = '';
+        delete badge.dataset.targetKey;
+      }
+    }
+  }
+
+  const bumpSvg = orgDomIndex.bumpSvg;
   if (bumpSvg) {
     bumpSvg.classList.toggle('has-focus', hasAnySpot);
-    // Reset any dynamic dual-callout collision offsets
-    for (const c of bumpSvg.querySelectorAll('.bump-callout')) c.removeAttribute('transform');
-    // Re-order highlighted trajectories to top of SVG paint order & prevent pinned vs hovered callout collisions
+    for (const g of orgDomIndex.bumpSeries) {
+      const lit = g.classList.contains('is-pinned-spot') || g.classList.contains('is-hover-spot');
+      g.classList.toggle('is-dimmed', hasAnySpot && !lit);
+      for (const c of g.querySelectorAll('.bump-callout')) c.removeAttribute('transform');
+    }
     if (hasAnySpot) {
       const seriesLayer = bumpSvg.querySelector('.bump-series-layer');
       if (seriesLayer) {
-        const pinG = orgPinnedKey ? seriesLayer.querySelector(`g[data-spot-key="${CSS.escape(orgPinnedKey)}"]`) : null;
-        const hovG = hoverKey && hoverKey !== orgPinnedKey ? seriesLayer.querySelector(`g[data-spot-key="${CSS.escape(hoverKey)}"]`) : null;
+        const pinG = pinKey ? orgDomIndex.byKey.get(pinKey)?.[0]?.el : null;
+        const hovG = hovKey ? orgDomIndex.byKey.get(hovKey)?.[0]?.el : null;
         if (pinG && !hovG && pinG !== seriesLayer.lastElementChild) seriesLayer.append(pinG);
         if (hovG) {
           if (pinG && pinG.nextElementSibling !== hovG && pinG !== seriesLayer.lastElementChild) seriesLayer.append(pinG);
@@ -8537,8 +9411,8 @@ function applyOrgSpotlight(hoverKey, hoverRow = null) {
             for (const hc of hovG.querySelectorAll('.bump-callout')) {
               const pY = pinBoxes.get(hc.dataset.colIdx);
               const hY = Number(hc.dataset.py);
-              if (pY != null && Math.abs(pY - hY) < 22) {
-                const shift = hY >= pY ? 22 : -22;
+              if (pY != null && Math.abs(pY - hY) < 26) {
+                const shift = hY >= pY ? 26 : -26;
                 hc.setAttribute('transform', `translate(0, ${shift})`);
               }
             }
@@ -8547,7 +9421,18 @@ function applyOrgSpotlight(hoverKey, hoverRow = null) {
       }
     }
   }
-  renderOrgSpotlightBar(activeKey, hoverRow);
+  renderOrgSpotlightBar(hoverKey, hoverRow);
+}
+
+function scheduleOrgSpotlight(nextKey, nextRow = null) {
+  pendingOrgHoverKey = nextKey;
+  pendingOrgHoverRow = nextRow;
+  if (orgHoverRaf) return;
+  orgHoverRaf = requestAnimationFrame(() => {
+    orgHoverRaf = 0;
+    orgSpotlightKey = pendingOrgHoverKey;
+    applyOrgSpotlight(pendingOrgHoverKey, pendingOrgHoverRow);
+  });
 }
 
 function orgDisplayName(row) {
@@ -8577,7 +9462,18 @@ function renderOrgSideBySide(container) {
     ext.rel = 'noopener';
     ext.title = t('打开该机构官方原榜', 'Open official organization leaderboard');
     const badge = html('span', t(board.tagZh, board.tagEn), 'org-tag-pill');
-    topLine.append(ext, badge);
+    const matchBadge = html('span', '', 'org-card-match');
+    matchBadge.hidden = true;
+    matchBadge.addEventListener('click', e => {
+      e.stopPropagation();
+      const tk = matchBadge.dataset.targetKey;
+      if (!tk) return;
+      const direct = (orgDomIndex.byKey.get(tk) || []).find(h => h.scopeId === board.id);
+      const meta = resolveOrgSpotMeta(tk);
+      const hit = direct || (meta?.famSlug ? orgDomIndex.bestByFamScope.get(`${meta.famSlug}|${board.id}`) : null);
+      if (hit) scrollOrgMatchIntoContainer(hit.el, hit.scrollHost);
+    });
+    topLine.append(ext, badge, matchBadge);
 
     const subLine = html('div', null, 'org-card-subline');
     subLine.append(
@@ -8605,16 +9501,21 @@ function renderOrgSideBySide(container) {
     head.append(titleWrap, headBtns);
 
     const list = html('ol', null, 'org-card-list');
+    const isMobCard = mobileLayout.matches;
+    const isExpanded = orgExpandedCards.has(board.id);
+    const shownRows = isMobCard && !isExpanded && rows.length > 12 ? rows.slice(0, 12) : rows;
     if (!rows.length) {
       const empty = html('li', t('当前筛选条件下无匹配模型', 'No matching models under current filters'), 'org-empty');
       list.append(empty);
     } else {
       const frag = document.createDocumentFragment();
-      for (const row of rows) {
+      for (const row of shownRows) {
         const li = html('li', null, 'org-row');
         const spotKey = orgRowSpotKey(row);
         li.dataset.spotKey = spotKey;
+        li.dataset.orgScope = board.id;
         if (row.familySlug) li.dataset.familySlug = row.familySlug;
+        orgRowByEl.set(li, row);
         if (!row.modelId) li.classList.add('is-unmatched');
         const pct = Math.max(8, Math.min(100, ((row.score - floorS) / spanS) * 100));
         li.style.setProperty('--bar-pct', `${pct.toFixed(1)}%`);
@@ -8637,7 +9538,13 @@ function renderOrgSideBySide(container) {
         else if ((board.id === 'arenaChat' || board.id === 'arenaWebdev') && row.votes) {
           subParts.push(`${row.votes >= 1000 ? format(row.votes / 1000, 1) + 'k' : row.votes}${t('票', 'v')}`);
         }
-        if (!row.modelId) subParts.push(t('机构独有', 'Org-only'));
+        if (!row.modelId) {
+          if (row.siblingId || row.cyberId) {
+            subParts.push(t(`~同系 ${row.siblingName || row.cyberName}`, `~Sib ${row.siblingName || row.cyberName}`));
+          } else {
+            subParts.push(t('机构独有', 'Org-only'));
+          }
+        }
         main.append(nameEl, html('span', subParts.join(' · '), 'org-row-sub'));
 
         const scoreEl = html('span', format(row.score, board.scoreDecimals), 'org-row-score');
@@ -8661,20 +9568,19 @@ function renderOrgSideBySide(container) {
             toggleOrgCompare(row, board, false);
           });
           rowActs.append(loc, cmp);
+        } else if (row.siblingId || row.cyberId) {
+          const loc = html('button', t('~定位', '~Pin'), 'org-micro-btn is-approx');
+          loc.type = 'button';
+          loc.title = t(
+            `该推理档位未单独收录，点击定位同系列 ${row.siblingName || row.cyberName}`,
+            `Locate sibling variant ${row.siblingName || row.cyberName} in scatter chart`
+          );
+          loc.addEventListener('click', e => {
+            e.stopPropagation();
+            locateOrgModel(row, board);
+          });
+          rowActs.append(loc);
         }
-
-        li.addEventListener('pointerenter', () => {
-          orgSpotlightKey = spotKey;
-          applyOrgSpotlight(spotKey, row);
-        });
-        li.addEventListener('pointerleave', () => {
-          orgSpotlightKey = null;
-          applyOrgSpotlight(null);
-        });
-        li.addEventListener('click', () => {
-          orgPinnedKey = orgPinnedKey === spotKey ? null : spotKey;
-          applyOrgSpotlight(orgPinnedKey, row);
-        });
 
         li.append(rankSpan, dot, main, scoreEl, rowActs);
         frag.append(li);
@@ -8683,6 +9589,20 @@ function renderOrgSideBySide(container) {
     }
 
     card.append(head, list);
+    if (isMobCard && rows.length > 12) {
+      const moreBtn = html(
+        'button',
+        isExpanded ? t('收起至前 12 名', 'Show top 12') : t(`展开全部 ${rows.length} 款模型 ↓`, `Show all ${rows.length} models ↓`),
+        'org-card-more-btn'
+      );
+      moreBtn.type = 'button';
+      moreBtn.addEventListener('click', () => {
+        if (orgExpandedCards.has(board.id)) orgExpandedCards.delete(board.id);
+        else orgExpandedCards.add(board.id);
+        renderOrgLeaderboards();
+      });
+      card.append(moreBtn);
+    }
     grid.append(card);
   }
   container.replaceChildren(grid);
@@ -8695,8 +9615,8 @@ function renderOrgBumpChart(container) {
   hCopy.append(
     html('strong', t('跨机构独立排名轨迹图（Bump Chart）', 'Cross-Organization Official Rank Trajectory')),
     html('span', t(
-      '纵轴越靠上排名越靠前；实心圆为精确匹配，虚线环为同系列相邻档位。单击锁定基准曲线，悬停另一模型即可双线对照；点击机构标题可进入精析。',
-      'Higher = better official rank · Solid dot = exact model, dashed ring = sibling variant · Click to pin one line, hover another to compare; click any org header to inspect.'
+      '纵轴越靠上排名越靠前 · 实心圆 = 精确对齐，虚线环 = 同系列相邻档位 · 点击机构标题可进入精析',
+      'Higher = better rank · Solid dot = exact model, dashed ring = sibling variant · Click any org header to inspect'
     ), 'org-meta-count')
   );
   const ctrl = html('div', null, 'org-bump-controls');
@@ -8708,11 +9628,15 @@ function renderOrgBumpChart(container) {
     b.addEventListener('click', () => {
       if (orgBumpLimit === n) return;
       orgBumpLimit = n;
+      syncUrlHash();
       renderOrgLeaderboards();
     });
     limitSwitch.append(b);
   }
-  ctrl.append(limitSwitch);
+  const pngBtn = html('button', t('导图 PNG', 'Export PNG'), 'org-mini-btn');
+  pngBtn.type = 'button';
+  pngBtn.addEventListener('click', () => exportChartPng('orgs'));
+  ctrl.append(limitSwitch, pngBtn);
   head.append(hCopy, ctrl);
 
   // Collect multi-org candidate models (respecting active search / vendor / license / star filters)
@@ -8780,12 +9704,13 @@ function renderOrgBumpChart(container) {
 
   const availW = container.clientWidth || 1200;
   const svgW = Math.max(920, Math.min(1360, Math.round(availW - 22)));
-  const svgH = Math.max(460, Math.min(550, 336 + series.length * 14));
-  const padL = 202, padR = 190, padT = 58, padB = 26;
+  const svgH = Math.max(486, Math.min(586, 356 + series.length * 15));
+  const padL = 204, padR = 204, padT = 62, padB = 34;
   const innerW = svgW - padL - padR;
   const innerH = svgH - padT - padB;
   const colX = i => padL + (orgBoards.length > 1 ? (i * innerW) / (orgBoards.length - 1) : innerW / 2);
-  const rankY = r => padT + ((mapRankVal(r) - 1) / Math.max(1, maxMapped - 1)) * innerH;
+  // Gently expand top-12 vertical spacing (power 0.86) so #1–#5 circles breathe without overlap
+  const rankY = r => padT + Math.pow((mapRankVal(r) - 1) / Math.max(1, maxMapped - 1), 0.86) * innerH;
 
   const chartHost = html('div', null, 'org-bump-scroll');
   const svgEl = node('svg', {class: 'org-bump-svg', viewBox: `0 0 ${svgW} ${svgH}`, style: `max-width:${svgW}px`, role: 'img', 'aria-label': t('跨机构官方排名轨迹图', 'Cross-organization rank bump chart')});
@@ -8823,10 +9748,10 @@ function renderOrgBumpChart(container) {
   });
 
   // Collision-avoidance resolver for left & right end labels
-  const resolveLabelYs = (items, minGap = 19.5) => {
+  const resolveLabelYs = (items, minGap = 21) => {
     const sorted = [...items].sort((a, b) => a.rawY - b.rawY);
-    const minY = padT - 8;
-    const maxY = svgH - padB + 8;
+    const minY = padT - 6;
+    const maxY = svgH - padB + 4;
     for (let i = 0; i < sorted.length; i++) {
       sorted[i].y = Math.max(minY, sorted[i].rawY);
       if (i > 0 && sorted[i].y - sorted[i - 1].y < minGap) {
@@ -8936,20 +9861,8 @@ function renderOrgBumpChart(container) {
     }
 
     const dummyRow = {modelId: s.modelId, familySlug: s.rec.familySlug, name: s.rec.name, creator: s.rec.creator, creatorColor: s.rec.creatorColor, cost: s.rec.cost};
-    g.addEventListener('pointerenter', () => {
-      orgSpotlightKey = s.modelId;
-      applyOrgSpotlight(s.modelId, dummyRow);
-    });
-    g.addEventListener('pointerleave', () => {
-      orgSpotlightKey = null;
-      applyOrgSpotlight(null);
-    });
-    g.addEventListener('pointerdown', event => {
-      if (event.button !== 0) return;
-      event.stopPropagation();
-      orgPinnedKey = orgPinnedKey === s.modelId ? null : s.modelId;
-      applyOrgSpotlight(orgPinnedKey, dummyRow);
-    });
+    g.dataset.orgScope = 'bump';
+    orgRowByEl.set(g, dummyRow);
 
     seriesLayer.append(g);
   }
@@ -8998,7 +9911,9 @@ function buildOrgTopBarChart(board, rows) {
 
     const li = html('li', null, 'org-bar-item');
     li.dataset.spotKey = spotKey;
+    li.dataset.orgScope = 'viz';
     if (row.familySlug) li.dataset.familySlug = row.familySlug;
+    orgRowByEl.set(li, row);
     li.style.setProperty('--bar-color', fillCol);
 
     const rankEl = html('span', `#${row.rank}`, `org-bar-rank${row.rank <= 3 ? ' is-top' : ''}`);
@@ -9023,19 +9938,6 @@ function buildOrgTopBarChart(board, rows) {
       ? `LB ${money(row.lbCost)}`
       : row.cost != null && row.cost > 0 ? money(row.cost) : '—';
     const costEl = html('span', costStr, 'org-bar-cost');
-
-    li.addEventListener('pointerenter', () => {
-      orgSpotlightKey = spotKey;
-      applyOrgSpotlight(spotKey, row);
-    });
-    li.addEventListener('pointerleave', () => {
-      orgSpotlightKey = null;
-      applyOrgSpotlight(null);
-    });
-    li.addEventListener('click', () => {
-      orgPinnedKey = orgPinnedKey === spotKey ? null : spotKey;
-      applyOrgSpotlight(orgPinnedKey, row);
-    });
 
     li.append(rankEl, dot, nameEl, track, scoreEl, gapEl, costEl);
     frag.append(li);
@@ -9207,7 +10109,9 @@ function renderOrgDetailTable(container, board) {
       const tr = html('tr');
       const spotKey = orgRowSpotKey(row);
       tr.dataset.spotKey = spotKey;
+      tr.dataset.orgScope = 'table';
       if (row.familySlug) tr.dataset.familySlug = row.familySlug;
+      orgRowByEl.set(tr, row);
       if (!row.modelId) tr.classList.add('is-unmatched');
 
       const tdRank = html('td', null, 'num');
@@ -9223,7 +10127,13 @@ function renderOrgDetailTable(container, board) {
       const subBits = [row.creator];
       if (row.rawName && row.rawName.toLowerCase() !== primaryTxt.toLowerCase()) subBits.push(row.rawName);
       if (row.isOpenWeights === true) subBits.push(t('开源', 'Open'));
-      if (!row.modelId) subBits.push(t('机构独有', 'Org-only'));
+      if (!row.modelId) {
+        if (row.siblingId || row.cyberId) {
+          subBits.push(t(`~同系 ${row.siblingName || row.cyberName}`, `~Sib ${row.siblingName || row.cyberName}`));
+        } else {
+          subBits.push(t('机构独有', 'Org-only'));
+        }
+      }
       copy.append(html('strong', primaryTxt), html('span', subBits.join(' · '), 'org-row-sub'));
       nameWrap.append(dot, copy);
       tdName.append(nameWrap);
@@ -9259,22 +10169,21 @@ function renderOrgDetailTable(container, board) {
           toggleOrgCompare(row, board, false);
         });
         tdAct.append(loc, cmp);
+      } else if (row.siblingId || row.cyberId) {
+        const loc = html('button', t('~定位', '~Locate'), 'org-micro-btn is-approx');
+        loc.type = 'button';
+        loc.title = t(
+          `该推理档位未单独收录，点击定位同系列 ${row.siblingName || row.cyberName}`,
+          `Locate sibling variant ${row.siblingName || row.cyberName} in scatter chart`
+        );
+        loc.addEventListener('click', e => {
+          e.stopPropagation();
+          locateOrgModel(row, board);
+        });
+        tdAct.append(loc);
       } else {
         tdAct.append(html('span', '—', 'org-row-sub'));
       }
-
-      tr.addEventListener('pointerenter', () => {
-        orgSpotlightKey = spotKey;
-        applyOrgSpotlight(spotKey, row);
-      });
-      tr.addEventListener('pointerleave', () => {
-        orgSpotlightKey = null;
-        applyOrgSpotlight(null);
-      });
-      tr.addEventListener('click', () => {
-        orgPinnedKey = orgPinnedKey === spotKey ? null : spotKey;
-        applyOrgSpotlight(orgPinnedKey, row);
-      });
 
       tr.append(tdRank, tdName, ...valTds, tdAct);
       tbody.append(tr);
@@ -9282,12 +10191,16 @@ function renderOrgDetailTable(container, board) {
   }
   table.append(thead, tbody);
   scroller.append(table);
-  wrap.append(banner, vizPanel, scroller);
+  const detailBody = html('div', null, `org-detail-body${orgChartCollapsed ? ' is-chart-collapsed' : ''}`);
+  detailBody.append(vizPanel, scroller);
+  wrap.append(banner, detailBody);
   container.replaceChildren(wrap);
 }
 
 function renderOrgLeaderboards() {
   if (!state || !orgBoards.length) return;
+  $('#exportPng').hidden = orgFocus !== 'bump';
+  $('#exportCsv').hidden = false;
   const modeSwitch = $('#orgModeSwitch');
   const mFrag = document.createDocumentFragment();
   for (const [id, zh, en] of [
@@ -9359,6 +10272,15 @@ function renderOrgLeaderboards() {
   }
 
   const content = $('#orgContent');
+  clearTimeout(orgLeaveTimer);
+  orgLeaveTimer = 0;
+  if (orgHoverRaf) {
+    cancelAnimationFrame(orgHoverRaf);
+    orgHoverRaf = 0;
+  }
+  orgSpotlightKey = null;
+  pendingOrgHoverKey = null;
+  pendingOrgHoverRow = null;
   if (orgFocus === 'bump') {
     renderOrgBumpChart(content);
   } else if (activeBoard) {
@@ -9366,8 +10288,50 @@ function renderOrgLeaderboards() {
   } else {
     renderOrgSideBySide(content);
   }
-  applyOrgSpotlight(orgSpotlightKey);
+  rebuildOrgDomIndex(content);
+  applyOrgSpotlight(null);
 }
+
+// Single delegated, rAF-coalesced & gap-debounced spotlight controller on #orgContent
+$('#orgContent').addEventListener('pointerover', event => {
+  const target = event.target instanceof Element ? event.target : null;
+  const el = target?.closest('[data-spot-key]');
+  if (el) {
+    clearTimeout(orgLeaveTimer);
+    orgLeaveTimer = 0;
+    const sk = el.dataset.spotKey;
+    if (sk !== pendingOrgHoverKey || sk !== orgSpotlightKey) {
+      scheduleOrgSpotlight(sk, orgRowByEl.get(el) || null);
+    }
+  } else if ((orgSpotlightKey || pendingOrgHoverKey) && !orgLeaveTimer) {
+    orgLeaveTimer = setTimeout(() => {
+      orgLeaveTimer = 0;
+      scheduleOrgSpotlight(null, null);
+    }, 48);
+  }
+});
+
+$('#orgContent').addEventListener('pointerleave', () => {
+  clearTimeout(orgLeaveTimer);
+  orgLeaveTimer = 0;
+  scheduleOrgSpotlight(null, null);
+});
+
+$('#orgContent').addEventListener('click', event => {
+  const target = event.target instanceof Element ? event.target : null;
+  if (!target || target.closest('button, a, .org-card-match')) return;
+  const el = target.closest('[data-spot-key]');
+  if (!el) return;
+  const sk = el.dataset.spotKey;
+  const row = orgRowByEl.get(el) || null;
+  const nextPin = orgPinnedKey === sk ? null : sk;
+  orgPinnedKey = nextPin;
+  lastOrgBarSig = '';
+  applyOrgSpotlight(orgSpotlightKey, row, {
+    scrollPinned: !!nextPin,
+    sourceScope: el.dataset.orgScope || null
+  });
+});
 
 $('#orgMatchedToggle').addEventListener('click', () => {
   orgMatchedOnly = !orgMatchedOnly;

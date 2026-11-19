@@ -7,7 +7,7 @@ const crypto = require('node:crypto');
 const zlib = require('node:zlib');
 const http = require('node:http');
 const { spawn } = require('node:child_process');
-const { getBuffer, readCodingRows, readManifests, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildHumanArenaModels, fetchHumanArenas, parseSimpleCsv, parseLiveBenchData, fetchLiveBench, buildOrgArenaBoards, buildMediaModels, buildSnapshotDiff, expectedCodingComponents, simplifyCodingAgent, fetchModels, validateRows, writeSnapshot } = require('./fetch_data.cjs');
+const { getBuffer, readCodingRows, readManifests, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildModelArenaIndex, buildHumanArenaModels, fetchHumanArenas, parseSimpleCsv, parseLiveBenchData, fetchLiveBench, buildOrgArenaBoards, cleanMediaShortName, buildMediaModels, buildSnapshotDiff, expectedCodingComponents, simplifyCodingAgent, fetchModels, validateRows, writeSnapshot } = require('./fetch_data.cjs');
 
 const model = { id: 'model-1', slug: 'example-model', name: 'Example Model', intelligenceIndex: 50, intelligenceIndexCostPerTask: { total: 0.5 } };
 const agent = { id: 'agent-1', displayLabel: 'Example Agent - Model', indexScore: 0.53, mean: { costUsd: 7.6 }, indexComponentCount: 3, modelCreators: [{ name: 'Example', color: '#123456' }] };
@@ -452,4 +452,76 @@ test('LiveBench 2.0 parser, weighted score, per-task cost, orgLeaderboards, and 
   const fb = await fetchLiveBench(models, { orgLeaderboards: { livebench: board } }, async () => { throw new Error('offline'); });
   assert.equal(fb.board.totalCount, 2);
   assert.equal(fb.byModelId.get('m-1').overall, 84);
+});
+
+test('buildModelArenaIndex, simplifyCyberModel, and cleanMediaShortName guard against false matches and ambiguous labels', () => {
+  const kimiLow = simplifyModel({
+    id: 'kimi-low', slug: 'kimi-k3-low', name: 'Kimi K3 (Low)', shortName: 'Kimi K3 (low)',
+    intelligenceIndex: 47.0, intelligenceIndexCostPerTask: { total: 0.72 },
+    isOpenWeights: true,
+    release: { slug: 'kimi-k3', name: 'Kimi K3' },
+    effort: { slug: 'low', label: 'Low', level: 1 }
+  });
+  const ds1017 = simplifyModel({
+    id: 'ds-1017', slug: 'deepseek-v4-1-flash-1017', name: 'DeepSeek V4.1 Flash 1017 (max)', shortName: 'DeepSeek V4.1 Flash 1017 (max)',
+    intelligenceIndex: 55.6, intelligenceIndexCostPerTask: { total: 1.98 },
+    isOpenWeights: true,
+    release: { slug: 'deepseek-v4-1-flash-1017', name: 'DeepSeek V4.1 Flash' },
+    effort: { slug: 'max', label: 'Max', level: 4 }
+  });
+  const tencentHy4 = simplifyModel({
+    id: 'hy4-id', slug: 'tencent-hy4', name: 'Tencent Hy4 (max)', shortName: 'Tencent Hy4 (max)',
+    intelligenceIndex: 52.8, intelligenceIndexCostPerTask: { total: 2.4 },
+    release: { slug: 'tencent-hy4', name: 'Tencent Hy4' },
+    effort: { slug: 'max', label: 'Max', level: 4 }
+  });
+  const nemotronVl = simplifyModel({
+    id: 'nem-vl', slug: 'nemotron-3-5-super-vl', name: 'Nemotron 3.5 Super VL', shortName: 'Nemotron 3.5 Super VL',
+    intelligenceIndex: 49.4, intelligenceIndexCostPerTask: { total: 0.9 },
+    isOpenWeights: true,
+    release: { slug: 'nemotron-3-5-super-vl', name: 'Nemotron 3.5 Super VL' }
+  });
+
+  const idx = buildModelArenaIndex([kimiLow, ds1017, tencentHy4, nemotronVl]);
+  // Low-effort variant must never masquerade as the un-suffixed flagship in external leaderboards
+  assert.equal(idx.resolve('kimi-k3'), null);
+  assert.equal(idx.resolve('Kimi K3 (Low)')?.id, 'kimi-low');
+  // Explicit MMDD conflict (-0910 vs -1017) must be rejected, while un-dated family slug resolves cleanly
+  assert.equal(idx.resolve('DeepSeek-V4.1-Flash-20260910 (Max)'), null);
+  assert.equal(idx.resolve('DeepSeek-V4.1-Flash (Max)')?.id, 'ds-1017');
+  // Vendor-prefix stripping and quantization stripping before alias lookup
+  assert.equal(idx.resolve('Hy4 preview')?.id, 'hy4-id');
+  assert.equal(idx.resolve('nemotron-super-vl-3.5-nvfp4')?.id, 'nem-vl');
+
+  // Cyber model whose max-effort variant is absent from priced models inherits open-weights & parses effort
+  const byFamily = new Map([['kimi-k3', kimiLow]]);
+  const cyberKimi = simplifyCyberModel({
+    id: 'cyber-kimi-max', slug: 'kimi-k3', name: 'Kimi K3 (Max)', shortName: 'Kimi K3 (max)',
+    score: 57.6, costPerTask: 3.1, refusalRate: 0,
+    modelCreators: { name: 'Moonshot AI', color: '#111111' }
+  }, new Map(), null, byFamily);
+  assert.equal(cyberKimi.isOpenWeights, true);
+  assert.equal(cyberKimi.isReasoning, true);
+  assert.deepEqual(cyberKimi.effort, { slug: 'max', label: 'Max', level: 60 });
+
+  // Generic TTS tier names are disambiguated with full product/creator context
+  assert.equal(cleanMediaShortName('Standard', 'OpenAI TTS-1', 'OpenAI'), 'OpenAI TTS-1');
+  assert.equal(cleanMediaShortName('Standard', 'Amazon Polly Standard', 'Amazon'), 'Amazon Polly Standard');
+  assert.equal(cleanMediaShortName('Standard', 'Standard', 'Google'), 'Google Standard');
+  assert.equal(cleanMediaShortName('Studio', 'Studio', 'Google'), 'Google Studio');
+
+  // Suite-wide methodology/Elo rescaling wave (>25% & >=8 rows) is suppressed so real launches survive
+  const prevMedia = Array.from({ length: 12 }, (_, i) => ({ id: `m${i}`, name: `Media ${i}`, intelligenceIndex: 50, cost: 0.05 }));
+  const rescaledMedia = [
+    ...prevMedia.map(r => ({ ...r, intelligenceIndex: 59.5 })),
+    { id: 'm-new', name: 'Flux Next', intelligenceIndex: 82, cost: 0.04, releaseDate: '2026-11-19' }
+  ];
+  const waveDiffs = buildSnapshotDiff(
+    { mediaModels: rescaledMedia },
+    { mediaModels: prevMedia, diffEvents: [{ date: '2026-11-18', kind: 'new', tab: 'models', id: 'prev-1', name: 'Prior Flagship', score: 63.2, cost: 2.1 }] },
+    '2026-11-19'
+  );
+  assert.equal(waveDiffs.filter(d => d.kind === 'score').length, 0);
+  assert.ok(waveDiffs.some(d => d.id === 'm-new' && d.kind === 'new'));
+  assert.ok(waveDiffs.some(d => d.id === 'prev-1' && d.kind === 'new'));
 });

@@ -9,6 +9,7 @@ import {
   clampView,
   pointerZoomView,
   paretoFrontier,
+  paretoFrontiersByGroup,
   ticks,
   validRows,
   sortRows,
@@ -521,6 +522,43 @@ test('computeScenarioScore and simulateWorkloadCost re-rank models by custom wor
   };
   assert.ok(simulateWorkloadCost(agenticCacheHeavy, 'chat') < 3.5, 'single-turn chat uses nonCacheInput instead of multi-turn cacheWrite churn');
   assert.ok(simulateWorkloadCost(agenticCacheHeavy, 'longdoc') > 20, 'longdoc reflects multi-turn cacheRead + cacheWrite cost');
+
+  // Models lacking granular costBreakdown & percentiles (e.g. Cyber-only flagships) still scale proportionally across profiles
+  const cyberOnlyModel = {id: 'cyber-sota', _baseCost: 4.0, cost: 4.0, isReasoning: true};
+  assert.ok(simulateWorkloadCost(cyberOnlyModel, 'chat') < 0.6, 'fallback chat profile scales down non-breakdown models consistently');
+  assert.ok(simulateWorkloadCost(cyberOnlyModel, 'longdoc') > 5.0, 'fallback longdoc profile scales up non-breakdown models consistently');
+  assert.ok(simulateWorkloadCost(cyberOnlyModel, 'reasoning') > 4.5, 'fallback reasoning profile scales up non-breakdown models consistently');
+
+  // Epistemic competence gate prevents tiny abstaining models (e.g. 6.6% accuracy, 8% conditional hallucination)
+  // from gaming Rigor above knowledgeable, calibrated models
+  const researchW = SCENARIO_PRESETS.find(p => p.id === 'research').weights;
+  const tinyAbstainer = {
+    id: 'tiny-abstain', _baseIndex: 6, intelligenceIndex: 6,
+    subscores: {omniscience: 6.6, hallucination: 8.4}
+  };
+  const honestScholar = {
+    id: 'honest-scholar', _baseIndex: 58, intelligenceIndex: 58,
+    subscores: {omniscience: 58.3, hallucination: 11.4},
+    domainScores: {finance: 56, legal: 54, healthcare: 55, strategy: 58}
+  };
+  assert.ok(computeScenarioScore(honestScholar, researchW) - computeScenarioScore(tinyAbstainer, researchW) > 40,
+    'knowledge-gated epistemic rigor blocks low-accuracy abstention gaming');
+});
+
+test('paretoFrontiersByGroup computes independent Pareto frontiers per billing modality without cross-unit domination', () => {
+  const mixedMedia = [
+    {id: 'tts-cheap', name: 'TTS Cheap', mediaKind: 'tts', cost: 0.006, intelligenceIndex: 81},
+    {id: 'tts-sota', name: 'TTS SOTA', mediaKind: 'tts', cost: 0.04, intelligenceIndex: 86},
+    {id: 'img-mid', name: 'Img Mid', mediaKind: 'image', cost: 0.035, intelligenceIndex: 82},
+    {id: 'img-sota', name: 'Img SOTA', mediaKind: 'image', cost: 0.21, intelligenceIndex: 84},
+    {id: 'vid-mid', name: 'Vid Mid', mediaKind: 'video', cost: 0.4, intelligenceIndex: 72.6},
+    {id: 'vid-sota', name: 'Vid SOTA', mediaKind: 'video', cost: 2.84, intelligenceIndex: 76.2}
+  ];
+  const grouped = paretoFrontiersByGroup(mixedMedia, r => r.mediaKind);
+  assert.equal(grouped.length, 3);
+  const allIds = new Set(grouped.flatMap(g => g.points.map(p => p.id)));
+  assert.ok(allIds.has('vid-mid') && allIds.has('vid-sota'), 'video Pareto frontier is preserved despite lower score & higher USD than TTS');
+  assert.ok(allIds.has('img-sota'), 'image SOTA is preserved despite costing more than TTS SOTA');
 });
 
 test('cache-busting version query strings match across index.html and app.js', async () => {

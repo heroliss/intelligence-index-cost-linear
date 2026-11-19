@@ -20,14 +20,18 @@
   <script>
     try {
       const savedTheme = localStorage.getItem('intelligence-cost-theme');
-      document.documentElement.dataset.theme = savedTheme === 'light' ? 'light' : 'dark';
-      const savedLang = localStorage.getItem('intelligence-cost-lang');
-      if (savedLang === 'en') document.documentElement.lang = 'en';
+      const isLight = savedTheme === 'light';
+      document.documentElement.dataset.theme = isLight ? 'light' : 'dark';
+      const tc = document.querySelector('meta[name="theme-color"]');
+      if (tc) tc.setAttribute('content', isLight ? '#f5f7fa' : '#0d1626');
+      const hashLang = (location.hash.match(/(?:^|[#&])lang=(en|zh)(?:&|$)/) || [])[1];
+      const savedLang = hashLang || localStorage.getItem('intelligence-cost-lang');
+      document.documentElement.lang = savedLang === 'en' ? 'en' : 'zh-CN';
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261119-09">
-  <script type="module" src="app.js?v=20261119-09"></script>
+  <link rel="stylesheet" href="styles.css?v=20261119-15">
+  <script type="module" src="app.js?v=20261119-15"></script>
 </head>
 <body>
 <main class="app">
@@ -121,6 +125,12 @@
           <div id="xMetricSwitch" class="axis-controls" role="group" aria-label="横轴维度">
             <button id="xMetricCost" type="button" aria-pressed="true">成本</button>
             <button id="xMetricTime" type="button" aria-pressed="false">耗时</button>
+          </div>
+          <div id="mediaKindSwitch" class="axis-controls media-kind-switch" role="group" aria-label="多模态生成分类" hidden>
+            <button type="button" data-mkind="" aria-pressed="true">全部</button>
+            <button type="button" data-mkind="media:image" aria-pressed="false">图像 $/张</button>
+            <button type="button" data-mkind="media:video" aria-pressed="false">视频 $/5秒</button>
+            <button type="button" data-mkind="media:tts" aria-pressed="false">语音 $/千字</button>
           </div>
         </div>
 
@@ -227,11 +237,20 @@
       </div>
 
       <div id="subStrip" class="sub-strip">
-        <div id="legend" class="legend" role="group" aria-label="按厂商聚焦"></div>
+        <div id="legendStrip" class="legend-strip">
+          <button id="legendPrevBtn" type="button" class="legend-nav-btn" aria-label="向左滚动厂商列表" hidden>‹</button>
+          <div id="legend" class="legend" role="group" aria-label="按厂商聚焦"></div>
+          <button id="legendNextBtn" type="button" class="legend-nav-btn" aria-label="向右滚动厂商列表" hidden>›</button>
+        </div>
         <div id="readingKey" class="reading-key">
           <span class="linear-key" id="keyLinear">线性美元横轴</span>
           <span id="keyQuadrantWrap"><i class="swatch" aria-hidden="true"></i><span id="keyQuadrant">优于中位参考区</span></span>
-          <span><i class="line-swatch" aria-hidden="true"></i><span id="keyFrontier">帕累托前沿</span></span>
+          <span id="keyFrontierWrap"><i class="line-swatch" aria-hidden="true"></i><span id="keyFrontier">帕累托前沿</span></span>
+          <span id="keyMediaFrontiers" class="media-frontiers-key" hidden>
+            <span><i class="line-swatch" aria-hidden="true"></i><span id="keyFrontImg">图像前沿</span></span>
+            <span><i class="line-swatch kind-video" aria-hidden="true"></i><span id="keyFrontVid">视频前沿</span></span>
+            <span><i class="line-swatch kind-tts" aria-hidden="true"></i><span id="keyFrontTts">语音前沿</span></span>
+          </span>
           <span id="keyIsoWrap" hidden><i class="iso-swatch" aria-hidden="true"></i><span id="keyIso">最优等性价比切线</span></span>
           <span id="keySubWrap" hidden><i class="sub-swatch" aria-hidden="true"></i><span id="keySub">订阅回本成本线</span></span>
           <span id="keyEffortWrap" hidden><i class="effort-swatch" aria-hidden="true"></i><span id="keyEffort">同系列推理轨迹</span></span>
@@ -327,6 +346,7 @@
 
     <div id="chart" class="chart" tabindex="0" aria-label="交互散点图：方向键平移，加减键缩放，Home 重置；也可切换到数据表查看" aria-describedby="interactionHelp" aria-busy="true">
       <svg id="svg" role="group" aria-labelledby="chartTitle chartSubtitle"></svg>
+      <button id="viewportHintBtn" type="button" class="viewport-hint-btn" hidden></button>
       <div id="loading" class="loading" role="status">正在加载基准快照…</div>
       <div id="lassoMenu" class="lasso-menu" hidden>
         <span id="lassoCount" class="lasso-count"></span>
@@ -341,21 +361,24 @@
             <button id="pinStarBtn" type="button" aria-pressed="false">★</button>
             <button id="pinCompareBtn" type="button">+ 对比</button>
             <button id="pinGoCompareBtn" type="button">去剖析 →</button>
+            <button id="pinCollapseBtn" type="button" aria-expanded="true">收起</button>
             <button id="unpin" type="button">取消 · Esc</button>
           </div>
         </div>
         <strong id="pinnedName"></strong>
-        <div id="pinnedMeta" class="pin-meta"></div>
-        <div class="pin-values">
-          <div><span id="pinScoreLabel">指数</span><b id="pinnedScore"></b></div>
-          <div><span id="pinCostLabel">单次成本</span><b id="pinnedCost"></b></div>
-          <div><span id="pinTimeLabel">平均耗时</span><b id="pinnedTime"></b></div>
-          <div><span id="pinValueLabel">性价比</span><b id="pinnedValue"></b></div>
+        <div id="pinnedDetails" class="pin-details">
+          <div id="pinnedMeta" class="pin-meta"></div>
+          <div class="pin-values">
+            <div><span id="pinScoreLabel">指数</span><b id="pinnedScore"></b></div>
+            <div><span id="pinCostLabel">单次成本</span><b id="pinnedCost"></b></div>
+            <div><span id="pinTimeLabel">平均耗时</span><b id="pinnedTime"></b></div>
+            <div><span id="pinValueLabel">性价比</span><b id="pinnedValue"></b></div>
+          </div>
+          <p id="pinnedSubNote" class="pin-sub-note"></p>
+          <div id="pinnedCrossTabs" class="pin-cross-tabs" hidden></div>
+          <p id="pinnedProviders" class="pin-sub-note" hidden></p>
+          <small id="pinnedOutside" class="pin-outside" hidden>该节点当前在可视范围外</small>
         </div>
-        <p id="pinnedSubNote" class="pin-sub-note"></p>
-        <div id="pinnedCrossTabs" class="pin-cross-tabs" hidden></div>
-        <p id="pinnedProviders" class="pin-sub-note" hidden></p>
-        <small id="pinnedOutside" class="pin-outside" hidden>该节点当前在可视范围外</small>
       </aside>
     </div>
 

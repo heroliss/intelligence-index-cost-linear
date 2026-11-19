@@ -11,6 +11,7 @@ on:
       - 'favicon.svg'
       - 'manifest.webmanifest'
       - 'source-url.txt'
+      - 'data/**'
       - 'assets/**'
       - 'scripts/**'
       - '.github/workflows/update-and-deploy.yml'
@@ -53,10 +54,11 @@ jobs:
 
       - name: Fetch latest Artificial Analysis data
         id: refresh
+        if: github.event_name != 'push'
         run: node scripts/fetch_data.cjs
 
       - name: Commit refreshed data
-        if: steps.refresh.outputs.changed == 'true'
+        if: github.event_name != 'push' && steps.refresh.outputs.changed == 'true'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'

@@ -401,13 +401,42 @@ function simplifyCodingAgent(row, requiredComponents = 3, openFamilyNames = null
   return entry;
 }
 
-function simplifyCyberModel(item, byId = null, bySlug = null) {
+const CYBER_EFFORT_LEVELS = { minimal: 10, low: 20, medium: 30, high: 40, xhigh: 50, max: 60 };
+
+function inferEffortFromName(name = '', slug = '') {
+  const m = String(name).match(/\((?:[^)]*\b)?(minimal|low|medium|high|xhigh|max)\b[^)]*\)/i)
+    || String(slug).match(/-(minimal|low|medium|high|xhigh|max)$/i);
+  if (!m) return null;
+  const eff = m[1].toLowerCase();
+  const labelMap = { minimal: 'Minimal', low: 'Low', medium: 'Medium', high: 'High', xhigh: 'xHigh', max: 'Max' };
+  return { slug: eff, label: labelMap[eff] || eff, level: CYBER_EFFORT_LEVELS[eff] || 0 };
+}
+
+function simplifyCyberModel(item, byId = null, bySlug = null, byFamily = null) {
   const cost = item?.costPerTask;
   const score = item?.score;
   if (!item?.id || typeof item.name !== 'string' || !Number.isFinite(cost) || cost <= 0 || !Number.isFinite(score) || score < 0 || score > 100) {
     return null;
   }
   const base = byId?.get(item.id) || bySlug?.get(item.slug) || null;
+  const famSlug = item.release?.slug || base?.family?.slug || canonArenaSlug(item.slug || item.shortName || item.name);
+  const famBase = !base && byFamily ? (byFamily.get(famSlug) || byFamily.get(stripDateStamp(famSlug)) || null) : null;
+  const inferredEff = base?.effort || (item.effort?.slug
+    ? { slug: item.effort.slug, label: item.effort.label || item.effort.slug, level: Number.isFinite(item.effort.level) ? item.effort.level : (CYBER_EFFORT_LEVELS[item.effort.slug] || 0) }
+    : inferEffortFromName(item.name, item.slug));
+  const isOpen = typeof item.isOpenWeights === 'boolean'
+    ? item.isOpenWeights
+    : base
+      ? !!base.isOpenWeights
+      : famBase
+        ? !!famBase.isOpenWeights
+        : /\b(?:deepseek|kimi|glm-|minimax|nemotron|gpt-oss|llama|gemma|mimo)\b|\b\d+(?:\.\d+)?[tb]\s+a\d+b\b/i.test(item.name);
+  const isReasoning = typeof item.isReasoning === 'boolean'
+    ? item.isReasoning
+    : base
+      ? !!base.isReasoning
+      : !!(inferredEff || /\(reasoning\)/i.test(item.name) || famBase?.isReasoning);
+
   const entry = {
     id: item.id,
     slug: item.slug,
@@ -416,20 +445,20 @@ function simplifyCyberModel(item, byId = null, bySlug = null) {
     cyberIndex: score,
     intelligenceIndex: score,
     cost,
-    creator: creator(item.creator || base?.creator),
-    isReasoning: !!base?.isReasoning,
-    isOpenWeights: !!base?.isOpenWeights,
+    creator: creator(item.creator || base?.creator || famBase?.creator),
+    isReasoning,
+    isOpenWeights: isOpen,
     refusalRate: pctOrNull(item.refusalRate),
     mitigationStatus: typeof item.mitigationStatus === 'string' ? item.mitigationStatus : null
   };
   if (base?.releaseDate) entry.releaseDate = base.releaseDate;
-  if (base?.openLicense) entry.openLicense = base.openLicense;
+  if (base?.openLicense || (isOpen && famBase?.openLicense)) entry.openLicense = base?.openLicense || famBase?.openLicense;
   if (base?.parametersB) entry.parametersB = base.parametersB;
   if (base?.modalities) entry.modalities = base.modalities;
-  if (item.release?.slug || base?.family) {
-    entry.family = base?.family || { slug: item.release.slug, name: item.shortName || item.name };
+  if (item.release?.slug || base?.family || famBase?.family) {
+    entry.family = base?.family || famBase?.family || { slug: item.release.slug, name: item.shortName || item.name };
   }
-  if (base?.effort) entry.effort = base.effort;
+  if (inferredEff) entry.effort = inferredEff;
   if (base?.timeSec) entry.timeSec = base.timeSec;
   if (base?.subscores) entry.subscores = base.subscores;
   if (base?.frontierScores) entry.frontierScores = base.frontierScores;
@@ -566,6 +595,13 @@ function parseExternalIdentity(rawName, knownFamilies) {
   return { base, effort };
 }
 
+function isLowOrNonReasoningModel(m) {
+  const eff = m?.effort?.slug || '';
+  return ['low', 'minimal'].includes(eff)
+    || /non-reasoning/i.test(m?.slug || '')
+    || /\(non-reasoning\)/i.test(m?.name || '');
+}
+
 function buildModelArenaIndex(models) {
   const familyBuckets = new Map();
   const knownFamilies = new Set();
@@ -583,17 +619,24 @@ function buildModelArenaIndex(models) {
   const aliasToFamily = new Map();
   const primaryByFamily = new Map();
   const byFamilyEffort = new Map();
+  const vendorPrefixes = ['tencent-', 'nvidia-', 'alibaba-', 'meta-', 'mistral-', 'moonshot-', 'baidu-', 'bytedance-'];
 
   for (const [famSlug, list] of familyBuckets.entries()) {
     aliasToFamily.set(famSlug, famSlug);
     const stripped = stripDateStamp(famSlug);
     if (stripped && !aliasToFamily.has(stripped)) aliasToFamily.set(stripped, famSlug);
+    for (const vp of vendorPrefixes) {
+      if (famSlug.startsWith(vp) && famSlug.length > vp.length + 1) {
+        const shortAlias = famSlug.slice(vp.length);
+        if (!aliasToFamily.has(shortAlias)) aliasToFamily.set(shortAlias, famSlug);
+      }
+    }
 
-    // Primary model of a family: exact slug === family.slug, otherwise highest intelligenceIndex that isn't low/minimal
-    const exactPrimary = list.find(m => m.slug && m.family?.slug && m.slug === m.family.slug);
-    const nonLow = list.filter(m => !m.effort?.slug || !['low', 'minimal'].includes(m.effort.slug));
-    const pool = nonLow.length ? nonLow : list;
-    const best = exactPrimary || [...pool].sort((a, b) => b.intelligenceIndex - a.intelligenceIndex)[0];
+    // Primary model of a family: exact slug === family.slug, otherwise highest intelligenceIndex that isn't low/minimal/non-reasoning.
+    // Never fall back to a low/minimal/non-reasoning variant when the flagship variant is absent from priced models.
+    const exactPrimary = list.find(m => m.slug && m.family?.slug && m.slug === m.family.slug && !isLowOrNonReasoningModel(m));
+    const nonLow = list.filter(m => !isLowOrNonReasoningModel(m));
+    const best = exactPrimary || (nonLow.length ? [...nonLow].sort((a, b) => b.intelligenceIndex - a.intelligenceIndex)[0] : null);
     if (best) primaryByFamily.set(famSlug, best);
 
     for (const m of list) {
@@ -612,18 +655,26 @@ function buildModelArenaIndex(models) {
   function resolve(rawName) {
     const { base, effort } = parseExternalIdentity(rawName, knownFamilies);
     if (!base) return null;
+    const explicitDate = base.match(/-(\d{4})$/)?.[1] || null;
+    const dequant = base.replace(/-(?:nvfp4|fp8|fp4|int4|int8|bf16|awq)$/i, '');
     const altBases = [
       base,
+      dequant,
       stripDateStamp(base),
-      base.replace(/-0$/, ''),
-      base.replace(/-nvfp4$/, ''),
-      base.replace(/^nemotron-super-vl-3-5$/, 'nemotron-3-5-super-vl')
+      stripDateStamp(dequant),
+      dequant.replace(/-0$/, ''),
+      dequant.replace(/^nemotron-super-vl-3-5$/, 'nemotron-3-5-super-vl')
     ];
     let famSlug = null;
     for (const candidate of altBases) {
       if (!candidate) continue;
-      famSlug = aliasToFamily.get(candidate) || aliasToFamily.get(stripDateStamp(candidate));
-      if (famSlug) break;
+      const found = aliasToFamily.get(candidate) || aliasToFamily.get(stripDateStamp(candidate));
+      if (!found) continue;
+      // Never conflate two different explicit MMDD checkpoints (e.g. -0910 vs -1017)
+      const famDate = found.match(/-(\d{4})$/)?.[1] || null;
+      if (explicitDate && famDate && explicitDate !== famDate) continue;
+      famSlug = found;
+      break;
     }
     if (!famSlug) return null;
     if (effort) {
@@ -1316,12 +1367,22 @@ function readTtsHostRows(pageHtml) {
   return best;
 }
 
-function cleanMediaShortName(raw) {
-  if (typeof raw !== 'string') return '';
-  return raw
+const GENERIC_MEDIA_TIERS = /^(?:standard|neural|generative|long-form|studio|journey|wavenet|polyglot|hd|turbo|flash|pro|lite|mini)$/i;
+
+function cleanMediaShortName(raw, fullName = '', creatorName = '') {
+  const stripNoise = str => String(str || '')
     .replace(/\s*\((?:Gemini|Tencent|Alibaba|OpenAI|ByteDance)[^)]{8,}\)$/i, '')
     .replace(/\s*\((?:\d{4}-\d{2}-\d{2}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\s+\d{4})\)$/i, '')
-    .trim() || raw.trim();
+    .trim();
+  let cleaned = stripNoise(raw) || String(raw || '').trim();
+  const cleanFull = stripNoise(fullName);
+  if (GENERIC_MEDIA_TIERS.test(cleaned) && cleanFull && !GENERIC_MEDIA_TIERS.test(cleanFull)) {
+    cleaned = cleanFull;
+  }
+  if (GENERIC_MEDIA_TIERS.test(cleaned) && creatorName && creatorName !== 'Other') {
+    cleaned = `${creatorName} ${cleaned}`;
+  }
+  return cleaned;
 }
 
 function buildMediaModels({ imagePayload = null, videoPayload = null, ttsRows = [] } = {}) {
@@ -1360,15 +1421,16 @@ function buildMediaModels({ imagePayload = null, videoPayload = null, ttsRows = 
       if (!parts.length) continue;
       const idxScore = Number((parts.reduce((a, b) => a + b, 0) / parts.length).toFixed(2));
       const isOpen = !!(meta?.openWeightsUrl || /\b(flux\.1\s*\[?(?:dev|schnell)|stable diffusion|sdxl|sd\s*3\.5|qwen-image|hidream|hunyuan|cogview|sana)\b/i.test(rec.item.name));
+      const imgCreator = creator(rec.item.creator || meta?.creator);
       const entry = {
         id: `img:${rawId}`,
         slug: rec.item.slug || rawId,
-        name: rec.item.name,
-        shortName: cleanMediaShortName(meta?.shortName || rec.item.name),
+        name: GENERIC_MEDIA_TIERS.test(rec.item.name.trim()) && imgCreator.name !== 'Other' ? `${imgCreator.name} ${rec.item.name.trim()}` : rec.item.name,
+        shortName: cleanMediaShortName(meta?.shortName || rec.item.name, rec.item.name, imgCreator.name),
         mediaKind: 'image',
         intelligenceIndex: idxScore,
         cost: Number((rec.pricePer1k / 1000).toFixed(6)),
-        creator: creator(rec.item.creator || meta?.creator),
+        creator: imgCreator,
         isReasoning: false,
         isOpenWeights: isOpen,
         mediaScores: { t2i, imgEdit, t2v: null, i2v: null, vidEdit: null, tts: null },
@@ -1421,15 +1483,16 @@ function buildMediaModels({ imagePayload = null, videoPayload = null, ttsRows = 
       if (!parts.length) continue;
       const idxScore = Number((parts.reduce((a, b) => a + b, 0) / parts.length).toFixed(2));
       const isOpen = !!(meta?.openWeightsUrl || /\b(wan\s*2|hunyuanvideo|cogvideo|mochi|ltx-video|skyreels|step-video)\b/i.test(rec.item.name));
+      const vidCreator = creator(rec.item.creator || meta?.creator);
       const entry = {
         id: `vid:${rawId}`,
         slug: rec.item.slug || rawId,
-        name: rec.item.name,
-        shortName: cleanMediaShortName(meta?.shortName || rec.item.name),
+        name: GENERIC_MEDIA_TIERS.test(rec.item.name.trim()) && vidCreator.name !== 'Other' ? `${vidCreator.name} ${rec.item.name.trim()}` : rec.item.name,
+        shortName: cleanMediaShortName(meta?.shortName || rec.item.name, rec.item.name, vidCreator.name),
         mediaKind: 'video',
         intelligenceIndex: idxScore,
         cost: Number((rec.pricePerMin / 12).toFixed(5)),
-        creator: creator(rec.item.creator || meta?.creator),
+        creator: vidCreator,
         isReasoning: false,
         isOpenWeights: isOpen,
         mediaScores: { t2i: null, imgEdit: null, t2v, i2v, vidEdit, tts: null },
@@ -1467,15 +1530,19 @@ function buildMediaModels({ imagePayload = null, videoPayload = null, ttsRows = 
       const ttfaMs = Number.isFinite(h.latencyPerformance?.medianTimeToFirstAudioMs) && h.latencyPerformance.medianTimeToFirstAudioMs > 0
         ? Math.round(h.latencyPerformance.medianTimeToFirstAudioMs)
         : null;
+      const ttsCreator = creator(m.creator || h.host);
+      const ttsFullName = GENERIC_MEDIA_TIERS.test(m.name.trim()) && ttsCreator.name !== 'Other'
+        ? `${ttsCreator.name} ${m.name.trim()}`
+        : m.name;
       const entry = {
         id: `tts:${mId}`,
         slug: m.slug || mId,
-        name: m.name,
-        shortName: cleanMediaShortName(m.shortName || m.name),
+        name: ttsFullName,
+        shortName: cleanMediaShortName(m.shortName || m.name, ttsFullName, ttsCreator.name),
         mediaKind: 'tts',
         intelligenceIndex: ttsScore,
         cost: Number((h.pricePer1mCharacters / 1000).toFixed(6)),
-        creator: creator(m.creator || h.host),
+        creator: ttsCreator,
         isReasoning: false,
         isOpenWeights: !!m.isOpenWeights,
         ...(timeSec ? { timeSec } : {}),
@@ -1501,18 +1568,25 @@ function buildMediaModels({ imagePayload = null, videoPayload = null, ttsRows = 
 
 function buildSnapshotDiff(output, previous, dateStr = new Date().toISOString().slice(0, 10)) {
   const events = [];
+  const rowMeta = cur => ({
+    ...(cur.creator?.name && cur.creator.name !== 'Other' ? { creator: cur.creator.name } : {}),
+    ...(cur.mediaKind ? { mediaKind: cur.mediaKind } : {})
+  });
   const compareSuite = (nextArr, prevArr, tab) => {
     if (!Array.isArray(nextArr) || !Array.isArray(prevArr) || !prevArr.length) return;
     const prevMap = new Map(prevArr.map(r => [r.id, r]));
+    const suiteScoreEvents = [];
     for (const cur of nextArr) {
       const old = prevMap.get(cur.id);
+      const dispName = cleanMediaShortName(cur.shortName || cur.name, cur.name, cur.creator?.name || '');
       if (!old) {
         events.push({
           date: cur.releaseDate || dateStr,
           kind: 'new',
           tab,
           id: cur.id,
-          name: cur.shortName || cur.name,
+          name: dispName,
+          ...rowMeta(cur),
           score: Number(cur.intelligenceIndex.toFixed(1)),
           cost: Number(cur.cost.toFixed(4))
         });
@@ -1526,7 +1600,8 @@ function buildSnapshotDiff(output, previous, dateStr = new Date().toISOString().
             kind: relCost < 0 ? 'price-drop' : 'price-up',
             tab,
             id: cur.id,
-            name: cur.shortName || cur.name,
+            name: dispName,
+            ...rowMeta(cur),
             oldCost: Number(old.cost.toFixed(4)),
             cost: Number(cur.cost.toFixed(4)),
             pct: Math.round(relCost * 100)
@@ -1534,18 +1609,25 @@ function buildSnapshotDiff(output, previous, dateStr = new Date().toISOString().
         }
       }
       const dScore = cur.intelligenceIndex - old.intelligenceIndex;
-      if (Math.abs(dScore) >= 0.5) {
-        events.push({
+      const minDelta = tab === 'media' ? 2.5 : 0.5;
+      if (Math.abs(dScore) >= minDelta) {
+        suiteScoreEvents.push({
           date: dateStr,
           kind: 'score',
           tab,
           id: cur.id,
-          name: cur.shortName || cur.name,
+          name: dispName,
+          ...rowMeta(cur),
           oldScore: Number(old.intelligenceIndex.toFixed(1)),
           score: Number(cur.intelligenceIndex.toFixed(1)),
           delta: Number(dScore.toFixed(1))
         });
       }
+    }
+    const massRescaleThreshold = Math.max(8, Math.floor(prevArr.length * 0.25));
+    if (suiteScoreEvents.length <= massRescaleThreshold) {
+      suiteScoreEvents.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta) || (b.score || 0) - (a.score || 0));
+      events.push(...suiteScoreEvents.slice(0, 4));
     }
   };
 
@@ -1554,6 +1636,13 @@ function buildSnapshotDiff(output, previous, dateStr = new Date().toISOString().
     compareSuite(output.codingAgents, previous.codingAgents, 'coding-agents');
     compareSuite(output.mediaModels, previous.mediaModels, 'media');
   }
+
+  const eventPriority = ev => {
+    const kindW = ev.kind === 'new' ? 300 : ev.kind === 'price-drop' ? 220 : ev.kind === 'price-up' ? 160 : 80;
+    const tabW = ev.tab === 'models' ? 90 : ev.tab === 'coding-agents' ? 70 : 20;
+    return kindW + tabW + Math.min(60, ev.score || 0);
+  };
+  events.sort((a, b) => eventPriority(b) - eventPriority(a));
 
   const priorEvents = Array.isArray(previous?.diffEvents) ? previous.diffEvents : [];
   const merged = [];
@@ -1587,6 +1676,7 @@ function buildSnapshotDiff(output, previous, dateStr = new Date().toISOString().
           tab: 'models',
           id: m.id,
           name: m.shortName || m.name,
+          ...rowMeta(m),
           score: Number(m.intelligenceIndex.toFixed(1)),
           cost: Number(m.cost.toFixed(4))
         });
@@ -1703,9 +1793,26 @@ async function fetchModels(page, sourceUrl, previous, get = getBuffer, { include
 
   const byId = new Map(models.map(m => [m.id, m]));
   const bySlug = new Map(models.filter(m => m.slug).map(m => [m.slug, m]));
+  const byFamily = new Map();
+  for (const m of models) {
+    const fSlug = m.family?.slug;
+    if (fSlug && (!byFamily.has(fSlug) || m.intelligenceIndex > byFamily.get(fSlug).intelligenceIndex)) {
+      byFamily.set(fSlug, m);
+    }
+  }
+  // Enrich byId/bySlug from raw upstream models that lacked positive general-index pricing
+  for (const rawM of modelPayload.models) {
+    if (!rawM?.id || byId.has(rawM.id)) continue;
+    const synth = simplifyModel({ ...rawM, intelligenceIndex: Number.isFinite(rawM.intelligenceIndex) ? rawM.intelligenceIndex : 50, intelligenceIndexCostPerTask: { total: 1 } }, capMap, hostMap);
+    if (synth) {
+      delete synth.timeSec;
+      byId.set(rawM.id, synth);
+      if (synth.slug && !bySlug.has(synth.slug)) bySlug.set(synth.slug, synth);
+    }
+  }
   let cyberModels = [];
   if (Array.isArray(modelPayload.cyberIndexModels)) {
-    cyberModels = modelPayload.cyberIndexModels.map(c => simplifyCyberModel(c, byId, bySlug)).filter(Boolean);
+    cyberModels = modelPayload.cyberIndexModels.map(c => simplifyCyberModel(c, byId, bySlug, byFamily)).filter(Boolean);
     if (cyberModels.length >= 3) validateRows(cyberModels, 3, 'cyber-model');
     else cyberModels = [];
   }
@@ -1826,5 +1933,5 @@ async function main() {
     `### Multi-source benchmark data check\n- Checked: ${new Date().toISOString()}\n- Models: ${models.length}\n- Frontier hard-eval models: ${frontierModels.length}\n- Human & Aesthetic Arena models: ${humanArenaModels.length}\n- LiveBench 2.0 models: ${livebenchBoard?.rows?.length || 0} (matched ${livebenchBoard?.matchedCount || 0})\n- Coding-agent variants: ${codingAgents.length}\n- Cyber-index models: ${cyberModels.length}\n- Multimodal generation models (Image/Video/TTS): ${mediaModels.length}\n- Excluded coding-agent rows without comparable score/cost: ${output.codingAgentExcludedCount}\n- Snapshot changed: ${changed}\n`);
 }
 
-module.exports = { getBuffer, readFlightRecords, readManifests, decryptPayload, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildHumanArenaModels, fetchHumanArenas, parseSimpleCsv, parseLiveBenchData, fetchLiveBench, buildOrgArenaBoards, readTtsHostRows, buildMediaModels, buildSnapshotDiff, resolveFlightReference, readCodingRows, expectedCodingComponents, simplifyCodingAgent, validateRows, fetchModels, writeSnapshot };
+module.exports = { getBuffer, readFlightRecords, readManifests, decryptPayload, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildModelArenaIndex, buildHumanArenaModels, fetchHumanArenas, parseSimpleCsv, parseLiveBenchData, fetchLiveBench, buildOrgArenaBoards, readTtsHostRows, cleanMediaShortName, buildMediaModels, buildSnapshotDiff, resolveFlightReference, readCodingRows, expectedCodingComponents, simplifyCodingAgent, validateRows, fetchModels, writeSnapshot };
 if (require.main === module) main().catch(error => { console.error(error.stack || error); process.exitCode = 1; });

@@ -8347,19 +8347,7 @@
           "cost": 3.43911,
           "timeSec": 464.8
         }
-      ],
-      "livebench": {
-        "overall": 64.98,
-        "rank": 22,
-        "lbCost": 1.4099,
-        "longAgentic": 36,
-        "reasoning": 90.7,
-        "coding": 53.1,
-        "browser": 75.2,
-        "dataAnalysis": 78.7,
-        "research": 79.8,
-        "design": 72.5
-      }
+      ]
     },
     {
       "id": "9999672c-b687-4026-9c15-5cef02ff53bb",
@@ -17711,19 +17699,7 @@
       },
       "aaRank": 112,
       "frontierRank": 106,
-      "rankDelta": 6,
-      "livebench": {
-        "overall": 64.98,
-        "rank": 22,
-        "lbCost": 1.4099,
-        "longAgentic": 36,
-        "reasoning": 90.7,
-        "coding": 53.1,
-        "browser": 75.2,
-        "dataAnalysis": 78.7,
-        "research": 79.8,
-        "design": 72.5
-      }
+      "rankDelta": 6
     },
     {
       "id": "9999672c-b687-4026-9c15-5cef02ff53bb",
@@ -21751,33 +21727,33 @@
         "level": 60
       },
       "timeSec": 842.43,
-      "humanIndex": 58.01,
-      "intelligenceIndex": 58.01,
+      "humanIndex": 56.32,
+      "intelligenceIndex": 56.32,
       "aaIndex": 32.59,
-      "indexDelta": 25.42,
+      "indexDelta": 23.73,
       "humanScores": {
-        "chatVibe": 63.97,
-        "rawChatVibe": 63.97,
+        "chatVibe": null,
+        "rawChatVibe": null,
         "docCraft": null,
         "webdev": 54.21,
         "designWeb": 54.21,
-        "designUi": 53.13,
-        "creativeCraft": 48,
+        "designUi": 53.36,
+        "creativeCraft": 47.45,
         "deliverable": 66.11,
-        "pureVisual": 51.21,
+        "pureVisual": 51.09,
         "spatialMotion": null,
         "antiSlop": 51.1
       },
       "designSub": {
         "website": 54.21,
         "uicomponent": 51.32,
-        "dataviz": 54.94,
-        "gamedev": 52.6,
-        "svg": 43.4
+        "dataviz": 55.4,
+        "gamedev": 52.43,
+        "svg": 42.46
       },
       "arenaRaw": {
-        "chatElo": 1474.7,
-        "chatVotes": 13505,
+        "chatElo": null,
+        "chatVotes": null,
         "docElo": null,
         "docVotes": null,
         "webdevElo": 1658.7,
@@ -22196,6 +22172,81 @@
         "sources": [
           "lmarena",
           "design-arena",
+          "aa-expert"
+        ]
+      }
+    },
+    {
+      "id": "d274918e-ea82-4951-8b37-8ed9ab898dbc",
+      "slug": "tencent-hy4",
+      "name": "Tencent Hy4",
+      "shortName": "Tencent Hy4",
+      "cost": 1.0311060706397974,
+      "creator": {
+        "name": "Tencent",
+        "color": "#5CB9FF"
+      },
+      "isReasoning": true,
+      "isOpenWeights": false,
+      "deprecated": false,
+      "releaseDate": "2026-11-03",
+      "modalities": [
+        "image"
+      ],
+      "family": {
+        "slug": "tencent-hy4",
+        "name": "Tencent Hy4"
+      },
+      "timeSec": 818.39,
+      "humanIndex": 46.5,
+      "intelligenceIndex": 46.5,
+      "aaIndex": 34.56,
+      "indexDelta": 11.94,
+      "humanScores": {
+        "chatVibe": null,
+        "rawChatVibe": null,
+        "docCraft": null,
+        "webdev": 48.18,
+        "designWeb": null,
+        "designUi": null,
+        "creativeCraft": null,
+        "deliverable": 42.64,
+        "pureVisual": null,
+        "spatialMotion": null,
+        "antiSlop": null
+      },
+      "designSub": {
+        "website": null,
+        "uicomponent": null,
+        "dataviz": null,
+        "gamedev": null,
+        "svg": null
+      },
+      "arenaRaw": {
+        "chatElo": null,
+        "chatVotes": null,
+        "docElo": null,
+        "docVotes": null,
+        "webdevElo": 1631.5,
+        "webdevVotes": 4578,
+        "designWebElo": null,
+        "designWebWinRate": null,
+        "designWebBattles": null,
+        "designAvgCostUsd": null,
+        "designUiElo": null,
+        "designUiWinRate": null,
+        "designUiBattles": null,
+        "designDatavizElo": null,
+        "designGameElo": null,
+        "designSvgElo": null,
+        "gdpvalElo": null,
+        "briefcaseElo": 1445.9,
+        "aa3dElo": null,
+        "code2videoElo": null,
+        "slop": null,
+        "dimensionCount": 2,
+        "sources": [
+          "lmarena",
           "aa-expert"
         ]
       }
@@ -23079,88 +23130,6 @@
         "dimensionCount": 4,
         "sources": [
           "lmarena",
-          "aa-expert"
-        ]
-      }
-    },
-    {
-      "id": "512d17ef-13d2-4f65-bf9b-154b0dec7e8d",
-      "slug": "kimi-k3-low",
-      "name": "Kimi K3 (Low)",
-      "shortName": "Kimi K3 (low)",
-      "cost": 2.368773852349091,
-      "creator": {
-        "name": "Kimi",
-        "color": "#047AFE"
-      },
-      "isReasoning": true,
-      "isOpenWeights": true,
-      "deprecated": false,
-      "releaseDate": "2026-07-16",
-      "openLicense": "commercial-license",
-      "parametersB": 2800,
-      "modalities": [
-        "image"
-      ],
-      "family": {
-        "slug": "kimi-k3",
-        "name": "Kimi K3"
-      },
-      "effort": {
-        "slug": "low",
-        "label": "low",
-        "level": 20
-      },
-      "timeSec": 985.69,
-      "humanIndex": 38.79,
-      "intelligenceIndex": 38.79,
-      "aaIndex": 17.42,
-      "indexDelta": 21.37,
-      "humanScores": {
-        "chatVibe": null,
-        "rawChatVibe": null,
-        "docCraft": null,
-        "webdev": null,
-        "designWeb": 69.41,
-        "designUi": 65.86,
-        "creativeCraft": 57.74,
-        "deliverable": 6.19,
-        "pureVisual": 62.45,
-        "spatialMotion": null,
-        "antiSlop": null
-      },
-      "designSub": {
-        "website": 69.41,
-        "uicomponent": 61.54,
-        "dataviz": 70.17,
-        "gamedev": 58.74,
-        "svg": 56.74
-      },
-      "arenaRaw": {
-        "chatElo": null,
-        "chatVotes": null,
-        "docElo": null,
-        "docVotes": null,
-        "webdevElo": null,
-        "webdevVotes": null,
-        "designWebElo": 1335,
-        "designWebWinRate": 59.5,
-        "designWebBattles": 4947,
-        "designAvgCostUsd": 0.4764,
-        "designUiElo": 1335,
-        "designUiWinRate": 60.2,
-        "designUiBattles": 558,
-        "designDatavizElo": 1349,
-        "designGameElo": 1349,
-        "designSvgElo": 1294,
-        "gdpvalElo": 1135.7,
-        "briefcaseElo": 985.1,
-        "aa3dElo": null,
-        "code2videoElo": null,
-        "slop": null,
-        "dimensionCount": 2,
-        "sources": [
-          "design-arena",
           "aa-expert"
         ]
       }
@@ -25450,12 +25419,10 @@
         {
           "rank": 22,
           "rawName": "kimi-k3",
-          "name": "Kimi K3 (low)",
+          "name": "kimi-k3",
           "creator": "Kimi",
-          "modelId": "512d17ef-13d2-4f65-bf9b-154b0dec7e8d",
           "score": 64.98,
           "lbCost": 1.4099,
-          "cost": 2.368773852349091,
           "suites": {
             "longAgentic": 36,
             "reasoning": 90.7,
@@ -25713,7 +25680,7 @@
         {
           "rank": 36,
           "rawName": "nemotron-super-vl-3.5-nvfp4",
-          "name": "nemotron-super-vl-3.5-nvfp4",
+          "name": "Nemotron 3.5 Super VL",
           "score": 42.27,
           "lbCost": 0.074,
           "suites": {
@@ -25724,7 +25691,10 @@
             "dataAnalysis": 65.7,
             "research": 67.4,
             "design": 55.6
-          }
+          },
+          "modelId": "e2c0623e-c855-4a61-bb66-be1f1ed43234",
+          "cost": 0.48180884308185656,
+          "creator": "NVIDIA"
         },
         {
           "rank": 37,
@@ -25767,7 +25737,7 @@
       "date": "2026-11-18",
       "sourceUrl": "https://arena.ai/leaderboard",
       "totalCount": 60,
-      "matchedCount": 21,
+      "matchedCount": 20,
       "rows": [
         {
           "rank": 1,
@@ -26128,10 +26098,8 @@
         {
           "rank": 41,
           "rawName": "DeepSeek-V4.1-Flash-20260910 (Max)",
-          "name": "DeepSeek V4.1 Flash 1017 (max)",
+          "name": "DeepSeek-V4.1-Flash-20260910 (Max)",
           "creator": "DeepSeek",
-          "modelId": "f151fd0b-2139-40cf-a3ec-995e8cedc592",
-          "cost": 0.60210514783598,
           "score": 1474.7,
           "votes": 13505
         },
@@ -26590,10 +26558,12 @@
         {
           "rank": 30,
           "rawName": "Hy4 preview",
-          "name": "Hy4 preview",
-          "creator": "tencent",
+          "name": "Tencent Hy4",
+          "creator": "Tencent",
           "score": 1631.5,
-          "votes": 4578
+          "votes": 4578,
+          "modelId": "d274918e-ea82-4951-8b37-8ed9ab898dbc",
+          "cost": 1.0311060706397974
         },
         {
           "rank": 31,
@@ -26646,10 +26616,8 @@
         {
           "rank": 36,
           "rawName": "DeepSeek-V4.1-Flash-20260910 (Max)",
-          "name": "DeepSeek V4.1 Flash 1017 (max)",
+          "name": "DeepSeek-V4.1-Flash-20260910 (Max)",
           "creator": "DeepSeek",
-          "modelId": "f151fd0b-2139-40cf-a3ec-995e8cedc592",
-          "cost": 0.60210514783598,
           "score": 1621.1,
           "votes": 3378
         },
@@ -26872,7 +26840,7 @@
     "designArena": {
       "sourceUrl": "https://www.designarena.ai/leaderboard",
       "totalCount": 60,
-      "matchedCount": 28,
+      "matchedCount": 27,
       "rows": [
         {
           "rank": 1,
@@ -26997,10 +26965,8 @@
         {
           "rank": 8,
           "rawName": "kimi-k3",
-          "name": "Kimi K3 (low)",
+          "name": "kimi-k3",
           "creator": "Kimi",
-          "modelId": "512d17ef-13d2-4f65-bf9b-154b0dec7e8d",
-          "cost": 2.368773852349091,
           "score": 1335,
           "winRate": 59.5,
           "battles": 4947,
@@ -30824,13 +30790,18 @@
         "name": "DeepSeek",
         "color": "#2243e6"
       },
-      "isReasoning": false,
-      "isOpenWeights": false,
+      "isReasoning": true,
+      "isOpenWeights": true,
       "refusalRate": 0,
       "mitigationStatus": "standard",
       "family": {
         "slug": "deepseek-v4-1-flash",
         "name": "DeepSeek V4.1 Flash (max)"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "Max",
+        "level": 60
       }
     },
     {
@@ -31172,13 +31143,18 @@
         "name": "OpenAI",
         "color": "#1f1f1f"
       },
-      "isReasoning": false,
+      "isReasoning": true,
       "isOpenWeights": false,
       "refusalRate": 0,
       "mitigationStatus": "unmitigated",
       "family": {
         "slug": "gpt-6-sol-daybreak-blue",
         "name": "GPT-6 Sol (Daybreak Blue, max)"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "Max",
+        "level": 60
       }
     },
     {
@@ -31576,13 +31552,18 @@
         "name": "Meta",
         "color": "#0089f4"
       },
-      "isReasoning": false,
+      "isReasoning": true,
       "isOpenWeights": false,
       "refusalRate": 0,
       "mitigationStatus": "standard",
       "family": {
         "slug": "muse-spark-1-3",
-        "name": "Muse Spark 1.3 (xhigh)"
+        "name": "Muse Spark 1.3"
+      },
+      "effort": {
+        "slug": "xhigh",
+        "label": "xHigh",
+        "level": 50
       }
     },
     {
@@ -31597,13 +31578,19 @@
         "name": "Kimi",
         "color": "#047AFE"
       },
-      "isReasoning": false,
-      "isOpenWeights": false,
+      "isReasoning": true,
+      "isOpenWeights": true,
       "refusalRate": 0,
       "mitigationStatus": "standard",
+      "openLicense": "commercial-license",
       "family": {
         "slug": "kimi-k3",
-        "name": "Kimi K3 (max)"
+        "name": "Kimi K3"
+      },
+      "effort": {
+        "slug": "max",
+        "label": "Max",
+        "level": 60
       }
     },
     {
@@ -31619,7 +31606,7 @@
         "color": "#ff7018"
       },
       "isReasoning": false,
-      "isOpenWeights": false,
+      "isOpenWeights": true,
       "refusalRate": 62.53,
       "mitigationStatus": "standard",
       "family": {
@@ -32478,8 +32465,8 @@
     {
       "id": "tts:16ad3e89-cc78-4478-a5a0-a048b5c72cfb",
       "slug": "wavenet",
-      "name": "WaveNet",
-      "shortName": "WaveNet",
+      "name": "Google WaveNet",
+      "shortName": "Google WaveNet",
       "mediaKind": "tts",
       "intelligenceIndex": 18.89,
       "cost": 0.004,
@@ -32512,8 +32499,8 @@
     {
       "id": "tts:7efc9790-17f6-44a5-8b4f-897deaeb0088",
       "slug": "standard",
-      "name": "Standard",
-      "shortName": "Standard",
+      "name": "Google Standard",
+      "shortName": "Google Standard",
       "mediaKind": "tts",
       "intelligenceIndex": 15.52,
       "cost": 0.004,
@@ -32547,7 +32534,7 @@
       "id": "tts:d3f9b298-8e1a-4328-a2bd-ce3ceea6db1f",
       "slug": "polly-standard",
       "name": "Polly Standard",
-      "shortName": "Standard",
+      "shortName": "Polly Standard",
       "mediaKind": "tts",
       "intelligenceIndex": 10.83,
       "cost": 0.004,
@@ -34109,7 +34096,7 @@
       "id": "tts:78588185-b188-46fb-8d06-c06f52009715",
       "slug": "tts-1",
       "name": "TTS-1",
-      "shortName": "Standard",
+      "shortName": "TTS-1",
       "mediaKind": "tts",
       "intelligenceIndex": 46.39,
       "cost": 0.015,
@@ -34208,7 +34195,7 @@
       "id": "tts:7255e62a-855d-49f2-948c-2ea36bc603aa",
       "slug": "azure-neural",
       "name": "Azure Neural",
-      "shortName": "Neural",
+      "shortName": "Azure Neural",
       "mediaKind": "tts",
       "intelligenceIndex": 36.45,
       "cost": 0.015,
@@ -34307,7 +34294,7 @@
       "id": "tts:eb3b0d75-134b-4e6a-82c5-4db2398d5c07",
       "slug": "polly-neural",
       "name": "Polly Neural",
-      "shortName": "Neural",
+      "shortName": "Polly Neural",
       "mediaKind": "tts",
       "intelligenceIndex": 16.49,
       "cost": 0.016,
@@ -35620,7 +35607,7 @@
       "id": "tts:4ef13968-15ee-4311-a6d1-685f015b0717",
       "slug": "polly-generative",
       "name": "Polly Generative",
-      "shortName": "Generative",
+      "shortName": "Polly Generative",
       "mediaKind": "tts",
       "intelligenceIndex": 41.94,
       "cost": 0.03,
@@ -35653,7 +35640,7 @@
     {
       "id": "tts:f524429e-7e12-47eb-88df-6a9730f88989",
       "slug": "chirp3-hd",
-      "name": "Chirp 3: HD",
+      "name": "Google Chirp 3: HD",
       "shortName": "Chirp 3: HD",
       "mediaKind": "tts",
       "intelligenceIndex": 41.86,
@@ -38668,7 +38655,7 @@
       "id": "tts:8b4be309-2f31-4ff2-be79-a6652c29ab12",
       "slug": "polly-long-form",
       "name": "Polly Long-Form",
-      "shortName": "Long-form",
+      "shortName": "Polly Long-Form",
       "mediaKind": "tts",
       "intelligenceIndex": 35.41,
       "cost": 0.1,
@@ -38955,8 +38942,8 @@
     {
       "id": "tts:02265a20-67bc-4892-89d0-f54545b6b4a1",
       "slug": "studio",
-      "name": "Studio",
-      "shortName": "Studio",
+      "name": "Google Studio",
+      "shortName": "Google Studio",
       "mediaKind": "tts",
       "intelligenceIndex": 44.23,
       "cost": 0.16,
@@ -38989,8 +38976,8 @@
     {
       "id": "tts:2b5bb443-e32e-4cb4-a9f2-918c00210211",
       "slug": "journey",
-      "name": "Journey",
-      "shortName": "Journey",
+      "name": "Google Journey",
+      "shortName": "Google Journey",
       "mediaKind": "tts",
       "intelligenceIndex": 42.96,
       "cost": 0.16,
@@ -40479,204 +40466,84 @@
   ],
   "diffEvents": [
     {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "tts:3b322e37-a016-4b2e-aacb-1aef8df00829",
-      "name": "StyleTTS 2",
-      "oldScore": 4.1,
-      "score": 15.9,
-      "delta": 11.8
+      "date": "2026-11-18",
+      "kind": "new",
+      "tab": "models",
+      "id": "7c667f2d-0149-4eb1-864c-7e66c166ad88",
+      "name": "Gemini 4 Neon (xhigh)",
+      "creator": "Google",
+      "score": 61.4,
+      "cost": 6.4448
     },
     {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "img:74606b04-5682-4ff2-85ce-56999ef61acb",
-      "name": "Step Image Edit 2",
-      "oldScore": 21.5,
-      "score": 46.7,
-      "delta": 25.2
+      "date": "2026-11-17",
+      "kind": "new",
+      "tab": "models",
+      "id": "75c1b0b8-9db3-4c7e-95be-d74e59defee4",
+      "name": "GPT-6.2 Astra (max)",
+      "creator": "OpenAI",
+      "score": 62.1,
+      "cost": 3.9979
     },
     {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "img:e2fa2f78-4a0c-4e2f-b3cf-53d213a18872",
-      "name": "P-Image-Ideogram (Very Low)",
-      "oldScore": 7.8,
-      "score": 32.4,
-      "delta": 24.5
+      "date": "2026-11-17",
+      "kind": "new",
+      "tab": "models",
+      "id": "a1a84b18-e8c9-48fb-8e04-6003bd9f6ff4",
+      "name": "GPT-6.2 Sol (max)",
+      "creator": "OpenAI",
+      "score": 57.3,
+      "cost": 1.0144
     },
     {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "img:d77cfc0a-2fa1-4f8e-9f7f-a666b348b1e9",
-      "name": "FLUX.1 [schnell]",
-      "oldScore": 0.7,
-      "score": 11.4,
-      "delta": 10.7
+      "date": "2026-11-16",
+      "kind": "new",
+      "tab": "models",
+      "id": "fef6625d-9097-45f6-95c0-bcaa06e3d8e1",
+      "name": "Qwen4 Max",
+      "creator": "Alibaba",
+      "score": 42.9,
+      "cost": 3.2681
     },
     {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "tts:16ad3e89-cc78-4478-a5a0-a048b5c72cfb",
-      "name": "WaveNet",
-      "oldScore": 6.2,
-      "score": 18.9,
-      "delta": 12.7
+      "date": "2026-11-12",
+      "kind": "new",
+      "tab": "models",
+      "id": "dad0e3b1-e3e7-477a-99f9-c14457a91114",
+      "name": "Gemini 4 Hydrogen (xhigh)",
+      "creator": "Google",
+      "score": 53.9,
+      "cost": 3.1602
     },
     {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "tts:7efc9790-17f6-44a5-8b4f-897deaeb0088",
-      "name": "Standard",
-      "oldScore": 3.8,
-      "score": 15.5,
-      "delta": 11.7
+      "date": "2026-11-09",
+      "kind": "new",
+      "tab": "models",
+      "id": "593f2d23-247b-41c9-a679-cebd225f0a9a",
+      "name": "Claude Fable 5.2 (max)",
+      "creator": "Anthropic",
+      "score": 64.6,
+      "cost": 26.5386
     },
     {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "tts:d3f9b298-8e1a-4328-a2bd-ce3ceea6db1f",
-      "name": "Standard",
-      "oldScore": 1.6,
-      "score": 10.8,
-      "delta": 9.2
+      "date": "2026-11-09",
+      "kind": "new",
+      "tab": "models",
+      "id": "dbf63365-127f-41ee-9e51-81173adb3502",
+      "name": "Muse Ember (max)",
+      "creator": "Meta",
+      "score": 36,
+      "cost": 0.1359
     },
     {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "img:0413f436-9aa3-4f92-aa34-9432841c1830",
-      "name": "FLUX.2 [dev] Flash",
-      "oldScore": 20.9,
-      "score": 46.3,
-      "delta": 25.3
-    },
-    {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "img:d48735c9-9f0f-45b6-ad45-cc03eec252c8",
-      "name": "Z-Image Turbo",
-      "oldScore": 10.6,
-      "score": 36.3,
-      "delta": 25.7
-    },
-    {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "img:c404f12b-b1a8-47d2-bbff-3aa5f73be475",
-      "name": "P-Image",
-      "oldScore": 6,
-      "score": 29.3,
-      "delta": 23.2
-    },
-    {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "img:9cb8045c-3c85-4023-8585-88ca0eff8452",
-      "name": "HiDream-O1-Image-Dev",
-      "oldScore": 2.8,
-      "score": 21.1,
-      "delta": 18.3
-    },
-    {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "img:61ace12c-0fb5-4262-a0b7-80845c84b40d",
-      "name": "Luma Photon Flash",
-      "oldScore": 1.1,
-      "score": 14,
-      "delta": 13
-    },
-    {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "tts:f65ccaf3-a765-4f09-9813-acbac77de69e",
-      "name": "Simba 3.5",
-      "oldScore": 97.1,
-      "score": 80.9,
-      "delta": -16.2
-    },
-    {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "tts:5177af39-8605-4e2f-b13a-b97f94cb8022",
-      "name": "Simba 3.2",
-      "oldScore": 94.4,
-      "score": 75.6,
-      "delta": -18.9
-    },
-    {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "tts:fd453d8f-75f5-45b4-84ba-47cfd5ca2a93",
-      "name": "SIMBA 3.0",
-      "oldScore": 63.2,
-      "score": 51.5,
-      "delta": -11.7
-    },
-    {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "img:2106ec2e-158c-4978-82e0-9049e3d8d90f",
-      "name": "Recraft V4.1 Flash",
-      "oldScore": 12.5,
-      "score": 38.5,
-      "delta": 26
-    },
-    {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "img:740929c5-09b6-4a81-b98e-00e903e27d84",
-      "name": "Ideogram 4.0 Instant",
-      "oldScore": 19.4,
-      "score": 45.1,
-      "delta": 25.7
-    },
-    {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "img:d5a99ffc-7fb6-48c3-8543-75c4c07706f0",
-      "name": "P-Image-Ideogram (Low)",
-      "oldScore": 15.4,
-      "score": 41.6,
-      "delta": 26.1
-    },
-    {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "img:db7a9087-0b50-41f8-ac41-fb48db3aa459",
-      "name": "FLUX.2 [dev] Turbo",
-      "oldScore": 22.7,
-      "score": 47.6,
-      "delta": 24.9
-    },
-    {
-      "date": "2026-11-19",
-      "kind": "score",
-      "tab": "media",
-      "id": "tts:80791fbe-7454-4719-9063-bedfcde606c7",
-      "name": "OpenVoice v2",
-      "oldScore": 11.3,
+      "date": "2026-11-07",
+      "kind": "new",
+      "tab": "models",
+      "id": "d4dd600d-0d8e-4d6e-ad18-0cb8f7d6c4d0",
+      "name": "Agnes 2.5 Pro Theta",
+      "creator": "Sapiens AI",
       "score": 24,
-      "delta": 12.7
+      "cost": 0.5747
     }
   ]
 }

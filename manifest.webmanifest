@@ -1,7 +1,7 @@
 {
   "name": "智能水平与任务成本 · Intelligence vs. Cost",
   "short_name": "Intel vs Cost",
-  "description": "用线性美元与耗时坐标比较 Artificial Analysis 模型、编程智能体与网络安全基准。",
+  "description": "用线性美元与实测耗时坐标比较综合智能、前沿极限、人类盲测审美、编程智能体、网络安全、多模态生成与 6 大测评机构原榜。",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#0d1626",
