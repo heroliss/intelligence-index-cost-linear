@@ -1,6 +1,6 @@
 # 智能水平与任务成本（线性横轴）
 
-线上地址：[Intelligence vs. Cost](https://heroliss.github.io/intelligence-index-cost-linear/) · [上手指南与作品详情](https://heroliss.github.io/liss-works/projects/intelligence-index-cost-linear/) · [作者个人作品站 Liss Works](https://heroliss.github.io/liss-works/)。
+线上地址：[Intelligence vs. Cost](https://heroliss.github.io/intelligence-index-cost-linear/) · [作品简介与入门](https://heroliss.github.io/liss-works/projects/intelligence-index-cost-linear/) · [Liss Works](https://heroliss.github.io/liss-works/)。
 
 GitHub Pages 零构建静态网页，用线性美元成本与实测耗时坐标比较六大核心频道：**综合智能**、**前沿极限（剔除 90%+ 已饱和旧测试）**、**人类与审美（融合 Arena.ai (LMArena) 去水份盲测 + Design Arena 视觉审美 + GDPval 职业真实交付 + 去 AI 套话感）**、**编程智能体**、**网络安全**与**多模态生成（图像 / 视频 / 语音合成 TTS）**，并已接入防污染权威实测源 **LiveBench 2.0**。顶部页签共用占满窗口的工作区，支持**散点图、数据表、机构分榜（6 份独立机构原榜并排对照）、IRT 能力效用曲线、月度订阅回本测算与最多 8 项深度剖析对比**六视图联动，页面无需纵向滚动，支持一键切换中文 / English、深浅色主题、`Ctrl+K` 全站速查、实况降价/上新追踪与状态链接分享。
 

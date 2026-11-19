@@ -331,6 +331,36 @@ test('buildHumanArenaModels matches effort-aware variants without cloning onto l
   const bfRes = balancedArena.find(x => x.id === 'flag-m');
   assert.ok(bfRes.humanIndex - spRes.humanIndex > 12, 'balanced low-slop flagship should lead heavy-slop crowd pleaser by >12 pts');
 
+  // Debiased pureVisual: fresh higher-Website-Elo release must not be inverted below an older lower-Website model inflated by GameDev/SVG & battle count
+  const oldGameHeavy = simplifyModel({
+    id: 'old-m', slug: 'old-visual', name: 'Old Visual (Max)', shortName: 'Old Visual (max)',
+    intelligenceIndex: 55, intelligenceIndexCostPerTask: { total: 6 }
+  });
+  const freshWebStrong = simplifyModel({
+    id: 'fresh-m', slug: 'fresh-visual', name: 'Fresh Visual (Max)', shortName: 'Fresh Visual (max)',
+    intelligenceIndex: 60, intelligenceIndexCostPerTask: { total: 5 }
+  });
+  const visCheck = buildHumanArenaModels([oldGameHeavy, freshWebStrong], {
+    designByCat: {
+      website: [
+        { modelId: 'old-visual', elo: 1338, battles: 5800 },
+        { modelId: 'fresh-visual', elo: 1375, battles: 320 }
+      ],
+      uicomponent: [
+        { modelId: 'old-visual', elo: 1380, battles: 600 },
+        { modelId: 'fresh-visual', elo: 1365, battles: 260 }
+      ],
+      gamedev: [{ modelId: 'old-visual', elo: 1470, battles: 1200 }],
+      svg: [{ modelId: 'old-visual', elo: 1420, battles: 900 }]
+    }
+  });
+  const oldV = visCheck.find(x => x.id === 'old-m');
+  const freshV = visCheck.find(x => x.id === 'fresh-m');
+  assert.ok(
+    freshV.humanScores.pureVisual > oldV.humanScores.pureVisual,
+    `fresh stronger Website model (${freshV.humanScores.pureVisual}) must outscore older GameDev/SVG-heavy model (${oldV.humanScores.pureVisual})`
+  );
+
   // Fault tolerance: network error falls back cleanly to previous snapshot
   const fallbackPrev = { humanArenaModels: arenaRows, lmArenaPublishDate: '2026-11-11' };
   const degraded = await fetchHumanArenas([museMax], fallbackPrev, async () => { throw new Error('offline'); });

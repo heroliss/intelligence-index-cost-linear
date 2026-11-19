@@ -60,7 +60,7 @@ test('recommendModels returns distinct multi-archetype picks with objective proo
     'consensus pick must not lack Arena Chat blind coverage'
   );
   for (const p of gen.picks) {
-    if (p.row.cost >= 8) {
+    if (p.row.cost >= 11) {
       assert.ok(
         p.caveats.some(cv => cv.zh.includes('常规月卡')),
         `high-cost model (${p.row.name}, $${p.row.cost}) must carry subscription/API-only caveat`
@@ -68,7 +68,18 @@ test('recommendModels returns distinct multi-archetype picks with objective proo
     }
   }
 
-  // 2. End-to-end Coding Agents under monthly plan mode picks top real-world Coding Agent within mainstream burn
+  // 2. Web & UI Aesthetics contrasts Design Arena Website vs Arena.ai WebDev vs Dual-Board Ceiling (not GameDev-inflated old models!)
+  const des = recommendModels(snapshot, {useCase: 'design', billing: 'sub', license: 'all'});
+  assert.equal(des.picks.length, 3);
+  assert.equal(des.picks[0].badgeZh, '整站视觉审美派');
+  assert.ok(des.picks[0].proofs.some(pr => pr.zh.includes('Design 整站 #1')), `visual pick (${des.picks[0].row.name}) must carry Design #1 proof`);
+  assert.equal(des.picks[1].badgeZh, '真实交互前端派');
+  assert.ok(des.picks[1].proofs.some(pr => pr.zh.includes('WebDev #')), `interactive pick (${des.picks[1].row.name}) must carry WebDev proof`);
+  assert.equal(des.picks[2].badgeZh, '前端全能上限参照');
+  assert.ok(des.picks[2].proofs.some(pr => pr.zh.includes('WebDev #1')), `ceiling pick (${des.picks[2].row.name}) must show WebDev #1 proof`);
+  assert.ok(des.picks[2].caveats.some(cv => cv.zh.includes('常规月卡')), 'high-cost design ceiling carries subscription caveat');
+
+  // 3. End-to-end Coding Agents under monthly plan mode picks top real-world Coding Agent within mainstream burn
   const ca = recommendModels(snapshot, {useCase: 'coding-agent', billing: 'sub', license: 'all'});
   assert.equal(ca.picks.length, 3);
   assert.equal(ca.picks[0].badgeZh, '端到端实战首选');

@@ -4,7 +4,7 @@
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
   "hostsManifestPath": "/data/324ed05c14a0dc8b.txt",
-  "updatedAt": "2026-11-19T13:26:50.877Z",
+  "updatedAt": "2026-11-19T18:32:46.000Z",
   "updateIntervalHours": 2,
   "changelog": [
     {
@@ -1541,7 +1541,7 @@
       ],
       "livebench": {
         "overall": 60.42,
-        "rank": 27,
+        "rank": 28,
         "lbCost": 0.0795,
         "longAgentic": 24.7,
         "reasoning": 81.8,
@@ -2520,7 +2520,7 @@
       ],
       "livebench": {
         "overall": 66.11,
-        "rank": 21,
+        "rank": 22,
         "lbCost": 0.116,
         "longAgentic": 36.4,
         "reasoning": 79.6,
@@ -3477,7 +3477,7 @@
       },
       "livebench": {
         "overall": 68.94,
-        "rank": 16,
+        "rank": 17,
         "lbCost": 0.8716,
         "longAgentic": 47.9,
         "reasoning": 82.4,
@@ -3814,7 +3814,7 @@
       ],
       "livebench": {
         "overall": 47.01,
-        "rank": 34,
+        "rank": 35,
         "lbCost": 0.1448,
         "longAgentic": 12,
         "reasoning": 74.6,
@@ -3959,7 +3959,7 @@
       ],
       "livebench": {
         "overall": 63.67,
-        "rank": 23,
+        "rank": 24,
         "lbCost": 0.11,
         "longAgentic": 25.7,
         "reasoning": 82.9,
@@ -4557,7 +4557,7 @@
       ],
       "livebench": {
         "overall": 60.67,
-        "rank": 26,
+        "rank": 27,
         "lbCost": 0.1059,
         "longAgentic": 20.7,
         "reasoning": 77.6,
@@ -4785,7 +4785,7 @@
       ],
       "livebench": {
         "overall": 70.26,
-        "rank": 15,
+        "rank": 16,
         "lbCost": 0.1369,
         "longAgentic": 38.8,
         "reasoning": 89.1,
@@ -5804,10 +5804,10 @@
         "economics": 48.5
       },
       "livebench": {
-        "overall": 78.77,
-        "rank": 9,
+        "overall": 78.57,
+        "rank": 10,
         "lbCost": 0.5301,
-        "longAgentic": 56.2,
+        "longAgentic": 55.3,
         "reasoning": 88.7,
         "coding": 89.2,
         "browser": 93.1,
@@ -6105,7 +6105,7 @@
       },
       "livebench": {
         "overall": 80.31,
-        "rank": 8,
+        "rank": 9,
         "lbCost": 0.4201,
         "longAgentic": 63.6,
         "reasoning": 90.6,
@@ -6497,10 +6497,10 @@
         }
       ],
       "livebench": {
-        "overall": 81.37,
-        "rank": 7,
+        "overall": 81.17,
+        "rank": 8,
         "lbCost": 0.6694,
-        "longAgentic": 65.6,
+        "longAgentic": 64.7,
         "reasoning": 92.6,
         "coding": 82.1,
         "browser": 93.3,
@@ -6753,7 +6753,7 @@
       ],
       "livebench": {
         "overall": 44.32,
-        "rank": 35,
+        "rank": 36,
         "lbCost": 0.8621,
         "longAgentic": 9.8,
         "reasoning": 78.3,
@@ -7741,7 +7741,7 @@
       ],
       "livebench": {
         "overall": 48.53,
-        "rank": 32,
+        "rank": 33,
         "lbCost": 0.5525,
         "longAgentic": 12.1,
         "reasoning": 73.7,
@@ -7838,7 +7838,7 @@
       },
       "livebench": {
         "overall": 60.27,
-        "rank": 28,
+        "rank": 29,
         "lbCost": 0.3637,
         "longAgentic": 24.7,
         "reasoning": 85.2,
@@ -8221,7 +8221,7 @@
       },
       "livebench": {
         "overall": 54.89,
-        "rank": 30,
+        "rank": 31,
         "lbCost": 0.7462,
         "longAgentic": 19.4,
         "reasoning": 83.8,
@@ -8440,7 +8440,7 @@
       },
       "livebench": {
         "overall": 68.59,
-        "rank": 18,
+        "rank": 19,
         "lbCost": 0.9711,
         "longAgentic": 47.9,
         "reasoning": 89.7,
@@ -9059,7 +9059,7 @@
       },
       "livebench": {
         "overall": 77,
-        "rank": 11,
+        "rank": 12,
         "lbCost": 1.4812,
         "longAgentic": 61.8,
         "reasoning": 88.6,
@@ -9313,10 +9313,10 @@
         "economics": 51.32
       },
       "livebench": {
-        "overall": 73.26,
-        "rank": 13,
+        "overall": 73.06,
+        "rank": 14,
         "lbCost": 0.5071,
-        "longAgentic": 47.5,
+        "longAgentic": 46.6,
         "reasoning": 92.2,
         "coding": 69.8,
         "browser": 80.7,
@@ -9543,7 +9543,7 @@
       ],
       "livebench": {
         "overall": 54.05,
-        "rank": 31,
+        "rank": 32,
         "lbCost": 0.5711,
         "longAgentic": 15.9,
         "reasoning": 80,
@@ -9771,7 +9771,7 @@
       ],
       "livebench": {
         "overall": 68.65,
-        "rank": 17,
+        "rank": 18,
         "lbCost": 0.737,
         "longAgentic": 38.7,
         "reasoning": 91.1,
@@ -9878,7 +9878,7 @@
       ],
       "livebench": {
         "overall": 67.15,
-        "rank": 20,
+        "rank": 21,
         "lbCost": 1.4021,
         "longAgentic": 25.9,
         "reasoning": 90.6,
@@ -10260,7 +10260,7 @@
       },
       "livebench": {
         "overall": 84.87,
-        "rank": 2,
+        "rank": 3,
         "lbCost": 1.6472,
         "longAgentic": 70.8,
         "reasoning": 91.6,
@@ -10792,7 +10792,7 @@
       },
       "livebench": {
         "overall": 63.51,
-        "rank": 24,
+        "rank": 25,
         "lbCost": 1.2209,
         "longAgentic": 18.7,
         "reasoning": 91.2,
@@ -10905,7 +10905,7 @@
       ],
       "livebench": {
         "overall": 77.69,
-        "rank": 10,
+        "rank": 11,
         "lbCost": 1.4151,
         "longAgentic": 58.5,
         "reasoning": 95.1,
@@ -11406,10 +11406,10 @@
         }
       ],
       "livebench": {
-        "overall": 84.45,
-        "rank": 3,
+        "overall": 84.25,
+        "rank": 4,
         "lbCost": 4.4907,
-        "longAgentic": 75.6,
+        "longAgentic": 74.7,
         "reasoning": 92.7,
         "coding": 87.5,
         "browser": 91.3,
@@ -11586,6 +11586,18 @@
         "healthcare": 59.95,
         "engineering": 66.84,
         "economics": 61.93
+      },
+      "livebench": {
+        "overall": 87.44,
+        "rank": 1,
+        "lbCost": 2.3205,
+        "longAgentic": 82.6,
+        "reasoning": 89.6,
+        "coding": 89.7,
+        "browser": 95.6,
+        "dataAnalysis": 85.3,
+        "research": 94.5,
+        "design": 81.5
       }
     },
     {
@@ -11765,7 +11777,7 @@
       },
       "livebench": {
         "overall": 70.7,
-        "rank": 14,
+        "rank": 15,
         "lbCost": 1.7372,
         "longAgentic": 46.2,
         "reasoning": 90.6,
@@ -12029,10 +12041,10 @@
         "economics": 59.61
       },
       "livebench": {
-        "overall": 83.53,
-        "rank": 5,
+        "overall": 83.33,
+        "rank": 7,
         "lbCost": 1.6902,
-        "longAgentic": 72.7,
+        "longAgentic": 71.8,
         "reasoning": 90.6,
         "coding": 91,
         "browser": 80,
@@ -12133,7 +12145,7 @@
       },
       "livebench": {
         "overall": 57.26,
-        "rank": 29,
+        "rank": 30,
         "lbCost": 0.9165,
         "longAgentic": 16.5,
         "reasoning": 89.3,
@@ -12234,7 +12246,7 @@
       },
       "livebench": {
         "overall": 67.91,
-        "rank": 19,
+        "rank": 20,
         "lbCost": 2.835,
         "longAgentic": 45.3,
         "reasoning": 82.7,
@@ -12439,10 +12451,10 @@
         }
       ],
       "livebench": {
-        "overall": 76.99,
-        "rank": 12,
+        "overall": 76.79,
+        "rank": 13,
         "lbCost": 4.4676,
-        "longAgentic": 63.4,
+        "longAgentic": 62.5,
         "reasoning": 91.6,
         "coding": 77.2,
         "browser": 89.3,
@@ -12541,7 +12553,7 @@
       },
       "livebench": {
         "overall": 60.92,
-        "rank": 25,
+        "rank": 26,
         "lbCost": 1.2276,
         "longAgentic": 26.6,
         "reasoning": 88.2,
@@ -12948,7 +12960,7 @@
       },
       "livebench": {
         "overall": 83.96,
-        "rank": 4,
+        "rank": 5,
         "lbCost": 7.0221,
         "longAgentic": 74.2,
         "reasoning": 91.7,
@@ -13132,7 +13144,7 @@
       },
       "livebench": {
         "overall": 84.88,
-        "rank": 1,
+        "rank": 2,
         "lbCost": 8.3607,
         "longAgentic": 82.9,
         "reasoning": 88.8,
@@ -13998,7 +14010,7 @@
       "rankDelta": 6,
       "livebench": {
         "overall": 60.42,
-        "rank": 27,
+        "rank": 28,
         "lbCost": 0.0795,
         "longAgentic": 24.7,
         "reasoning": 81.8,
@@ -14561,7 +14573,7 @@
       "rankDelta": 3,
       "livebench": {
         "overall": 66.11,
-        "rank": 21,
+        "rank": 22,
         "lbCost": 0.116,
         "longAgentic": 36.4,
         "reasoning": 79.6,
@@ -15072,7 +15084,7 @@
       "rankDelta": -9,
       "livebench": {
         "overall": 68.94,
-        "rank": 16,
+        "rank": 17,
         "lbCost": 0.8716,
         "longAgentic": 47.9,
         "reasoning": 82.4,
@@ -15238,7 +15250,7 @@
       "rankDelta": -3,
       "livebench": {
         "overall": 47.01,
-        "rank": 34,
+        "rank": 35,
         "lbCost": 0.1448,
         "longAgentic": 12,
         "reasoning": 74.6,
@@ -15303,7 +15315,7 @@
       "rankDelta": 18,
       "livebench": {
         "overall": 63.67,
-        "rank": 23,
+        "rank": 24,
         "lbCost": 0.11,
         "longAgentic": 25.7,
         "reasoning": 82.9,
@@ -15611,7 +15623,7 @@
       "rankDelta": 2,
       "livebench": {
         "overall": 60.67,
-        "rank": 26,
+        "rank": 27,
         "lbCost": 0.1059,
         "longAgentic": 20.7,
         "reasoning": 77.6,
@@ -15727,7 +15739,7 @@
       "rankDelta": -2,
       "livebench": {
         "overall": 70.26,
-        "rank": 15,
+        "rank": 16,
         "lbCost": 0.1369,
         "longAgentic": 38.8,
         "reasoning": 89.1,
@@ -16344,10 +16356,10 @@
       "frontierRank": 32,
       "rankDelta": -1,
       "livebench": {
-        "overall": 78.77,
-        "rank": 9,
+        "overall": 78.57,
+        "rank": 10,
         "lbCost": 0.5301,
-        "longAgentic": 56.2,
+        "longAgentic": 55.3,
         "reasoning": 88.7,
         "coding": 89.2,
         "browser": 93.1,
@@ -16504,7 +16516,7 @@
       "rankDelta": -1,
       "livebench": {
         "overall": 80.31,
-        "rank": 8,
+        "rank": 9,
         "lbCost": 0.4201,
         "longAgentic": 63.6,
         "reasoning": 90.6,
@@ -16713,10 +16725,10 @@
       "frontierRank": 21,
       "rankDelta": 1,
       "livebench": {
-        "overall": 81.37,
-        "rank": 7,
+        "overall": 81.17,
+        "rank": 8,
         "lbCost": 0.6694,
-        "longAgentic": 65.6,
+        "longAgentic": 64.7,
         "reasoning": 92.6,
         "coding": 82.1,
         "browser": 93.3,
@@ -16829,7 +16841,7 @@
       "rankDelta": 1,
       "livebench": {
         "overall": 44.32,
-        "rank": 35,
+        "rank": 36,
         "lbCost": 0.8621,
         "longAgentic": 9.8,
         "reasoning": 78.3,
@@ -17362,7 +17374,7 @@
       "rankDelta": -5,
       "livebench": {
         "overall": 48.53,
-        "rank": 32,
+        "rank": 33,
         "lbCost": 0.5525,
         "longAgentic": 12.1,
         "reasoning": 73.7,
@@ -17427,7 +17439,7 @@
       "rankDelta": 0,
       "livebench": {
         "overall": 60.27,
-        "rank": 28,
+        "rank": 29,
         "lbCost": 0.3637,
         "longAgentic": 24.7,
         "reasoning": 85.2,
@@ -17637,7 +17649,7 @@
       "rankDelta": -1,
       "livebench": {
         "overall": 54.89,
-        "rank": 30,
+        "rank": 31,
         "lbCost": 0.7462,
         "longAgentic": 19.4,
         "reasoning": 83.8,
@@ -17754,7 +17766,7 @@
       "rankDelta": -3,
       "livebench": {
         "overall": 68.59,
-        "rank": 18,
+        "rank": 19,
         "lbCost": 0.9711,
         "longAgentic": 47.9,
         "reasoning": 89.7,
@@ -18125,7 +18137,7 @@
       "rankDelta": 6,
       "livebench": {
         "overall": 77,
-        "rank": 11,
+        "rank": 12,
         "lbCost": 1.4812,
         "longAgentic": 61.8,
         "reasoning": 88.6,
@@ -18283,10 +18295,10 @@
       "frontierRank": 51,
       "rankDelta": 0,
       "livebench": {
-        "overall": 73.26,
-        "rank": 13,
+        "overall": 73.06,
+        "rank": 14,
         "lbCost": 0.5071,
-        "longAgentic": 47.5,
+        "longAgentic": 46.6,
         "reasoning": 92.2,
         "coding": 69.8,
         "browser": 80.7,
@@ -18401,7 +18413,7 @@
       "rankDelta": -3,
       "livebench": {
         "overall": 54.05,
-        "rank": 31,
+        "rank": 32,
         "lbCost": 0.5711,
         "longAgentic": 15.9,
         "reasoning": 80,
@@ -18517,7 +18529,7 @@
       "rankDelta": 2,
       "livebench": {
         "overall": 68.65,
-        "rank": 17,
+        "rank": 18,
         "lbCost": 0.737,
         "longAgentic": 38.7,
         "reasoning": 91.1,
@@ -18580,7 +18592,7 @@
       "rankDelta": 8,
       "livebench": {
         "overall": 67.15,
-        "rank": 20,
+        "rank": 21,
         "lbCost": 1.4021,
         "longAgentic": 25.9,
         "reasoning": 90.6,
@@ -18796,7 +18808,7 @@
       "rankDelta": 1,
       "livebench": {
         "overall": 84.87,
-        "rank": 2,
+        "rank": 3,
         "lbCost": 1.6472,
         "longAgentic": 70.8,
         "reasoning": 91.6,
@@ -19112,7 +19124,7 @@
       "rankDelta": -6,
       "livebench": {
         "overall": 63.51,
-        "rank": 24,
+        "rank": 25,
         "lbCost": 1.2209,
         "longAgentic": 18.7,
         "reasoning": 91.2,
@@ -19175,7 +19187,7 @@
       "rankDelta": -2,
       "livebench": {
         "overall": 77.69,
-        "rank": 10,
+        "rank": 11,
         "lbCost": 1.4151,
         "longAgentic": 58.5,
         "reasoning": 95.1,
@@ -19440,10 +19452,10 @@
       "frontierRank": 12,
       "rankDelta": 3,
       "livebench": {
-        "overall": 84.45,
-        "rank": 3,
+        "overall": 84.25,
+        "rank": 4,
         "lbCost": 4.4907,
-        "longAgentic": 75.6,
+        "longAgentic": 74.7,
         "reasoning": 92.7,
         "coding": 87.5,
         "browser": 91.3,
@@ -19556,7 +19568,19 @@
       },
       "aaRank": 6,
       "frontierRank": 8,
-      "rankDelta": -2
+      "rankDelta": -2,
+      "livebench": {
+        "overall": 87.44,
+        "rank": 1,
+        "lbCost": 2.3205,
+        "longAgentic": 82.6,
+        "reasoning": 89.6,
+        "coding": 89.7,
+        "browser": 95.6,
+        "dataAnalysis": 85.3,
+        "research": 94.5,
+        "design": 81.5
+      }
     },
     {
       "id": "0d3eaafd-54ed-4f78-bdd7-05a2db883986",
@@ -19665,7 +19689,7 @@
       "rankDelta": 0,
       "livebench": {
         "overall": 70.7,
-        "rank": 14,
+        "rank": 15,
         "lbCost": 1.7372,
         "longAgentic": 46.2,
         "reasoning": 90.6,
@@ -19833,10 +19857,10 @@
       "frontierRank": 5,
       "rankDelta": 3,
       "livebench": {
-        "overall": 83.53,
-        "rank": 5,
+        "overall": 83.33,
+        "rank": 7,
         "lbCost": 1.6902,
-        "longAgentic": 72.7,
+        "longAgentic": 71.8,
         "reasoning": 90.6,
         "coding": 91,
         "browser": 80,
@@ -19899,7 +19923,7 @@
       "rankDelta": 7,
       "livebench": {
         "overall": 57.26,
-        "rank": 29,
+        "rank": 30,
         "lbCost": 0.9165,
         "longAgentic": 16.5,
         "reasoning": 89.3,
@@ -19962,7 +19986,7 @@
       "rankDelta": -9,
       "livebench": {
         "overall": 67.91,
-        "rank": 19,
+        "rank": 20,
         "lbCost": 2.835,
         "longAgentic": 45.3,
         "reasoning": 82.7,
@@ -20075,10 +20099,10 @@
       "frontierRank": 25,
       "rankDelta": -2,
       "livebench": {
-        "overall": 76.99,
-        "rank": 12,
+        "overall": 76.79,
+        "rank": 13,
         "lbCost": 4.4676,
-        "longAgentic": 63.4,
+        "longAgentic": 62.5,
         "reasoning": 91.6,
         "coding": 77.2,
         "browser": 89.3,
@@ -20139,7 +20163,7 @@
       "rankDelta": -4,
       "livebench": {
         "overall": 60.92,
-        "rank": 25,
+        "rank": 26,
         "lbCost": 1.2276,
         "longAgentic": 26.6,
         "reasoning": 88.2,
@@ -20367,7 +20391,7 @@
       "rankDelta": -4,
       "livebench": {
         "overall": 83.96,
-        "rank": 4,
+        "rank": 5,
         "lbCost": 7.0221,
         "longAgentic": 74.2,
         "reasoning": 91.7,
@@ -20481,7 +20505,7 @@
       "rankDelta": 0,
       "livebench": {
         "overall": 84.88,
-        "rank": 1,
+        "rank": 2,
         "lbCost": 8.3607,
         "longAgentic": 82.9,
         "reasoning": 88.8,
@@ -20604,7 +20628,7 @@
         "chatVibe": 51.38,
         "rawChatVibe": 51.38,
         "docCraft": null,
-        "webdev": 49.22,
+        "webdev": 49.2,
         "designWeb": null,
         "designUi": null,
         "creativeCraft": null,
@@ -20676,15 +20700,15 @@
         "level": 60
       },
       "timeSec": 180.37,
-      "humanIndex": 49.3,
-      "intelligenceIndex": 49.3,
+      "humanIndex": 48.97,
+      "intelligenceIndex": 48.97,
       "aaIndex": 36.02,
-      "indexDelta": 13.28,
+      "indexDelta": 12.95,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
-        "webdev": 44.28,
+        "webdev": 43.23,
         "designWeb": null,
         "designUi": null,
         "creativeCraft": null,
@@ -20756,29 +20780,29 @@
         "level": 60
       },
       "timeSec": 725.47,
-      "humanIndex": 41.79,
-      "intelligenceIndex": 41.79,
+      "humanIndex": 41.84,
+      "intelligenceIndex": 41.84,
       "aaIndex": 27.86,
-      "indexDelta": 13.93,
+      "indexDelta": 13.98,
       "humanScores": {
         "chatVibe": 48.21,
         "rawChatVibe": 48.21,
         "docCraft": null,
-        "webdev": 36.23,
-        "designWeb": 41.87,
-        "designUi": 42.05,
-        "creativeCraft": 39.97,
+        "webdev": 36.12,
+        "designWeb": 41.61,
+        "designUi": 40.55,
+        "creativeCraft": 39.14,
         "deliverable": 29.91,
-        "pureVisual": 41.76,
+        "pureVisual": 41.63,
         "spatialMotion": 46.73,
         "antiSlop": 81.4
       },
       "designSub": {
-        "website": 41.87,
-        "uicomponent": 47.29,
-        "dataviz": 36.81,
-        "gamedev": 38.18,
-        "svg": 41.75
+        "website": 41.61,
+        "uicomponent": 47.1,
+        "dataviz": 34.01,
+        "gamedev": 37.53,
+        "svg": 40.75
       },
       "arenaRaw": {
         "chatElo": 1441.4,
@@ -20921,29 +20945,29 @@
         "level": 40
       },
       "timeSec": 47.97,
-      "humanIndex": 18.41,
-      "intelligenceIndex": 18.41,
+      "humanIndex": 17.44,
+      "intelligenceIndex": 17.44,
       "aaIndex": 6.16,
-      "indexDelta": 12.25,
+      "indexDelta": 11.28,
       "humanScores": {
         "chatVibe": 44.11,
         "rawChatVibe": 44.11,
         "docCraft": null,
         "webdev": null,
-        "designWeb": 3.14,
-        "designUi": 8.92,
-        "creativeCraft": 9.43,
+        "designWeb": 2.63,
+        "designUi": 5.46,
+        "creativeCraft": 8.09,
         "deliverable": 0.1,
-        "pureVisual": 10.72,
+        "pureVisual": 4.16,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
-        "website": 3.14,
-        "uicomponent": 6.88,
-        "dataviz": 10.96,
-        "gamedev": 8.94,
-        "svg": 9.92
+        "website": 2.63,
+        "uicomponent": 3.97,
+        "dataviz": 6.95,
+        "gamedev": 7.58,
+        "svg": 8.61
       },
       "arenaRaw": {
         "chatElo": 1433.1,
@@ -21079,15 +21103,15 @@
         "name": "MiMo-V2.6-Pro"
       },
       "timeSec": 2165.07,
-      "humanIndex": 53.24,
-      "intelligenceIndex": 53.24,
+      "humanIndex": 53.22,
+      "intelligenceIndex": 53.22,
       "aaIndex": 29.89,
-      "indexDelta": 23.35,
+      "indexDelta": 23.33,
       "humanScores": {
         "chatVibe": 65.31,
         "rawChatVibe": 65.31,
         "docCraft": null,
-        "webdev": 46.18,
+        "webdev": 46.09,
         "designWeb": null,
         "designUi": null,
         "creativeCraft": null,
@@ -21159,29 +21183,29 @@
         "level": 60
       },
       "timeSec": 612.16,
-      "humanIndex": 35.63,
-      "intelligenceIndex": 35.63,
+      "humanIndex": 35.6,
+      "intelligenceIndex": 35.6,
       "aaIndex": 23.79,
-      "indexDelta": 11.84,
+      "indexDelta": 11.81,
       "humanScores": {
         "chatVibe": 55.02,
         "rawChatVibe": 54.05,
         "docCraft": 57.3,
-        "webdev": 25.43,
-        "designWeb": 33.8,
-        "designUi": 32.04,
-        "creativeCraft": 28.25,
+        "webdev": 24.91,
+        "designWeb": 33.62,
+        "designUi": 30.57,
+        "creativeCraft": 27.27,
         "deliverable": 31.78,
-        "pureVisual": 32.13,
+        "pureVisual": 31.67,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
-        "website": 33.8,
-        "uicomponent": 31.16,
-        "dataviz": 32.92,
-        "gamedev": 26.31,
-        "svg": 30.2
+        "website": 33.62,
+        "uicomponent": 30.09,
+        "dataviz": 31.06,
+        "gamedev": 25.64,
+        "svg": 28.89
       },
       "arenaRaw": {
         "chatElo": 1453.2,
@@ -21239,28 +21263,28 @@
         "level": 40
       },
       "timeSec": 376.89,
-      "humanIndex": 12.87,
-      "intelligenceIndex": 12.87,
+      "humanIndex": 9.42,
+      "intelligenceIndex": 9.42,
       "aaIndex": 3.82,
-      "indexDelta": 9.05,
+      "indexDelta": 5.6,
       "humanScores": {
         "chatVibe": 13.92,
         "rawChatVibe": 13.92,
         "docCraft": null,
         "webdev": null,
-        "designWeb": 2.44,
-        "designUi": 25.12,
-        "creativeCraft": 18,
+        "designWeb": 0.73,
+        "designUi": 12.63,
+        "creativeCraft": 10,
         "deliverable": 0.33,
-        "pureVisual": 20.27,
+        "pureVisual": 4.5,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
-        "website": 2.44,
-        "uicomponent": 17.35,
-        "dataviz": 32.89,
-        "gamedev": 18,
+        "website": 0.73,
+        "uicomponent": 6.07,
+        "dataviz": 19.18,
+        "gamedev": 10,
         "svg": null
       },
       "arenaRaw": {
@@ -21320,29 +21344,29 @@
         "level": 60
       },
       "timeSec": 890.58,
-      "humanIndex": 49.52,
-      "intelligenceIndex": 49.52,
+      "humanIndex": 48.79,
+      "intelligenceIndex": 48.79,
       "aaIndex": 36.48,
-      "indexDelta": 13.04,
+      "indexDelta": 12.31,
       "humanScores": {
         "chatVibe": 38.71,
         "rawChatVibe": 38.71,
         "docCraft": null,
-        "webdev": 40.34,
-        "designWeb": 35.52,
-        "designUi": 46.98,
-        "creativeCraft": 43.05,
+        "webdev": 40.03,
+        "designWeb": 35.18,
+        "designUi": 46.37,
+        "creativeCraft": 41.91,
         "deliverable": 58.48,
-        "pureVisual": 43.57,
+        "pureVisual": 38.78,
         "spatialMotion": 54.47,
         "antiSlop": 89.5
       },
       "designSub": {
-        "website": 35.52,
-        "uicomponent": 41.7,
-        "dataviz": 52.27,
-        "gamedev": 50.21,
-        "svg": 35.88
+        "website": 35.18,
+        "uicomponent": 39.85,
+        "dataviz": 52.89,
+        "gamedev": 50.22,
+        "svg": 33.59
       },
       "arenaRaw": {
         "chatElo": 1421.4,
@@ -21403,28 +21427,28 @@
         "level": 40
       },
       "timeSec": 268.51,
-      "humanIndex": 22.77,
-      "intelligenceIndex": 22.77,
+      "humanIndex": 20.59,
+      "intelligenceIndex": 20.59,
       "aaIndex": 13.62,
-      "indexDelta": 9.15,
+      "indexDelta": 6.97,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
         "webdev": null,
-        "designWeb": 12.49,
-        "designUi": 28.76,
-        "creativeCraft": 16.23,
+        "designWeb": 10.29,
+        "designUi": 18.3,
+        "creativeCraft": 13.22,
         "deliverable": 6.92,
-        "pureVisual": 23.85,
+        "pureVisual": 12.74,
         "spatialMotion": null,
         "antiSlop": 36.2
       },
       "designSub": {
-        "website": 12.49,
-        "uicomponent": 24.59,
-        "dataviz": 32.93,
-        "gamedev": 16.23,
+        "website": 10.29,
+        "uicomponent": 15.58,
+        "dataviz": 21.02,
+        "gamedev": 13.22,
         "svg": null
       },
       "arenaRaw": {
@@ -21485,15 +21509,15 @@
         "level": 60
       },
       "timeSec": 1103.34,
-      "humanIndex": 46.48,
-      "intelligenceIndex": 46.48,
+      "humanIndex": 46.32,
+      "intelligenceIndex": 46.32,
       "aaIndex": 29.06,
-      "indexDelta": 17.42,
+      "indexDelta": 17.26,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
-        "webdev": 37.61,
+        "webdev": 37.05,
         "designWeb": null,
         "designUi": null,
         "creativeCraft": null,
@@ -21563,15 +21587,15 @@
         "name": "Qwen3.8-Flash-Next"
       },
       "timeSec": 1905.07,
-      "humanIndex": 52.56,
-      "intelligenceIndex": 52.56,
+      "humanIndex": 52.54,
+      "intelligenceIndex": 52.54,
       "aaIndex": 28.58,
-      "indexDelta": 23.98,
+      "indexDelta": 23.96,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
-        "webdev": 46.82,
+        "webdev": 46.75,
         "designWeb": null,
         "designUi": null,
         "creativeCraft": null,
@@ -21645,15 +21669,15 @@
         "level": 60
       },
       "timeSec": 2384.64,
-      "humanIndex": 51.3,
-      "intelligenceIndex": 51.3,
+      "humanIndex": 51.28,
+      "intelligenceIndex": 51.28,
       "aaIndex": 27.8,
-      "indexDelta": 23.5,
+      "indexDelta": 23.48,
       "humanScores": {
         "chatVibe": 64.51,
         "rawChatVibe": 64.51,
         "docCraft": null,
-        "webdev": 43.28,
+        "webdev": 43.2,
         "designWeb": null,
         "designUi": null,
         "creativeCraft": null,
@@ -21727,29 +21751,29 @@
         "level": 60
       },
       "timeSec": 842.56,
-      "humanIndex": 56.35,
-      "intelligenceIndex": 56.35,
+      "humanIndex": 56.64,
+      "intelligenceIndex": 56.64,
       "aaIndex": 32.59,
-      "indexDelta": 23.76,
+      "indexDelta": 24.05,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
-        "webdev": 54.21,
-        "designWeb": 54.21,
-        "designUi": 53.13,
-        "creativeCraft": 48,
+        "webdev": 54.28,
+        "designWeb": 54.24,
+        "designUi": 53.5,
+        "creativeCraft": 47.5,
         "deliverable": 66.11,
-        "pureVisual": 51.21,
+        "pureVisual": 52.72,
         "spatialMotion": null,
         "antiSlop": 51.1
       },
       "designSub": {
-        "website": 54.21,
-        "uicomponent": 51.32,
-        "dataviz": 54.94,
-        "gamedev": 52.6,
-        "svg": 43.4
+        "website": 54.24,
+        "uicomponent": 51.44,
+        "dataviz": 55.56,
+        "gamedev": 52.64,
+        "svg": 42.36
       },
       "arenaRaw": {
         "chatElo": null,
@@ -21810,15 +21834,15 @@
         "level": 40
       },
       "timeSec": 96.48,
-      "humanIndex": 31.35,
-      "intelligenceIndex": 31.35,
+      "humanIndex": 28.14,
+      "intelligenceIndex": 28.14,
       "aaIndex": 11.66,
-      "indexDelta": 19.69,
+      "indexDelta": 16.48,
       "humanScores": {
         "chatVibe": 55.03,
         "rawChatVibe": 55.03,
         "docCraft": null,
-        "webdev": 35.21,
+        "webdev": 23.24,
         "designWeb": null,
         "designUi": null,
         "creativeCraft": null,
@@ -21889,15 +21913,15 @@
         "level": 40
       },
       "timeSec": 967.83,
-      "humanIndex": 37.74,
-      "intelligenceIndex": 37.74,
+      "humanIndex": 37.56,
+      "intelligenceIndex": 37.56,
       "aaIndex": 20.8,
-      "indexDelta": 16.94,
+      "indexDelta": 16.76,
       "humanScores": {
         "chatVibe": 58.83,
         "rawChatVibe": 58.83,
         "docCraft": null,
-        "webdev": 37.62,
+        "webdev": 36.94,
         "designWeb": null,
         "designUi": null,
         "creativeCraft": null,
@@ -22041,29 +22065,29 @@
         "level": 60
       },
       "timeSec": 912.1,
-      "humanIndex": 47.5,
-      "intelligenceIndex": 47.5,
+      "humanIndex": 47.24,
+      "intelligenceIndex": 47.24,
       "aaIndex": 51.33,
-      "indexDelta": -3.83,
+      "indexDelta": -4.09,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
-        "webdev": 59.02,
-        "designWeb": 49.2,
-        "designUi": 42.95,
-        "creativeCraft": 55.91,
+        "webdev": 59.49,
+        "designWeb": 49.16,
+        "designUi": 38.36,
+        "creativeCraft": 56.65,
         "deliverable": 35.77,
-        "pureVisual": 49.42,
+        "pureVisual": 48.15,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
-        "website": 49.2,
-        "uicomponent": 47.64,
-        "dataviz": 38.26,
-        "gamedev": 54.61,
-        "svg": 57.2
+        "website": 49.16,
+        "uicomponent": 46.75,
+        "dataviz": 29.96,
+        "gamedev": 54.78,
+        "svg": 58.52
       },
       "arenaRaw": {
         "chatElo": null,
@@ -22122,28 +22146,28 @@
         "level": 60
       },
       "timeSec": 534.58,
-      "humanIndex": 68.94,
-      "intelligenceIndex": 68.94,
+      "humanIndex": 71.79,
+      "intelligenceIndex": 71.79,
       "aaIndex": 57.26,
-      "indexDelta": 11.68,
+      "indexDelta": 14.53,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
-        "webdev": 69,
-        "designWeb": 65.29,
+        "webdev": 72.83,
+        "designWeb": 71.84,
         "designUi": null,
-        "creativeCraft": 60.05,
+        "creativeCraft": 64.31,
         "deliverable": 64.9,
-        "pureVisual": 60.78,
+        "pureVisual": 70.88,
         "spatialMotion": 80.05,
         "antiSlop": 89.4
       },
       "designSub": {
-        "website": 65.29,
+        "website": 71.84,
         "uicomponent": null,
         "dataviz": null,
-        "gamedev": 60.05,
+        "gamedev": 64.31,
         "svg": null
       },
       "arenaRaw": {
@@ -22198,28 +22222,28 @@
         "name": "Tencent Hy4"
       },
       "timeSec": 820.53,
-      "humanIndex": 43.22,
-      "intelligenceIndex": 43.22,
+      "humanIndex": 41.69,
+      "intelligenceIndex": 41.69,
       "aaIndex": 34.56,
-      "indexDelta": 8.66,
+      "indexDelta": 7.13,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
-        "webdev": 48.18,
-        "designWeb": 36.61,
-        "designUi": 33.25,
-        "creativeCraft": 44.17,
+        "webdev": 48.08,
+        "designWeb": 35.7,
+        "designUi": 23.02,
+        "creativeCraft": 43.25,
         "deliverable": 42.64,
-        "pureVisual": 39.26,
+        "pureVisual": 33.37,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
-        "website": 36.61,
-        "uicomponent": 33.25,
+        "website": 35.7,
+        "uicomponent": 23.02,
         "dataviz": null,
-        "gamedev": 44.17,
+        "gamedev": 43.25,
         "svg": null
       },
       "arenaRaw": {
@@ -22281,29 +22305,29 @@
         "level": 40
       },
       "timeSec": 276.03,
-      "humanIndex": 19.15,
-      "intelligenceIndex": 19.15,
+      "humanIndex": 17.87,
+      "intelligenceIndex": 17.87,
       "aaIndex": 4.65,
-      "indexDelta": 14.5,
+      "indexDelta": 13.22,
       "humanScores": {
         "chatVibe": 41.09,
         "rawChatVibe": 41.09,
         "docCraft": null,
         "webdev": null,
-        "designWeb": 8.04,
-        "designUi": 14.38,
-        "creativeCraft": 11.89,
+        "designWeb": 6.96,
+        "designUi": 9.86,
+        "creativeCraft": 8.38,
         "deliverable": 0.65,
-        "pureVisual": 14.59,
+        "pureVisual": 7.49,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
-        "website": 8.04,
-        "uicomponent": 9.58,
-        "dataviz": 19.18,
-        "gamedev": 14.59,
-        "svg": 9.19
+        "website": 6.96,
+        "uicomponent": 4.99,
+        "dataviz": 14.73,
+        "gamedev": 11.79,
+        "svg": 4.98
       },
       "arenaRaw": {
         "chatElo": 1426.3,
@@ -22359,15 +22383,15 @@
         "name": "Inkling 2 Small"
       },
       "timeSec": 1271.21,
-      "humanIndex": 48.09,
-      "intelligenceIndex": 48.09,
+      "humanIndex": 48.12,
+      "intelligenceIndex": 48.12,
       "aaIndex": 30.63,
-      "indexDelta": 17.46,
+      "indexDelta": 17.49,
       "humanScores": {
         "chatVibe": 36.43,
         "rawChatVibe": 36.43,
         "docCraft": null,
-        "webdev": 50.67,
+        "webdev": 50.81,
         "designWeb": null,
         "designUi": null,
         "creativeCraft": null,
@@ -22439,29 +22463,29 @@
         "level": 60
       },
       "timeSec": 1413.61,
-      "humanIndex": 64.34,
-      "intelligenceIndex": 64.34,
+      "humanIndex": 64.79,
+      "intelligenceIndex": 64.79,
       "aaIndex": 54.61,
-      "indexDelta": 9.73,
+      "indexDelta": 10.18,
       "humanScores": {
         "chatVibe": 67.59,
         "rawChatVibe": 67.59,
         "docCraft": null,
-        "webdev": 71.11,
-        "designWeb": 61.23,
-        "designUi": 59.1,
-        "creativeCraft": 66.41,
+        "webdev": 71.98,
+        "designWeb": 61.63,
+        "designUi": 61.61,
+        "creativeCraft": 68.09,
         "deliverable": 55.9,
-        "pureVisual": 61.64,
+        "pureVisual": 63.53,
         "spatialMotion": 70.75,
         "antiSlop": 71.9
       },
       "designSub": {
-        "website": 61.23,
-        "uicomponent": 65.93,
-        "dataviz": 52.27,
-        "gamedev": 68.87,
-        "svg": 63.95
+        "website": 61.63,
+        "uicomponent": 69.59,
+        "dataviz": 53.63,
+        "gamedev": 69.55,
+        "svg": 66.62
       },
       "arenaRaw": {
         "chatElo": 1482.9,
@@ -22518,29 +22542,29 @@
         "name": "MiniMax-M3"
       },
       "timeSec": 1016.15,
-      "humanIndex": 26.11,
-      "intelligenceIndex": 26.11,
+      "humanIndex": 26.13,
+      "intelligenceIndex": 26.13,
       "aaIndex": 18.88,
-      "indexDelta": 7.23,
+      "indexDelta": 7.25,
       "humanScores": {
         "chatVibe": 45.03,
         "rawChatVibe": 44.94,
         "docCraft": 45.23,
-        "webdev": 19.74,
-        "designWeb": 34.13,
-        "designUi": 34.53,
-        "creativeCraft": 25.19,
+        "webdev": 19.36,
+        "designWeb": 33.99,
+        "designUi": 33.53,
+        "creativeCraft": 24.32,
         "deliverable": 10.98,
-        "pureVisual": 31.98,
+        "pureVisual": 31.76,
         "spatialMotion": 18.34,
         "antiSlop": 41.9
       },
       "designSub": {
-        "website": 34.13,
-        "uicomponent": 29.65,
-        "dataviz": 39.41,
-        "gamedev": 27.71,
-        "svg": 22.67
+        "website": 33.99,
+        "uicomponent": 28.56,
+        "dataviz": 38.51,
+        "gamedev": 27.14,
+        "svg": 21.5
       },
       "arenaRaw": {
         "chatElo": 1434.8,
@@ -22602,29 +22626,29 @@
         "level": 50
       },
       "timeSec": 480.31,
-      "humanIndex": 23.98,
-      "intelligenceIndex": 23.98,
+      "humanIndex": 23.7,
+      "intelligenceIndex": 23.7,
       "aaIndex": 12.48,
-      "indexDelta": 11.5,
+      "indexDelta": 11.22,
       "humanScores": {
         "chatVibe": 48.66,
         "rawChatVibe": 48.66,
         "docCraft": null,
         "webdev": null,
-        "designWeb": 22.82,
-        "designUi": 22.8,
-        "creativeCraft": 19.34,
+        "designWeb": 22.43,
+        "designUi": 19.64,
+        "creativeCraft": 17.57,
         "deliverable": 3.75,
-        "pureVisual": 23.29,
+        "pureVisual": 20.59,
         "spatialMotion": 7.77,
         "antiSlop": 51.4
       },
       "designSub": {
-        "website": 22.82,
-        "uicomponent": 19.54,
-        "dataviz": 26.06,
-        "gamedev": 20.93,
-        "svg": 17.74
+        "website": 22.43,
+        "uicomponent": 17.34,
+        "dataviz": 21.95,
+        "gamedev": 19.96,
+        "svg": 15.19
       },
       "arenaRaw": {
         "chatElo": 1442.3,
@@ -22683,15 +22707,15 @@
         "level": 40
       },
       "timeSec": 433.03,
-      "humanIndex": 57.79,
-      "intelligenceIndex": 57.79,
+      "humanIndex": 57.95,
+      "intelligenceIndex": 57.95,
       "aaIndex": 41.52,
-      "indexDelta": 16.27,
+      "indexDelta": 16.43,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
-        "webdev": 66.22,
+        "webdev": 66.71,
         "designWeb": null,
         "designUi": null,
         "creativeCraft": null,
@@ -22762,29 +22786,29 @@
         "level": 60
       },
       "timeSec": 1155.29,
-      "humanIndex": 31.04,
-      "intelligenceIndex": 31.04,
+      "humanIndex": 30.55,
+      "intelligenceIndex": 30.55,
       "aaIndex": 23.06,
-      "indexDelta": 7.98,
+      "indexDelta": 7.49,
       "humanScores": {
         "chatVibe": 56.37,
         "rawChatVibe": 56.37,
         "docCraft": null,
-        "webdev": 15.5,
-        "designWeb": 26.4,
-        "designUi": 27.7,
-        "creativeCraft": 26.11,
+        "webdev": 14.85,
+        "designWeb": 26.16,
+        "designUi": 26.12,
+        "creativeCraft": 24.95,
         "deliverable": 26.48,
-        "pureVisual": 28.32,
+        "pureVisual": 25.5,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
-        "website": 26.4,
-        "uicomponent": 23.31,
-        "dataviz": 32.1,
-        "gamedev": 31.67,
-        "svg": 20.54
+        "website": 26.16,
+        "uicomponent": 22,
+        "dataviz": 30.24,
+        "gamedev": 31.13,
+        "svg": 18.78
       },
       "arenaRaw": {
         "chatElo": 1457.9,
@@ -22847,28 +22871,28 @@
         "level": 50
       },
       "timeSec": 358.65,
-      "humanIndex": 33.58,
-      "intelligenceIndex": 33.58,
+      "humanIndex": 34.36,
+      "intelligenceIndex": 34.36,
       "aaIndex": 24.88,
-      "indexDelta": 8.7,
+      "indexDelta": 9.48,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
-        "webdev": 29.6,
-        "designWeb": 57.3,
-        "designUi": 51.54,
-        "creativeCraft": 40.43,
+        "webdev": 27.05,
+        "designWeb": 57.57,
+        "designUi": 51.77,
+        "creativeCraft": 39.29,
         "deliverable": 24.41,
-        "pureVisual": 49.78,
+        "pureVisual": 54.41,
         "spatialMotion": null,
         "antiSlop": 19
       },
       "designSub": {
-        "website": 57.3,
-        "uicomponent": 51.54,
+        "website": 57.57,
+        "uicomponent": 51.77,
         "dataviz": null,
-        "gamedev": 40.43,
+        "gamedev": 39.29,
         "svg": null
       },
       "arenaRaw": {
@@ -22930,29 +22954,29 @@
         "level": 40
       },
       "timeSec": 1351.16,
-      "humanIndex": 36.39,
-      "intelligenceIndex": 36.39,
+      "humanIndex": 35.76,
+      "intelligenceIndex": 35.76,
       "aaIndex": 26.12,
-      "indexDelta": 10.27,
+      "indexDelta": 9.64,
       "humanScores": {
         "chatVibe": 39.13,
         "rawChatVibe": 39.13,
         "docCraft": null,
-        "webdev": 35.96,
-        "designWeb": 38.45,
-        "designUi": 48.06,
-        "creativeCraft": 35.24,
+        "webdev": 34.58,
+        "designWeb": 37.65,
+        "designUi": 47.61,
+        "creativeCraft": 33.55,
         "deliverable": 30.24,
-        "pureVisual": 41.6,
+        "pureVisual": 39.4,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
-        "website": 38.45,
-        "uicomponent": 44.61,
-        "dataviz": 51.51,
-        "gamedev": 30.97,
-        "svg": 39.51
+        "website": 37.65,
+        "uicomponent": 43.25,
+        "dataviz": 51.98,
+        "gamedev": 28.96,
+        "svg": 38.14
       },
       "arenaRaw": {
         "chatElo": 1421.8,
@@ -23005,29 +23029,29 @@
         "name": "Nemotron 3 Ultra 550B A55B"
       },
       "timeSec": 263.33,
-      "humanIndex": 13.98,
-      "intelligenceIndex": 13.98,
+      "humanIndex": 12.98,
+      "intelligenceIndex": 12.98,
       "aaIndex": 11.76,
-      "indexDelta": 2.22,
+      "indexDelta": 1.22,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
         "webdev": null,
-        "designWeb": 6.79,
-        "designUi": 15.34,
-        "creativeCraft": 14.88,
+        "designWeb": 6.33,
+        "designUi": 12.56,
+        "creativeCraft": 13.52,
         "deliverable": 3.37,
-        "pureVisual": 15.83,
+        "pureVisual": 8.8,
         "spatialMotion": 5.57,
         "antiSlop": 13.3
       },
       "designSub": {
-        "website": 6.79,
-        "uicomponent": 10.71,
-        "dataviz": 19.96,
-        "gamedev": 17.25,
-        "svg": 12.5
+        "website": 6.33,
+        "uicomponent": 8.14,
+        "dataviz": 16.99,
+        "gamedev": 16.49,
+        "svg": 10.56
       },
       "arenaRaw": {
         "chatElo": null,
@@ -23082,15 +23106,15 @@
         "name": "Step 5 Preview"
       },
       "timeSec": 725.39,
-      "humanIndex": 42.17,
-      "intelligenceIndex": 42.17,
+      "humanIndex": 42.06,
+      "intelligenceIndex": 42.06,
       "aaIndex": 28.53,
-      "indexDelta": 13.64,
+      "indexDelta": 13.53,
       "humanScores": {
         "chatVibe": 51.74,
         "rawChatVibe": 51.74,
         "docCraft": null,
-        "webdev": 35.25,
+        "webdev": 34.79,
         "designWeb": null,
         "designUi": null,
         "creativeCraft": null,
@@ -23163,29 +23187,29 @@
         "level": 60
       },
       "timeSec": 894,
-      "humanIndex": 59.3,
-      "intelligenceIndex": 59.3,
+      "humanIndex": 60.19,
+      "intelligenceIndex": 60.19,
       "aaIndex": 36.62,
-      "indexDelta": 22.68,
+      "indexDelta": 23.57,
       "humanScores": {
         "chatVibe": 70.73,
         "rawChatVibe": 73.78,
         "docCraft": 63.6,
-        "webdev": 53.22,
-        "designWeb": 77.15,
-        "designUi": 68.94,
-        "creativeCraft": 58.47,
+        "webdev": 53.29,
+        "designWeb": 77.32,
+        "designUi": 70.64,
+        "creativeCraft": 58.94,
         "deliverable": 62.72,
-        "pureVisual": 65.32,
+        "pureVisual": 72.27,
         "spatialMotion": 48.57,
         "antiSlop": 24.7
       },
       "designSub": {
-        "website": 77.15,
-        "uicomponent": 67.39,
-        "dataviz": 70.49,
-        "gamedev": 56.89,
-        "svg": 60.04
+        "website": 77.32,
+        "uicomponent": 69.05,
+        "dataviz": 72.24,
+        "gamedev": 56.99,
+        "svg": 60.89
       },
       "arenaRaw": {
         "chatElo": 1497.6,
@@ -23244,29 +23268,29 @@
         "level": 60
       },
       "timeSec": 470.08,
-      "humanIndex": 55.46,
-      "intelligenceIndex": 55.46,
+      "humanIndex": 55.4,
+      "intelligenceIndex": 55.4,
       "aaIndex": 44.16,
-      "indexDelta": 11.3,
+      "indexDelta": 11.24,
       "humanScores": {
         "chatVibe": 56.15,
         "rawChatVibe": 56.15,
         "docCraft": null,
-        "webdev": 57.47,
-        "designWeb": 50.81,
-        "designUi": 48.87,
-        "creativeCraft": 52.64,
+        "webdev": 57.7,
+        "designWeb": 50.84,
+        "designUi": 48.88,
+        "creativeCraft": 53.01,
         "deliverable": 43.52,
-        "pureVisual": 50.72,
+        "pureVisual": 50.27,
         "spatialMotion": 64.88,
         "antiSlop": 99
       },
       "designSub": {
-        "website": 50.81,
-        "uicomponent": 46.13,
-        "dataviz": 51.61,
-        "gamedev": 48.56,
-        "svg": 56.72
+        "website": 50.84,
+        "uicomponent": 45.72,
+        "dataviz": 52.04,
+        "gamedev": 48.48,
+        "svg": 57.54
       },
       "arenaRaw": {
         "chatElo": 1457.6,
@@ -23327,28 +23351,28 @@
         "level": 50
       },
       "timeSec": 910.87,
-      "humanIndex": 62.9,
-      "intelligenceIndex": 62.9,
+      "humanIndex": 64.55,
+      "intelligenceIndex": 64.55,
       "aaIndex": 53.92,
-      "indexDelta": 8.98,
+      "indexDelta": 10.63,
       "humanScores": {
         "chatVibe": 69.21,
         "rawChatVibe": 69.21,
         "docCraft": null,
-        "webdev": 62.03,
-        "designWeb": 66.82,
-        "designUi": 61.45,
-        "creativeCraft": 57.88,
+        "webdev": 63.49,
+        "designWeb": 68.62,
+        "designUi": 65.42,
+        "creativeCraft": 58.61,
         "deliverable": 59.15,
-        "pureVisual": 60.79,
+        "pureVisual": 66.88,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
-        "website": 66.82,
-        "uicomponent": 61.45,
+        "website": 68.62,
+        "uicomponent": 65.42,
         "dataviz": null,
-        "gamedev": 57.88,
+        "gamedev": 58.61,
         "svg": null
       },
       "arenaRaw": {
@@ -23409,15 +23433,15 @@
         "level": 50
       },
       "timeSec": 1845.06,
-      "humanIndex": 66.72,
-      "intelligenceIndex": 66.72,
+      "humanIndex": 67.56,
+      "intelligenceIndex": 67.56,
       "aaIndex": 42.89,
-      "indexDelta": 23.83,
+      "indexDelta": 24.67,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
-        "webdev": 69.58,
+        "webdev": 72.25,
         "designWeb": null,
         "designUi": null,
         "creativeCraft": null,
@@ -23492,15 +23516,15 @@
         "level": 50
       },
       "timeSec": 2322.33,
-      "humanIndex": 37.04,
-      "intelligenceIndex": 37.04,
+      "humanIndex": 37,
+      "intelligenceIndex": 37,
       "aaIndex": 20.11,
-      "indexDelta": 16.93,
+      "indexDelta": 16.89,
       "humanScores": {
         "chatVibe": 44.54,
         "rawChatVibe": 44.54,
         "docCraft": null,
-        "webdev": 38.71,
+        "webdev": 38.58,
         "designWeb": null,
         "designUi": null,
         "creativeCraft": null,
@@ -23574,29 +23598,29 @@
         "level": 60
       },
       "timeSec": 2325.11,
-      "humanIndex": 67.63,
-      "intelligenceIndex": 67.63,
+      "humanIndex": 68.22,
+      "intelligenceIndex": 68.22,
       "aaIndex": 46.45,
-      "indexDelta": 21.18,
+      "indexDelta": 21.77,
       "humanScores": {
         "chatVibe": 68.33,
         "rawChatVibe": 68.33,
         "docCraft": null,
-        "webdev": 59.53,
-        "designWeb": 62.72,
-        "designUi": 62.99,
-        "creativeCraft": 64.7,
+        "webdev": 59.96,
+        "designWeb": 63.22,
+        "designUi": 66.9,
+        "creativeCraft": 66.05,
         "deliverable": 78.06,
-        "pureVisual": 62.73,
+        "pureVisual": 65.77,
         "spatialMotion": 62.19,
         "antiSlop": 78.1
       },
       "designSub": {
-        "website": 62.72,
-        "uicomponent": 70.63,
-        "dataviz": 55.35,
-        "gamedev": 67.41,
-        "svg": 61.99
+        "website": 63.22,
+        "uicomponent": 76.3,
+        "dataviz": 57.5,
+        "gamedev": 68.44,
+        "svg": 63.66
       },
       "arenaRaw": {
         "chatElo": 1486.6,
@@ -23655,29 +23679,29 @@
         "level": 60
       },
       "timeSec": 796.06,
-      "humanIndex": 38.27,
-      "intelligenceIndex": 38.27,
+      "humanIndex": 38.31,
+      "intelligenceIndex": 38.31,
       "aaIndex": 32.34,
-      "indexDelta": 5.93,
+      "indexDelta": 5.97,
       "humanScores": {
         "chatVibe": 61.97,
         "rawChatVibe": 61.17,
         "docCraft": 63.85,
-        "webdev": 25.45,
-        "designWeb": 38.34,
-        "designUi": 36.94,
-        "creativeCraft": 32.7,
+        "webdev": 25.04,
+        "designWeb": 38.29,
+        "designUi": 36.68,
+        "creativeCraft": 32.47,
         "deliverable": 30.88,
-        "pureVisual": 36.47,
+        "pureVisual": 36.49,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
-        "website": 38.34,
-        "uicomponent": 33.26,
-        "dataviz": 40.62,
-        "gamedev": 30.75,
-        "svg": 34.66
+        "website": 38.29,
+        "uicomponent": 32.99,
+        "dataviz": 40.37,
+        "gamedev": 30.58,
+        "svg": 34.36
       },
       "arenaRaw": {
         "chatElo": 1467.9,
@@ -23736,28 +23760,28 @@
         "level": 60
       },
       "timeSec": 826.18,
-      "humanIndex": 71.45,
-      "intelligenceIndex": 71.45,
+      "humanIndex": 73.55,
+      "intelligenceIndex": 73.55,
       "aaIndex": 62.14,
-      "indexDelta": 9.31,
+      "indexDelta": 11.41,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
-        "webdev": 71.63,
-        "designWeb": 65.81,
-        "designUi": 54.85,
-        "creativeCraft": 67.46,
+        "webdev": 76.35,
+        "designWeb": 68.69,
+        "designUi": 58.48,
+        "creativeCraft": 76.55,
         "deliverable": 68.68,
-        "pureVisual": 61.38,
+        "pureVisual": 66.99,
         "spatialMotion": 85.1,
         "antiSlop": 92.6
       },
       "designSub": {
-        "website": 65.81,
-        "uicomponent": 54.85,
+        "website": 68.69,
+        "uicomponent": 58.48,
         "dataviz": null,
-        "gamedev": 67.46,
+        "gamedev": 76.55,
         "svg": null
       },
       "arenaRaw": {
@@ -23817,15 +23841,15 @@
         "level": 50
       },
       "timeSec": 742.16,
-      "humanIndex": 53.67,
-      "intelligenceIndex": 53.67,
+      "humanIndex": 53.65,
+      "intelligenceIndex": 53.65,
       "aaIndex": 31.03,
-      "indexDelta": 22.64,
+      "indexDelta": 22.62,
       "humanScores": {
         "chatVibe": 54.84,
         "rawChatVibe": 55.8,
         "docCraft": 52.6,
-        "webdev": 45.09,
+        "webdev": 44.99,
         "designWeb": null,
         "designUi": null,
         "creativeCraft": null,
@@ -23897,29 +23921,29 @@
         "level": 40
       },
       "timeSec": 1767.27,
-      "humanIndex": 60.39,
-      "intelligenceIndex": 60.39,
+      "humanIndex": 60.61,
+      "intelligenceIndex": 60.61,
       "aaIndex": 50.41,
-      "indexDelta": 9.98,
+      "indexDelta": 10.2,
       "humanScores": {
         "chatVibe": 81.41,
         "rawChatVibe": 81.41,
         "docCraft": null,
-        "webdev": 58.71,
-        "designWeb": 61.49,
-        "designUi": 60.76,
-        "creativeCraft": 62.26,
+        "webdev": 59.1,
+        "designWeb": 61.68,
+        "designUi": 63.12,
+        "creativeCraft": 63.65,
         "deliverable": 52.89,
-        "pureVisual": 60.75,
+        "pureVisual": 62.16,
         "spatialMotion": 68.32,
         "antiSlop": 32.4
       },
       "designSub": {
-        "website": 61.49,
-        "uicomponent": 59.51,
-        "dataviz": 62.01,
-        "gamedev": 60.2,
-        "svg": 64.32
+        "website": 61.68,
+        "uicomponent": 60.8,
+        "dataviz": 65.43,
+        "gamedev": 60.53,
+        "svg": 66.77
       },
       "arenaRaw": {
         "chatElo": 1520.6,
@@ -23977,15 +24001,15 @@
         "level": 60
       },
       "timeSec": 1465.16,
-      "humanIndex": 52.96,
-      "intelligenceIndex": 52.96,
+      "humanIndex": 52.94,
+      "intelligenceIndex": 52.94,
       "aaIndex": 31.65,
-      "indexDelta": 21.31,
+      "indexDelta": 21.29,
       "humanScores": {
         "chatVibe": 67.75,
         "rawChatVibe": 67.75,
         "docCraft": null,
-        "webdev": 46.06,
+        "webdev": 45.99,
         "designWeb": null,
         "designUi": null,
         "creativeCraft": null,
@@ -24057,29 +24081,29 @@
         "level": 60
       },
       "timeSec": 1247.01,
-      "humanIndex": 67.69,
-      "intelligenceIndex": 67.69,
+      "humanIndex": 68.13,
+      "intelligenceIndex": 68.13,
       "aaIndex": 56.85,
-      "indexDelta": 10.84,
+      "indexDelta": 11.28,
       "humanScores": {
         "chatVibe": 64,
         "rawChatVibe": 64.27,
         "docCraft": 63.38,
-        "webdev": 74.61,
-        "designWeb": 70.55,
-        "designUi": 68.63,
-        "creativeCraft": 78.37,
+        "webdev": 75.3,
+        "designWeb": 71.07,
+        "designUi": 73.08,
+        "creativeCraft": 80.68,
         "deliverable": 55.17,
-        "pureVisual": 71.41,
+        "pureVisual": 73.91,
         "spatialMotion": 75.76,
         "antiSlop": 83.8
       },
       "designSub": {
-        "website": 70.55,
-        "uicomponent": 75.56,
-        "dataviz": 61.69,
-        "gamedev": 76.47,
-        "svg": 80.27
+        "website": 71.07,
+        "uicomponent": 79.65,
+        "dataviz": 66.51,
+        "gamedev": 79.05,
+        "svg": 82.31
       },
       "arenaRaw": {
         "chatElo": 1475,
@@ -24140,15 +24164,15 @@
         "level": 50
       },
       "timeSec": 1289.24,
-      "humanIndex": 72.26,
-      "intelligenceIndex": 72.26,
+      "humanIndex": 72.91,
+      "intelligenceIndex": 72.91,
       "aaIndex": 61.4,
-      "indexDelta": 10.86,
+      "indexDelta": 11.51,
       "humanScores": {
         "chatVibe": 78.08,
         "rawChatVibe": 78.08,
         "docCraft": null,
-        "webdev": 72.4,
+        "webdev": 74.82,
         "designWeb": null,
         "designUi": null,
         "creativeCraft": null,
@@ -24222,28 +24246,28 @@
         "level": 60
       },
       "timeSec": 823.43,
-      "humanIndex": 66.97,
-      "intelligenceIndex": 66.97,
+      "humanIndex": 68.58,
+      "intelligenceIndex": 68.58,
       "aaIndex": 43.57,
-      "indexDelta": 23.4,
+      "indexDelta": 25.01,
       "humanScores": {
         "chatVibe": 78.02,
         "rawChatVibe": 78.02,
         "docCraft": null,
-        "webdev": 65.6,
-        "designWeb": 81.14,
-        "designUi": 59.16,
-        "creativeCraft": 69.65,
+        "webdev": 67.5,
+        "designWeb": 82.08,
+        "designUi": 61.94,
+        "creativeCraft": 70.55,
         "deliverable": 72.97,
-        "pureVisual": 65.89,
+        "pureVisual": 75.71,
         "spatialMotion": 44.76,
         "antiSlop": 45.7
       },
       "designSub": {
-        "website": 81.14,
-        "uicomponent": 65.93,
-        "dataviz": 52.38,
-        "gamedev": 69.65,
+        "website": 82.08,
+        "uicomponent": 70.17,
+        "dataviz": 53.71,
+        "gamedev": 70.55,
         "svg": null
       },
       "arenaRaw": {
@@ -24305,29 +24329,29 @@
         "level": 40
       },
       "timeSec": 2194.76,
-      "humanIndex": 69.74,
-      "intelligenceIndex": 69.74,
+      "humanIndex": 70.74,
+      "intelligenceIndex": 70.74,
       "aaIndex": 60.03,
-      "indexDelta": 9.71,
+      "indexDelta": 10.71,
       "humanScores": {
         "chatVibe": 80.29,
         "rawChatVibe": 80.29,
         "docCraft": null,
-        "webdev": 72.75,
-        "designWeb": 57.98,
-        "designUi": 59.58,
-        "creativeCraft": 63.34,
+        "webdev": 75.46,
+        "designWeb": 58.7,
+        "designUi": 64.92,
+        "creativeCraft": 65.91,
         "deliverable": 67.92,
-        "pureVisual": 60.06,
+        "pureVisual": 61.77,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
-        "website": 57.98,
-        "uicomponent": 61.37,
-        "dataviz": 57.79,
-        "gamedev": 54.16,
-        "svg": 72.51
+        "website": 58.7,
+        "uicomponent": 65.94,
+        "dataviz": 63.91,
+        "gamedev": 54.62,
+        "svg": 77.19
       },
       "arenaRaw": {
         "chatElo": 1525.9,
@@ -24388,29 +24412,29 @@
         "level": 40
       },
       "timeSec": 848.17,
-      "humanIndex": 42.08,
-      "intelligenceIndex": 42.08,
+      "humanIndex": 42.07,
+      "intelligenceIndex": 42.07,
       "aaIndex": 30.85,
-      "indexDelta": 11.23,
+      "indexDelta": 11.22,
       "humanScores": {
         "chatVibe": 69.99,
         "rawChatVibe": 73.64,
         "docCraft": 61.48,
-        "webdev": 37.8,
-        "designWeb": 51.27,
-        "designUi": 52.05,
-        "creativeCraft": 50.64,
+        "webdev": 37.59,
+        "designWeb": 51.28,
+        "designUi": 52.3,
+        "creativeCraft": 50.73,
         "deliverable": 23.59,
-        "pureVisual": 51.24,
+        "pureVisual": 51.48,
         "spatialMotion": 38.53,
         "antiSlop": 28.6
       },
       "designSub": {
-        "website": 51.27,
-        "uicomponent": 52.1,
-        "dataviz": 51.99,
-        "gamedev": 46.51,
-        "svg": 54.78
+        "website": 51.28,
+        "uicomponent": 52.2,
+        "dataviz": 52.39,
+        "gamedev": 46.48,
+        "svg": 54.98
       },
       "arenaRaw": {
         "chatElo": 1496.7,
@@ -24469,29 +24493,29 @@
         "level": 50
       },
       "timeSec": 1491.71,
-      "humanIndex": 55.48,
-      "intelligenceIndex": 55.48,
+      "humanIndex": 54.53,
+      "intelligenceIndex": 54.53,
       "aaIndex": 35.49,
-      "indexDelta": 19.99,
+      "indexDelta": 19.04,
       "humanScores": {
         "chatVibe": 49.02,
         "rawChatVibe": 49.02,
         "docCraft": null,
-        "webdev": 49.78,
-        "designWeb": 33.56,
-        "designUi": 43.98,
-        "creativeCraft": 49.1,
+        "webdev": 49.77,
+        "designWeb": 32.34,
+        "designUi": 41.33,
+        "creativeCraft": 49.02,
         "deliverable": 68.47,
-        "pureVisual": 44.34,
+        "pureVisual": 37.8,
         "spatialMotion": 50.94,
         "antiSlop": 91.4
       },
       "designSub": {
-        "website": 33.56,
-        "uicomponent": 44.52,
-        "dataviz": 43.43,
-        "gamedev": 48.41,
-        "svg": 49.8
+        "website": 32.34,
+        "uicomponent": 42.98,
+        "dataviz": 39.68,
+        "gamedev": 48.29,
+        "svg": 49.75
       },
       "arenaRaw": {
         "chatElo": 1443,
@@ -24550,29 +24574,29 @@
         "level": 60
       },
       "timeSec": 1964.92,
-      "humanIndex": 72.81,
-      "intelligenceIndex": 72.81,
+      "humanIndex": 73.34,
+      "intelligenceIndex": 73.34,
       "aaIndex": 54.54,
-      "indexDelta": 18.27,
+      "indexDelta": 18.8,
       "humanScores": {
         "chatVibe": 63.57,
         "rawChatVibe": 63.57,
         "docCraft": null,
-        "webdev": 75.91,
-        "designWeb": 58.01,
-        "designUi": 68.22,
-        "creativeCraft": 60,
+        "webdev": 76.92,
+        "designWeb": 58.37,
+        "designUi": 73.84,
+        "creativeCraft": 60.86,
         "deliverable": 83.5,
-        "pureVisual": 62.05,
+        "pureVisual": 63.61,
         "spatialMotion": 78.39,
         "antiSlop": 81.9
       },
       "designSub": {
-        "website": 58.01,
-        "uicomponent": 73.28,
-        "dataviz": 63.16,
-        "gamedev": 64.47,
-        "svg": 55.54
+        "website": 58.37,
+        "uicomponent": 77.13,
+        "dataviz": 70.54,
+        "gamedev": 65.12,
+        "svg": 56.59
       },
       "arenaRaw": {
         "chatElo": 1473.6,
@@ -24631,28 +24655,28 @@
         "level": 50
       },
       "timeSec": 2868.28,
-      "humanIndex": 55.76,
-      "intelligenceIndex": 55.76,
+      "humanIndex": 55.43,
+      "intelligenceIndex": 55.43,
       "aaIndex": 33.65,
-      "indexDelta": 22.11,
+      "indexDelta": 21.78,
       "humanScores": {
         "chatVibe": 68.46,
         "rawChatVibe": 68.46,
         "docCraft": null,
-        "webdev": 57.84,
-        "designWeb": 42.2,
-        "designUi": 57.34,
-        "creativeCraft": 49.58,
+        "webdev": 57.92,
+        "designWeb": 42.01,
+        "designUi": 58.01,
+        "creativeCraft": 49.57,
         "deliverable": 63.7,
-        "pureVisual": 51.49,
+        "pureVisual": 48.11,
         "spatialMotion": 42.9,
         "antiSlop": 26.7
       },
       "designSub": {
-        "website": 42.2,
-        "uicomponent": 60.6,
-        "dataviz": 54.09,
-        "gamedev": 49.58,
+        "website": 42.01,
+        "uicomponent": 61.38,
+        "dataviz": 54.63,
+        "gamedev": 49.57,
         "svg": null
       },
       "arenaRaw": {
@@ -24712,29 +24736,29 @@
         "level": 60
       },
       "timeSec": 1507.8,
-      "humanIndex": 77.62,
-      "intelligenceIndex": 77.62,
+      "humanIndex": 78.09,
+      "intelligenceIndex": 78.09,
       "aaIndex": 59.11,
-      "indexDelta": 18.51,
+      "indexDelta": 18.98,
       "humanScores": {
         "chatVibe": 76.9,
         "rawChatVibe": 76.9,
         "docCraft": null,
-        "webdev": 81.5,
-        "designWeb": 64.62,
-        "designUi": 73.09,
-        "creativeCraft": 66.77,
+        "webdev": 83.18,
+        "designWeb": 65.16,
+        "designUi": 77.3,
+        "creativeCraft": 67.78,
         "deliverable": 84.12,
-        "pureVisual": 67.63,
+        "pureVisual": 68.75,
         "spatialMotion": 80.63,
         "antiSlop": 80
       },
       "designSub": {
-        "website": 64.62,
-        "uicomponent": 70.03,
-        "dataviz": 76.14,
-        "gamedev": 71.99,
-        "svg": 61.54
+        "website": 65.16,
+        "uicomponent": 74.09,
+        "dataviz": 80.5,
+        "gamedev": 73,
+        "svg": 62.57
       },
       "arenaRaw": {
         "chatElo": 1507,
@@ -24801,21 +24825,21 @@
         "chatVibe": 70.29,
         "rawChatVibe": 70.82,
         "docCraft": 69.05,
-        "webdev": 61.43,
-        "designWeb": 56.66,
-        "designUi": 65.65,
-        "creativeCraft": 56.35,
+        "webdev": 61.59,
+        "designWeb": 56.76,
+        "designUi": 66.67,
+        "creativeCraft": 56.7,
         "deliverable": 70.34,
-        "pureVisual": 59.47,
+        "pureVisual": 59.45,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
-        "website": 56.66,
-        "uicomponent": 64.25,
-        "dataviz": 67.05,
-        "gamedev": 53.99,
-        "svg": 58.71
+        "website": 56.76,
+        "uicomponent": 65.13,
+        "dataviz": 68.21,
+        "gamedev": 54.13,
+        "svg": 59.26
       },
       "arenaRaw": {
         "chatElo": 1489.6,
@@ -24874,29 +24898,29 @@
         "level": 60
       },
       "timeSec": 1305.71,
-      "humanIndex": 69.34,
-      "intelligenceIndex": 69.34,
+      "humanIndex": 69.47,
+      "intelligenceIndex": 69.47,
       "aaIndex": 49.16,
-      "indexDelta": 20.18,
+      "indexDelta": 20.31,
       "humanScores": {
         "chatVibe": 73.8,
         "rawChatVibe": 75.31,
         "docCraft": 70.26,
-        "webdev": 71.08,
-        "designWeb": 56.97,
-        "designUi": 63.36,
-        "creativeCraft": 57.92,
+        "webdev": 71.6,
+        "designWeb": 57.16,
+        "designUi": 66.39,
+        "creativeCraft": 58.52,
         "deliverable": 73.31,
-        "pureVisual": 59.26,
+        "pureVisual": 59.54,
         "spatialMotion": 70.41,
         "antiSlop": 76.2
       },
       "designSub": {
-        "website": 56.97,
-        "uicomponent": 60.05,
-        "dataviz": 66.67,
-        "gamedev": 60.48,
-        "svg": 55.36
+        "website": 57.16,
+        "uicomponent": 61.69,
+        "dataviz": 71.09,
+        "gamedev": 61.18,
+        "svg": 55.87
       },
       "arenaRaw": {
         "chatElo": 1502.1,
@@ -24955,28 +24979,28 @@
         "level": 60
       },
       "timeSec": 2493.59,
-      "humanIndex": 77.76,
-      "intelligenceIndex": 77.76,
+      "humanIndex": 79.99,
+      "intelligenceIndex": 79.99,
       "aaIndex": 64.56,
-      "indexDelta": 13.2,
+      "indexDelta": 15.43,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
-        "webdev": 79.04,
-        "designWeb": 71.94,
-        "designUi": 66.27,
-        "creativeCraft": 64.35,
+        "webdev": 82.88,
+        "designWeb": 74.07,
+        "designUi": 73.13,
+        "creativeCraft": 66.8,
         "deliverable": 82.08,
-        "pureVisual": 65.69,
+        "pureVisual": 73.14,
         "spatialMotion": 81.2,
         "antiSlop": 93.3
       },
       "designSub": {
-        "website": 71.94,
-        "uicomponent": 66.27,
+        "website": 74.07,
+        "uicomponent": 73.13,
         "dataviz": null,
-        "gamedev": 64.35,
+        "gamedev": 66.8,
         "svg": null
       },
       "arenaRaw": {
@@ -25015,11 +25039,30 @@
       "releaseId": "20261106",
       "date": "2026-11-06",
       "sourceUrl": "https://livebench.ai/",
-      "totalCount": 38,
-      "matchedCount": 35,
+      "totalCount": 39,
+      "matchedCount": 36,
       "rows": [
         {
           "rank": 1,
+          "rawName": "gemini-4-neon",
+          "name": "Gemini 4 Neon (xhigh)",
+          "creator": "Google",
+          "modelId": "7c667f2d-0149-4eb1-864c-7e66c166ad88",
+          "score": 87.44,
+          "lbCost": 2.3205,
+          "cost": 6.444838101104699,
+          "suites": {
+            "longAgentic": 82.6,
+            "reasoning": 89.6,
+            "coding": 89.7,
+            "browser": 95.6,
+            "dataAnalysis": 85.3,
+            "research": 94.5,
+            "design": 81.5
+          }
+        },
+        {
+          "rank": 2,
           "rawName": "claude-fable-5.2",
           "name": "Claude Fable 5.2 (max)",
           "creator": "Anthropic",
@@ -25038,7 +25081,7 @@
           }
         },
         {
-          "rank": 2,
+          "rank": 3,
           "rawName": "gpt-6.2-astra",
           "name": "GPT-6.2 Astra (max)",
           "creator": "OpenAI",
@@ -25057,16 +25100,16 @@
           }
         },
         {
-          "rank": 3,
+          "rank": 4,
           "rawName": "gpt-6-astra",
           "name": "GPT-6 Astra (max)",
           "creator": "OpenAI",
           "modelId": "2f339a97-9a0d-499a-9cb5-e0db665bfa25",
-          "score": 84.45,
+          "score": 84.25,
           "lbCost": 4.4907,
           "cost": 6.244666943602518,
           "suites": {
-            "longAgentic": 75.6,
+            "longAgentic": 74.7,
             "reasoning": 92.7,
             "coding": 87.5,
             "browser": 91.3,
@@ -25076,7 +25119,7 @@
           }
         },
         {
-          "rank": 4,
+          "rank": 5,
           "rawName": "claude-fable-5.1",
           "name": "Claude Fable 5.1 (max)",
           "creator": "Anthropic",
@@ -25092,25 +25135,6 @@
             "dataAnalysis": 80.3,
             "research": 88.5,
             "design": 81.6
-          }
-        },
-        {
-          "rank": 5,
-          "rawName": "gemini-4-carbon",
-          "name": "Gemini 4 Carbon (high)",
-          "creator": "Google",
-          "modelId": "909ed0ba-bcc5-4f38-8162-08a4e187a772",
-          "score": 83.53,
-          "lbCost": 1.6902,
-          "cost": 7.755545745286556,
-          "suites": {
-            "longAgentic": 72.7,
-            "reasoning": 90.6,
-            "coding": 91,
-            "browser": 80,
-            "dataAnalysis": 86.5,
-            "research": 92.5,
-            "design": 80.2
           }
         },
         {
@@ -25134,15 +25158,34 @@
         },
         {
           "rank": 7,
+          "rawName": "gemini-4-carbon",
+          "name": "Gemini 4 Carbon (high)",
+          "creator": "Google",
+          "modelId": "909ed0ba-bcc5-4f38-8162-08a4e187a772",
+          "score": 83.33,
+          "lbCost": 1.6902,
+          "cost": 7.755545745286556,
+          "suites": {
+            "longAgentic": 71.8,
+            "reasoning": 90.6,
+            "coding": 91,
+            "browser": 80,
+            "dataAnalysis": 86.5,
+            "research": 92.5,
+            "design": 80.2
+          }
+        },
+        {
+          "rank": 8,
           "rawName": "gpt-6.1-sol",
           "name": "GPT-6.1 Sol (max)",
           "creator": "OpenAI",
           "modelId": "b25ac058-1e33-4c31-bbc9-a20c3ad0717a",
-          "score": 81.37,
+          "score": 81.17,
           "lbCost": 0.6694,
           "cost": 1.2720632679446995,
           "suites": {
-            "longAgentic": 65.6,
+            "longAgentic": 64.7,
             "reasoning": 92.6,
             "coding": 82.1,
             "browser": 93.3,
@@ -25152,7 +25195,7 @@
           }
         },
         {
-          "rank": 8,
+          "rank": 9,
           "rawName": "gpt-6.2-sol",
           "name": "GPT-6.2 Sol (max)",
           "creator": "OpenAI",
@@ -25171,16 +25214,16 @@
           }
         },
         {
-          "rank": 9,
+          "rank": 10,
           "rawName": "gpt-6.1-terra",
           "name": "GPT-6.1 Terra (max)",
           "creator": "OpenAI",
           "modelId": "b0c462cf-f2d0-4126-9434-28db9502219f",
-          "score": 78.77,
+          "score": 78.57,
           "lbCost": 0.5301,
           "cost": 0.961108031081634,
           "suites": {
-            "longAgentic": 56.2,
+            "longAgentic": 55.3,
             "reasoning": 88.7,
             "coding": 89.2,
             "browser": 93.1,
@@ -25190,7 +25233,7 @@
           }
         },
         {
-          "rank": 10,
+          "rank": 11,
           "rawName": "gemini-4-argon",
           "name": "Gemini 4 Argon (high)",
           "creator": "Google",
@@ -25209,7 +25252,7 @@
           }
         },
         {
-          "rank": 11,
+          "rank": 12,
           "rawName": "gemini-4-hydrogen",
           "name": "Gemini 4 Hydrogen (xhigh)",
           "creator": "Google",
@@ -25228,16 +25271,16 @@
           }
         },
         {
-          "rank": 12,
+          "rank": 13,
           "rawName": "claude-sonnet-5.5",
           "name": "Claude Sonnet 5.5 (max)",
           "creator": "Anthropic",
           "modelId": "b171d979-5ec1-45de-b8b9-db1ee65e77ec",
-          "score": 76.99,
+          "score": 76.79,
           "lbCost": 4.4676,
           "cost": 10.020621343395753,
           "suites": {
-            "longAgentic": 63.4,
+            "longAgentic": 62.5,
             "reasoning": 91.6,
             "coding": 77.2,
             "browser": 89.3,
@@ -25247,16 +25290,16 @@
           }
         },
         {
-          "rank": 13,
+          "rank": 14,
           "rawName": "qwen4-max",
           "name": "Qwen4 Max",
           "creator": "Alibaba",
           "modelId": "fef6625d-9097-45f6-95c0-bcaa06e3d8e1",
-          "score": 73.26,
+          "score": 73.06,
           "lbCost": 0.5071,
           "cost": 3.2681327300897323,
           "suites": {
-            "longAgentic": 47.5,
+            "longAgentic": 46.6,
             "reasoning": 92.2,
             "coding": 69.8,
             "browser": 80.7,
@@ -25266,7 +25309,7 @@
           }
         },
         {
-          "rank": 14,
+          "rank": 15,
           "rawName": "muse-wonder-1.0",
           "name": "Muse Wonder (max)",
           "creator": "Meta",
@@ -25285,7 +25328,7 @@
           }
         },
         {
-          "rank": 15,
+          "rank": 16,
           "rawName": "deepseek-v4.1-flash-1017",
           "name": "DeepSeek V4.1 Flash 1017 (max)",
           "creator": "DeepSeek",
@@ -25304,7 +25347,7 @@
           }
         },
         {
-          "rank": 16,
+          "rank": 17,
           "rawName": "claude-haiku-5.5",
           "name": "Claude Haiku 5.5 (max)",
           "creator": "Anthropic",
@@ -25323,7 +25366,7 @@
           }
         },
         {
-          "rank": 17,
+          "rank": 18,
           "rawName": "kimi-k3.1-pro",
           "name": "Kimi K3.1 Pro",
           "creator": "Kimi",
@@ -25342,7 +25385,7 @@
           }
         },
         {
-          "rank": 18,
+          "rank": 19,
           "rawName": "muse-spark-1.3",
           "name": "Muse Spark 1.3 (max)",
           "creator": "Meta",
@@ -25361,7 +25404,7 @@
           }
         },
         {
-          "rank": 19,
+          "rank": 20,
           "rawName": "grok-4.7",
           "name": "Grok 4.7 (xhigh)",
           "creator": "SpaceXAI",
@@ -25380,7 +25423,7 @@
           }
         },
         {
-          "rank": 20,
+          "rank": 21,
           "rawName": "gpt-5.6-terra",
           "name": "GPT-5.6 Terra (max)",
           "creator": "OpenAI",
@@ -25399,7 +25442,7 @@
           }
         },
         {
-          "rank": 21,
+          "rank": 22,
           "rawName": "mimo-v2.6-pro",
           "name": "MiMo-V2.6-Pro",
           "creator": "Xiaomi",
@@ -25418,7 +25461,7 @@
           }
         },
         {
-          "rank": 22,
+          "rank": 23,
           "rawName": "kimi-k3",
           "name": "kimi-k3",
           "score": 64.98,
@@ -25434,7 +25477,7 @@
           }
         },
         {
-          "rank": 23,
+          "rank": 24,
           "rawName": "minimax-m3.1-flash",
           "name": "MiniMax-M3.1-Flash",
           "creator": "MiniMax",
@@ -25453,7 +25496,7 @@
           }
         },
         {
-          "rank": 24,
+          "rank": 25,
           "rawName": "grok-4.6",
           "name": "Grok 4.6 (xhigh)",
           "creator": "SpaceXAI",
@@ -25472,7 +25515,7 @@
           }
         },
         {
-          "rank": 25,
+          "rank": 26,
           "rawName": "qwen3.8-max",
           "name": "Qwen3.8 Max (0902)",
           "creator": "Alibaba",
@@ -25491,7 +25534,7 @@
           }
         },
         {
-          "rank": 26,
+          "rank": 27,
           "rawName": "glm-5.3-flash",
           "name": "GLM-5.3-Flash",
           "creator": "Z AI",
@@ -25510,7 +25553,7 @@
           }
         },
         {
-          "rank": 27,
+          "rank": 28,
           "rawName": "gpt-6-luna",
           "name": "GPT-6 Luna (max)",
           "creator": "OpenAI",
@@ -25529,7 +25572,7 @@
           }
         },
         {
-          "rank": 28,
+          "rank": 29,
           "rawName": "mistral-large-4-0",
           "name": "Mistral Large 4 (high)",
           "creator": "Mistral",
@@ -25548,7 +25591,7 @@
           }
         },
         {
-          "rank": 29,
+          "rank": 30,
           "rawName": "gemini-3.8-flash",
           "name": "Gemini 3.8 Flash (high)",
           "creator": "Google",
@@ -25567,7 +25610,7 @@
           }
         },
         {
-          "rank": 30,
+          "rank": 31,
           "rawName": "step-5-preview",
           "name": "Step 5 Preview",
           "creator": "StepFun",
@@ -25586,7 +25629,7 @@
           }
         },
         {
-          "rank": 31,
+          "rank": 32,
           "rawName": "qwen3.8-27b",
           "name": "Qwen3.8 27B (xhigh)",
           "creator": "Alibaba",
@@ -25605,7 +25648,7 @@
           }
         },
         {
-          "rank": 32,
+          "rank": 33,
           "rawName": "muse-spark-open",
           "name": "Muse Spark Open (xhigh)",
           "creator": "Meta",
@@ -25624,7 +25667,7 @@
           }
         },
         {
-          "rank": 33,
+          "rank": 34,
           "rawName": "smaug-nemotron-3.5-nvfp4",
           "name": "smaug-nemotron-3.5-nvfp4",
           "score": 47.04,
@@ -25640,7 +25683,7 @@
           }
         },
         {
-          "rank": 34,
+          "rank": 35,
           "rawName": "nemotron-super-vl-3.5",
           "name": "Nemotron 3.5 Super VL",
           "creator": "NVIDIA",
@@ -25659,7 +25702,7 @@
           }
         },
         {
-          "rank": 35,
+          "rank": 36,
           "rawName": "inkling",
           "name": "Inkling (xhigh)",
           "creator": "Thinking Machines",
@@ -25678,7 +25721,7 @@
           }
         },
         {
-          "rank": 36,
+          "rank": 37,
           "rawName": "nemotron-super-vl-3.5-nvfp4",
           "name": "Nemotron 3.5 Super VL",
           "creator": "NVIDIA",
@@ -25697,7 +25740,7 @@
           }
         },
         {
-          "rank": 37,
+          "rank": 38,
           "rawName": "mistral-large-4",
           "name": "Mistral Large 4 (high)",
           "creator": "Mistral",
@@ -25716,7 +25759,7 @@
           }
         },
         {
-          "rank": 38,
+          "rank": 39,
           "rawName": "gemma-4-31b",
           "name": "gemma-4-31b",
           "score": 32.43,
@@ -32481,7 +32524,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 14.77,
+      "timeSec": 14.52,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -32497,7 +32540,7 @@
         "ttsElo": 1060,
         "pricePer1mChars": 0.65,
         "ttfaMs": 1692,
-        "cps": 240.4
+        "cps": 240.3
       },
       "releaseDate": "2025-01-27"
     },
@@ -32510,12 +32553,12 @@
       "intelligenceIndex": 15.89,
       "cost": 0.00282,
       "creator": {
-        "name": "StyleTTS ",
+        "name": "StyleTTS",
         "color": "#C2D5E3"
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 0.23,
+      "timeSec": 0.22,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -32642,7 +32685,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 23.21,
+      "timeSec": 23.14,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -32658,7 +32701,7 @@
         "ttsElo": 915.2,
         "pricePer1mChars": 4,
         "ttfaMs": 681,
-        "cps": 371.8
+        "cps": 356.8
       },
       "releaseDate": "2016-09-08"
     },
@@ -32676,7 +32719,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 28.11,
+      "timeSec": 26.58,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -32692,7 +32735,7 @@
         "ttsElo": 884.2,
         "pricePer1mChars": 4,
         "ttfaMs": 670,
-        "cps": 460.6
+        "cps": 442.3
       },
       "releaseDate": "2018-08-28"
     },
@@ -32710,7 +32753,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 53.23,
+      "timeSec": 53.77,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -32726,7 +32769,7 @@
         "ttsElo": 830.3,
         "pricePer1mChars": 4,
         "ttfaMs": 78,
-        "cps": 899.5
+        "cps": 912.4
       },
       "releaseDate": "2016-11-30"
     },
@@ -32899,7 +32942,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 10,
+      "timeSec": 10.09,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -32915,7 +32958,7 @@
         "ttsElo": 1293.4,
         "pricePer1mChars": 6.58,
         "ttfaMs": 93,
-        "cps": 161.8
+        "cps": 169.9
       },
       "releaseDate": "2026-11-03"
     },
@@ -32949,7 +32992,7 @@
         "ttsElo": 1252.2,
         "pricePer1mChars": 6.58,
         "ttfaMs": 100,
-        "cps": 120.6
+        "cps": 118.1
       },
       "releaseDate": "2026-07-01"
     },
@@ -32967,7 +33010,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 8.7,
+      "timeSec": 9.11,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -32983,7 +33026,7 @@
         "ttsElo": 1112.9,
         "pricePer1mChars": 6.58,
         "ttfaMs": 111,
-        "cps": 137.6
+        "cps": 144.5
       },
       "releaseDate": "2026-02-19"
     },
@@ -33288,7 +33331,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.81,
+      "timeSec": 6.92,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -33304,7 +33347,7 @@
         "ttsElo": 1156.3,
         "pricePer1mChars": 10,
         "ttfaMs": 142,
-        "cps": 112.4
+        "cps": 118.2
       },
       "releaseDate": "2026-07-21"
     },
@@ -33322,7 +33365,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.55,
+      "timeSec": 7.64,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -33338,7 +33381,7 @@
         "ttsElo": 1152.8,
         "pricePer1mChars": 10,
         "ttfaMs": 159,
-        "cps": 127.6
+        "cps": 128.7
       },
       "releaseDate": "2026-10-28"
     },
@@ -33514,7 +33557,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.18,
+      "timeSec": 7.12,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -33530,7 +33573,7 @@
         "ttsElo": 1045.9,
         "pricePer1mChars": 10.1,
         "ttfaMs": 535,
-        "cps": 110.8
+        "cps": 106
       },
       "releaseDate": "2025-07-08"
     },
@@ -33580,7 +33623,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 13.88,
+      "timeSec": 13.85,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -33707,7 +33750,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.93,
+      "timeSec": 6.87,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -33723,7 +33766,7 @@
         "ttsElo": 1262.2,
         "pricePer1mChars": 11.03,
         "ttfaMs": 556,
-        "cps": 104.6
+        "cps": 104.1
       },
       "releaseDate": "2026-09-23"
     },
@@ -33806,7 +33849,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.89,
+      "timeSec": 6.91,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -33822,7 +33865,7 @@
         "ttsElo": 1213,
         "pricePer1mChars": 13,
         "ttfaMs": 534,
-        "cps": 107
+        "cps": 107.2
       },
       "releaseDate": "2026-10-20"
     },
@@ -33920,7 +33963,7 @@
         "ttsElo": 1179.7,
         "pricePer1mChars": 14.23,
         "ttfaMs": 291,
-        "cps": 17.8
+        "cps": 18.2
       },
       "releaseDate": "2026-08-12"
     },
@@ -33938,7 +33981,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 6.17,
+      "timeSec": 6.14,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -33972,7 +34015,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 4.16,
+      "timeSec": 4.23,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -33988,7 +34031,7 @@
         "ttsElo": 1237.3,
         "pricePer1mChars": 15,
         "ttfaMs": 262,
-        "cps": 70.2
+        "cps": 70.9
       },
       "releaseDate": "2026-10-14"
     },
@@ -34022,7 +34065,7 @@
         "ttsElo": 1212.7,
         "pricePer1mChars": 15,
         "ttfaMs": 217,
-        "cps": 166.7
+        "cps": 170.4
       },
       "releaseDate": "2026-10-28"
     },
@@ -34040,7 +34083,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 11.05,
+      "timeSec": 11.02,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -34056,7 +34099,7 @@
         "ttsElo": 1193.3,
         "pricePer1mChars": 15,
         "ttfaMs": null,
-        "cps": 170.6
+        "cps": 174.7
       },
       "releaseDate": "2026-06-18"
     },
@@ -34108,7 +34151,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 11.11,
+      "timeSec": 11.12,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -34124,7 +34167,7 @@
         "ttsElo": 1160.9,
         "pricePer1mChars": 15,
         "ttfaMs": 274,
-        "cps": 187.1
+        "cps": 191.3
       },
       "releaseDate": "2026-03-16"
     },
@@ -34254,7 +34297,7 @@
         "ttsElo": 1091.1,
         "pricePer1mChars": 15,
         "ttfaMs": null,
-        "cps": 61.1
+        "cps": 61.7
       },
       "releaseDate": "2025-06-03"
     },
@@ -34272,7 +34315,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 9.7,
+      "timeSec": 10.4,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -34288,7 +34331,7 @@
         "ttsElo": 1086.2,
         "pricePer1mChars": 15,
         "ttfaMs": 1394,
-        "cps": 154.8
+        "cps": 166.3
       },
       "releaseDate": "2023-11-06"
     },
@@ -34353,7 +34396,7 @@
         "ttsElo": 1034.8,
         "pricePer1mChars": 15,
         "ttfaMs": null,
-        "cps": 42.8
+        "cps": 43
       },
       "releaseDate": "2026-06-04"
     },
@@ -34504,7 +34547,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 37.22,
+      "timeSec": 37.38,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -34520,7 +34563,7 @@
         "ttsElo": 891.5,
         "pricePer1mChars": 16,
         "ttfaMs": 439,
-        "cps": 597
+        "cps": 599.1
       },
       "releaseDate": "2022-06-27"
     },
@@ -34538,7 +34581,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 3.79,
+      "timeSec": 3.77,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -34554,7 +34597,7 @@
         "ttsElo": 1283,
         "pricePer1mChars": 16.49,
         "ttfaMs": 829,
-        "cps": 62.5
+        "cps": 59.8
       },
       "releaseDate": "2026-09-23"
     },
@@ -34634,7 +34677,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 2.68,
+      "timeSec": 2.69,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -34650,7 +34693,7 @@
         "ttsElo": 1214.7,
         "pricePer1mChars": 18.31,
         "ttfaMs": 940,
-        "cps": 40.3
+        "cps": 39.8
       },
       "releaseDate": "2026-04-15"
     },
@@ -34861,7 +34904,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 5.66,
+      "timeSec": 6.68,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -34877,7 +34920,7 @@
         "ttsElo": 1277.7,
         "pricePer1mChars": 19.5,
         "ttfaMs": 220,
-        "cps": 93.7
+        "cps": 110.5
       },
       "releaseDate": "2026-10-28"
     },
@@ -35118,7 +35161,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 5.15,
+      "timeSec": 5.19,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -35134,7 +35177,7 @@
         "ttsElo": 1269.8,
         "pricePer1mChars": 20.83,
         "ttfaMs": 173,
-        "cps": 82.8
+        "cps": 83.7
       },
       "releaseDate": "2026-08-31"
     },
@@ -35199,7 +35242,7 @@
         "ttsElo": 1148.8,
         "pricePer1mChars": 22,
         "ttfaMs": 176,
-        "cps": 75.1
+        "cps": 76.6
       },
       "releaseDate": "2026-03-30"
     },
@@ -35248,7 +35291,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 4.39,
+      "timeSec": 4.37,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -35264,7 +35307,7 @@
         "ttsElo": 1024.2,
         "pricePer1mChars": 25,
         "ttfaMs": 388,
-        "cps": 79.7
+        "cps": 86.7
       },
       "releaseDate": "2026-03-24"
     },
@@ -35672,7 +35715,7 @@
         "ttsElo": 1110.4,
         "pricePer1mChars": 30,
         "ttfaMs": 2377,
-        "cps": 108.6
+        "cps": 108.8
       },
       "releaseDate": "2023-11-06"
     },
@@ -35799,7 +35842,7 @@
         "ttsElo": 1062.6,
         "pricePer1mChars": 30,
         "ttfaMs": 236,
-        "cps": 109.6
+        "cps": 109.3
       },
       "releaseDate": "2024-05-08"
     },
@@ -35817,7 +35860,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.46,
+      "timeSec": 7.35,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -35833,7 +35876,7 @@
         "ttsElo": 1062.2,
         "pricePer1mChars": 30,
         "ttfaMs": 1573,
-        "cps": 127.9
+        "cps": 125.4
       },
       "releaseDate": "2025-03-12"
     },
@@ -35908,7 +35951,7 @@
       "intelligenceIndex": 35.11,
       "cost": 0.03,
       "creator": {
-        "name": "Bytedance",
+        "name": "ByteDance",
         "color": "#3c8bff"
       },
       "isReasoning": false,
@@ -35944,7 +35987,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.53,
+      "timeSec": 6.65,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36087,7 +36130,7 @@
         "ttsElo": 902.5,
         "pricePer1mChars": 31.13,
         "ttfaMs": 473,
-        "cps": 490.5
+        "cps": 488.8
       },
       "releaseDate": "2025-03-06"
     },
@@ -36292,7 +36335,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 3.26,
+      "timeSec": 3.21,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36640,7 +36683,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 2.42,
+      "timeSec": 2.41,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36988,7 +37031,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 2.12,
+      "timeSec": 2.06,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37004,7 +37047,7 @@
         "ttsElo": 914.9,
         "pricePer1mChars": 40.44,
         "ttfaMs": null,
-        "cps": 34.3
+        "cps": 32.7
       },
       "releaseDate": "2023-11-08"
     },
@@ -37072,7 +37115,7 @@
         "ttsElo": 1172,
         "pricePer1mChars": 47.78,
         "ttfaMs": 68,
-        "cps": 52.2
+        "cps": 53.1
       },
       "releaseDate": "2026-09-22"
     },
@@ -37090,7 +37133,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 3.44,
+      "timeSec": 3.43,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37124,7 +37167,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 3.45,
+      "timeSec": 3.36,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37220,7 +37263,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 8.94,
+      "timeSec": 9.12,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37236,7 +37279,7 @@
         "ttsElo": 1295.2,
         "pricePer1mChars": 49,
         "ttfaMs": 272,
-        "cps": 144.1
+        "cps": 144.2
       },
       "releaseDate": "2026-08-17"
     },
@@ -37288,7 +37331,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.23,
+      "timeSec": 6.28,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37304,7 +37347,7 @@
         "ttsElo": 1061.3,
         "pricePer1mChars": 49,
         "ttfaMs": 429,
-        "cps": 107.1
+        "cps": 108.3
       },
       "releaseDate": "2025-10-29"
     },
@@ -37386,7 +37429,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 5.43,
+      "timeSec": 5.45,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37402,7 +37445,7 @@
         "ttsElo": 1115.9,
         "pricePer1mChars": 50,
         "ttfaMs": 149,
-        "cps": 82.9
+        "cps": 82.7
       },
       "releaseDate": "2026-10-22"
     },
@@ -37520,7 +37563,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 5.59,
+      "timeSec": 5.6,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37536,7 +37579,7 @@
         "ttsElo": 1049.9,
         "pricePer1mChars": 50,
         "ttfaMs": 152,
-        "cps": 90.6
+        "cps": 93.5
       },
       "releaseDate": "2026-05-19"
     },
@@ -37682,7 +37725,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.26,
+      "timeSec": 7.16,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37698,7 +37741,7 @@
         "ttsElo": 1124.3,
         "pricePer1mChars": 60,
         "ttfaMs": 413,
-        "cps": 115.9
+        "cps": 116.2
       },
       "releaseDate": "2025-10-30"
     },
@@ -37778,7 +37821,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.03,
+      "timeSec": 6.94,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -38358,7 +38401,7 @@
         "ttsElo": 1215.3,
         "pricePer1mChars": 85,
         "ttfaMs": 4343,
-        "cps": 40.7
+        "cps": 40.6
       },
       "releaseDate": "2026-08-26"
     },
@@ -38603,7 +38646,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.62,
+      "timeSec": 7.83,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -38619,7 +38662,7 @@
         "ttsElo": 1173.4,
         "pricePer1mChars": 100,
         "ttfaMs": 448,
-        "cps": 112.8
+        "cps": 113
       },
       "releaseDate": "2026-02-14"
     },
@@ -38715,7 +38758,7 @@
         "ttsElo": 1124.7,
         "pricePer1mChars": 100,
         "ttfaMs": 444,
-        "cps": 110.3
+        "cps": 111.2
       },
       "releaseDate": "2025-10-30"
     },
@@ -38764,7 +38807,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.29,
+      "timeSec": 7.27,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -38831,7 +38874,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 4.36,
+      "timeSec": 4.05,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -38847,7 +38890,7 @@
         "ttsElo": 1026.7,
         "pricePer1mChars": 100,
         "ttfaMs": 1869,
-        "cps": 67.5
+        "cps": 64.9
       },
       "releaseDate": "2023-11-16"
     },
@@ -38865,7 +38908,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 4.13,
+      "timeSec": 4.09,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -38881,7 +38924,7 @@
         "ttsElo": 986.5,
         "pricePer1mChars": 100,
         "ttfaMs": 133,
-        "cps": 62
+        "cps": 61.6
       },
       "releaseDate": "2024-07-23"
     },
@@ -38894,7 +38937,7 @@
       "intelligenceIndex": 8.84,
       "cost": 0.1,
       "creator": {
-        "name": "Bytedance",
+        "name": "ByteDance",
         "color": "#3c8bff"
       },
       "isReasoning": false,
@@ -39119,7 +39162,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 17.19,
+      "timeSec": 17,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39135,7 +39178,7 @@
         "ttsElo": 1074.8,
         "pricePer1mChars": 160,
         "ttfaMs": 1562,
-        "cps": 281.4
+        "cps": 280.2
       },
       "releaseDate": "2023-02-08"
     },
@@ -39153,7 +39196,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 4.49,
+      "timeSec": 4.45,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39169,7 +39212,7 @@
         "ttsElo": 1068.1,
         "pricePer1mChars": 160,
         "ttfaMs": 2610,
-        "cps": 78.3
+        "cps": 77.3
       },
       "releaseDate": "2023-12-23"
     },
@@ -39251,7 +39294,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 4.27,
+      "timeSec": 4.26,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39267,7 +39310,7 @@
         "ttsElo": 1071.7,
         "pricePer1mChars": 191.56,
         "ttfaMs": 620,
-        "cps": 64.2
+        "cps": 64.1
       },
       "releaseDate": "2026-05-07"
     },

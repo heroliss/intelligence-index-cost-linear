@@ -29,16 +29,16 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261120-04';
+} from './chart-math.mjs?v=20261120-05';
 import {
   RECOMMEND_USE_CASES,
   RECOMMEND_BILLING,
   RECOMMEND_LICENSES,
   recommendModels
-} from './modules/recommend.mjs?v=20261120-04';
-import {computeOrgDivergence} from './modules/divergence.mjs?v=20261120-04';
-import {createNavHistory} from './modules/nav-history.mjs?v=20261120-04';
-import {GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261120-04';
+} from './modules/recommend.mjs?v=20261120-05';
+import {computeOrgDivergence} from './modules/divergence.mjs?v=20261120-05';
+import {createNavHistory} from './modules/nav-history.mjs?v=20261120-05';
+import {GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261120-05';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -1605,13 +1605,6 @@ function renderChangelog() {
   } else if (!diffs.length) {
     frag.append(html('li', t('每 2 小时自动检查 Artificial Analysis 上游榜单更新。', 'Checked every 2 hours against upstream Artificial Analysis releases.'), 'changelog-item'));
   }
-  const guideLi = html('li', null, 'changelog-item');
-  const guideAnchor = html('a', t('📖 查看四步上手教学与作品详情 · Liss Works ↗', '📖 Read 4-step quick-start guide · Liss Works ↗'));
-  guideAnchor.href = 'https://heroliss.github.io/liss-works/projects/intelligence-index-cost-linear/';
-  guideAnchor.target = '_blank';
-  guideAnchor.rel = 'noopener';
-  guideLi.append(guideAnchor);
-  frag.append(guideLi);
   list.replaceChildren(frag);
 }
 
@@ -1764,9 +1757,9 @@ function syncStaticText() {
     '新手导览：了解各榜单与测评机构特点，一键实操发现数据背后的隐藏信息（快捷键 ?）',
     'Beginner guide: benchmark & agency profiles, chart glossary & 1-click data insight recipes (press ?)'
   );
-  $('#footerGuideLink').textContent = t('上手指南与介绍 ↗', 'Quick-Start Guide ↗');
-  $('#footerGuideLink').title = t('查看本作品详情页与选型入门指南', 'Read beginner guide & project overview on Liss Works');
-  $('#footerWorksLink').textContent = t('Liss Works 作品站 ↗', 'Liss Works Portfolio ↗');
+  $('#footerGuideLink').textContent = t('作品简介 ↗', 'Project Intro ↗');
+  $('#footerGuideLink').title = t('查看本作品简介与简单入门 · Liss Works', 'Project intro & quick overview on Liss Works');
+  $('#footerWorksLink').textContent = 'Liss Works ↗';
   $('#footerWorksLink').title = t('访问作者个人作品站 Liss Works', 'Visit author portfolio: Liss Works');
   $('#cmdPaletteBtn').replaceChildren(
     document.createTextNode(t('速查 ', 'Jump ')),
@@ -1774,22 +1767,8 @@ function syncStaticText() {
   );
   $('#cmdPaletteBtn').setAttribute('aria-label', t('打开全局模型速查面板 (Ctrl+K)', 'Open global model search palette (Ctrl+K)'));
   $('#cmdInput').placeholder = t('输入模型、厂商或生成引擎名速查全站排名…', 'Search any model, creator, or media generator across all tabs…');
-  const cmdLinks = html('span', null, 'cmd-foot-links');
-  const mkExtLink = (txt, href) => {
-    const a = html('a', txt);
-    a.href = href;
-    a.target = '_blank';
-    a.rel = 'noopener';
-    return a;
-  };
-  cmdLinks.append(
-    mkExtLink(t('上手指南 ↗', 'Guide ↗'), 'https://heroliss.github.io/liss-works/projects/intelligence-index-cost-linear/'),
-    html('span', '·', 'footer-sep'),
-    mkExtLink('Liss Works ↗', 'https://heroliss.github.io/liss-works/')
-  );
   $('#cmdFoot').replaceChildren(
-    html('span', t('↑↓ 选择 · Enter 跳转定位 · Shift+Enter 加入剖析对比 · ★ 收藏关注', '↑↓ Navigate · Enter locate · Shift+Enter compare · ★ Star')),
-    cmdLinks
+    html('span', t('↑↓ 选择 · Enter 跳转定位 · Shift+Enter 加入剖析对比 · ★ 收藏关注', '↑↓ Navigate · Enter locate · Shift+Enter compare · ★ Star'))
   );
   $('#updateText').textContent = t('最新动态', 'Updates');
   if (changelogOpen) renderChangelog();
@@ -9469,8 +9448,8 @@ function buildStandaloneOrgBoards(snap) {
       whatEn: 'Pairwise blind aesthetic battles across Websites, UI Components, DataViz, GameDev, and SVG',
       strengthZh: '精准区分“审美在线”与“模板味/紫蓝渐变堆砌”，设计师与前端选型必备',
       strengthEn: 'Separates intentional visual taste from generic templated layouts across 5 creative tracks',
-      caveatZh: '高度专注视觉和创意表现，不衡量后端逻辑、数学推理或事实防幻觉能力',
-      caveatEn: 'Strictly evaluates visual craft & creativity, not factual rigor or backend logic',
+      caveatZh: '偏重单轮一次出图的视觉第一眼观感，不等同于多轮改布局与复杂交互工程体验；新发模型收录有一定滞后，且不测逻辑/防幻觉',
+      caveatEn: 'Evaluates single-shot visual first impression rather than multi-turn iterative UI edits; fresh releases may lag in coverage',
       scoreLabelZh: 'Website Elo',
       scoreLabelEn: 'Web Elo',
       scoreDecimals: 0,
@@ -11736,7 +11715,7 @@ function setGuideOpen(open, tabName = null) {
   }
 }
 
-function applyPickerContext(recResult, {targetRow = null, toCompare = false} = {}) {
+function applyPickerContext(recResult, {targetRow = null, targetSlot = null, toCompare = false} = {}) {
   const {useCase, license, picks} = recResult;
   setGuideOpen(false);
   runNavAction(() => {
@@ -11762,7 +11741,14 @@ function applyPickerContext(recResult, {targetRow = null, toCompare = false} = {
     } else {
       state.scenarioId = 'default';
       state.scenarioWeights = null;
-      applyYLens(state, useCase.yLens || '');
+      let targetLens = useCase.yLens || '';
+      if (useCase.id === 'design') {
+        if (toCompare) targetLens = '';
+        else if (targetRow && (targetRow.humanScores?.pureVisual == null || targetSlot === 'saving') && targetRow.humanScores?.webdev != null) {
+          targetLens = 'webdev';
+        }
+      }
+      applyYLens(state, targetLens);
     }
     if (toCompare && picks.length) {
       const ids = picks.map(p => p.row.id).filter(id => state.rows.some(r => r.id === id));
@@ -11893,7 +11879,7 @@ function renderPickerTab(frag) {
 
     const metrics = html('div', null, 'picker-metrics');
     const mScore = html('div');
-    mScore.append(html('span', t('场景得分', 'Score')), html('b', format(pick.score, 1)));
+    mScore.append(html('span', t(pick.scoreLabelZh || '场景得分', pick.scoreLabelEn || 'Score')), html('b', format(pick.score, 1)));
     const mCost = html('div');
     mCost.append(html('span', t(`单${unitTxt}成本`, `Cost/${unitTxt}`)), html('b', money(pick.row.cost)));
     metrics.append(mScore, mCost);
@@ -11911,7 +11897,7 @@ function renderPickerTab(frag) {
     const acts = html('div', null, 'picker-card-acts');
     const locBtn = html('button', t('图中定位 →', 'Locate →'), 'org-mini-btn');
     locBtn.type = 'button';
-    locBtn.addEventListener('click', () => applyPickerContext(rec, {targetRow: pick.row}));
+    locBtn.addEventListener('click', () => applyPickerContext(rec, {targetRow: pick.row, targetSlot: pick.slot}));
     acts.append(locBtn);
 
     if (signals.childNodes.length) {
@@ -11979,7 +11965,7 @@ function renderGuideDialog() {
     '快捷键：按 ? 打开导览 · Alt+←/→ 返回/前进 · Ctrl+K 全局速查 · [ ] 巡航前沿',
     'Shortcuts: ? guide · Alt+←/→ back/forward · Ctrl+K jump · [ ] frontier'
   );
-  $('#guideExtLink').textContent = t('完整图文教程与 Liss Works ↗', 'Full Guide & Liss Works ↗');
+  $('#guideExtLink').textContent = t('作品简介与入门 · Liss Works ↗', 'Project Intro · Liss Works ↗');
 
   for (const btn of document.querySelectorAll('#guideTabs [role=tab]')) {
     const sel = btn.dataset.gtab === guideTab;

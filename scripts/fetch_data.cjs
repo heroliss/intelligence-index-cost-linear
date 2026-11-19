@@ -488,11 +488,11 @@ const LIVEBENCH_SUITE_KEYS = {
   Design: 'design'
 };
 const DESIGN_ARENA_CALIBRATION = {
-  website: { center: 1285, scale: 135 },
-  uicomponent: { center: 1295, scale: 155 },
-  dataviz: { center: 1265, scale: 175 },
-  gamedev: { center: 1305, scale: 260 },
-  svg: { center: 1265, scale: 215 }
+  website: { center: 1285, scale: 135, k: 30, weight: 0.55 },
+  uicomponent: { center: 1295, scale: 155, k: 35, weight: 0.20 },
+  dataviz: { center: 1265, scale: 175, k: 55, weight: 0.09 },
+  gamedev: { center: 1305, scale: 260, k: 55, weight: 0.08 },
+  svg: { center: 1265, scale: 215, k: 55, weight: 0.08 }
 };
 
 function slimDerivedBase(m) {
@@ -813,15 +813,14 @@ function buildHumanArenaModels(models, external = {}) {
     // 2026 empirical median-centered calibrations so median ≈ 50–55 and global SOTA ≈ 80–86
     const chatVibe = chat ? shrinkBySample(eloToWinPct(chat.elo, 1445, 115), chat.votes, 50, 450) : null;
     const docCraft = doc ? shrinkBySample(eloToWinPct(doc.elo, 1445, 115), doc.votes, 50, 300) : null;
-    const webdevScore = webdev ? shrinkBySample(eloToWinPct(webdev.elo, 1640, 250), webdev.votes, 50, 350) : null;
+    const webdevScore = webdev ? shrinkBySample(eloToWinPct(webdev.elo, 1640, 250), webdev.votes, 50, 90) : null;
 
     const designScore = cat => {
       const entry = design[cat];
       if (!entry) return null;
       const cal = DESIGN_ARENA_CALIBRATION[cat] || DESIGN_ARENA_CALIBRATION.website;
       const raw = eloToWinPct(entry.elo, cal.center, cal.scale);
-      const k = cat === 'uicomponent' ? 140 : 180;
-      return shrinkBySample(raw, entry.battles, 50, k);
+      return shrinkBySample(raw, entry.battles, 50, cal.k ?? 35);
     };
 
     const designWeb = designScore('website');
@@ -843,12 +842,18 @@ function buildHumanArenaModels(models, external = {}) {
     ].filter(v => v !== null);
     const deliverable = expParts.length ? Number((expParts.reduce((a, b) => a + b, 0) / expParts.length).toFixed(2)) : null;
 
-    const allDesignParts = DESIGN_ARENA_CATEGORIES
-      .map(designScore)
-      .filter(v => typeof v === 'number' && Number.isFinite(v));
-    const pureVisual = allDesignParts.length
-      ? Number(((allDesignParts.reduce((a, b) => a + b, 0) + 0.35 * 50) / (allDesignParts.length + 0.35)).toFixed(2))
-      : null;
+    // Weighted visual aesthetic score: prioritizes Website (55%) & UI Component (20%) over DataViz/GameDev/SVG (9%/8%/8%),
+    // and avoids penalizing fresh releases just because Design Arena has not finished evaluating niche sub-categories yet.
+    let pvNum = 0, pvDen = 0;
+    for (const cat of DESIGN_ARENA_CATEGORIES) {
+      const val = designScore(cat);
+      if (typeof val === 'number' && Number.isFinite(val)) {
+        const w = DESIGN_ARENA_CALIBRATION[cat]?.weight ?? 0.1;
+        pvNum += val * w;
+        pvDen += w;
+      }
+    }
+    const pureVisual = pvDen > 0 ? Number((pvNum / pvDen).toFixed(2)) : null;
 
     const langParts = [chatVibe, docCraft].filter(v => typeof v === 'number' && Number.isFinite(v));
     const langVibe = chatVibe !== null && docCraft !== null
@@ -883,12 +888,11 @@ function buildHumanArenaModels(models, external = {}) {
     };
 
     // Balanced 4-Pillar Composite (prevents single crowd arena from dominating 50% and factors in Anti-Slop & 3D/Motion):
-    // 1. Visual, Creative & Spatial (0.30): Design Arena 5D unified (72%) + AA-3D/Code2Video (28%)
+    // 1. Visual, Creative & Spatial (0.30): Design Arena weighted 5D visual (72%) + AA-3D/Code2Video (28%)
     // 2. Chat Vibe & Naturalness (0.25): Arena.ai Style-Ctrl Chat/Doc (65%) + Calibrated Anti-Slop (35%)
     // 3. Expert Real Deliverables (0.25): GDPval + Briefcase 44-occupation expert grading
     // 4. Interactive WebDev Craft (0.20): Arena.ai WebDev
-    const daPillars = [designWeb, designUi, creativeCraft].filter(v => typeof v === 'number' && Number.isFinite(v));
-    const daUnified = daPillars.length ? daPillars.reduce((a, b) => a + b, 0) / daPillars.length : null;
+    const daUnified = pureVisual;
 
     let pVisual = null, wVisual = 0;
     if (daUnified !== null && spatialMotion !== null) {
