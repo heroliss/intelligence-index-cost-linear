@@ -811,8 +811,8 @@ function buildHumanArenaModels(models, external = {}) {
     };
 
     // 2026 empirical median-centered calibrations so median ≈ 50–55 and global SOTA ≈ 80–86
-    const chatVibe = chat ? shrinkBySample(eloToWinPct(chat.elo, 1445, 115), chat.votes, 50, 450) : null;
-    const docCraft = doc ? shrinkBySample(eloToWinPct(doc.elo, 1445, 115), doc.votes, 50, 300) : null;
+    const chatVibe = chat ? shrinkBySample(eloToWinPct(chat.elo, 1445, 115), chat.votes, 50, 120) : null;
+    const docCraft = doc ? shrinkBySample(eloToWinPct(doc.elo, 1445, 115), doc.votes, 50, 100) : null;
     const webdevScore = webdev ? shrinkBySample(eloToWinPct(webdev.elo, 1640, 250), webdev.votes, 50, 90) : null;
 
     const designScore = cat => {

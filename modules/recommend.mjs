@@ -3,7 +3,7 @@ import {
   valuePerDollar,
   computeScenarioScore,
   SCENARIO_PRESETS
-} from '../chart-math.mjs?v=20261120-05';
+} from '../chart-math.mjs?v=20261120-06';
 
 export const RECOMMEND_USE_CASES = [
   {
@@ -59,12 +59,12 @@ export const RECOMMEND_USE_CASES = [
     zh: '网页前端与视觉审美',
     en: 'Web & UI Aesthetics',
     tab: 'human-arena',
-    yLens: 'pureVisual',
+    yLens: 'webdev',
     scenarioId: 'default',
     unitZh: '任务',
     unitEn: 'task',
-    descZh: '按「整站视觉审美」「真实交互前端」「前端全能上限」三流派对撞，避免单靠小游戏/单轮出图榜误判',
-    descEn: 'Contrasts Design Arena Website aesthetics, Arena.ai WebDev engineering, and dual-board ceiling picks'
+    descZh: '优先保障综合开发底线，按「前端开发主力」「单页视觉参考」「全能上限」三流派对撞，并标明偏科风险',
+    descEn: 'Enforces a core-capability floor on the primary pick, contrasting Frontend All-Rounder, Single-Shot Visual, and Ceiling'
   },
   {
     id: 'research',
@@ -179,10 +179,11 @@ function buildEvidenceLookup(snapshot, context = {}) {
 
   const models = Array.isArray(snapshot?.models) ? snapshot.models : [];
   const famById = new Map(models.map(m => [m.id, m.family?.slug || null]));
+  const aaIndexById = new Map(models.map(m => [m.id, m.intelligenceIndex]));
   const modelFamilies = new Set(models.map(m => m.family?.slug).filter(Boolean));
-  [...models]
-    .sort((a, b) => b.intelligenceIndex - a.intelligenceIndex)
-    .forEach((m, i) => aaRankById.set(m.id, i + 1));
+  const sortedModels = [...models].sort((a, b) => b.intelligenceIndex - a.intelligenceIndex);
+  const maxAA = sortedModels[0]?.intelligenceIndex || 0;
+  sortedModels.forEach((m, i) => aaRankById.set(m.id, i + 1));
 
   const coding = Array.isArray(snapshot?.codingAgents) ? snapshot.codingAgents : [];
   [...coding]
@@ -334,22 +335,42 @@ function buildEvidenceLookup(snapshot, context = {}) {
     }
 
     // Objective Risk / Caveat Flags
+    const aaRank = aaRankById.get(row.id) ?? null;
+    const aaIdx = aaIndexById.get(row.id) ?? row.aaIndex ?? null;
+    const isWeakCore = (aaRank != null && aaRank > 30) || (maxAA > 0 && aaIdx != null && aaIdx < maxAA * 0.72);
     if (row.cost >= 11) {
       caveats.push({zh: '高消耗 · 常规月卡多不含或限流极严', en: 'Very high cost · mostly API-only / tight quota'});
     }
     if (uc.id === 'design') {
-      if (row.humanScores?.designWeb == null) {
+      if (isWeakCore && aaRank != null) {
+        const isVisualOnly = !!(des && des <= 10 && (!web || web > 10));
+        caveats.push({
+          zh: isVisualOnly ? `综合能力偏弱 (AA #${aaRank}) · 仅宜单页视觉灵感` : `综合推理偏弱 (AA #${aaRank})`,
+          en: isVisualOnly ? `Weak core reasoning (AA #${aaRank}) · static mockups only` : `Lower core reasoning (AA #${aaRank})`
+        });
+      }
+      if (row.humanScores?.designWeb == null && caveats.length < 2) {
         caveats.push({zh: '缺 Design Arena 视觉盲测', en: 'Not yet listed on Design Arena'});
-      } else if (des && des <= 5 && web && web > 10) {
+      } else if (des && des <= 5 && web && web > 10 && caveats.length < 2) {
         caveats.push({zh: `交互前端相对偏弱 (WebDev #${web})`, en: `Weaker interactive coding (WebDev #${web})`});
       }
       if (!chat && caveats.length < 2) {
         caveats.push({zh: '缺 Arena 聊天盲测 · 实测体感待自验', en: 'No Arena Chat blind votes yet'});
       }
+    } else if (uc.id === 'writing') {
+      if (isWeakCore && aaRank != null) {
+        caveats.push({zh: `综合推理偏弱 (AA #${aaRank}) · 复杂逻辑慎用`, en: `Weak core reasoning (AA #${aaRank}) · light chat only`});
+      }
+      if (row.arenaRaw?.slop != null && row.arenaRaw.slop >= 50 && caveats.length < 2) {
+        caveats.push({zh: `AI 套话偏高 (Slop ${Math.round(row.arenaRaw.slop)}%)`, en: `High AI-slop style (${Math.round(row.arenaRaw.slop)}%)`});
+      }
     } else if (!chat && ['general', 'coding-api', 'research'].includes(uc.id)) {
       caveats.push({zh: '缺 Arena 聊天盲测 · 实测体感待自验', en: 'No Arena Chat blind votes yet'});
     } else if (div && div.gap <= -12) {
       caveats.push({zh: `硬考明显强于盲测体感 (存在偏科分歧)`, en: 'Hard exams outpace human vibe ratings'});
+    }
+    if (uc.id === 'design' && row.arenaRaw?.slop != null && row.arenaRaw.slop >= 50 && caveats.length < 2) {
+      caveats.push({zh: `AI 套话偏高 (Slop ${Math.round(row.arenaRaw.slop)}%)`, en: `High AI-slop style (${Math.round(row.arenaRaw.slop)}%)`});
     }
     if (row.subscores?.hallucination != null && row.subscores.hallucination >= 65 && ['general', 'research'].includes(uc.id)) {
       caveats.push({zh: `盲区幻觉率 ${Math.round(row.subscores.hallucination)}%`, en: `${Math.round(row.subscores.hallucination)}% blind-spot hallucination`});
@@ -367,6 +388,8 @@ function buildEvidenceLookup(snapshot, context = {}) {
     getDesignRank: row => getBoardRank(row, designRankById, designRankByFam, 'designArena'),
     getWebdevRank: row => getBoardRank(row, webdevRankById, webdevRankByFam, 'arenaWebdev'),
     getLbDesignRank: row => getBoardRank(row, lbDesignRankById, lbDesignRankByFam, null),
+    aaIndexOf: row => aaIndexById.get(row.id) ?? row.aaIndex ?? null,
+    maxAA,
     aaRankById,
     codingRankById,
     divById,
@@ -546,9 +569,62 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
       });
     }
   } else if (uc.id === 'design') {
-    // 3 DISTINCT ARCHETYPES FOR FRONTEND & VISUAL AESTHETICS:
-    // 1. Visual Aesthetics Leader (Design Arena Website Elo — massive 5k-24k battle pool, unpolluted by GameDev/SVG)
-    const visPool = projected.filter(r => typeof r.humanScores?.designWeb === 'number');
+    // 3 DISTINCT ARCHETYPES FOR FRONTEND & VISUAL AESTHETICS (with core-intelligence floor on Primary & Ceiling!):
+    const poolAAs = projected.map(r => evidence.aaIndexOf(r)).filter(v => typeof v === 'number');
+    const maxPoolAA = poolAAs.length ? Math.max(...poolAAs) : 0;
+    const coreFloor = Math.max(evidence.maxAA * 0.76, maxPoolAA * 0.78);
+    const hasCoreFloor = r => {
+      const aa = evidence.aaIndexOf(r);
+      return aa == null || aa >= coreFloor;
+    };
+
+    // 1. Primary: Frontend All-Rounder (MUST pass core-intelligence floor so it can actually ship complex frontend logic + iterative edits!)
+    const webAll = projected.filter(r => typeof r.humanScores?.webdev === 'number');
+    const webCapable = webAll.filter(hasCoreFloor);
+    const webBase = webCapable.length ? webCapable : webAll;
+    const maxWeb = webBase.length ? Math.max(...webBase.map(r => r.humanScores.webdev)) : 0;
+    const webCands = (bill.id === 'sub'
+      ? (webBase.filter(r => r.cost <= subFriendlyCap).length ? webBase.filter(r => r.cost <= subFriendlyCap) : webBase)
+      : webBase.filter(r => r.humanScores.webdev >= maxWeb * (bill.id === 'api-budget' ? 0.68 : 0.82))
+    ).sort((a, b) => {
+      if (bill.id === 'sub') {
+        const ca = evidence.getChatRank(a), cb = evidence.getChatRank(b);
+        const la = evidence.getLbDesignRank(a), lb = evidence.getLbDesignRank(b);
+        const sa = a.humanScores.webdev + (ca && ca.rank <= 15 ? 2 : 0) + (la && la <= 6 ? 1.5 : 0);
+        const sb = b.humanScores.webdev + (cb && cb.rank <= 15 ? 2 : 0) + (lb && lb <= 6 ? 1.5 : 0);
+        return sb - sa || a.cost - b.cost;
+      }
+      const va = valuePerDollar({intelligenceIndex: a.humanScores.webdev, cost: a.cost}, bill.alpha, 0, 0) ?? -1;
+      const vb = valuePerDollar({intelligenceIndex: b.humanScores.webdev, cost: b.cost}, bill.alpha, 0, 0) ?? -1;
+      return vb - va || b.humanScores.webdev - a.humanScores.webdev;
+    });
+    const slot1 = claim(webCands[0]) || claim(sortedByScore.find(hasCoreFloor)) || claim(sortedByScore[0]);
+    if (slot1) {
+      const webRank = evidence.getWebdevRank(slot1);
+      const aaR = evidence.aaRankById.get(slot1.id);
+      picks.push({
+        slot: 'primary',
+        badgeZh: '前端开发主力',
+        badgeEn: 'Frontend All-Rounder',
+        scoreLabelZh: '交互前端分',
+        scoreLabelEn: 'WebDev Score',
+        row: slot1,
+        score: slot1.humanScores?.webdev ?? slot1._pickScore,
+        isFrontier: frontierIds.has(slot1.id),
+        ...evidence.getSignals(slot1, uc, frontierIds.has(slot1.id)),
+        reason: {
+          zh: webRank
+            ? `综合能力过硬${aaR ? `（AA #${aaR}）` : ''}且 Arena WebDev 排 #${webRank}，写交互状态、修 Bug 与多轮改布局真正能落地`
+            : `综合逻辑与前端工程能力均衡，适合真实日常项目开发与多轮迭代`,
+          en: webRank
+            ? `Solid core reasoning${aaR ? ` (AA #${aaR})` : ''} paired with Arena WebDev #${webRank} — reliable for real interactive apps & multi-turn edits`
+            : `Balanced core capability and frontend engineering for real production work`
+        }
+      });
+    }
+
+    // 2. Single-Shot Visual Aesthetics Reference (Design Arena Website leader — candidly warns if core intelligence is weak!)
+    const visPool = projected.filter(r => isFresh(r, true) && typeof r.humanScores?.designWeb === 'number');
     const maxVis = visPool.length ? Math.max(...visPool.map(r => r.humanScores.designWeb)) : 0;
     const visSorted = (bill.id === 'sub'
       ? (visPool.filter(r => r.cost <= subFriendlyCap).length ? visPool.filter(r => r.cost <= subFriendlyCap) : visPool)
@@ -563,85 +639,47 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
       const vb = valuePerDollar({intelligenceIndex: b.humanScores.designWeb, cost: b.cost}, bill.alpha, 0, 0) ?? -1;
       return vb - va || b.humanScores.designWeb - a.humanScores.designWeb;
     });
-    const slot1 = claim(visSorted[0]) || claim(sortedByScore[0]);
-    if (slot1) {
-      const desRank = evidence.getDesignRank(slot1);
-      picks.push({
-        slot: 'primary',
-        badgeZh: '整站视觉审美派',
-        badgeEn: 'Visual Aesthetics',
-        scoreLabelZh: '整站视觉分',
-        scoreLabelEn: 'Web Visual',
-        row: slot1,
-        score: slot1.humanScores?.designWeb ?? slot1._pickScore,
-        isFrontier: frontierIds.has(slot1.id),
-        ...evidence.getSignals(slot1, uc, frontierIds.has(slot1.id)),
-        reason: {
-          zh: desRank
-            ? `Design Arena 整站视觉盲测排 #${desRank}，擅长落地页、排版层次与视觉惊艳感（适合重视初版美感）`
-            : `整站视觉审美维度表现突出，适合重视页面排版与视觉观感的场景`,
-          en: desRank
-            ? `Ranked #${desRank} on Design Arena Website blind votes — excels at landing-page layout & visual impact`
-            : `Strong visual layout aesthetics across Design Arena evaluations`
-        }
-      });
-    }
-
-    // 2. Interactive Frontend Engineering (Arena.ai WebDev + LiveBench Design — captures real interactive web-app coding!)
-    const webPool = projected.filter(r => isFresh(r, true) && typeof r.humanScores?.webdev === 'number');
-    const maxWeb = webPool.length ? Math.max(...webPool.map(r => r.humanScores.webdev)) : 0;
-    const webCands = (bill.id === 'sub'
-      ? (webPool.filter(r => r.cost <= subFriendlyCap).length ? webPool.filter(r => r.cost <= subFriendlyCap) : webPool)
-      : webPool.filter(r => r.humanScores.webdev >= maxWeb * (bill.id === 'api-budget' ? 0.68 : 0.82))
-    ).sort((a, b) => {
-      if (bill.id === 'sub') {
-        const ca = evidence.getChatRank(a), cb = evidence.getChatRank(b);
-        const la = evidence.getLbDesignRank(a), lb = evidence.getLbDesignRank(b);
-        const sa = a.humanScores.webdev + (ca && ca.rank <= 15 ? 2 : 0) + (la && la <= 6 ? 1.5 : 0);
-        const sb = b.humanScores.webdev + (cb && cb.rank <= 15 ? 2 : 0) + (lb && lb <= 6 ? 1.5 : 0);
-        return sb - sa || a.cost - b.cost;
-      }
-      const va = valuePerDollar({intelligenceIndex: a.humanScores.webdev, cost: a.cost}, bill.alpha, 0, 0) ?? -1;
-      const vb = valuePerDollar({intelligenceIndex: b.humanScores.webdev, cost: b.cost}, bill.alpha, 0, 0) ?? -1;
-      return vb - va || b.humanScores.webdev - a.humanScores.webdev;
-    });
-    const slot2 = claim(webCands[0]) || claim(projected.find(r => isFresh(r, true))) || claim(projected.find(r => isFresh(r, false)));
+    const slot2 = claim(visSorted[0]) || claim(projected.find(r => isFresh(r, true))) || claim(projected.find(r => isFresh(r, false)));
     if (slot2) {
-      const webRank = evidence.getWebdevRank(slot2);
+      const desRank = evidence.getDesignRank(slot2);
+      const aaR = evidence.aaRankById.get(slot2.id);
+      const weakCore = aaR != null && aaR > 30;
       picks.push({
         slot: 'saving',
-        badgeZh: '真实交互前端派',
-        badgeEn: 'Interactive WebDev',
-        scoreLabelZh: '交互前端分',
-        scoreLabelEn: 'WebDev Score',
+        badgeZh: '单页视觉参考',
+        badgeEn: 'Single-Shot Visual',
+        scoreLabelZh: '整站视觉分',
+        scoreLabelEn: 'Web Visual',
         row: slot2,
-        score: slot2.humanScores?.webdev ?? slot2._pickScore,
+        score: slot2.humanScores?.designWeb ?? slot2._pickScore,
         isFrontier: frontierIds.has(slot2.id),
         ...evidence.getSignals(slot2, uc, frontierIds.has(slot2.id)),
         reason: {
-          zh: webRank
-            ? `Arena.ai WebDev 交互前端盲测排 #${webRank}，写组件状态、多轮改布局与工程可用性更稳`
-            : `侧重真实交互式前端代码与多轮修改可用性，可与视觉派对比手感`,
-          en: webRank
-            ? `Ranked #${webRank} on Arena.ai WebDev — stronger interactive state, iterative edits & production frontend code`
-            : `Prioritizes real interactive frontend engineering to contrast against pure single-shot aesthetics`
+          zh: weakCore
+            ? `Design Arena 整站盲测排 #${desRank || '前列'}，适合单轮出静态视觉稿找灵感；但综合逻辑偏弱（AA #${aaR}），复杂交互开发请选第一款`
+            : `Design Arena 整站盲测排 #${desRank || '前列'}，初版页面排版与视觉观感突出，可与第一款对比风格`,
+          en: weakCore
+            ? `Design Arena Website #${desRank || 'top'} — great for single-shot visual mockups, but weak core reasoning (AA #${aaR}); use Pick 1 for complex apps`
+            : `Design Arena Website #${desRank || 'top'} — strong first-pass visual layout & polish to contrast with Pick 1`
         }
       });
     }
 
-    // 3. Dual-Board Frontend Ceiling Reference (Design Arena + Arena WebDev combined SOTA)
+    // 3. Dual-Board Frontend Ceiling Reference (Core-capable Design Arena + Arena WebDev combined SOTA)
     const dualPool = projected
       .filter(r => isFresh(r, true))
       .sort((a, b) => {
+        const capA = hasCoreFloor(a) ? 1 : 0;
+        const capB = hasCoreFloor(b) ? 1 : 0;
         const dualA = (a.humanScores?.designWeb != null && a.humanScores?.webdev != null) ? 1 : 0;
         const dualB = (b.humanScores?.designWeb != null && b.humanScores?.webdev != null) ? 1 : 0;
-        return dualB - dualA || b.intelligenceIndex - a.intelligenceIndex || a.cost - b.cost;
+        return capB - capA || dualB - dualA || b.intelligenceIndex - a.intelligenceIndex || a.cost - b.cost;
       });
     const slot3 = claim(dualPool[0]) || claim(sortedByScore.find(r => isFresh(r, false)));
     if (slot3) {
       picks.push({
         slot: 'flagship',
-        badgeZh: '前端全能上限参照',
+        badgeZh: '前端审美全能上限',
         badgeEn: 'Frontend Ceiling',
         scoreLabelZh: '双榜综合分',
         scoreLabelEn: 'Dual Score',
@@ -651,11 +689,11 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
         ...evidence.getSignals(slot3, uc, frontierIds.has(slot3.id)),
         reason: {
           zh: slot3.cost >= 11
-            ? `同时在整站视觉与交互前端稳居顶尖梯队，但单次消耗极高且常规月卡多不含，适合关键页面定稿参照`
-            : `整站视觉与交互前端双榜综合最均衡的高分参照，建议直接与前两款并排对比`,
+            ? `综合能力、整站视觉与交互前端全线顶尖，但单次消耗极高且常规月卡多不含，适合关键页面定稿参照`
+            : `综合能力、整站视觉与交互前端双榜均衡的高分参照，建议直接与前两款并排对比`,
           en: slot3.cost >= 11
-            ? `Top tier on both visual aesthetics & interactive WebDev, but very costly / mostly API-only — best as a high-end reference`
-            : `Balanced high-tier reference across both Design Arena & WebDev to compare side-by-side`
+            ? `Top tier across core intelligence, visual taste & WebDev, but very costly / API-only — best as a high-end reference`
+            : `Balanced high-tier reference across core intelligence, Design Arena & WebDev`
         }
       });
     }

@@ -29,16 +29,16 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261120-05';
+} from './chart-math.mjs?v=20261120-06';
 import {
   RECOMMEND_USE_CASES,
   RECOMMEND_BILLING,
   RECOMMEND_LICENSES,
   recommendModels
-} from './modules/recommend.mjs?v=20261120-05';
-import {computeOrgDivergence} from './modules/divergence.mjs?v=20261120-05';
-import {createNavHistory} from './modules/nav-history.mjs?v=20261120-05';
-import {GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261120-05';
+} from './modules/recommend.mjs?v=20261120-06';
+import {computeOrgDivergence} from './modules/divergence.mjs?v=20261120-06';
+import {createNavHistory} from './modules/nav-history.mjs?v=20261120-06';
+import {GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261120-06';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -11744,8 +11744,10 @@ function applyPickerContext(recResult, {targetRow = null, targetSlot = null, toC
       let targetLens = useCase.yLens || '';
       if (useCase.id === 'design') {
         if (toCompare) targetLens = '';
-        else if (targetRow && (targetRow.humanScores?.pureVisual == null || targetSlot === 'saving') && targetRow.humanScores?.webdev != null) {
-          targetLens = 'webdev';
+        else if (targetRow) {
+          if (targetSlot === 'saving' && targetRow.humanScores?.pureVisual != null) targetLens = 'pureVisual';
+          else if (targetRow.humanScores?.webdev != null) targetLens = 'webdev';
+          else if (targetRow.humanScores?.pureVisual != null) targetLens = 'pureVisual';
         }
       }
       applyYLens(state, targetLens);

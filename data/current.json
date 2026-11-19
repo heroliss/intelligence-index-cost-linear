@@ -4,7 +4,7 @@
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
   "hostsManifestPath": "/data/324ed05c14a0dc8b.txt",
-  "updatedAt": "2026-11-19T18:32:46.000Z",
+  "updatedAt": "2026-11-19T18:47:54.016Z",
   "updateIntervalHours": 2,
   "changelog": [
     {
@@ -20543,13 +20543,13 @@
         "name": "Granite 4.2 8B"
       },
       "timeSec": 594.85,
-      "humanIndex": 17.16,
-      "intelligenceIndex": 17.16,
+      "humanIndex": 15.84,
+      "intelligenceIndex": 15.84,
       "aaIndex": 5.1,
-      "indexDelta": 12.06,
+      "indexDelta": 10.74,
       "humanScores": {
-        "chatVibe": 9.95,
-        "rawChatVibe": 9.95,
+        "chatVibe": 5.95,
+        "rawChatVibe": 5.95,
         "docCraft": null,
         "webdev": null,
         "designWeb": null,
@@ -20625,8 +20625,8 @@
       "aaIndex": 26.73,
       "indexDelta": 23.99,
       "humanScores": {
-        "chatVibe": 51.38,
-        "rawChatVibe": 51.38,
+        "chatVibe": 51.39,
+        "rawChatVibe": 51.39,
         "docCraft": null,
         "webdev": 49.2,
         "designWeb": null,
@@ -20780,26 +20780,26 @@
         "level": 60
       },
       "timeSec": 725.47,
-      "humanIndex": 41.84,
-      "intelligenceIndex": 41.84,
+      "humanIndex": 41.8,
+      "intelligenceIndex": 41.8,
       "aaIndex": 27.86,
-      "indexDelta": 13.98,
+      "indexDelta": 13.94,
       "humanScores": {
-        "chatVibe": 48.21,
-        "rawChatVibe": 48.21,
+        "chatVibe": 48.2,
+        "rawChatVibe": 48.2,
         "docCraft": null,
         "webdev": 36.12,
         "designWeb": 41.61,
-        "designUi": 40.55,
+        "designUi": 40.02,
         "creativeCraft": 39.14,
         "deliverable": 29.91,
-        "pureVisual": 41.63,
+        "pureVisual": 41.41,
         "spatialMotion": 46.73,
         "antiSlop": 81.4
       },
       "designSub": {
         "website": 41.61,
-        "uicomponent": 47.1,
+        "uicomponent": 46.02,
         "dataviz": 34.01,
         "gamedev": 37.53,
         "svg": 40.75
@@ -20815,7 +20815,7 @@
         "designWebWinRate": 48.9,
         "designWebBattles": 4503,
         "designAvgCostUsd": 0.007,
-        "designUiElo": 1287,
+        "designUiElo": 1284,
         "designUiWinRate": 52.7,
         "designUiBattles": 1430,
         "designDatavizElo": 1209,
@@ -20863,13 +20863,13 @@
         "level": 40
       },
       "timeSec": 296.48,
-      "humanIndex": 27.04,
-      "intelligenceIndex": 27.04,
+      "humanIndex": 26.85,
+      "intelligenceIndex": 26.85,
       "aaIndex": 6.34,
-      "indexDelta": 20.7,
+      "indexDelta": 20.51,
       "humanScores": {
-        "chatVibe": 41.13,
-        "rawChatVibe": 41.13,
+        "chatVibe": 40.38,
+        "rawChatVibe": 40.38,
         "docCraft": null,
         "webdev": null,
         "designWeb": null,
@@ -20945,26 +20945,26 @@
         "level": 40
       },
       "timeSec": 47.97,
-      "humanIndex": 17.44,
-      "intelligenceIndex": 17.44,
+      "humanIndex": 17.42,
+      "intelligenceIndex": 17.42,
       "aaIndex": 6.16,
-      "indexDelta": 11.28,
+      "indexDelta": 11.26,
       "humanScores": {
-        "chatVibe": 44.11,
-        "rawChatVibe": 44.11,
+        "chatVibe": 44.08,
+        "rawChatVibe": 44.08,
         "docCraft": null,
         "webdev": null,
         "designWeb": 2.63,
-        "designUi": 5.46,
+        "designUi": 5.38,
         "creativeCraft": 8.09,
         "deliverable": 0.1,
-        "pureVisual": 4.16,
+        "pureVisual": 4.13,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
         "website": 2.63,
-        "uicomponent": 3.97,
+        "uicomponent": 3.81,
         "dataviz": 6.95,
         "gamedev": 7.58,
         "svg": 8.61
@@ -20980,7 +20980,7 @@
         "designWebWinRate": 36.6,
         "designWebBattles": 13754,
         "designAvgCostUsd": null,
-        "designUiElo": 1059,
+        "designUiElo": 1055,
         "designUiWinRate": 37.7,
         "designUiBattles": 1521,
         "designDatavizElo": 1040,
@@ -21024,13 +21024,13 @@
         "name": "Inkling Small"
       },
       "timeSec": 617.93,
-      "humanIndex": 26.21,
-      "intelligenceIndex": 26.21,
+      "humanIndex": 26.16,
+      "intelligenceIndex": 26.16,
       "aaIndex": 12.91,
-      "indexDelta": 13.3,
+      "indexDelta": 13.25,
       "humanScores": {
-        "chatVibe": 31.29,
-        "rawChatVibe": 31.29,
+        "chatVibe": 31.13,
+        "rawChatVibe": 31.13,
         "docCraft": null,
         "webdev": null,
         "designWeb": null,
@@ -21103,13 +21103,13 @@
         "name": "MiMo-V2.6-Pro"
       },
       "timeSec": 2165.07,
-      "humanIndex": 53.22,
-      "intelligenceIndex": 53.22,
+      "humanIndex": 53.45,
+      "intelligenceIndex": 53.45,
       "aaIndex": 29.89,
-      "indexDelta": 23.33,
+      "indexDelta": 23.56,
       "humanScores": {
-        "chatVibe": 65.31,
-        "rawChatVibe": 65.31,
+        "chatVibe": 66.52,
+        "rawChatVibe": 66.52,
         "docCraft": null,
         "webdev": 46.09,
         "designWeb": null,
@@ -21183,26 +21183,26 @@
         "level": 60
       },
       "timeSec": 612.16,
-      "humanIndex": 35.6,
-      "intelligenceIndex": 35.6,
+      "humanIndex": 35.57,
+      "intelligenceIndex": 35.57,
       "aaIndex": 23.79,
-      "indexDelta": 11.81,
+      "indexDelta": 11.78,
       "humanScores": {
-        "chatVibe": 55.02,
-        "rawChatVibe": 54.05,
-        "docCraft": 57.3,
+        "chatVibe": 55.1,
+        "rawChatVibe": 54.09,
+        "docCraft": 57.47,
         "webdev": 24.91,
         "designWeb": 33.62,
-        "designUi": 30.57,
+        "designUi": 30.12,
         "creativeCraft": 27.27,
         "deliverable": 31.78,
-        "pureVisual": 31.67,
+        "pureVisual": 31.48,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
         "website": 33.62,
-        "uicomponent": 30.09,
+        "uicomponent": 29.18,
         "dataviz": 31.06,
         "gamedev": 25.64,
         "svg": 28.89
@@ -21218,9 +21218,9 @@
         "designWebWinRate": 49,
         "designWebBattles": 12958,
         "designAvgCostUsd": 0.0091,
-        "designUiElo": 1237,
-        "designUiWinRate": 48.1,
-        "designUiBattles": 1806,
+        "designUiElo": 1234,
+        "designUiWinRate": 48,
+        "designUiBattles": 1809,
         "designDatavizElo": 1201,
         "designGameElo": 1183,
         "designSvgElo": 1178,
@@ -21263,17 +21263,17 @@
         "level": 40
       },
       "timeSec": 376.89,
-      "humanIndex": 9.42,
-      "intelligenceIndex": 9.42,
+      "humanIndex": 9.31,
+      "intelligenceIndex": 9.31,
       "aaIndex": 3.82,
-      "indexDelta": 5.6,
+      "indexDelta": 5.49,
       "humanScores": {
-        "chatVibe": 13.92,
-        "rawChatVibe": 13.92,
+        "chatVibe": 13.53,
+        "rawChatVibe": 13.53,
         "docCraft": null,
         "webdev": null,
         "designWeb": 0.73,
-        "designUi": 12.63,
+        "designUi": 12.62,
         "creativeCraft": 10,
         "deliverable": 0.33,
         "pureVisual": 4.5,
@@ -21282,7 +21282,7 @@
       },
       "designSub": {
         "website": 0.73,
-        "uicomponent": 6.07,
+        "uicomponent": 6.05,
         "dataviz": 19.18,
         "gamedev": 10,
         "svg": null
@@ -21298,7 +21298,7 @@
         "designWebWinRate": 32.5,
         "designWebBattles": 4144,
         "designAvgCostUsd": null,
-        "designUiElo": 914,
+        "designUiElo": 911,
         "designUiWinRate": 35.7,
         "designUiBattles": 269,
         "designDatavizElo": 983,
@@ -21344,26 +21344,26 @@
         "level": 60
       },
       "timeSec": 890.58,
-      "humanIndex": 48.79,
-      "intelligenceIndex": 48.79,
+      "humanIndex": 48.67,
+      "intelligenceIndex": 48.67,
       "aaIndex": 36.48,
-      "indexDelta": 12.31,
+      "indexDelta": 12.19,
       "humanScores": {
-        "chatVibe": 38.71,
-        "rawChatVibe": 38.71,
+        "chatVibe": 38.48,
+        "rawChatVibe": 38.48,
         "docCraft": null,
         "webdev": 40.03,
         "designWeb": 35.18,
-        "designUi": 46.37,
+        "designUi": 45.39,
         "creativeCraft": 41.91,
         "deliverable": 58.48,
-        "pureVisual": 38.78,
+        "pureVisual": 38.39,
         "spatialMotion": 54.47,
         "antiSlop": 89.5
       },
       "designSub": {
         "website": 35.18,
-        "uicomponent": 39.85,
+        "uicomponent": 37.89,
         "dataviz": 52.89,
         "gamedev": 50.22,
         "svg": 33.59
@@ -21379,9 +21379,9 @@
         "designWebWinRate": 48,
         "designWebBattles": 6396,
         "designAvgCostUsd": 0.0209,
-        "designUiElo": 1265,
-        "designUiWinRate": 49.9,
-        "designUiBattles": 437,
+        "designUiElo": 1259,
+        "designUiWinRate": 49.3,
+        "designUiBattles": 444,
         "designDatavizElo": 1275,
         "designGameElo": 1306,
         "designSvgElo": 1196,
@@ -21427,26 +21427,26 @@
         "level": 40
       },
       "timeSec": 268.51,
-      "humanIndex": 20.59,
-      "intelligenceIndex": 20.59,
+      "humanIndex": 20.48,
+      "intelligenceIndex": 20.48,
       "aaIndex": 13.62,
-      "indexDelta": 6.97,
+      "indexDelta": 6.86,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
         "webdev": null,
         "designWeb": 10.29,
-        "designUi": 18.3,
+        "designUi": 17.6,
         "creativeCraft": 13.22,
         "deliverable": 6.92,
-        "pureVisual": 12.74,
+        "pureVisual": 12.44,
         "spatialMotion": null,
         "antiSlop": 36.2
       },
       "designSub": {
         "website": 10.29,
-        "uicomponent": 15.58,
+        "uicomponent": 14.18,
         "dataviz": 21.02,
         "gamedev": 13.22,
         "svg": null
@@ -21462,9 +21462,9 @@
         "designWebWinRate": 34.5,
         "designWebBattles": 2527,
         "designAvgCostUsd": 0.0079,
-        "designUiElo": 1154,
-        "designUiWinRate": 32.6,
-        "designUiBattles": 261,
+        "designUiElo": 1144,
+        "designUiWinRate": 31.9,
+        "designUiBattles": 273,
         "designDatavizElo": 1081,
         "designGameElo": 1077,
         "designSvgElo": null,
@@ -21669,13 +21669,13 @@
         "level": 60
       },
       "timeSec": 2384.64,
-      "humanIndex": 51.28,
-      "intelligenceIndex": 51.28,
+      "humanIndex": 51.29,
+      "intelligenceIndex": 51.29,
       "aaIndex": 27.8,
-      "indexDelta": 23.48,
+      "indexDelta": 23.49,
       "humanScores": {
-        "chatVibe": 64.51,
-        "rawChatVibe": 64.51,
+        "chatVibe": 64.6,
+        "rawChatVibe": 64.6,
         "docCraft": null,
         "webdev": 43.2,
         "designWeb": null,
@@ -21751,26 +21751,26 @@
         "level": 60
       },
       "timeSec": 842.56,
-      "humanIndex": 56.64,
-      "intelligenceIndex": 56.64,
+      "humanIndex": 56.58,
+      "intelligenceIndex": 56.58,
       "aaIndex": 32.59,
-      "indexDelta": 24.05,
+      "indexDelta": 23.99,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
         "webdev": 54.28,
         "designWeb": 54.24,
-        "designUi": 53.5,
+        "designUi": 52.96,
         "creativeCraft": 47.5,
         "deliverable": 66.11,
-        "pureVisual": 52.72,
+        "pureVisual": 52.5,
         "spatialMotion": null,
         "antiSlop": 51.1
       },
       "designSub": {
         "website": 54.24,
-        "uicomponent": 51.44,
+        "uicomponent": 50.36,
         "dataviz": 55.56,
         "gamedev": 52.64,
         "svg": 42.36
@@ -21786,7 +21786,7 @@
         "designWebWinRate": 49.8,
         "designWebBattles": 19757,
         "designAvgCostUsd": 0.0501,
-        "designUiElo": 1299,
+        "designUiElo": 1296,
         "designUiWinRate": 52.1,
         "designUiBattles": 1093,
         "designDatavizElo": 1283,
@@ -21834,13 +21834,13 @@
         "level": 40
       },
       "timeSec": 96.48,
-      "humanIndex": 28.14,
-      "intelligenceIndex": 28.14,
+      "humanIndex": 28.15,
+      "intelligenceIndex": 28.15,
       "aaIndex": 11.66,
-      "indexDelta": 16.48,
+      "indexDelta": 16.49,
       "humanScores": {
-        "chatVibe": 55.03,
-        "rawChatVibe": 55.03,
+        "chatVibe": 55.07,
+        "rawChatVibe": 55.07,
         "docCraft": null,
         "webdev": 23.24,
         "designWeb": null,
@@ -21913,13 +21913,13 @@
         "level": 40
       },
       "timeSec": 967.83,
-      "humanIndex": 37.56,
-      "intelligenceIndex": 37.56,
+      "humanIndex": 37.65,
+      "intelligenceIndex": 37.65,
       "aaIndex": 20.8,
-      "indexDelta": 16.76,
+      "indexDelta": 16.85,
       "humanScores": {
-        "chatVibe": 58.83,
-        "rawChatVibe": 58.83,
+        "chatVibe": 59.14,
+        "rawChatVibe": 59.14,
         "docCraft": null,
         "webdev": 36.94,
         "designWeb": null,
@@ -21985,13 +21985,13 @@
         "name": "Solar Pro 4"
       },
       "timeSec": 4336.02,
-      "humanIndex": 24.91,
-      "intelligenceIndex": 24.91,
+      "humanIndex": 24.81,
+      "intelligenceIndex": 24.81,
       "aaIndex": 14.16,
-      "indexDelta": 10.75,
+      "indexDelta": 10.65,
       "humanScores": {
-        "chatVibe": 24.42,
-        "rawChatVibe": 24.42,
+        "chatVibe": 24.11,
+        "rawChatVibe": 24.11,
         "docCraft": null,
         "webdev": null,
         "designWeb": null,
@@ -22065,27 +22065,27 @@
         "level": 60
       },
       "timeSec": 912.1,
-      "humanIndex": 47.24,
-      "intelligenceIndex": 47.24,
+      "humanIndex": 47.15,
+      "intelligenceIndex": 47.15,
       "aaIndex": 51.33,
-      "indexDelta": -4.09,
+      "indexDelta": -4.18,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
         "webdev": 59.49,
         "designWeb": 49.16,
-        "designUi": 38.36,
+        "designUi": 37.59,
         "creativeCraft": 56.65,
         "deliverable": 35.77,
-        "pureVisual": 48.15,
+        "pureVisual": 47.9,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
         "website": 49.16,
-        "uicomponent": 46.75,
-        "dataviz": 29.96,
+        "uicomponent": 45.77,
+        "dataviz": 29.42,
         "gamedev": 54.78,
         "svg": 58.52
       },
@@ -22100,10 +22100,10 @@
         "designWebWinRate": 52.4,
         "designWebBattles": 3092,
         "designAvgCostUsd": 0.0631,
-        "designUiElo": 1285,
-        "designUiWinRate": 51.4,
-        "designUiBattles": 245,
-        "designDatavizElo": 1164,
+        "designUiElo": 1282,
+        "designUiWinRate": 51.8,
+        "designUiBattles": 253,
+        "designDatavizElo": 1161,
         "designGameElo": 1327,
         "designSvgElo": 1300,
         "gdpvalElo": 1475.8,
@@ -22222,26 +22222,26 @@
         "name": "Tencent Hy4"
       },
       "timeSec": 820.53,
-      "humanIndex": 41.69,
-      "intelligenceIndex": 41.69,
+      "humanIndex": 41.61,
+      "intelligenceIndex": 41.61,
       "aaIndex": 34.56,
-      "indexDelta": 7.13,
+      "indexDelta": 7.05,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
         "webdev": 48.08,
         "designWeb": 35.7,
-        "designUi": 23.02,
+        "designUi": 22,
         "creativeCraft": 43.25,
         "deliverable": 42.64,
-        "pureVisual": 33.37,
+        "pureVisual": 33.13,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
         "website": 35.7,
-        "uicomponent": 23.02,
+        "uicomponent": 22,
         "dataviz": null,
         "gamedev": 43.25,
         "svg": null
@@ -22257,9 +22257,9 @@
         "designWebWinRate": 47.6,
         "designWebBattles": 2164,
         "designAvgCostUsd": 0.0605,
-        "designUiElo": 1184,
-        "designUiWinRate": 38,
-        "designUiBattles": 137,
+        "designUiElo": 1179,
+        "designUiWinRate": 37.1,
+        "designUiBattles": 143,
         "designDatavizElo": null,
         "designGameElo": 1272,
         "designSvgElo": null,
@@ -22305,26 +22305,26 @@
         "level": 40
       },
       "timeSec": 276.03,
-      "humanIndex": 17.87,
-      "intelligenceIndex": 17.87,
+      "humanIndex": 17.8,
+      "intelligenceIndex": 17.8,
       "aaIndex": 4.65,
-      "indexDelta": 13.22,
+      "indexDelta": 13.15,
       "humanScores": {
-        "chatVibe": 41.09,
-        "rawChatVibe": 41.09,
+        "chatVibe": 40.84,
+        "rawChatVibe": 40.84,
         "docCraft": null,
         "webdev": null,
         "designWeb": 6.96,
-        "designUi": 9.86,
+        "designUi": 9.8,
         "creativeCraft": 8.38,
         "deliverable": 0.65,
-        "pureVisual": 7.49,
+        "pureVisual": 7.47,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
         "website": 6.96,
-        "uicomponent": 4.99,
+        "uicomponent": 4.87,
         "dataviz": 14.73,
         "gamedev": 11.79,
         "svg": 4.98
@@ -22340,7 +22340,7 @@
         "designWebWinRate": 42.4,
         "designWebBattles": 5825,
         "designAvgCostUsd": null,
-        "designUiElo": 1066,
+        "designUiElo": 1063,
         "designUiWinRate": 37.2,
         "designUiBattles": 889,
         "designDatavizElo": 1116,
@@ -22383,13 +22383,13 @@
         "name": "Inkling 2 Small"
       },
       "timeSec": 1271.21,
-      "humanIndex": 48.12,
-      "intelligenceIndex": 48.12,
+      "humanIndex": 47.71,
+      "intelligenceIndex": 47.71,
       "aaIndex": 30.63,
-      "indexDelta": 17.49,
+      "indexDelta": 17.08,
       "humanScores": {
-        "chatVibe": 36.43,
-        "rawChatVibe": 36.43,
+        "chatVibe": 34.83,
+        "rawChatVibe": 34.83,
         "docCraft": null,
         "webdev": 50.81,
         "designWeb": null,
@@ -22463,26 +22463,26 @@
         "level": 60
       },
       "timeSec": 1413.61,
-      "humanIndex": 64.79,
-      "intelligenceIndex": 64.79,
+      "humanIndex": 64.82,
+      "intelligenceIndex": 64.82,
       "aaIndex": 54.61,
-      "indexDelta": 10.18,
+      "indexDelta": 10.21,
       "humanScores": {
-        "chatVibe": 67.59,
-        "rawChatVibe": 67.59,
+        "chatVibe": 67.97,
+        "rawChatVibe": 67.97,
         "docCraft": null,
         "webdev": 71.98,
         "designWeb": 61.63,
-        "designUi": 61.61,
+        "designUi": 61.19,
         "creativeCraft": 68.09,
         "deliverable": 55.9,
-        "pureVisual": 63.53,
+        "pureVisual": 63.37,
         "spatialMotion": 70.75,
         "antiSlop": 71.9
       },
       "designSub": {
         "website": 61.63,
-        "uicomponent": 69.59,
+        "uicomponent": 68.75,
         "dataviz": 53.63,
         "gamedev": 69.55,
         "svg": 66.62
@@ -22498,7 +22498,7 @@
         "designWebWinRate": 54.1,
         "designWebBattles": 4099,
         "designAvgCostUsd": 0.1568,
-        "designUiElo": 1356,
+        "designUiElo": 1353,
         "designUiWinRate": 58.8,
         "designUiBattles": 422,
         "designDatavizElo": 1280,
@@ -22542,27 +22542,27 @@
         "name": "MiniMax-M3"
       },
       "timeSec": 1016.15,
-      "humanIndex": 26.13,
-      "intelligenceIndex": 26.13,
+      "humanIndex": 26.07,
+      "intelligenceIndex": 26.07,
       "aaIndex": 18.88,
-      "indexDelta": 7.25,
+      "indexDelta": 7.19,
       "humanScores": {
-        "chatVibe": 45.03,
-        "rawChatVibe": 44.94,
-        "docCraft": 45.23,
+        "chatVibe": 44.97,
+        "rawChatVibe": 44.92,
+        "docCraft": 45.08,
         "webdev": 19.36,
         "designWeb": 33.99,
-        "designUi": 33.53,
+        "designUi": 32.8,
         "creativeCraft": 24.32,
         "deliverable": 10.98,
-        "pureVisual": 31.76,
+        "pureVisual": 31.5,
         "spatialMotion": 18.34,
         "antiSlop": 41.9
       },
       "designSub": {
         "website": 33.99,
-        "uicomponent": 28.56,
-        "dataviz": 38.51,
+        "uicomponent": 27.4,
+        "dataviz": 38.21,
         "gamedev": 27.14,
         "svg": 21.5
       },
@@ -22577,10 +22577,10 @@
         "designWebWinRate": 51.6,
         "designWebBattles": 16443,
         "designAvgCostUsd": 0.017,
-        "designUiElo": 1232,
+        "designUiElo": 1228,
         "designUiWinRate": 50.1,
-        "designUiBattles": 1929,
-        "designDatavizElo": 1228,
+        "designUiBattles": 1931,
+        "designDatavizElo": 1227,
         "designGameElo": 1192,
         "designSvgElo": 1141,
         "gdpvalElo": 1249.7,
@@ -22626,26 +22626,26 @@
         "level": 50
       },
       "timeSec": 480.31,
-      "humanIndex": 23.7,
-      "intelligenceIndex": 23.7,
+      "humanIndex": 23.66,
+      "intelligenceIndex": 23.66,
       "aaIndex": 12.48,
-      "indexDelta": 11.22,
+      "indexDelta": 11.18,
       "humanScores": {
-        "chatVibe": 48.66,
-        "rawChatVibe": 48.66,
+        "chatVibe": 48.65,
+        "rawChatVibe": 48.65,
         "docCraft": null,
         "webdev": null,
         "designWeb": 22.43,
-        "designUi": 19.64,
+        "designUi": 19.25,
         "creativeCraft": 17.57,
         "deliverable": 3.75,
-        "pureVisual": 20.59,
+        "pureVisual": 20.43,
         "spatialMotion": 7.77,
         "antiSlop": 51.4
       },
       "designSub": {
         "website": 22.43,
-        "uicomponent": 17.34,
+        "uicomponent": 16.55,
         "dataviz": 21.95,
         "gamedev": 19.96,
         "svg": 15.19
@@ -22661,9 +22661,9 @@
         "designWebWinRate": 44.3,
         "designWebBattles": 10507,
         "designAvgCostUsd": 0.0403,
-        "designUiElo": 1186,
-        "designUiWinRate": 40.1,
-        "designUiBattles": 1419,
+        "designUiElo": 1182,
+        "designUiWinRate": 40,
+        "designUiBattles": 1421,
         "designDatavizElo": 1158,
         "designGameElo": 1145,
         "designSvgElo": 1095,
@@ -22786,26 +22786,26 @@
         "level": 60
       },
       "timeSec": 1155.29,
-      "humanIndex": 30.55,
-      "intelligenceIndex": 30.55,
+      "humanIndex": 30.52,
+      "intelligenceIndex": 30.52,
       "aaIndex": 23.06,
-      "indexDelta": 7.49,
+      "indexDelta": 7.46,
       "humanScores": {
-        "chatVibe": 56.37,
-        "rawChatVibe": 56.37,
+        "chatVibe": 56.41,
+        "rawChatVibe": 56.41,
         "docCraft": null,
         "webdev": 14.85,
         "designWeb": 26.16,
-        "designUi": 26.12,
+        "designUi": 25.76,
         "creativeCraft": 24.95,
         "deliverable": 26.48,
-        "pureVisual": 25.5,
+        "pureVisual": 25.36,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
         "website": 26.16,
-        "uicomponent": 22,
+        "uicomponent": 21.28,
         "dataviz": 30.24,
         "gamedev": 31.13,
         "svg": 18.78
@@ -22821,7 +22821,7 @@
         "designWebWinRate": 50.9,
         "designWebBattles": 14790,
         "designAvgCostUsd": 0.0135,
-        "designUiElo": 1208,
+        "designUiElo": 1205,
         "designUiWinRate": 50.6,
         "designUiBattles": 2112,
         "designDatavizElo": 1198,
@@ -22871,26 +22871,26 @@
         "level": 50
       },
       "timeSec": 358.65,
-      "humanIndex": 34.36,
-      "intelligenceIndex": 34.36,
+      "humanIndex": 34.28,
+      "intelligenceIndex": 34.28,
       "aaIndex": 24.88,
-      "indexDelta": 9.48,
+      "indexDelta": 9.4,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
         "webdev": 27.05,
         "designWeb": 57.57,
-        "designUi": 51.77,
+        "designUi": 50.7,
         "creativeCraft": 39.29,
         "deliverable": 24.41,
-        "pureVisual": 54.41,
+        "pureVisual": 54.15,
         "spatialMotion": null,
         "antiSlop": 19
       },
       "designSub": {
         "website": 57.57,
-        "uicomponent": 51.77,
+        "uicomponent": 50.7,
         "dataviz": null,
         "gamedev": 39.29,
         "svg": null
@@ -22906,9 +22906,9 @@
         "designWebWinRate": 51.7,
         "designWebBattles": 4139,
         "designAvgCostUsd": 0.0812,
-        "designUiElo": 1300,
+        "designUiElo": 1297,
         "designUiWinRate": 49.2,
-        "designUiBattles": 685,
+        "designUiBattles": 689,
         "designDatavizElo": null,
         "designGameElo": 1253,
         "designSvgElo": null,
@@ -22954,27 +22954,27 @@
         "level": 40
       },
       "timeSec": 1351.16,
-      "humanIndex": 35.76,
-      "intelligenceIndex": 35.76,
+      "humanIndex": 35.61,
+      "intelligenceIndex": 35.61,
       "aaIndex": 26.12,
-      "indexDelta": 9.64,
+      "indexDelta": 9.49,
       "humanScores": {
-        "chatVibe": 39.13,
-        "rawChatVibe": 39.13,
+        "chatVibe": 38.74,
+        "rawChatVibe": 38.74,
         "docCraft": null,
         "webdev": 34.58,
         "designWeb": 37.65,
-        "designUi": 47.61,
+        "designUi": 46.98,
         "creativeCraft": 33.55,
         "deliverable": 30.24,
-        "pureVisual": 39.4,
+        "pureVisual": 39.18,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
         "website": 37.65,
-        "uicomponent": 43.25,
-        "dataviz": 51.98,
+        "uicomponent": 42.25,
+        "dataviz": 51.7,
         "gamedev": 28.96,
         "svg": 38.14
       },
@@ -22989,10 +22989,10 @@
         "designWebWinRate": 48,
         "designWebBattles": 2138,
         "designAvgCostUsd": 0.0636,
-        "designUiElo": 1275,
+        "designUiElo": 1272,
         "designUiWinRate": 49,
         "designUiBattles": 380,
-        "designDatavizElo": 1272,
+        "designDatavizElo": 1271,
         "designGameElo": 1198,
         "designSvgElo": 1217,
         "gdpvalElo": null,
@@ -23029,27 +23029,27 @@
         "name": "Nemotron 3 Ultra 550B A55B"
       },
       "timeSec": 263.33,
-      "humanIndex": 12.98,
-      "intelligenceIndex": 12.98,
+      "humanIndex": 12.96,
+      "intelligenceIndex": 12.96,
       "aaIndex": 11.76,
-      "indexDelta": 1.22,
+      "indexDelta": 1.2,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
         "webdev": null,
         "designWeb": 6.33,
-        "designUi": 12.56,
+        "designUi": 12.34,
         "creativeCraft": 13.52,
         "deliverable": 3.37,
-        "pureVisual": 8.8,
+        "pureVisual": 8.73,
         "spatialMotion": 5.57,
         "antiSlop": 13.3
       },
       "designSub": {
         "website": 6.33,
-        "uicomponent": 8.14,
-        "dataviz": 16.99,
+        "uicomponent": 7.86,
+        "dataviz": 16.82,
         "gamedev": 16.49,
         "svg": 10.56
       },
@@ -23064,10 +23064,10 @@
         "designWebWinRate": 34.3,
         "designWebBattles": 13778,
         "designAvgCostUsd": 0.0877,
-        "designUiElo": 1123,
+        "designUiElo": 1120,
         "designUiWinRate": 35.1,
-        "designUiBattles": 1570,
-        "designDatavizElo": 1136,
+        "designUiBattles": 1573,
+        "designDatavizElo": 1135,
         "designGameElo": 1119,
         "designSvgElo": 1056,
         "gdpvalElo": 1020,
@@ -23106,13 +23106,13 @@
         "name": "Step 5 Preview"
       },
       "timeSec": 725.39,
-      "humanIndex": 42.06,
-      "intelligenceIndex": 42.06,
+      "humanIndex": 42.07,
+      "intelligenceIndex": 42.07,
       "aaIndex": 28.53,
-      "indexDelta": 13.53,
+      "indexDelta": 13.54,
       "humanScores": {
-        "chatVibe": 51.74,
-        "rawChatVibe": 51.74,
+        "chatVibe": 51.78,
+        "rawChatVibe": 51.78,
         "docCraft": null,
         "webdev": 34.79,
         "designWeb": null,
@@ -23187,26 +23187,26 @@
         "level": 60
       },
       "timeSec": 894,
-      "humanIndex": 60.19,
-      "intelligenceIndex": 60.19,
+      "humanIndex": 60.16,
+      "intelligenceIndex": 60.16,
       "aaIndex": 36.62,
-      "indexDelta": 23.57,
+      "indexDelta": 23.54,
       "humanScores": {
-        "chatVibe": 70.73,
-        "rawChatVibe": 73.78,
-        "docCraft": 63.6,
+        "chatVibe": 71.02,
+        "rawChatVibe": 74.04,
+        "docCraft": 63.98,
         "webdev": 53.29,
         "designWeb": 77.32,
-        "designUi": 70.64,
+        "designUi": 69.72,
         "creativeCraft": 58.94,
         "deliverable": 62.72,
-        "pureVisual": 72.27,
+        "pureVisual": 71.9,
         "spatialMotion": 48.57,
         "antiSlop": 24.7
       },
       "designSub": {
         "website": 77.32,
-        "uicomponent": 69.05,
+        "uicomponent": 67.2,
         "dataviz": 72.24,
         "gamedev": 56.99,
         "svg": 60.89
@@ -23222,9 +23222,9 @@
         "designWebWinRate": 59.3,
         "designWebBattles": 24159,
         "designAvgCostUsd": 0.1497,
-        "designUiElo": 1351,
-        "designUiWinRate": 59.3,
-        "designUiBattles": 1063,
+        "designUiElo": 1345,
+        "designUiWinRate": 59,
+        "designUiBattles": 1073,
         "designDatavizElo": 1341,
         "designGameElo": 1337,
         "designSvgElo": 1308,
@@ -23268,27 +23268,27 @@
         "level": 60
       },
       "timeSec": 470.08,
-      "humanIndex": 55.4,
-      "intelligenceIndex": 55.4,
+      "humanIndex": 55.36,
+      "intelligenceIndex": 55.36,
       "aaIndex": 44.16,
-      "indexDelta": 11.24,
+      "indexDelta": 11.2,
       "humanScores": {
-        "chatVibe": 56.15,
-        "rawChatVibe": 56.15,
+        "chatVibe": 56.24,
+        "rawChatVibe": 56.24,
         "docCraft": null,
         "webdev": 57.7,
         "designWeb": 50.84,
-        "designUi": 48.88,
+        "designUi": 48.2,
         "creativeCraft": 53.01,
         "deliverable": 43.52,
-        "pureVisual": 50.27,
+        "pureVisual": 50.03,
         "spatialMotion": 64.88,
         "antiSlop": 99
       },
       "designSub": {
         "website": 50.84,
-        "uicomponent": 45.72,
-        "dataviz": 52.04,
+        "uicomponent": 44.65,
+        "dataviz": 51.74,
         "gamedev": 48.48,
         "svg": 57.54
       },
@@ -23303,10 +23303,10 @@
         "designWebWinRate": 52.7,
         "designWebBattles": 3630,
         "designAvgCostUsd": 0.1503,
-        "designUiElo": 1283,
-        "designUiWinRate": 51.7,
-        "designUiBattles": 950,
-        "designDatavizElo": 1272,
+        "designUiElo": 1280,
+        "designUiWinRate": 51.6,
+        "designUiBattles": 961,
+        "designDatavizElo": 1271,
         "designGameElo": 1298,
         "designSvgElo": 1295,
         "gdpvalElo": 1514,
@@ -23351,26 +23351,26 @@
         "level": 50
       },
       "timeSec": 910.87,
-      "humanIndex": 64.55,
-      "intelligenceIndex": 64.55,
+      "humanIndex": 64.79,
+      "intelligenceIndex": 64.79,
       "aaIndex": 53.92,
-      "indexDelta": 10.63,
+      "indexDelta": 10.87,
       "humanScores": {
-        "chatVibe": 69.21,
-        "rawChatVibe": 69.21,
+        "chatVibe": 70.51,
+        "rawChatVibe": 70.51,
         "docCraft": null,
         "webdev": 63.49,
         "designWeb": 68.62,
-        "designUi": 65.42,
+        "designUi": 64.57,
         "creativeCraft": 58.61,
         "deliverable": 59.15,
-        "pureVisual": 66.88,
+        "pureVisual": 66.68,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
         "website": 68.62,
-        "uicomponent": 65.42,
+        "uicomponent": 64.57,
         "dataviz": null,
         "gamedev": 58.61,
         "svg": null
@@ -23386,9 +23386,9 @@
         "designWebWinRate": 59.4,
         "designWebBattles": 1368,
         "designAvgCostUsd": 0.1675,
-        "designUiElo": 1344,
-        "designUiWinRate": 55.6,
-        "designUiBattles": 268,
+        "designUiElo": 1341,
+        "designUiWinRate": 55.7,
+        "designUiBattles": 271,
         "designDatavizElo": null,
         "designGameElo": 1346,
         "designSvgElo": null,
@@ -23516,13 +23516,13 @@
         "level": 50
       },
       "timeSec": 2322.33,
-      "humanIndex": 37,
-      "intelligenceIndex": 37,
+      "humanIndex": 36.99,
+      "intelligenceIndex": 36.99,
       "aaIndex": 20.11,
-      "indexDelta": 16.89,
+      "indexDelta": 16.88,
       "humanScores": {
-        "chatVibe": 44.54,
-        "rawChatVibe": 44.54,
+        "chatVibe": 44.49,
+        "rawChatVibe": 44.49,
         "docCraft": null,
         "webdev": 38.58,
         "designWeb": null,
@@ -23598,27 +23598,27 @@
         "level": 60
       },
       "timeSec": 2325.11,
-      "humanIndex": 68.22,
-      "intelligenceIndex": 68.22,
+      "humanIndex": 68.36,
+      "intelligenceIndex": 68.36,
       "aaIndex": 46.45,
-      "indexDelta": 21.77,
+      "indexDelta": 21.91,
       "humanScores": {
-        "chatVibe": 68.33,
-        "rawChatVibe": 68.33,
+        "chatVibe": 69.31,
+        "rawChatVibe": 69.31,
         "docCraft": null,
         "webdev": 59.96,
         "designWeb": 63.22,
-        "designUi": 66.9,
+        "designUi": 66.83,
         "creativeCraft": 66.05,
         "deliverable": 78.06,
-        "pureVisual": 65.77,
+        "pureVisual": 65.69,
         "spatialMotion": 62.19,
         "antiSlop": 78.1
       },
       "designSub": {
         "website": 63.22,
-        "uicomponent": 76.3,
-        "dataviz": 57.5,
+        "uicomponent": 75.62,
+        "dataviz": 58.03,
         "gamedev": 68.44,
         "svg": 63.66
       },
@@ -23633,10 +23633,10 @@
         "designWebWinRate": 57.4,
         "designWebBattles": 3841,
         "designAvgCostUsd": 0.5439,
-        "designUiElo": 1384,
+        "designUiElo": 1381,
         "designUiWinRate": 65.1,
         "designUiBattles": 347,
-        "designDatavizElo": 1293,
+        "designDatavizElo": 1295,
         "designGameElo": 1395,
         "designSvgElo": 1321,
         "gdpvalElo": 1860.6,
@@ -23679,26 +23679,26 @@
         "level": 60
       },
       "timeSec": 796.06,
-      "humanIndex": 38.31,
-      "intelligenceIndex": 38.31,
+      "humanIndex": 38.27,
+      "intelligenceIndex": 38.27,
       "aaIndex": 32.34,
-      "indexDelta": 5.97,
+      "indexDelta": 5.93,
       "humanScores": {
-        "chatVibe": 61.97,
-        "rawChatVibe": 61.17,
-        "docCraft": 63.85,
+        "chatVibe": 62.09,
+        "rawChatVibe": 61.24,
+        "docCraft": 64.09,
         "webdev": 25.04,
         "designWeb": 38.29,
-        "designUi": 36.68,
+        "designUi": 36.03,
         "creativeCraft": 32.47,
         "deliverable": 30.88,
-        "pureVisual": 36.49,
+        "pureVisual": 36.23,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
         "website": 38.29,
-        "uicomponent": 32.99,
+        "uicomponent": 31.69,
         "dataviz": 40.37,
         "gamedev": 30.58,
         "svg": 34.36
@@ -23714,9 +23714,9 @@
         "designWebWinRate": 51.8,
         "designWebBattles": 33012,
         "designAvgCostUsd": 0.1081,
-        "designUiElo": 1247,
-        "designUiWinRate": 51,
-        "designUiBattles": 6261,
+        "designUiElo": 1243,
+        "designUiWinRate": 50.9,
+        "designUiBattles": 6268,
         "designDatavizElo": 1235,
         "designGameElo": 1212,
         "designSvgElo": 1204,
@@ -23760,26 +23760,26 @@
         "level": 60
       },
       "timeSec": 826.18,
-      "humanIndex": 73.55,
-      "intelligenceIndex": 73.55,
+      "humanIndex": 73.62,
+      "intelligenceIndex": 73.62,
       "aaIndex": 62.14,
-      "indexDelta": 11.41,
+      "indexDelta": 11.48,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
         "webdev": 76.35,
         "designWeb": 68.69,
-        "designUi": 58.48,
+        "designUi": 59.59,
         "creativeCraft": 76.55,
         "deliverable": 68.68,
-        "pureVisual": 66.99,
+        "pureVisual": 67.25,
         "spatialMotion": 85.1,
         "antiSlop": 92.6
       },
       "designSub": {
         "website": 68.69,
-        "uicomponent": 58.48,
+        "uicomponent": 59.59,
         "dataviz": null,
         "gamedev": 76.55,
         "svg": null
@@ -23795,9 +23795,9 @@
         "designWebWinRate": 58.8,
         "designWebBattles": 794,
         "designAvgCostUsd": 0.9488,
-        "designUiElo": 1326,
-        "designUiWinRate": 57.1,
-        "designUiBattles": 105,
+        "designUiElo": 1329,
+        "designUiWinRate": 57.9,
+        "designUiBattles": 121,
         "designDatavizElo": null,
         "designGameElo": 1496,
         "designSvgElo": null,
@@ -23841,14 +23841,14 @@
         "level": 50
       },
       "timeSec": 742.16,
-      "humanIndex": 53.65,
-      "intelligenceIndex": 53.65,
+      "humanIndex": 53.66,
+      "intelligenceIndex": 53.66,
       "aaIndex": 31.03,
-      "indexDelta": 22.62,
+      "indexDelta": 22.63,
       "humanScores": {
-        "chatVibe": 54.84,
-        "rawChatVibe": 55.8,
-        "docCraft": 52.6,
+        "chatVibe": 54.9,
+        "rawChatVibe": 55.86,
+        "docCraft": 52.67,
         "webdev": 44.99,
         "designWeb": null,
         "designUi": null,
@@ -23921,27 +23921,27 @@
         "level": 40
       },
       "timeSec": 1767.27,
-      "humanIndex": 60.61,
-      "intelligenceIndex": 60.61,
+      "humanIndex": 60.64,
+      "intelligenceIndex": 60.64,
       "aaIndex": 50.41,
-      "indexDelta": 10.2,
+      "indexDelta": 10.23,
       "humanScores": {
-        "chatVibe": 81.41,
-        "rawChatVibe": 81.41,
+        "chatVibe": 81.81,
+        "rawChatVibe": 81.81,
         "docCraft": null,
         "webdev": 59.1,
         "designWeb": 61.68,
-        "designUi": 63.12,
+        "designUi": 62.66,
         "creativeCraft": 63.65,
         "deliverable": 52.89,
-        "pureVisual": 62.16,
+        "pureVisual": 62,
         "spatialMotion": 68.32,
         "antiSlop": 32.4
       },
       "designSub": {
         "website": 61.68,
-        "uicomponent": 60.8,
-        "dataviz": 65.43,
+        "uicomponent": 60.13,
+        "dataviz": 65.18,
         "gamedev": 60.53,
         "svg": 66.77
       },
@@ -23956,10 +23956,10 @@
         "designWebWinRate": 55.5,
         "designWebBattles": 8833,
         "designAvgCostUsd": 0.2389,
-        "designUiElo": 1326,
+        "designUiElo": 1324,
         "designUiWinRate": 57.6,
         "designUiBattles": 738,
-        "designDatavizElo": 1321,
+        "designDatavizElo": 1320,
         "designGameElo": 1354,
         "designSvgElo": 1336,
         "gdpvalElo": 1633.5,
@@ -24001,13 +24001,13 @@
         "level": 60
       },
       "timeSec": 1465.16,
-      "humanIndex": 52.94,
-      "intelligenceIndex": 52.94,
+      "humanIndex": 52.98,
+      "intelligenceIndex": 52.98,
       "aaIndex": 31.65,
-      "indexDelta": 21.29,
+      "indexDelta": 21.33,
       "humanScores": {
-        "chatVibe": 67.75,
-        "rawChatVibe": 67.75,
+        "chatVibe": 67.92,
+        "rawChatVibe": 67.92,
         "docCraft": null,
         "webdev": 45.99,
         "designWeb": null,
@@ -24086,21 +24086,21 @@
       "aaIndex": 56.85,
       "indexDelta": 11.28,
       "humanScores": {
-        "chatVibe": 64,
-        "rawChatVibe": 64.27,
-        "docCraft": 63.38,
+        "chatVibe": 64.29,
+        "rawChatVibe": 64.49,
+        "docCraft": 63.84,
         "webdev": 75.3,
         "designWeb": 71.07,
-        "designUi": 73.08,
+        "designUi": 72.54,
         "creativeCraft": 80.68,
         "deliverable": 55.17,
-        "pureVisual": 73.91,
+        "pureVisual": 73.7,
         "spatialMotion": 75.76,
         "antiSlop": 83.8
       },
       "designSub": {
         "website": 71.07,
-        "uicomponent": 79.65,
+        "uicomponent": 78.57,
         "dataviz": 66.51,
         "gamedev": 79.05,
         "svg": 82.31
@@ -24116,9 +24116,9 @@
         "designWebWinRate": 58.7,
         "designWebBattles": 5868,
         "designAvgCostUsd": 1.5186,
-        "designUiElo": 1394,
-        "designUiWinRate": 66.5,
-        "designUiBattles": 621,
+        "designUiElo": 1389,
+        "designUiWinRate": 66.3,
+        "designUiBattles": 627,
         "designDatavizElo": 1330,
         "designGameElo": 1464,
         "designSvgElo": 1415,
@@ -24164,26 +24164,26 @@
         "level": 50
       },
       "timeSec": 1289.24,
-      "humanIndex": 72.91,
-      "intelligenceIndex": 72.91,
+      "humanIndex": 74.71,
+      "intelligenceIndex": 74.71,
       "aaIndex": 61.4,
-      "indexDelta": 11.51,
+      "indexDelta": 13.31,
       "humanScores": {
-        "chatVibe": 78.08,
-        "rawChatVibe": 78.08,
+        "chatVibe": 80.39,
+        "rawChatVibe": 80.39,
         "docCraft": null,
         "webdev": 74.82,
         "designWeb": null,
-        "designUi": null,
+        "designUi": 69.69,
         "creativeCraft": null,
         "deliverable": 74.88,
-        "pureVisual": null,
+        "pureVisual": 69.69,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
         "website": null,
-        "uicomponent": null,
+        "uicomponent": 69.69,
         "dataviz": null,
         "gamedev": null,
         "svg": null
@@ -24198,10 +24198,10 @@
         "designWebElo": null,
         "designWebWinRate": null,
         "designWebBattles": null,
-        "designAvgCostUsd": null,
-        "designUiElo": null,
-        "designUiWinRate": null,
-        "designUiBattles": null,
+        "designAvgCostUsd": 0.2415,
+        "designUiElo": 1374,
+        "designUiWinRate": 61.2,
+        "designUiBattles": 103,
         "designDatavizElo": null,
         "designGameElo": null,
         "designSvgElo": null,
@@ -24210,8 +24210,9 @@
         "aa3dElo": null,
         "code2videoElo": null,
         "slop": null,
-        "dimensionCount": 3,
+        "dimensionCount": 4,
         "sources": [
+          "design-arena",
           "lmarena",
           "aa-expert"
         ]
@@ -24246,27 +24247,27 @@
         "level": 60
       },
       "timeSec": 823.43,
-      "humanIndex": 68.58,
-      "intelligenceIndex": 68.58,
+      "humanIndex": 68.64,
+      "intelligenceIndex": 68.64,
       "aaIndex": 43.57,
-      "indexDelta": 25.01,
+      "indexDelta": 25.07,
       "humanScores": {
-        "chatVibe": 78.02,
-        "rawChatVibe": 78.02,
+        "chatVibe": 78.62,
+        "rawChatVibe": 78.62,
         "docCraft": null,
         "webdev": 67.5,
         "designWeb": 82.08,
-        "designUi": 61.94,
+        "designUi": 61.52,
         "creativeCraft": 70.55,
         "deliverable": 72.97,
-        "pureVisual": 75.71,
+        "pureVisual": 75.5,
         "spatialMotion": 44.76,
         "antiSlop": 45.7
       },
       "designSub": {
         "website": 82.08,
-        "uicomponent": 70.17,
-        "dataviz": 53.71,
+        "uicomponent": 69.08,
+        "dataviz": 53.96,
         "gamedev": 70.55,
         "svg": null
       },
@@ -24281,10 +24282,10 @@
         "designWebWinRate": 63.8,
         "designWebBattles": 4983,
         "designAvgCostUsd": 0.4279,
-        "designUiElo": 1359,
-        "designUiWinRate": 61.1,
-        "designUiBattles": 360,
-        "designDatavizElo": 1280,
+        "designUiElo": 1355,
+        "designUiWinRate": 60.8,
+        "designUiBattles": 362,
+        "designDatavizElo": 1281,
         "designGameElo": 1406,
         "designSvgElo": null,
         "gdpvalElo": 1770.3,
@@ -24329,27 +24330,27 @@
         "level": 40
       },
       "timeSec": 2194.76,
-      "humanIndex": 70.74,
-      "intelligenceIndex": 70.74,
+      "humanIndex": 71.22,
+      "intelligenceIndex": 71.22,
       "aaIndex": 60.03,
-      "indexDelta": 10.71,
+      "indexDelta": 11.19,
       "humanScores": {
-        "chatVibe": 80.29,
-        "rawChatVibe": 80.29,
+        "chatVibe": 82.56,
+        "rawChatVibe": 82.56,
         "docCraft": null,
         "webdev": 75.46,
         "designWeb": 58.7,
-        "designUi": 64.92,
+        "designUi": 64.73,
         "creativeCraft": 65.91,
         "deliverable": 67.92,
-        "pureVisual": 61.77,
+        "pureVisual": 61.59,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
         "website": 58.7,
-        "uicomponent": 65.94,
-        "dataviz": 63.91,
+        "uicomponent": 64.6,
+        "dataviz": 64.87,
         "gamedev": 54.62,
         "svg": 77.19
       },
@@ -24364,10 +24365,10 @@
         "designWebWinRate": 55,
         "designWebBattles": 1634,
         "designAvgCostUsd": 0.2372,
-        "designUiElo": 1347,
-        "designUiWinRate": 59.7,
-        "designUiBattles": 226,
-        "designDatavizElo": 1334,
+        "designUiElo": 1342,
+        "designUiWinRate": 59.4,
+        "designUiBattles": 234,
+        "designDatavizElo": 1339,
         "designGameElo": 1327,
         "designSvgElo": 1394,
         "gdpvalElo": 1732.7,
@@ -24412,26 +24413,26 @@
         "level": 40
       },
       "timeSec": 848.17,
-      "humanIndex": 42.07,
-      "intelligenceIndex": 42.07,
+      "humanIndex": 42.05,
+      "intelligenceIndex": 42.05,
       "aaIndex": 30.85,
-      "indexDelta": 11.22,
+      "indexDelta": 11.2,
       "humanScores": {
-        "chatVibe": 69.99,
-        "rawChatVibe": 73.64,
-        "docCraft": 61.48,
+        "chatVibe": 70.17,
+        "rawChatVibe": 73.75,
+        "docCraft": 61.81,
         "webdev": 37.59,
         "designWeb": 51.28,
-        "designUi": 52.3,
+        "designUi": 51.74,
         "creativeCraft": 50.73,
         "deliverable": 23.59,
-        "pureVisual": 51.48,
+        "pureVisual": 51.25,
         "spatialMotion": 38.53,
         "antiSlop": 28.6
       },
       "designSub": {
         "website": 51.28,
-        "uicomponent": 52.2,
+        "uicomponent": 51.09,
         "dataviz": 52.39,
         "gamedev": 46.48,
         "svg": 54.98
@@ -24447,9 +24448,9 @@
         "designWebWinRate": 49.5,
         "designWebBattles": 25383,
         "designAvgCostUsd": 0.0857,
-        "designUiElo": 1301,
+        "designUiElo": 1298,
         "designUiWinRate": 52.1,
-        "designUiBattles": 2214,
+        "designUiBattles": 2219,
         "designDatavizElo": 1273,
         "designGameElo": 1289,
         "designSvgElo": 1284,
@@ -24493,26 +24494,26 @@
         "level": 50
       },
       "timeSec": 1491.71,
-      "humanIndex": 54.53,
-      "intelligenceIndex": 54.53,
+      "humanIndex": 54.51,
+      "intelligenceIndex": 54.51,
       "aaIndex": 35.49,
-      "indexDelta": 19.04,
+      "indexDelta": 19.02,
       "humanScores": {
-        "chatVibe": 49.02,
-        "rawChatVibe": 49.02,
+        "chatVibe": 49,
+        "rawChatVibe": 49,
         "docCraft": null,
         "webdev": 49.77,
         "designWeb": 32.34,
-        "designUi": 41.33,
+        "designUi": 41.17,
         "creativeCraft": 49.02,
         "deliverable": 68.47,
-        "pureVisual": 37.8,
+        "pureVisual": 37.73,
         "spatialMotion": 50.94,
         "antiSlop": 91.4
       },
       "designSub": {
         "website": 32.34,
-        "uicomponent": 42.98,
+        "uicomponent": 42.66,
         "dataviz": 39.68,
         "gamedev": 48.29,
         "svg": 49.75
@@ -24528,7 +24529,7 @@
         "designWebWinRate": 45.6,
         "designWebBattles": 1991,
         "designAvgCostUsd": 0.3611,
-        "designUiElo": 1274,
+        "designUiElo": 1273,
         "designUiWinRate": 49.9,
         "designUiBattles": 339,
         "designDatavizElo": 1222,
@@ -24574,26 +24575,26 @@
         "level": 60
       },
       "timeSec": 1964.92,
-      "humanIndex": 73.34,
-      "intelligenceIndex": 73.34,
+      "humanIndex": 73.36,
+      "intelligenceIndex": 73.36,
       "aaIndex": 54.54,
-      "indexDelta": 18.8,
+      "indexDelta": 18.82,
       "humanScores": {
-        "chatVibe": 63.57,
-        "rawChatVibe": 63.57,
+        "chatVibe": 63.84,
+        "rawChatVibe": 63.84,
         "docCraft": null,
         "webdev": 76.92,
         "designWeb": 58.37,
-        "designUi": 73.84,
+        "designUi": 73.59,
         "creativeCraft": 60.86,
         "deliverable": 83.5,
-        "pureVisual": 63.61,
+        "pureVisual": 63.52,
         "spatialMotion": 78.39,
         "antiSlop": 81.9
       },
       "designSub": {
         "website": 58.37,
-        "uicomponent": 77.13,
+        "uicomponent": 76.65,
         "dataviz": 70.54,
         "gamedev": 65.12,
         "svg": 56.59
@@ -24609,9 +24610,9 @@
         "designWebWinRate": 53.2,
         "designWebBattles": 3289,
         "designAvgCostUsd": 0.4353,
-        "designUiElo": 1383,
-        "designUiWinRate": 63.3,
-        "designUiBattles": 600,
+        "designUiElo": 1381,
+        "designUiWinRate": 63.5,
+        "designUiBattles": 602,
         "designDatavizElo": 1358,
         "designGameElo": 1377,
         "designSvgElo": 1292,
@@ -24655,27 +24656,27 @@
         "level": 50
       },
       "timeSec": 2868.28,
-      "humanIndex": 55.43,
-      "intelligenceIndex": 55.43,
+      "humanIndex": 55.4,
+      "intelligenceIndex": 55.4,
       "aaIndex": 33.65,
-      "indexDelta": 21.78,
+      "indexDelta": 21.75,
       "humanScores": {
-        "chatVibe": 68.46,
-        "rawChatVibe": 68.46,
+        "chatVibe": 68.61,
+        "rawChatVibe": 68.61,
         "docCraft": null,
         "webdev": 57.92,
         "designWeb": 42.01,
-        "designUi": 58.01,
+        "designUi": 57.34,
         "creativeCraft": 49.57,
         "deliverable": 63.7,
-        "pureVisual": 48.11,
+        "pureVisual": 47.86,
         "spatialMotion": 42.9,
         "antiSlop": 26.7
       },
       "designSub": {
         "website": 42.01,
-        "uicomponent": 61.38,
-        "dataviz": 54.63,
+        "uicomponent": 60.35,
+        "dataviz": 54.32,
         "gamedev": 49.57,
         "svg": null
       },
@@ -24690,10 +24691,10 @@
         "designWebWinRate": 51,
         "designWebBattles": 6198,
         "designAvgCostUsd": 0.2073,
-        "designUiElo": 1327,
+        "designUiElo": 1324,
         "designUiWinRate": 56.4,
         "designUiBattles": 1386,
-        "designDatavizElo": 1280,
+        "designDatavizElo": 1279,
         "designGameElo": 1303,
         "designSvgElo": null,
         "gdpvalElo": 1674,
@@ -24736,26 +24737,26 @@
         "level": 60
       },
       "timeSec": 1507.8,
-      "humanIndex": 78.09,
-      "intelligenceIndex": 78.09,
+      "humanIndex": 78.12,
+      "intelligenceIndex": 78.12,
       "aaIndex": 59.11,
-      "indexDelta": 18.98,
+      "indexDelta": 19.01,
       "humanScores": {
-        "chatVibe": 76.9,
-        "rawChatVibe": 76.9,
+        "chatVibe": 77.39,
+        "rawChatVibe": 77.39,
         "docCraft": null,
         "webdev": 83.18,
         "designWeb": 65.16,
-        "designUi": 77.3,
+        "designUi": 76.78,
         "creativeCraft": 67.78,
         "deliverable": 84.12,
-        "pureVisual": 68.75,
+        "pureVisual": 68.54,
         "spatialMotion": 80.63,
         "antiSlop": 80
       },
       "designSub": {
         "website": 65.16,
-        "uicomponent": 74.09,
+        "uicomponent": 73.06,
         "dataviz": 80.5,
         "gamedev": 73,
         "svg": 62.57
@@ -24771,7 +24772,7 @@
         "designWebWinRate": 55.5,
         "designWebBattles": 4079,
         "designAvgCostUsd": 0.6998,
-        "designUiElo": 1372,
+        "designUiElo": 1368,
         "designUiWinRate": 62.7,
         "designUiBattles": 483,
         "designDatavizElo": 1385,
@@ -24817,27 +24818,27 @@
         "level": 60
       },
       "timeSec": 1474.18,
-      "humanIndex": 65.41,
-      "intelligenceIndex": 65.41,
+      "humanIndex": 65.39,
+      "intelligenceIndex": 65.39,
       "aaIndex": 44.16,
-      "indexDelta": 21.25,
+      "indexDelta": 21.23,
       "humanScores": {
-        "chatVibe": 70.29,
-        "rawChatVibe": 70.82,
-        "docCraft": 69.05,
+        "chatVibe": 70.43,
+        "rawChatVibe": 70.92,
+        "docCraft": 69.28,
         "webdev": 61.59,
         "designWeb": 56.76,
-        "designUi": 66.67,
+        "designUi": 66.03,
         "creativeCraft": 56.7,
         "deliverable": 70.34,
-        "pureVisual": 59.45,
+        "pureVisual": 59.23,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
         "website": 56.76,
-        "uicomponent": 65.13,
-        "dataviz": 68.21,
+        "uicomponent": 64.13,
+        "dataviz": 67.94,
         "gamedev": 54.13,
         "svg": 59.26
       },
@@ -24852,10 +24853,10 @@
         "designWebWinRate": 56.1,
         "designWebBattles": 10039,
         "designAvgCostUsd": 0.7744,
-        "designUiElo": 1338,
+        "designUiElo": 1335,
         "designUiWinRate": 60.8,
         "designUiBattles": 1660,
-        "designDatavizElo": 1325,
+        "designDatavizElo": 1324,
         "designGameElo": 1324,
         "designSvgElo": 1301,
         "gdpvalElo": 1729,
@@ -24898,27 +24899,27 @@
         "level": 60
       },
       "timeSec": 1305.71,
-      "humanIndex": 69.47,
-      "intelligenceIndex": 69.47,
+      "humanIndex": 69.59,
+      "intelligenceIndex": 69.59,
       "aaIndex": 49.16,
-      "indexDelta": 20.31,
+      "indexDelta": 20.43,
       "humanScores": {
-        "chatVibe": 73.8,
-        "rawChatVibe": 75.31,
-        "docCraft": 70.26,
+        "chatVibe": 74.84,
+        "rawChatVibe": 75.69,
+        "docCraft": 72.87,
         "webdev": 71.6,
         "designWeb": 57.16,
-        "designUi": 66.39,
+        "designUi": 65.78,
         "creativeCraft": 58.52,
         "deliverable": 73.31,
-        "pureVisual": 59.54,
+        "pureVisual": 59.32,
         "spatialMotion": 70.41,
         "antiSlop": 76.2
       },
       "designSub": {
         "website": 57.16,
-        "uicomponent": 61.69,
-        "dataviz": 71.09,
+        "uicomponent": 60.69,
+        "dataviz": 70.87,
         "gamedev": 61.18,
         "svg": 55.87
       },
@@ -24933,10 +24934,10 @@
         "designWebWinRate": 55.2,
         "designWebBattles": 5374,
         "designAvgCostUsd": 1.4982,
-        "designUiElo": 1329,
+        "designUiElo": 1326,
         "designUiWinRate": 59.9,
         "designUiBattles": 606,
-        "designDatavizElo": 1344,
+        "designDatavizElo": 1343,
         "designGameElo": 1358,
         "designSvgElo": 1288,
         "gdpvalElo": 1764.5,
@@ -24979,26 +24980,26 @@
         "level": 60
       },
       "timeSec": 2493.59,
-      "humanIndex": 79.99,
-      "intelligenceIndex": 79.99,
+      "humanIndex": 80.02,
+      "intelligenceIndex": 80.02,
       "aaIndex": 64.56,
-      "indexDelta": 15.43,
+      "indexDelta": 15.46,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
         "webdev": 82.88,
         "designWeb": 74.07,
-        "designUi": 73.13,
+        "designUi": 73.69,
         "creativeCraft": 66.8,
         "deliverable": 82.08,
-        "pureVisual": 73.14,
+        "pureVisual": 73.28,
         "spatialMotion": 81.2,
         "antiSlop": 93.3
       },
       "designSub": {
         "website": 74.07,
-        "uicomponent": 73.13,
+        "uicomponent": 73.69,
         "dataviz": null,
         "gamedev": 66.8,
         "svg": null
@@ -25014,9 +25015,9 @@
         "designWebWinRate": 60.3,
         "designWebBattles": 1512,
         "designAvgCostUsd": 3.0786,
-        "designUiElo": 1376,
-        "designUiWinRate": 63.1,
-        "designUiBattles": 214,
+        "designUiElo": 1378,
+        "designUiWinRate": 63.5,
+        "designUiBattles": 222,
         "designDatavizElo": null,
         "designGameElo": 1391,
         "designSvgElo": null,
@@ -26897,8 +26898,8 @@
           "battles": 4983,
           "suites": {
             "website": 1375,
-            "uicomponent": 1359,
-            "dataviz": 1280,
+            "uicomponent": 1355,
+            "dataviz": 1281,
             "gamedev": 1406
           }
         },
@@ -26914,7 +26915,7 @@
           "battles": 24159,
           "suites": {
             "website": 1357,
-            "uicomponent": 1342,
+            "uicomponent": 1339,
             "dataviz": 1341,
             "gamedev": 1324,
             "svg": 1289
@@ -26932,7 +26933,7 @@
           "battles": 21276,
           "suites": {
             "website": 1350,
-            "uicomponent": 1351,
+            "uicomponent": 1345,
             "dataviz": 1306,
             "gamedev": 1337,
             "svg": 1308
@@ -26950,7 +26951,7 @@
           "battles": 1512,
           "suites": {
             "website": 1348,
-            "uicomponent": 1376,
+            "uicomponent": 1378,
             "gamedev": 1391
           }
         },
@@ -26981,8 +26982,8 @@
           "battles": 5868,
           "suites": {
             "website": 1338,
-            "uicomponent": 1394,
-            "dataviz": 1318,
+            "uicomponent": 1389,
+            "dataviz": 1319,
             "gamedev": 1454,
             "svg": 1415
           }
@@ -26999,7 +27000,7 @@
           "battles": 2675,
           "suites": {
             "website": 1337,
-            "uicomponent": 1365,
+            "uicomponent": 1361,
             "dataviz": 1330,
             "gamedev": 1464,
             "svg": 1409
@@ -27014,8 +27015,8 @@
           "battles": 4947,
           "suites": {
             "website": 1335,
-            "uicomponent": 1335,
-            "dataviz": 1349,
+            "uicomponent": 1336,
+            "dataviz": 1348,
             "gamedev": 1349,
             "svg": 1294
           }
@@ -27044,7 +27045,7 @@
           "battles": 794,
           "suites": {
             "website": 1333,
-            "uicomponent": 1326,
+            "uicomponent": 1329,
             "gamedev": 1496
           }
         },
@@ -27060,7 +27061,7 @@
           "battles": 1368,
           "suites": {
             "website": 1332,
-            "uicomponent": 1344,
+            "uicomponent": 1341,
             "gamedev": 1346
           }
         },
@@ -27073,7 +27074,7 @@
           "battles": 1743,
           "suites": {
             "website": 1327,
-            "uicomponent": 1308,
+            "uicomponent": 1305,
             "dataviz": 1315,
             "gamedev": 1324
           }
@@ -27090,7 +27091,7 @@
           "battles": 4079,
           "suites": {
             "website": 1322,
-            "uicomponent": 1372,
+            "uicomponent": 1368,
             "dataviz": 1385,
             "gamedev": 1420,
             "svg": 1315
@@ -27108,8 +27109,8 @@
           "battles": 3841,
           "suites": {
             "website": 1317,
-            "uicomponent": 1384,
-            "dataviz": 1293,
+            "uicomponent": 1381,
+            "dataviz": 1295,
             "gamedev": 1395,
             "svg": 1321
           }
@@ -27123,7 +27124,7 @@
           "battles": 6856,
           "suites": {
             "website": 1315,
-            "uicomponent": 1325,
+            "uicomponent": 1321,
             "dataviz": 1319,
             "gamedev": 1358,
             "svg": 1300
@@ -27141,8 +27142,8 @@
           "battles": 8833,
           "suites": {
             "website": 1313,
-            "uicomponent": 1326,
-            "dataviz": 1321,
+            "uicomponent": 1324,
+            "dataviz": 1320,
             "gamedev": 1354,
             "svg": 1336
           }
@@ -27159,7 +27160,7 @@
           "battles": 4099,
           "suites": {
             "website": 1313,
-            "uicomponent": 1356,
+            "uicomponent": 1353,
             "dataviz": 1280,
             "gamedev": 1400,
             "svg": 1336
@@ -27174,7 +27175,7 @@
           "battles": 18195,
           "suites": {
             "website": 1308,
-            "uicomponent": 1332,
+            "uicomponent": 1329,
             "dataviz": 1335,
             "gamedev": 1305,
             "svg": 1286
@@ -27192,8 +27193,8 @@
           "battles": 1634,
           "suites": {
             "website": 1306,
-            "uicomponent": 1347,
-            "dataviz": 1334,
+            "uicomponent": 1342,
+            "dataviz": 1339,
             "gamedev": 1327,
             "svg": 1394
           }
@@ -27207,7 +27208,7 @@
           "battles": 28471,
           "suites": {
             "website": 1306,
-            "uicomponent": 1294,
+            "uicomponent": 1291,
             "dataviz": 1326,
             "gamedev": 1286,
             "svg": 1265
@@ -27225,7 +27226,7 @@
           "battles": 3289,
           "suites": {
             "website": 1305,
-            "uicomponent": 1383,
+            "uicomponent": 1381,
             "dataviz": 1358,
             "gamedev": 1377,
             "svg": 1292
@@ -27243,7 +27244,7 @@
           "battles": 4139,
           "suites": {
             "website": 1303,
-            "uicomponent": 1300,
+            "uicomponent": 1297,
             "gamedev": 1253
           }
         },
@@ -27256,7 +27257,7 @@
           "battles": 12985,
           "suites": {
             "website": 1302,
-            "uicomponent": 1310,
+            "uicomponent": 1307,
             "dataviz": 1289,
             "gamedev": 1309,
             "svg": 1289
@@ -27274,8 +27275,8 @@
           "battles": 5374,
           "suites": {
             "website": 1302,
-            "uicomponent": 1329,
-            "dataviz": 1344,
+            "uicomponent": 1326,
+            "dataviz": 1343,
             "gamedev": 1358,
             "svg": 1288
           }
@@ -27292,8 +27293,8 @@
           "battles": 10039,
           "suites": {
             "website": 1301,
-            "uicomponent": 1338,
-            "dataviz": 1325,
+            "uicomponent": 1335,
+            "dataviz": 1324,
             "gamedev": 1324,
             "svg": 1301
           }
@@ -27310,7 +27311,7 @@
           "battles": 19757,
           "suites": {
             "website": 1295,
-            "uicomponent": 1299,
+            "uicomponent": 1296,
             "dataviz": 1283,
             "gamedev": 1317,
             "svg": 1226
@@ -27325,7 +27326,7 @@
           "battles": 46949,
           "suites": {
             "website": 1292,
-            "uicomponent": 1284,
+            "uicomponent": 1281,
             "dataviz": 1306,
             "gamedev": 1304,
             "svg": 1272
@@ -27343,8 +27344,8 @@
           "battles": 3389,
           "suites": {
             "website": 1290,
-            "uicomponent": 1278,
-            "dataviz": 1270,
+            "uicomponent": 1274,
+            "dataviz": 1274,
             "gamedev": 1248,
             "svg": 1234
           }
@@ -27358,7 +27359,7 @@
           "battles": 17470,
           "suites": {
             "website": 1289,
-            "uicomponent": 1287,
+            "uicomponent": 1282,
             "dataviz": 1286,
             "gamedev": 1246
           }
@@ -27372,7 +27373,7 @@
           "battles": 5333,
           "suites": {
             "website": 1289,
-            "uicomponent": 1346,
+            "uicomponent": 1343,
             "dataviz": 1285,
             "gamedev": 1301,
             "svg": 1260
@@ -27390,7 +27391,7 @@
           "battles": 25383,
           "suites": {
             "website": 1288,
-            "uicomponent": 1301,
+            "uicomponent": 1298,
             "dataviz": 1273,
             "gamedev": 1289,
             "svg": 1284
@@ -27408,8 +27409,8 @@
           "battles": 3630,
           "suites": {
             "website": 1287,
-            "uicomponent": 1283,
-            "dataviz": 1272,
+            "uicomponent": 1280,
+            "dataviz": 1271,
             "gamedev": 1298,
             "svg": 1295
           }
@@ -27423,7 +27424,7 @@
           "battles": 9831,
           "suites": {
             "website": 1285,
-            "uicomponent": 1306,
+            "uicomponent": 1303,
             "dataviz": 1302,
             "gamedev": 1318,
             "svg": 1288
@@ -27441,8 +27442,8 @@
           "battles": 3092,
           "suites": {
             "website": 1283,
-            "uicomponent": 1285,
-            "dataviz": 1164,
+            "uicomponent": 1282,
+            "dataviz": 1161,
             "gamedev": 1327,
             "svg": 1300
           }
@@ -27456,7 +27457,7 @@
           "battles": 14723,
           "suites": {
             "website": 1280,
-            "uicomponent": 1271,
+            "uicomponent": 1268,
             "dataviz": 1275,
             "gamedev": 1254,
             "svg": 1200
@@ -27471,8 +27472,8 @@
           "battles": 2733,
           "suites": {
             "website": 1276,
-            "uicomponent": 1284,
-            "dataviz": 1218,
+            "uicomponent": 1283,
+            "dataviz": 1217,
             "gamedev": 1301,
             "svg": 1281
           }
@@ -27486,8 +27487,8 @@
           "battles": 13403,
           "suites": {
             "website": 1275,
-            "uicomponent": 1268,
-            "dataviz": 1266,
+            "uicomponent": 1265,
+            "dataviz": 1265,
             "gamedev": 1260,
             "svg": 1212
           }
@@ -27501,8 +27502,8 @@
           "battles": 10821,
           "suites": {
             "website": 1275,
-            "uicomponent": 1282,
-            "dataviz": 1248,
+            "uicomponent": 1277,
+            "dataviz": 1247,
             "gamedev": 1279,
             "svg": 1239
           }
@@ -27516,7 +27517,7 @@
           "battles": 13779,
           "suites": {
             "website": 1274,
-            "uicomponent": 1259,
+            "uicomponent": 1256,
             "dataviz": 1273,
             "gamedev": 1241,
             "svg": 1181
@@ -27531,7 +27532,7 @@
           "battles": 12458,
           "suites": {
             "website": 1274,
-            "uicomponent": 1281,
+            "uicomponent": 1278,
             "dataviz": 1280,
             "gamedev": 1273,
             "svg": 1216
@@ -27546,7 +27547,7 @@
           "battles": 2112,
           "suites": {
             "website": 1274,
-            "uicomponent": 1258,
+            "uicomponent": 1255,
             "dataviz": 1224,
             "gamedev": 1238
           }
@@ -27560,7 +27561,7 @@
           "battles": 30202,
           "suites": {
             "website": 1273,
-            "uicomponent": 1282,
+            "uicomponent": 1279,
             "dataviz": 1280,
             "gamedev": 1248,
             "svg": 1190
@@ -27575,7 +27576,7 @@
           "battles": 15725,
           "suites": {
             "website": 1271,
-            "uicomponent": 1265,
+            "uicomponent": 1262,
             "dataviz": 1263,
             "gamedev": 1243,
             "svg": 1196
@@ -27590,7 +27591,7 @@
           "battles": 1122,
           "suites": {
             "website": 1269,
-            "uicomponent": 1247,
+            "uicomponent": 1244,
             "gamedev": 1244
           }
         },
@@ -27606,8 +27607,8 @@
           "battles": 6198,
           "suites": {
             "website": 1266,
-            "uicomponent": 1327,
-            "dataviz": 1280,
+            "uicomponent": 1324,
+            "dataviz": 1279,
             "gamedev": 1303
           }
         },
@@ -27620,7 +27621,7 @@
           "battles": 13430,
           "suites": {
             "website": 1265,
-            "uicomponent": 1264,
+            "uicomponent": 1260,
             "dataviz": 1246,
             "gamedev": 1266,
             "svg": 1178
@@ -27638,7 +27639,7 @@
           "battles": 4503,
           "suites": {
             "website": 1265,
-            "uicomponent": 1287,
+            "uicomponent": 1284,
             "dataviz": 1209,
             "gamedev": 1246,
             "svg": 1228
@@ -27653,7 +27654,7 @@
           "battles": 18249,
           "suites": {
             "website": 1264,
-            "uicomponent": 1259,
+            "uicomponent": 1256,
             "dataviz": 1272,
             "gamedev": 1246,
             "svg": 1201
@@ -27668,7 +27669,7 @@
           "battles": 1947,
           "suites": {
             "website": 1262,
-            "uicomponent": 1202,
+            "uicomponent": 1199,
             "dataviz": 1275,
             "gamedev": 1243
           }
@@ -27682,7 +27683,7 @@
           "battles": 13281,
           "suites": {
             "website": 1260,
-            "uicomponent": 1254,
+            "uicomponent": 1251,
             "dataviz": 1245,
             "gamedev": 1232,
             "svg": 1166
@@ -27697,8 +27698,8 @@
           "battles": 11386,
           "suites": {
             "website": 1260,
-            "uicomponent": 1277,
-            "dataviz": 1262,
+            "uicomponent": 1274,
+            "dataviz": 1261,
             "gamedev": 1250,
             "svg": 1219
           }
@@ -27712,7 +27713,7 @@
           "battles": 15069,
           "suites": {
             "website": 1259,
-            "uicomponent": 1241,
+            "uicomponent": 1239,
             "dataviz": 1256,
             "gamedev": 1259,
             "svg": 1180
@@ -27727,7 +27728,7 @@
           "battles": 14200,
           "suites": {
             "website": 1258,
-            "uicomponent": 1255,
+            "uicomponent": 1252,
             "dataviz": 1256,
             "gamedev": 1248,
             "svg": 1203
@@ -27742,7 +27743,7 @@
           "battles": 9947,
           "suites": {
             "website": 1258,
-            "uicomponent": 1252,
+            "uicomponent": 1249,
             "dataviz": 1273,
             "gamedev": 1243,
             "svg": 1195
@@ -27757,7 +27758,7 @@
           "battles": 20516,
           "suites": {
             "website": 1257,
-            "uicomponent": 1263,
+            "uicomponent": 1259,
             "dataviz": 1236,
             "gamedev": 1246,
             "svg": 1241
@@ -27772,7 +27773,7 @@
           "battles": 23822,
           "suites": {
             "website": 1257,
-            "uicomponent": 1246,
+            "uicomponent": 1243,
             "dataviz": 1247,
             "gamedev": 1235,
             "svg": 1172
@@ -27790,7 +27791,7 @@
           "battles": 33012,
           "suites": {
             "website": 1257,
-            "uicomponent": 1247,
+            "uicomponent": 1243,
             "dataviz": 1235,
             "gamedev": 1212,
             "svg": 1204
@@ -27808,8 +27809,8 @@
           "battles": 2138,
           "suites": {
             "website": 1255,
-            "uicomponent": 1275,
-            "dataviz": 1272,
+            "uicomponent": 1272,
+            "dataviz": 1271,
             "gamedev": 1198,
             "svg": 1217
           }
@@ -27823,7 +27824,7 @@
           "battles": 12539,
           "suites": {
             "website": 1254,
-            "uicomponent": 1248,
+            "uicomponent": 1246,
             "dataviz": 1218,
             "gamedev": 1204,
             "svg": 1159
@@ -27838,8 +27839,8 @@
           "battles": 15146,
           "suites": {
             "website": 1253,
-            "uicomponent": 1293,
-            "dataviz": 1256,
+            "uicomponent": 1290,
+            "dataviz": 1255,
             "gamedev": 1260,
             "svg": 1266
           }
@@ -32516,7 +32517,7 @@
       "name": "Kokoro 82M v1.0",
       "shortName": "Kokoro 82M v1.0",
       "mediaKind": "tts",
-      "intelligenceIndex": 41.44,
+      "intelligenceIndex": 41.39,
       "cost": 0.00065,
       "creator": {
         "name": "Kokoro",
@@ -32524,23 +32525,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 14.52,
+      "timeSec": 14.77,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 41.44
+        "tts": 41.39
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1060,
+        "ttsElo": 1059.7,
         "pricePer1mChars": 0.65,
         "ttfaMs": 1692,
-        "cps": 240.3
+        "cps": 240.4
       },
       "releaseDate": "2025-01-27"
     },
@@ -32550,7 +32551,7 @@
       "name": "StyleTTS 2",
       "shortName": "StyleTTS 2",
       "mediaKind": "tts",
-      "intelligenceIndex": 15.89,
+      "intelligenceIndex": 15.84,
       "cost": 0.00282,
       "creator": {
         "name": "StyleTTS",
@@ -32565,13 +32566,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 15.89
+        "tts": 15.84
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 887.9,
+        "ttsElo": 887.4,
         "pricePer1mChars": 2.82,
         "ttfaMs": null,
         "cps": 3.1
@@ -32677,7 +32678,7 @@
       "name": "Google WaveNet",
       "shortName": "Google WaveNet",
       "mediaKind": "tts",
-      "intelligenceIndex": 18.89,
+      "intelligenceIndex": 19,
       "cost": 0.004,
       "creator": {
         "name": "Google",
@@ -32685,23 +32686,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 23.14,
+      "timeSec": 22.86,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 18.89
+        "tts": 19
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 915.2,
+        "ttsElo": 916.1,
         "pricePer1mChars": 4,
         "ttfaMs": 681,
-        "cps": 356.8
+        "cps": 354.8
       },
       "releaseDate": "2016-09-08"
     },
@@ -32711,7 +32712,7 @@
       "name": "Google Standard",
       "shortName": "Google Standard",
       "mediaKind": "tts",
-      "intelligenceIndex": 15.52,
+      "intelligenceIndex": 15.47,
       "cost": 0.004,
       "creator": {
         "name": "Google",
@@ -32719,23 +32720,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 26.58,
+      "timeSec": 26.28,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 15.52
+        "tts": 15.47
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 884.2,
+        "ttsElo": 883.8,
         "pricePer1mChars": 4,
         "ttfaMs": 670,
-        "cps": 442.3
+        "cps": 420.2
       },
       "releaseDate": "2018-08-28"
     },
@@ -32745,7 +32746,7 @@
       "name": "Polly Standard",
       "shortName": "Polly Standard",
       "mediaKind": "tts",
-      "intelligenceIndex": 10.83,
+      "intelligenceIndex": 10.79,
       "cost": 0.004,
       "creator": {
         "name": "Amazon",
@@ -32753,23 +32754,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 53.77,
+      "timeSec": 61.82,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 10.83
+        "tts": 10.79
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 830.3,
+        "ttsElo": 829.9,
         "pricePer1mChars": 4,
         "ttfaMs": 78,
-        "cps": 912.4
+        "cps": 983.7
       },
       "releaseDate": "2016-11-30"
     },
@@ -32942,7 +32943,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 10.09,
+      "timeSec": 9.71,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -32958,7 +32959,7 @@
         "ttsElo": 1293.4,
         "pricePer1mChars": 6.58,
         "ttfaMs": 93,
-        "cps": 169.9
+        "cps": 161.8
       },
       "releaseDate": "2026-11-03"
     },
@@ -32968,7 +32969,7 @@
       "name": "Simba 3.2",
       "shortName": "Simba 3.2",
       "mediaKind": "tts",
-      "intelligenceIndex": 75.58,
+      "intelligenceIndex": 75.4,
       "cost": 0.00658,
       "creator": {
         "name": "SpeechifyAI",
@@ -32976,23 +32977,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.42,
+      "timeSec": 7.43,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 75.58
+        "tts": 75.4
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1252.2,
+        "ttsElo": 1250.9,
         "pricePer1mChars": 6.58,
         "ttfaMs": 100,
-        "cps": 118.1
+        "cps": 120.6
       },
       "releaseDate": "2026-07-01"
     },
@@ -33002,7 +33003,7 @@
       "name": "Simba 3.0",
       "shortName": "SIMBA 3.0",
       "mediaKind": "tts",
-      "intelligenceIndex": 51.51,
+      "intelligenceIndex": 51.26,
       "cost": 0.00658,
       "creator": {
         "name": "SpeechifyAI",
@@ -33010,23 +33011,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 9.11,
+      "timeSec": 9.25,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 51.51
+        "tts": 51.26
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1112.9,
+        "ttsElo": 1111.6,
         "pricePer1mChars": 6.58,
         "ttfaMs": 111,
-        "cps": 144.5
+        "cps": 147.2
       },
       "releaseDate": "2026-02-19"
     },
@@ -33160,7 +33161,7 @@
       "name": "OpenVoice v2",
       "shortName": "OpenVoice v2",
       "mediaKind": "tts",
-      "intelligenceIndex": 24.03,
+      "intelligenceIndex": 23.91,
       "cost": 0.00833,
       "creator": {
         "name": "OpenVoice",
@@ -33175,13 +33176,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 24.03
+        "tts": 23.91
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 955,
+        "ttsElo": 954.1,
         "pricePer1mChars": 8.33,
         "ttfaMs": null,
         "cps": 9.2
@@ -33225,7 +33226,7 @@
       "name": "Gemini 2.5 Flash Lite TTS",
       "shortName": "Gemini 2.5 Flash Lite",
       "mediaKind": "tts",
-      "intelligenceIndex": 45.77,
+      "intelligenceIndex": 45.66,
       "cost": 0.00915,
       "creator": {
         "name": "Google",
@@ -33239,13 +33240,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 45.77
+        "tts": 45.66
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1082.9,
+        "ttsElo": 1082.3,
         "pricePer1mChars": 9.15,
         "ttfaMs": null,
         "cps": null
@@ -33258,7 +33259,7 @@
       "name": "Gemini 2.5 Flash TTS (Dec 2025)",
       "shortName": "Gemini 2.5 Flash",
       "mediaKind": "tts",
-      "intelligenceIndex": 43.78,
+      "intelligenceIndex": 43.76,
       "cost": 0.00915,
       "creator": {
         "name": "Google",
@@ -33273,13 +33274,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 43.78
+        "tts": 43.76
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1072.4,
+        "ttsElo": 1072.3,
         "pricePer1mChars": 9.15,
         "ttfaMs": 4605,
         "cps": 39.5
@@ -33323,7 +33324,7 @@
       "name": "Falcon 2",
       "shortName": "Falcon 2",
       "mediaKind": "tts",
-      "intelligenceIndex": 59.71,
+      "intelligenceIndex": 59.62,
       "cost": 0.01,
       "creator": {
         "name": "Murf AI",
@@ -33331,23 +33332,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.92,
+      "timeSec": 6.81,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 59.71
+        "tts": 59.62
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1156.3,
+        "ttsElo": 1155.8,
         "pricePer1mChars": 10,
         "ttfaMs": 142,
-        "cps": 118.2
+        "cps": 113.8
       },
       "releaseDate": "2026-07-21"
     },
@@ -33357,7 +33358,7 @@
       "name": "Falcon 2.1",
       "shortName": "Falcon 2.1",
       "mediaKind": "tts",
-      "intelligenceIndex": 59.06,
+      "intelligenceIndex": 58.79,
       "cost": 0.01,
       "creator": {
         "name": "Murf AI",
@@ -33365,23 +33366,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.64,
+      "timeSec": 7.55,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 59.06
+        "tts": 58.79
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1152.8,
+        "ttsElo": 1151.3,
         "pricePer1mChars": 10,
         "ttfaMs": 159,
-        "cps": 128.7
+        "cps": 127.6
       },
       "releaseDate": "2026-10-28"
     },
@@ -33515,7 +33516,7 @@
       "name": "Async Flash v1.5",
       "shortName": "Async Flash v1.5",
       "mediaKind": "tts",
-      "intelligenceIndex": 56.36,
+      "intelligenceIndex": 56.39,
       "cost": 0.0101,
       "creator": {
         "name": "async",
@@ -33530,16 +33531,16 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 56.36
+        "tts": 56.39
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1138.3,
+        "ttsElo": 1138.5,
         "pricePer1mChars": 10.1,
         "ttfaMs": 488,
-        "cps": 131.5
+        "cps": 132.8
       },
       "releaseDate": "2026-05-25"
     },
@@ -33549,7 +33550,7 @@
       "name": "Async Flash v1.0",
       "shortName": "Async Flash v1.0",
       "mediaKind": "tts",
-      "intelligenceIndex": 38.85,
+      "intelligenceIndex": 38.8,
       "cost": 0.0101,
       "creator": {
         "name": "async",
@@ -33557,23 +33558,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.12,
+      "timeSec": 6.74,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 38.85
+        "tts": 38.8
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1045.9,
+        "ttsElo": 1045.6,
         "pricePer1mChars": 10.1,
         "ttfaMs": 535,
-        "cps": 106
+        "cps": 105.8
       },
       "releaseDate": "2025-07-08"
     },
@@ -33615,7 +33616,7 @@
       "name": "Realtime TTS-2 Flash",
       "shortName": "Realtime TTS-2 Flash",
       "mediaKind": "tts",
-      "intelligenceIndex": 69.73,
+      "intelligenceIndex": 69.68,
       "cost": 0.01042,
       "creator": {
         "name": "Inworld",
@@ -33630,13 +33631,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 69.73
+        "tts": 69.68
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1213.8,
+        "ttsElo": 1213.4,
         "pricePer1mChars": 10.42,
         "ttfaMs": 81,
         "cps": 212.8
@@ -33742,7 +33743,7 @@
       "name": "Gemini 3.8 Flash-Lite TTS",
       "shortName": "Gemini 3.8 Flash-Lite TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 76.97,
+      "intelligenceIndex": 76.79,
       "cost": 0.01103,
       "creator": {
         "name": "Google",
@@ -33757,13 +33758,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 76.97
+        "tts": 76.79
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1262.2,
+        "ttsElo": 1260.9,
         "pricePer1mChars": 11.03,
         "ttfaMs": 556,
         "cps": 104.1
@@ -33776,7 +33777,7 @@
       "name": "Qwen3 TTS Flash",
       "shortName": "Qwen3 TTS Flash",
       "mediaKind": "tts",
-      "intelligenceIndex": 22,
+      "intelligenceIndex": 21.93,
       "cost": 0.01103,
       "creator": {
         "name": "Alibaba",
@@ -33791,13 +33792,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 22
+        "tts": 21.93
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 940.1,
+        "ttsElo": 939.6,
         "pricePer1mChars": 11.03,
         "ttfaMs": 627,
         "cps": 55
@@ -33841,7 +33842,7 @@
       "name": "Voxtral 3 TTS",
       "shortName": "Voxtral 3 TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 69.62,
+      "intelligenceIndex": 69.39,
       "cost": 0.013,
       "creator": {
         "name": "Mistral",
@@ -33849,23 +33850,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.91,
+      "timeSec": 6.93,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 69.62
+        "tts": 69.39
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1213,
+        "ttsElo": 1211.6,
         "pricePer1mChars": 13,
         "ttfaMs": 534,
-        "cps": 107.2
+        "cps": 112
       },
       "releaseDate": "2026-10-20"
     },
@@ -33875,7 +33876,7 @@
       "name": "Qwen3 TTS",
       "shortName": "Qwen3-TTS-VC-Realtime",
       "mediaKind": "tts",
-      "intelligenceIndex": 20.57,
+      "intelligenceIndex": 20.47,
       "cost": 0.01379,
       "creator": {
         "name": "Alibaba",
@@ -33889,13 +33890,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 20.57
+        "tts": 20.47
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 929,
+        "ttsElo": 928.2,
         "pricePer1mChars": 13.79,
         "ttfaMs": null,
         "cps": null
@@ -33939,7 +33940,7 @@
       "name": "Soniox TTS Real-Time v2",
       "shortName": "Soniox TTS RT v2",
       "mediaKind": "tts",
-      "intelligenceIndex": 63.94,
+      "intelligenceIndex": 63.87,
       "cost": 0.01423,
       "creator": {
         "name": "Soniox",
@@ -33954,13 +33955,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 63.94
+        "tts": 63.87
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1179.7,
+        "ttsElo": 1179.2,
         "pricePer1mChars": 14.23,
         "ttfaMs": 291,
         "cps": 18.2
@@ -33973,7 +33974,7 @@
       "name": "Fish Audio Drama 3",
       "shortName": "Fish Audio Drama 3",
       "mediaKind": "tts",
-      "intelligenceIndex": 79.13,
+      "intelligenceIndex": 79.03,
       "cost": 0.015,
       "creator": {
         "name": "Fish Audio",
@@ -33988,13 +33989,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 79.13
+        "tts": 79.03
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1278.7,
+        "ttsElo": 1277.9,
         "pricePer1mChars": 15,
         "ttfaMs": 252,
         "cps": 82.4
@@ -34007,7 +34008,7 @@
       "name": "Fish Audio Drama 3 Preview",
       "shortName": "Fish Audio Drama 3 Preview",
       "mediaKind": "tts",
-      "intelligenceIndex": 73.4,
+      "intelligenceIndex": 73.35,
       "cost": 0.015,
       "creator": {
         "name": "Fish Audio",
@@ -34015,23 +34016,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 4.23,
+      "timeSec": 4.16,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 73.4
+        "tts": 73.35
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1237.3,
+        "ttsElo": 1236.9,
         "pricePer1mChars": 15,
         "ttfaMs": 262,
-        "cps": 70.9
+        "cps": 70.2
       },
       "releaseDate": "2026-10-14"
     },
@@ -34041,7 +34042,7 @@
       "name": "AssemblyAI-TTS-1",
       "shortName": "AssemblyAI-TTS-1",
       "mediaKind": "tts",
-      "intelligenceIndex": 69.57,
+      "intelligenceIndex": 69.54,
       "cost": 0.015,
       "creator": {
         "name": "AssemblyAI",
@@ -34056,13 +34057,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 69.57
+        "tts": 69.54
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1212.7,
+        "ttsElo": 1212.5,
         "pricePer1mChars": 15,
         "ttfaMs": 217,
         "cps": 170.4
@@ -34075,7 +34076,7 @@
       "name": "Luna TTS",
       "shortName": "Luna TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 66.33,
+      "intelligenceIndex": 66.14,
       "cost": 0.015,
       "creator": {
         "name": "VUI Labs",
@@ -34083,23 +34084,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 11.02,
+      "timeSec": 11.28,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 66.33
+        "tts": 66.14
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1193.3,
+        "ttsElo": 1192.2,
         "pricePer1mChars": 15,
         "ttfaMs": null,
-        "cps": 174.7
+        "cps": 174.2
       },
       "releaseDate": "2026-06-18"
     },
@@ -34109,7 +34110,7 @@
       "name": "Fish Audio S2.1 Pro (Oct 2026)",
       "shortName": "Fish Audio S2.1 Pro",
       "mediaKind": "tts",
-      "intelligenceIndex": 64.33,
+      "intelligenceIndex": 64.26,
       "cost": 0.015,
       "creator": {
         "name": "Fish Audio",
@@ -34124,13 +34125,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 64.33
+        "tts": 64.26
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1181.8,
+        "ttsElo": 1181.4,
         "pricePer1mChars": 15,
         "ttfaMs": 252,
         "cps": 68.2
@@ -34143,7 +34144,7 @@
       "name": "SpaceXAI TTS",
       "shortName": "xAI Text to Speech",
       "mediaKind": "tts",
-      "intelligenceIndex": 60.57,
+      "intelligenceIndex": 60.45,
       "cost": 0.015,
       "creator": {
         "name": "SpaceXAI",
@@ -34151,23 +34152,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 11.12,
+      "timeSec": 11.11,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 60.57
+        "tts": 60.45
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1160.9,
+        "ttsElo": 1160.3,
         "pricePer1mChars": 15,
         "ttfaMs": 274,
-        "cps": 191.3
+        "cps": 187.1
       },
       "releaseDate": "2026-03-16"
     },
@@ -34208,7 +34209,7 @@
       "name": "Fish Audio S2 Pro",
       "shortName": "Fish Audio S2 Pro",
       "mediaKind": "tts",
-      "intelligenceIndex": 49.22,
+      "intelligenceIndex": 49.17,
       "cost": 0.015,
       "creator": {
         "name": "Fish Audio",
@@ -34223,13 +34224,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 49.22
+        "tts": 49.17
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1100.9,
+        "ttsElo": 1100.7,
         "pricePer1mChars": 15,
         "ttfaMs": 181,
         "cps": 94.8
@@ -34273,7 +34274,7 @@
       "name": "OpenAudio S1",
       "shortName": "OpenAudio S1",
       "mediaKind": "tts",
-      "intelligenceIndex": 47.33,
+      "intelligenceIndex": 47.32,
       "cost": 0.015,
       "creator": {
         "name": "Fish Audio",
@@ -34288,16 +34289,16 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 47.33
+        "tts": 47.32
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1091.1,
+        "ttsElo": 1091,
         "pricePer1mChars": 15,
         "ttfaMs": null,
-        "cps": 61.7
+        "cps": 61.1
       },
       "releaseDate": "2025-06-03"
     },
@@ -34307,7 +34308,7 @@
       "name": "TTS-1",
       "shortName": "TTS-1",
       "mediaKind": "tts",
-      "intelligenceIndex": 46.39,
+      "intelligenceIndex": 46.36,
       "cost": 0.015,
       "creator": {
         "name": "OpenAI",
@@ -34322,13 +34323,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 46.39
+        "tts": 46.36
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1086.2,
+        "ttsElo": 1086,
         "pricePer1mChars": 15,
         "ttfaMs": 1394,
         "cps": 166.3
@@ -34372,7 +34373,7 @@
       "name": "Higgs Audio V3 TTS",
       "shortName": "Higgs Audio V3",
       "mediaKind": "tts",
-      "intelligenceIndex": 36.85,
+      "intelligenceIndex": 36.79,
       "cost": 0.015,
       "creator": {
         "name": "Boson AI",
@@ -34387,16 +34388,16 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 36.85
+        "tts": 36.79
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1034.8,
+        "ttsElo": 1034.5,
         "pricePer1mChars": 15,
         "ttfaMs": null,
-        "cps": 43
+        "cps": 42.8
       },
       "releaseDate": "2026-06-04"
     },
@@ -34406,7 +34407,7 @@
       "name": "Azure Neural",
       "shortName": "Azure Neural",
       "mediaKind": "tts",
-      "intelligenceIndex": 36.45,
+      "intelligenceIndex": 36.37,
       "cost": 0.015,
       "creator": {
         "name": "Microsoft",
@@ -34414,23 +34415,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 5.08,
+      "timeSec": 5.02,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 36.45
+        "tts": 36.37
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1032.5,
+        "ttsElo": 1032.1,
         "pricePer1mChars": 15,
         "ttfaMs": 279,
-        "cps": 81
+        "cps": 80
       },
       "releaseDate": "2018-09-24"
     },
@@ -34471,7 +34472,7 @@
       "name": "Voxtral TTS",
       "shortName": "Voxtral TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 47.97,
+      "intelligenceIndex": 47.87,
       "cost": 0.016,
       "creator": {
         "name": "Mistral",
@@ -34486,13 +34487,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 47.97
+        "tts": 47.87
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1094.4,
+        "ttsElo": 1093.9,
         "pricePer1mChars": 16,
         "ttfaMs": 602,
         "cps": 108.8
@@ -34505,7 +34506,7 @@
       "name": "Polly Neural",
       "shortName": "Polly Neural",
       "mediaKind": "tts",
-      "intelligenceIndex": 16.49,
+      "intelligenceIndex": 16.47,
       "cost": 0.016,
       "creator": {
         "name": "Amazon",
@@ -34520,13 +34521,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 16.49
+        "tts": 16.47
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 893.7,
+        "ttsElo": 893.4,
         "pricePer1mChars": 16,
         "ttfaMs": 165,
         "cps": 868.2
@@ -34539,7 +34540,7 @@
       "name": "Neural2",
       "shortName": "Neural2",
       "mediaKind": "tts",
-      "intelligenceIndex": 16.26,
+      "intelligenceIndex": 16.2,
       "cost": 0.016,
       "creator": {
         "name": "Google",
@@ -34547,23 +34548,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 37.38,
+      "timeSec": 37.58,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 16.26
+        "tts": 16.2
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 891.5,
+        "ttsElo": 890.9,
         "pricePer1mChars": 16,
         "ttfaMs": 439,
-        "cps": 599.1
+        "cps": 600.9
       },
       "releaseDate": "2022-06-27"
     },
@@ -34573,7 +34574,7 @@
       "name": "Gemini 3.8 Flash TTS",
       "shortName": "Gemini 3.8 Flash TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 79.68,
+      "intelligenceIndex": 79.62,
       "cost": 0.01649,
       "creator": {
         "name": "Google",
@@ -34588,13 +34589,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 79.68
+        "tts": 79.62
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1283,
+        "ttsElo": 1282.5,
         "pricePer1mChars": 16.49,
         "ttfaMs": 829,
         "cps": 59.8
@@ -34669,7 +34670,7 @@
       "name": "Gemini 3.1 Flash TTS",
       "shortName": "Gemini 3.1 Flash TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 69.89,
+      "intelligenceIndex": 69.8,
       "cost": 0.01831,
       "creator": {
         "name": "Google",
@@ -34684,16 +34685,16 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 69.89
+        "tts": 69.8
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1214.7,
+        "ttsElo": 1214.1,
         "pricePer1mChars": 18.31,
         "ttfaMs": 940,
-        "cps": 39.8
+        "cps": 40.7
       },
       "releaseDate": "2026-04-15"
     },
@@ -34703,7 +34704,7 @@
       "name": "Gemini 2.5 Pro (Dec 2025)",
       "shortName": "Gemini 2.5 Pro",
       "mediaKind": "tts",
-      "intelligenceIndex": 37.27,
+      "intelligenceIndex": 37.22,
       "cost": 0.01831,
       "creator": {
         "name": "Google",
@@ -34711,23 +34712,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 1.38,
+      "timeSec": 1.4,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 37.27
+        "tts": 37.22
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1037.2,
+        "ttsElo": 1036.9,
         "pricePer1mChars": 18.31,
         "ttfaMs": 9206,
-        "cps": 19.1
+        "cps": 19.6
       },
       "releaseDate": "2025-12-10"
     },
@@ -34768,7 +34769,7 @@
       "name": "Qwen-Audio-3.1-TTS-Plus",
       "shortName": "Qwen-Audio-3.1-TTS-Plus",
       "mediaKind": "tts",
-      "intelligenceIndex": 81.64,
+      "intelligenceIndex": 81.56,
       "cost": 0.01931,
       "creator": {
         "name": "Alibaba",
@@ -34782,13 +34783,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 81.64
+        "tts": 81.56
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1299.4,
+        "ttsElo": 1298.7,
         "pricePer1mChars": 19.31,
         "ttfaMs": null,
         "cps": null
@@ -34801,7 +34802,7 @@
       "name": "Qwen-Audio-3.0-TTS-Plus",
       "shortName": "Qwen-Audio-3.0-TTS-Plus",
       "mediaKind": "tts",
-      "intelligenceIndex": 76.99,
+      "intelligenceIndex": 76.95,
       "cost": 0.01931,
       "creator": {
         "name": "Alibaba",
@@ -34815,13 +34816,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 76.99
+        "tts": 76.95
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1262.3,
+        "ttsElo": 1262.1,
         "pricePer1mChars": 19.31,
         "ttfaMs": null,
         "cps": null
@@ -34896,7 +34897,7 @@
       "name": "Lightning V3.1 Pro (Oct 2026)",
       "shortName": "Lightning V3.1 Pro",
       "mediaKind": "tts",
-      "intelligenceIndex": 79.01,
+      "intelligenceIndex": 78.81,
       "cost": 0.0195,
       "creator": {
         "name": "Smallest.ai",
@@ -34911,13 +34912,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 79.01
+        "tts": 78.81
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1277.7,
+        "ttsElo": 1276.1,
         "pricePer1mChars": 19.5,
         "ttfaMs": 220,
         "cps": 110.5
@@ -35119,7 +35120,7 @@
       "name": "Async Pro v1.0",
       "shortName": "Async Pro v1.0",
       "mediaKind": "tts",
-      "intelligenceIndex": 55,
+      "intelligenceIndex": 54.94,
       "cost": 0.0202,
       "creator": {
         "name": "async",
@@ -35134,13 +35135,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 55
+        "tts": 54.94
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1131.1,
+        "ttsElo": 1130.8,
         "pricePer1mChars": 20.2,
         "ttfaMs": 764,
         "cps": 81.5
@@ -35153,7 +35154,7 @@
       "name": "Realtime TTS-2",
       "shortName": "Realtime TTS-2",
       "mediaKind": "tts",
-      "intelligenceIndex": 77.99,
+      "intelligenceIndex": 77.93,
       "cost": 0.02083,
       "creator": {
         "name": "Inworld",
@@ -35161,23 +35162,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 5.19,
+      "timeSec": 5.09,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 77.99
+        "tts": 77.93
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1269.8,
+        "ttsElo": 1269.3,
         "pricePer1mChars": 20.83,
         "ttfaMs": 173,
-        "cps": 83.7
+        "cps": 84.3
       },
       "releaseDate": "2026-08-31"
     },
@@ -35218,7 +35219,7 @@
       "name": "Azure HD 2.5",
       "shortName": "Azure HD 2.5",
       "mediaKind": "tts",
-      "intelligenceIndex": 58.32,
+      "intelligenceIndex": 58.27,
       "cost": 0.022,
       "creator": {
         "name": "Microsoft",
@@ -35233,13 +35234,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 58.32
+        "tts": 58.27
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1148.8,
+        "ttsElo": 1148.5,
         "pricePer1mChars": 22,
         "ttfaMs": 176,
         "cps": 76.6
@@ -35283,7 +35284,7 @@
       "name": "Lightning v3.1",
       "shortName": "Lightning v3.1",
       "mediaKind": "tts",
-      "intelligenceIndex": 34.98,
+      "intelligenceIndex": 34.97,
       "cost": 0.025,
       "creator": {
         "name": "Smallest.ai",
@@ -35298,7 +35299,7 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 34.98
+        "tts": 34.97
       },
       "mediaRaw": {
         "kind": "tts",
@@ -35317,7 +35318,7 @@
       "name": "Chatterbox",
       "shortName": "Chatterbox",
       "mediaKind": "tts",
-      "intelligenceIndex": 34.17,
+      "intelligenceIndex": 34.14,
       "cost": 0.025,
       "creator": {
         "name": "Resemble AI",
@@ -35331,13 +35332,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 34.17
+        "tts": 34.14
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1019.6,
+        "ttsElo": 1019.4,
         "pricePer1mChars": 25,
         "ttfaMs": null,
         "cps": null
@@ -35691,7 +35692,7 @@
       "name": "TTS-1 HD",
       "shortName": "TTS-1 HD",
       "mediaKind": "tts",
-      "intelligenceIndex": 51.03,
+      "intelligenceIndex": 50.87,
       "cost": 0.03,
       "creator": {
         "name": "OpenAI",
@@ -35706,13 +35707,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 51.03
+        "tts": 50.87
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1110.4,
+        "ttsElo": 1109.5,
         "pricePer1mChars": 30,
         "ttfaMs": 2377,
         "cps": 108.8
@@ -35818,7 +35819,7 @@
       "name": "Polly Generative",
       "shortName": "Polly Generative",
       "mediaKind": "tts",
-      "intelligenceIndex": 41.94,
+      "intelligenceIndex": 41.87,
       "cost": 0.03,
       "creator": {
         "name": "Amazon",
@@ -35833,13 +35834,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 41.94
+        "tts": 41.87
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1062.6,
+        "ttsElo": 1062.2,
         "pricePer1mChars": 30,
         "ttfaMs": 236,
         "cps": 109.3
@@ -35852,7 +35853,7 @@
       "name": "Chirp 3: HD",
       "shortName": "Chirp 3: HD",
       "mediaKind": "tts",
-      "intelligenceIndex": 41.86,
+      "intelligenceIndex": 41.67,
       "cost": 0.03,
       "creator": {
         "name": "Google",
@@ -35867,13 +35868,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 41.86
+        "tts": 41.67
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1062.2,
+        "ttsElo": 1061.2,
         "pricePer1mChars": 30,
         "ttfaMs": 1573,
         "cps": 125.4
@@ -35979,7 +35980,7 @@
       "name": "T2A-01-Turbo",
       "shortName": "T2A-01-Turbo",
       "mediaKind": "tts",
-      "intelligenceIndex": 34.96,
+      "intelligenceIndex": 34.85,
       "cost": 0.03,
       "creator": {
         "name": "MiniMax",
@@ -35994,13 +35995,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 34.96
+        "tts": 34.85
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1024.1,
+        "ttsElo": 1023.5,
         "pricePer1mChars": 30,
         "ttfaMs": 591,
         "cps": 107.4
@@ -36106,7 +36107,7 @@
       "name": "Mist V2",
       "shortName": "mistv2",
       "mediaKind": "tts",
-      "intelligenceIndex": 17.45,
+      "intelligenceIndex": 17.41,
       "cost": 0.03113,
       "creator": {
         "name": "Rime",
@@ -36121,13 +36122,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 17.45
+        "tts": 17.41
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 902.5,
+        "ttsElo": 902.1,
         "pricePer1mChars": 31.13,
         "ttfaMs": 473,
         "cps": 488.8
@@ -36327,7 +36328,7 @@
       "name": "Breeze TTS 2",
       "shortName": "Breeze TTS 2",
       "mediaKind": "tts",
-      "intelligenceIndex": 72.18,
+      "intelligenceIndex": 72.09,
       "cost": 0.034,
       "creator": {
         "name": "BreezeBlue",
@@ -36342,13 +36343,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 72.18
+        "tts": 72.09
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1229.2,
+        "ttsElo": 1228.6,
         "pricePer1mChars": 34,
         "ttfaMs": 322,
         "cps": 49.3
@@ -36611,7 +36612,7 @@
       "name": "Eleven v4 Turbo",
       "shortName": "Eleven v4 Turbo",
       "mediaKind": "tts",
-      "intelligenceIndex": 85.92,
+      "intelligenceIndex": 85.85,
       "cost": 0.04,
       "creator": {
         "name": "ElevenLabs",
@@ -36625,13 +36626,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 85.92
+        "tts": 85.85
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1340.6,
+        "ttsElo": 1339.9,
         "pricePer1mChars": 40,
         "ttfaMs": null,
         "cps": null
@@ -36675,7 +36676,7 @@
       "name": "Step TTS 2 (Mar 2026)",
       "shortName": "Step TTS 2",
       "mediaKind": "tts",
-      "intelligenceIndex": 56.11,
+      "intelligenceIndex": 55.94,
       "cost": 0.04,
       "creator": {
         "name": "StepFun",
@@ -36690,13 +36691,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 56.11
+        "tts": 55.94
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1137,
+        "ttsElo": 1136.1,
         "pricePer1mChars": 40,
         "ttfaMs": 4604,
         "cps": 35.7
@@ -36740,7 +36741,7 @@
       "name": "Chatterbox HD",
       "shortName": "Chatterbox HD",
       "mediaKind": "tts",
-      "intelligenceIndex": 50.82,
+      "intelligenceIndex": 50.73,
       "cost": 0.04,
       "creator": {
         "name": "Resemble AI",
@@ -36754,13 +36755,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 50.82
+        "tts": 50.73
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1109.3,
+        "ttsElo": 1108.8,
         "pricePer1mChars": 40,
         "ttfaMs": null,
         "cps": null
@@ -36835,7 +36836,7 @@
       "name": "Bland Speech v3",
       "shortName": "Bland Speech v3",
       "mediaKind": "tts",
-      "intelligenceIndex": 36.61,
+      "intelligenceIndex": 36.41,
       "cost": 0.04,
       "creator": {
         "name": "Bland AI",
@@ -36849,13 +36850,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 36.61
+        "tts": 36.41
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1033.5,
+        "ttsElo": 1032.3,
         "pricePer1mChars": 40,
         "ttfaMs": null,
         "cps": null
@@ -37023,7 +37024,7 @@
       "name": "XTTS v2",
       "shortName": "XTTS v2",
       "mediaKind": "tts",
-      "intelligenceIndex": 18.86,
+      "intelligenceIndex": 18.8,
       "cost": 0.04044,
       "creator": {
         "name": "Coqui",
@@ -37038,13 +37039,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 18.86
+        "tts": 18.8
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 914.9,
+        "ttsElo": 914.4,
         "pricePer1mChars": 40.44,
         "ttfaMs": null,
         "cps": 32.7
@@ -37057,7 +37058,7 @@
       "name": "Flux TTS",
       "shortName": "Flux TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 39.85,
+      "intelligenceIndex": 39.76,
       "cost": 0.045,
       "creator": {
         "name": "Deepgram",
@@ -37072,13 +37073,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 39.85
+        "tts": 39.76
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1051.4,
+        "ttsElo": 1050.8,
         "pricePer1mChars": 45,
         "ttfaMs": 344,
         "cps": 20.8
@@ -37086,46 +37087,12 @@
       "releaseDate": "2026-08-12"
     },
     {
-      "id": "tts:0a3ad21b-24f0-45f6-b254-019f58fdef4c",
-      "slug": "gradium-tts-sep-2026",
-      "name": "Gradium TTS (Sep 2026)",
-      "shortName": "Gradium TTS (September)",
-      "mediaKind": "tts",
-      "intelligenceIndex": 62.58,
-      "cost": 0.04778,
-      "creator": {
-        "name": "Gradium",
-        "color": "#000000"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "timeSec": 3.23,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": 62.58
-      },
-      "mediaRaw": {
-        "kind": "tts",
-        "unitZh": "每千字语音",
-        "unitEn": "/ 1k chars",
-        "ttsElo": 1172,
-        "pricePer1mChars": 47.78,
-        "ttfaMs": 68,
-        "cps": 53.1
-      },
-      "releaseDate": "2026-09-22"
-    },
-    {
       "id": "tts:21c9750c-166b-4517-a38b-3c7622bcbd42",
       "slug": "gradium-tts-oct-2026",
       "name": "Gradium TTS (Oct 2026)",
       "shortName": "Gradium TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 62.55,
+      "intelligenceIndex": 62.49,
       "cost": 0.04778,
       "creator": {
         "name": "Gradium",
@@ -37140,13 +37107,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 62.55
+        "tts": 62.49
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1171.9,
+        "ttsElo": 1171.5,
         "pricePer1mChars": 47.78,
         "ttfaMs": 69,
         "cps": 54.3
@@ -37154,12 +37121,46 @@
       "releaseDate": "2026-09-30"
     },
     {
+      "id": "tts:0a3ad21b-24f0-45f6-b254-019f58fdef4c",
+      "slug": "gradium-tts-sep-2026",
+      "name": "Gradium TTS (Sep 2026)",
+      "shortName": "Gradium TTS (September)",
+      "mediaKind": "tts",
+      "intelligenceIndex": 62.47,
+      "cost": 0.04778,
+      "creator": {
+        "name": "Gradium",
+        "color": "#000000"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "timeSec": 3.13,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 62.47
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1171.4,
+        "pricePer1mChars": 47.78,
+        "ttfaMs": 68,
+        "cps": 50.7
+      },
+      "releaseDate": "2026-09-22"
+    },
+    {
       "id": "tts:3d455593-5cc5-4b00-bd35-289fe2c785de",
       "slug": "gradium-tts-beta",
       "name": "Gradium TTS (Aug 2026)",
       "shortName": "Gradium TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 59.5,
+      "intelligenceIndex": 59.35,
       "cost": 0.04778,
       "creator": {
         "name": "Gradium",
@@ -37174,13 +37175,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 59.5
+        "tts": 59.35
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1155.1,
+        "ttsElo": 1154.3,
         "pricePer1mChars": 47.78,
         "ttfaMs": 69,
         "cps": 51.6
@@ -37255,7 +37256,7 @@
       "name": "Sonic 3.6",
       "shortName": "Sonic 3.6",
       "mediaKind": "tts",
-      "intelligenceIndex": 81.15,
+      "intelligenceIndex": 81.06,
       "cost": 0.049,
       "creator": {
         "name": "Cartesia",
@@ -37263,23 +37264,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 9.12,
+      "timeSec": 8.94,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 81.15
+        "tts": 81.06
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1295.2,
+        "ttsElo": 1294.4,
         "pricePer1mChars": 49,
         "ttfaMs": 272,
-        "cps": 144.2
+        "cps": 144.1
       },
       "releaseDate": "2026-08-17"
     },
@@ -37289,7 +37290,7 @@
       "name": "Sonic 3.5",
       "shortName": "Sonic 3.5",
       "mediaKind": "tts",
-      "intelligenceIndex": 66.55,
+      "intelligenceIndex": 66.56,
       "cost": 0.049,
       "creator": {
         "name": "Cartesia",
@@ -37297,23 +37298,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 8.1,
+      "timeSec": 7.8,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 66.55
+        "tts": 66.56
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1194.6,
+        "ttsElo": 1194.7,
         "pricePer1mChars": 49,
         "ttfaMs": 268,
-        "cps": 132.2
+        "cps": 119.4
       },
       "releaseDate": "2026-05-04"
     },
@@ -37323,7 +37324,7 @@
       "name": "Sonic 3",
       "shortName": "Sonic 3",
       "mediaKind": "tts",
-      "intelligenceIndex": 41.7,
+      "intelligenceIndex": 41.75,
       "cost": 0.049,
       "creator": {
         "name": "Cartesia",
@@ -37338,13 +37339,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 41.7
+        "tts": 41.75
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1061.3,
+        "ttsElo": 1061.6,
         "pricePer1mChars": 49,
         "ttfaMs": 429,
         "cps": 108.3
@@ -37357,7 +37358,7 @@
       "name": "v3 Conversational",
       "shortName": "v3 Conversational",
       "mediaKind": "tts",
-      "intelligenceIndex": 70.25,
+      "intelligenceIndex": 69.93,
       "cost": 0.05,
       "creator": {
         "name": "ElevenLabs",
@@ -37371,13 +37372,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 70.25
+        "tts": 69.93
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1217,
+        "ttsElo": 1215,
         "pricePer1mChars": 50,
         "ttfaMs": null,
         "cps": null
@@ -37421,7 +37422,7 @@
       "name": "Coda v2",
       "shortName": "Coda v2",
       "mediaKind": "tts",
-      "intelligenceIndex": 52.09,
+      "intelligenceIndex": 52.08,
       "cost": 0.05,
       "creator": {
         "name": "Rime",
@@ -37429,14 +37430,14 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 5.45,
+      "timeSec": 5.43,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 52.09
+        "tts": 52.08
       },
       "mediaRaw": {
         "kind": "tts",
@@ -37445,7 +37446,7 @@
         "ttsElo": 1115.9,
         "pricePer1mChars": 50,
         "ttfaMs": 149,
-        "cps": 82.7
+        "cps": 82.3
       },
       "releaseDate": "2026-10-22"
     },
@@ -37455,7 +37456,7 @@
       "name": "Turbo v2.5",
       "shortName": "Turbo v2.5",
       "mediaKind": "tts",
-      "intelligenceIndex": 48,
+      "intelligenceIndex": 47.87,
       "cost": 0.05,
       "creator": {
         "name": "ElevenLabs",
@@ -37469,13 +37470,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 48
+        "tts": 47.87
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1094.5,
+        "ttsElo": 1093.9,
         "pricePer1mChars": 50,
         "ttfaMs": null,
         "cps": null
@@ -37488,7 +37489,7 @@
       "name": "Flash v2.5",
       "shortName": "Flash v2.5",
       "mediaKind": "tts",
-      "intelligenceIndex": 44.23,
+      "intelligenceIndex": 44.25,
       "cost": 0.05,
       "creator": {
         "name": "ElevenLabs",
@@ -37502,13 +37503,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 44.23
+        "tts": 44.25
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1074.8,
+        "ttsElo": 1074.9,
         "pricePer1mChars": 50,
         "ttfaMs": null,
         "cps": null
@@ -37521,7 +37522,7 @@
       "name": "T2A-01-HD",
       "shortName": "T2A-01-HD",
       "mediaKind": "tts",
-      "intelligenceIndex": 43.72,
+      "intelligenceIndex": 43.7,
       "cost": 0.05,
       "creator": {
         "name": "MiniMax",
@@ -37536,13 +37537,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 43.72
+        "tts": 43.7
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1072.1,
+        "ttsElo": 1072,
         "pricePer1mChars": 50,
         "ttfaMs": 646,
         "cps": 109
@@ -37555,7 +37556,7 @@
       "name": "Coda",
       "shortName": "Coda",
       "mediaKind": "tts",
-      "intelligenceIndex": 39.58,
+      "intelligenceIndex": 39.38,
       "cost": 0.05,
       "creator": {
         "name": "Rime",
@@ -37563,23 +37564,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 5.6,
+      "timeSec": 5.59,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 39.58
+        "tts": 39.38
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1049.9,
+        "ttsElo": 1048.8,
         "pricePer1mChars": 50,
         "ttfaMs": 152,
-        "cps": 93.5
+        "cps": 90.6
       },
       "releaseDate": "2026-05-19"
     },
@@ -37652,7 +37653,7 @@
       "name": "Speech 2.8 Turbo",
       "shortName": "Speech 2.8 Turbo",
       "mediaKind": "tts",
-      "intelligenceIndex": 58.89,
+      "intelligenceIndex": 58.62,
       "cost": 0.06,
       "creator": {
         "name": "MiniMax",
@@ -37667,13 +37668,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 58.89
+        "tts": 58.62
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1151.8,
+        "ttsElo": 1150.4,
         "pricePer1mChars": 60,
         "ttfaMs": 428,
         "cps": 107
@@ -37717,7 +37718,7 @@
       "name": "Speech 2.6 Turbo",
       "shortName": "Speech 2.6 Turbo",
       "mediaKind": "tts",
-      "intelligenceIndex": 53.7,
+      "intelligenceIndex": 53.36,
       "cost": 0.06,
       "creator": {
         "name": "MiniMax",
@@ -37725,23 +37726,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.16,
+      "timeSec": 7.26,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 53.7
+        "tts": 53.36
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1124.3,
+        "ttsElo": 1122.5,
         "pricePer1mChars": 60,
         "ttfaMs": 413,
-        "cps": 116.2
+        "cps": 115
       },
       "releaseDate": "2025-10-30"
     },
@@ -37813,7 +37814,7 @@
       "name": "Speech-02-Turbo",
       "shortName": "Speech-02-HD",
       "mediaKind": "tts",
-      "intelligenceIndex": 46.97,
+      "intelligenceIndex": 46.7,
       "cost": 0.06,
       "creator": {
         "name": "MiniMax",
@@ -37828,13 +37829,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 46.97
+        "tts": 46.7
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1089.2,
+        "ttsElo": 1087.8,
         "pricePer1mChars": 60,
         "ttfaMs": 386,
         "cps": 113.5
@@ -38251,7 +38252,7 @@
       "name": "Eleven v4",
       "shortName": "Eleven v4",
       "mediaKind": "tts",
-      "intelligenceIndex": 85.94,
+      "intelligenceIndex": 85.88,
       "cost": 0.08,
       "creator": {
         "name": "ElevenLabs",
@@ -38265,13 +38266,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 85.94
+        "tts": 85.88
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1340.8,
+        "ttsElo": 1340.2,
         "pricePer1mChars": 80,
         "ttfaMs": null,
         "cps": null
@@ -38377,7 +38378,7 @@
       "name": "StepAudio 2.5 TTS (Aug 2026)",
       "shortName": "StepAudio 2.5 TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 69.98,
+      "intelligenceIndex": 69.89,
       "cost": 0.085,
       "creator": {
         "name": "StepFun",
@@ -38392,13 +38393,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 69.98
+        "tts": 69.89
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1215.3,
+        "ttsElo": 1214.7,
         "pricePer1mChars": 85,
         "ttfaMs": 4343,
         "cps": 40.6
@@ -38411,7 +38412,7 @@
       "name": "StepAudio 2.5 TTS",
       "shortName": "StepAudio 2.5 TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 63.96,
+      "intelligenceIndex": 63.88,
       "cost": 0.085,
       "creator": {
         "name": "StepFun",
@@ -38426,13 +38427,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 63.96
+        "tts": 63.88
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1179.7,
+        "ttsElo": 1179.3,
         "pricePer1mChars": 85,
         "ttfaMs": 4252,
         "cps": 39
@@ -38476,7 +38477,7 @@
       "name": "Octave 2",
       "shortName": "Octave 2",
       "mediaKind": "tts",
-      "intelligenceIndex": 40.92,
+      "intelligenceIndex": 41.01,
       "cost": 0.0875,
       "creator": {
         "name": "Hume AI",
@@ -38490,13 +38491,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 40.92
+        "tts": 41.01
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1057.2,
+        "ttsElo": 1057.6,
         "pricePer1mChars": 87.5,
         "ttfaMs": null,
         "cps": null
@@ -38509,7 +38510,7 @@
       "name": "Octave TTS",
       "shortName": "Octave TTS",
       "mediaKind": "tts",
-      "intelligenceIndex": 37.54,
+      "intelligenceIndex": 37.5,
       "cost": 0.0875,
       "creator": {
         "name": "Hume AI",
@@ -38523,13 +38524,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 37.54
+        "tts": 37.5
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1038.7,
+        "ttsElo": 1038.5,
         "pricePer1mChars": 87.5,
         "ttfaMs": null,
         "cps": null
@@ -38605,7 +38606,7 @@
       "name": "Eleven v3",
       "shortName": "Eleven v3",
       "mediaKind": "tts",
-      "intelligenceIndex": 66.11,
+      "intelligenceIndex": 66.05,
       "cost": 0.1,
       "creator": {
         "name": "ElevenLabs",
@@ -38619,13 +38620,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 66.11
+        "tts": 66.05
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1192,
+        "ttsElo": 1191.7,
         "pricePer1mChars": 100,
         "ttfaMs": null,
         "cps": null
@@ -38638,7 +38639,7 @@
       "name": "Speech 2.8 HD",
       "shortName": "Speech 2.8 HD",
       "mediaKind": "tts",
-      "intelligenceIndex": 62.83,
+      "intelligenceIndex": 62.73,
       "cost": 0.1,
       "creator": {
         "name": "MiniMax",
@@ -38646,23 +38647,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.83,
+      "timeSec": 7.62,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 62.83
+        "tts": 62.73
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1173.4,
+        "ttsElo": 1172.9,
         "pricePer1mChars": 100,
         "ttfaMs": 448,
-        "cps": 113
+        "cps": 112.8
       },
       "releaseDate": "2026-02-14"
     },
@@ -38734,7 +38735,7 @@
       "name": "Speech 2.6 HD",
       "shortName": "Speech 2.6 HD",
       "mediaKind": "tts",
-      "intelligenceIndex": 53.76,
+      "intelligenceIndex": 53.56,
       "cost": 0.1,
       "creator": {
         "name": "MiniMax",
@@ -38749,16 +38750,16 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 53.76
+        "tts": 53.56
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1124.7,
+        "ttsElo": 1123.6,
         "pricePer1mChars": 100,
         "ttfaMs": 444,
-        "cps": 111.2
+        "cps": 111.8
       },
       "releaseDate": "2025-10-30"
     },
@@ -38799,7 +38800,7 @@
       "name": "Speech-02-HD",
       "shortName": "Speech-02-HD",
       "mediaKind": "tts",
-      "intelligenceIndex": 49.79,
+      "intelligenceIndex": 49.73,
       "cost": 0.1,
       "creator": {
         "name": "MiniMax",
@@ -38814,13 +38815,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 49.79
+        "tts": 49.73
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1103.9,
+        "ttsElo": 1103.6,
         "pricePer1mChars": 100,
         "ttfaMs": 320,
         "cps": 111.2
@@ -38833,7 +38834,7 @@
       "name": "Multilingual v2",
       "shortName": "Multilingual v2",
       "mediaKind": "tts",
-      "intelligenceIndex": 47.46,
+      "intelligenceIndex": 47.4,
       "cost": 0.1,
       "creator": {
         "name": "ElevenLabs",
@@ -38847,13 +38848,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 47.46
+        "tts": 47.4
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1091.8,
+        "ttsElo": 1091.4,
         "pricePer1mChars": 100,
         "ttfaMs": null,
         "cps": null
@@ -38866,7 +38867,7 @@
       "name": "Polly Long-Form",
       "shortName": "Polly Long-Form",
       "mediaKind": "tts",
-      "intelligenceIndex": 35.41,
+      "intelligenceIndex": 35.32,
       "cost": 0.1,
       "creator": {
         "name": "Amazon",
@@ -38881,13 +38882,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 35.41
+        "tts": 35.32
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1026.7,
+        "ttsElo": 1026.2,
         "pricePer1mChars": 100,
         "ttfaMs": 1869,
         "cps": 64.9
@@ -38900,7 +38901,7 @@
       "name": "Murf Speech Gen 2",
       "shortName": "Murf Speech Gen 2",
       "mediaKind": "tts",
-      "intelligenceIndex": 28.71,
+      "intelligenceIndex": 28.65,
       "cost": 0.1,
       "creator": {
         "name": "Murf AI",
@@ -38915,13 +38916,13 @@
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 28.71
+        "tts": 28.65
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 986.5,
+        "ttsElo": 986.1,
         "pricePer1mChars": 100,
         "ttfaMs": 133,
         "cps": 61.6
@@ -39154,7 +39155,7 @@
       "name": "Google Studio",
       "shortName": "Google Studio",
       "mediaKind": "tts",
-      "intelligenceIndex": 44.23,
+      "intelligenceIndex": 44.01,
       "cost": 0.16,
       "creator": {
         "name": "Google",
@@ -39162,23 +39163,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 17,
+      "timeSec": 17.19,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 44.23
+        "tts": 44.01
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1074.8,
+        "ttsElo": 1073.6,
         "pricePer1mChars": 160,
         "ttfaMs": 1562,
-        "cps": 280.2
+        "cps": 280.6
       },
       "releaseDate": "2023-02-08"
     },
@@ -39188,7 +39189,7 @@
       "name": "Google Journey",
       "shortName": "Google Journey",
       "mediaKind": "tts",
-      "intelligenceIndex": 42.96,
+      "intelligenceIndex": 42.92,
       "cost": 0.16,
       "creator": {
         "name": "Google",
@@ -39196,23 +39197,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 4.45,
+      "timeSec": 4.44,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 42.96
+        "tts": 42.92
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1068.1,
+        "ttsElo": 1067.8,
         "pricePer1mChars": 160,
         "ttfaMs": 2610,
-        "cps": 77.3
+        "cps": 77
       },
       "releaseDate": "2023-12-23"
     },
@@ -39286,7 +39287,7 @@
       "name": "GPT-Realtime-2",
       "shortName": "GPT-Realtime-2",
       "mediaKind": "tts",
-      "intelligenceIndex": 43.64,
+      "intelligenceIndex": 43.5,
       "cost": 0.19156,
       "creator": {
         "name": "OpenAI",
@@ -39294,23 +39295,23 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 4.26,
+      "timeSec": 4.27,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
-        "tts": 43.64
+        "tts": 43.5
       },
       "mediaRaw": {
         "kind": "tts",
         "unitZh": "每千字语音",
         "unitEn": "/ 1k chars",
-        "ttsElo": 1071.7,
+        "ttsElo": 1071,
         "pricePer1mChars": 191.56,
         "ttfaMs": 620,
-        "cps": 64.1
+        "cps": 62.9
       },
       "releaseDate": "2026-05-07"
     },
