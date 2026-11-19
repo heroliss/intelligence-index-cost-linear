@@ -606,6 +606,9 @@ export function sortRows(rows, key, direction = 'asc', weight = VALUE_WEIGHT.def
       // Disqualified or missing ratios are not infinite bargains; keep them last in either direction.
       if ((aValue === null) !== (bValue === null)) return aValue === null ? 1 : -1;
       primary = aValue === null ? 0 : aValue - bValue;
+      if (primary === 0 && aValue !== null && a.intelligenceIndex !== b.intelligenceIndex) {
+        return b.intelligenceIndex - a.intelligenceIndex;
+      }
     } else if (key === 'timeSec') {
       const aTime = typeof a.timeSec === 'number' && Number.isFinite(a.timeSec) && a.timeSec > 0 ? a.timeSec : null;
       const bTime = typeof b.timeSec === 'number' && Number.isFinite(b.timeSec) && b.timeSec > 0 ? b.timeSec : null;

@@ -135,7 +135,9 @@ function decryptPayload(encrypted, keyHex) {
 }
 
 function creator(value) {
-  return { name: value?.name || 'Other', color: /^#(?:[0-9a-f]{3}){1,2}$/i.test(value?.color || '') ? value.color : '#777777' };
+  const raw = typeof value?.name === 'string' ? value.name.trim() : '';
+  const name = raw === 'Bytedance' ? 'ByteDance' : (raw || 'Other');
+  return { name, color: /^#(?:[0-9a-f]{3}){1,2}$/i.test(value?.color || '') ? value.color : '#777777' };
 }
 
 function numOrNull(value, digits = 6) {

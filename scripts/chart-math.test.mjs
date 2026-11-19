@@ -288,7 +288,10 @@ test('expanded curve range traverses all capability tiers and preserves Pareto m
     snapshot.codingAgents,
     ...(snapshot.frontierModels?.length ? [snapshot.frontierModels] : []),
     ...(snapshot.humanArenaModels?.length ? [snapshot.humanArenaModels] : []),
-    ...(snapshot.cyberModels?.length ? [snapshot.cyberModels] : [])
+    ...(snapshot.cyberModels?.length ? [snapshot.cyberModels] : []),
+    ...['image', 'video', 'tts']
+      .map(mk => (snapshot.mediaModels || []).filter(r => r.mediaKind === mk))
+      .filter(arr => arr.length >= 2)
   ];
   for (const rows of liveSuites) {
     const frontierIds = new Set(paretoFrontier(rows).map(r => r.id));
@@ -570,4 +573,10 @@ test('cache-busting version query strings match across index.html and app.js', a
   assert.ok(cssVer, 'styles.css should have a cache-busting version');
   assert.equal(cssVer, appVer, 'index.html styles.css and app.js versions must match');
   assert.equal(appVer, mathVer, 'app.js and chart-math.mjs versions must match');
+});
+
+test('multimodal media tab enforces strictly isolated tracks without a cross-modality All view', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  const mkindValues = [...html.matchAll(/data-mkind="([^"]*)"/g)].map(m => m[1]);
+  assert.deepEqual(mkindValues, ['image', 'video', 'tts']);
 });

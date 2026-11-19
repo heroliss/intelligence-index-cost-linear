@@ -28,6 +28,8 @@ test('models support old and current cost formats; missing or zeroed pricing is 
   assert.equal(simplifyModel({ ...model, intelligenceIndexCostPerTask: { total: 0 } }), null);
   assert.equal(simplifyModel({ ...model, intelligenceIndexCostPerTask: null }), null);
   assert.equal(simplifyModel({ ...model, intelligenceIndex: NaN }), null);
+  assert.equal(simplifyModel({ ...model, creator: { name: 'StyleTTS ', color: '#112233' } }).creator.name, 'StyleTTS');
+  assert.equal(simplifyModel({ ...model, creator: { name: ' Bytedance ', color: '#112233' } }).creator.name, 'ByteDance');
 });
 
 test('coding score is converted from a fraction once; absent telemetry is not zero', () => {
