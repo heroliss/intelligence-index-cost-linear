@@ -29,16 +29,17 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261120-06';
+} from './chart-math.mjs?v=20261120-07';
 import {
   RECOMMEND_USE_CASES,
   RECOMMEND_BILLING,
   RECOMMEND_LICENSES,
-  recommendModels
-} from './modules/recommend.mjs?v=20261120-06';
-import {computeOrgDivergence} from './modules/divergence.mjs?v=20261120-06';
-import {createNavHistory} from './modules/nav-history.mjs?v=20261120-06';
-import {GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261120-06';
+  recommendModels,
+  getRowCaveats
+} from './modules/recommend.mjs?v=20261120-07';
+import {computeOrgDivergence} from './modules/divergence.mjs?v=20261120-07';
+import {createNavHistory} from './modules/nav-history.mjs?v=20261120-07';
+import {GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261120-07';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -7195,6 +7196,22 @@ function renderPinned() {
         ? t('超出预算', 'Over cap')
         : '—';
   $('#pinnedSubNote').textContent = tierBreakevenText(row.cost, row);
+
+  const cavEl = $('#pinnedCaveats');
+  if (cavEl) {
+    const caveats = getRowCaveats(snapshot, row, activeKey, {orgRankIndex});
+    if (caveats.length) {
+      const cFrag = document.createDocumentFragment();
+      for (const cv of caveats) {
+        cFrag.append(html('span', `△ ${t(cv.zh, cv.en)}`, 'picker-sig is-warn'));
+      }
+      cavEl.replaceChildren(cFrag);
+      cavEl.hidden = false;
+    } else {
+      cavEl.replaceChildren();
+      cavEl.hidden = true;
+    }
+  }
 
   const crossEl = $('#pinnedCrossTabs');
   const crossInfo = !['coding-agents', 'media'].includes(activeKey) ? crossTabIndex.get(row.id) : null;

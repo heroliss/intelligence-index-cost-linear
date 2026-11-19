@@ -5910,6 +5910,10 @@ tbody tr.is-selected .locate-btn,
   color: var(--muted);
 }
 
+.pin-caveats {
+  margin-top: 6px;
+}
+
 .picker-card-acts {
   display: flex;
   align-items: center;

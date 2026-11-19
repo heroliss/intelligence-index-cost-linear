@@ -30,8 +30,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261120-06">
-  <script type="module" src="app.js?v=20261120-06"></script>
+  <link rel="stylesheet" href="styles.css?v=20261120-07">
+  <script type="module" src="app.js?v=20261120-07"></script>
 </head>
 <body>
 <main class="app">
@@ -401,6 +401,7 @@
             <div><span id="pinValueLabel">性价比</span><b id="pinnedValue"></b></div>
           </div>
           <p id="pinnedSubNote" class="pin-sub-note"></p>
+          <div id="pinnedCaveats" class="picker-signals pin-caveats" hidden></div>
           <div id="pinnedCrossTabs" class="pin-cross-tabs" hidden></div>
           <p id="pinnedProviders" class="pin-sub-note" hidden></p>
           <small id="pinnedOutside" class="pin-outside" hidden>该节点当前在可视范围外</small>

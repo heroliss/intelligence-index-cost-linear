@@ -6,8 +6,8 @@ export const GUIDE_TAB_META = {
     titleEn: 'Intelligence Index (Artificial Analysis v5)',
     descZh: '将代码、科学推理、百万长上下文、全科闭卷等 10 项标准化任务合成为 0–100 总分，并同口径记录真实跑完一套任务的美元 API 花费与平均耗时，是新手对比“花多少钱买多少智商”的第一入口。',
     descEn: 'Combines 10 standardized tasks (coding, reasoning, long context, closed-book knowledge) into a 0–100 score paired with real USD API cost and wall time — the best starting point for value comparisons.',
-    trapZh: '总分高不代表聊起来像人，也不代表前端好看；且部分旧子项在顶级模型上渐趋饱和。想看清顶尖差距请切换「前沿极限」或用下方隐藏玩法拆解。',
-    trapEn: 'High overall scores don’t guarantee natural writing or great UI aesthetics, and some legacy tasks are saturating. Use Frontier Hard or the interactive recipes below to look deeper.',
+    trapZh: '单榜总分高不等于实测体感好，也可能伴随高盲区幻觉率或高单次成本（常规月卡多不含）；点选任意圆点可在锁定卡查看风险提示，或去「机构分榜 → 争议分歧榜」核验硬考与盲测口碑差。',
+    trapEn: 'High overall scores don’t guarantee great real-world feel and can mask high blind-spot hallucination or API-only burn. Click any dot to inspect caveat badges or check the Org Divergence board.',
     recipes: [
       {
         id: 'models-effort',
@@ -86,8 +86,8 @@ export const GUIDE_TAB_META = {
     titleEn: 'Human & Aesthetic Arena (Chat · Design · Deliverables)',
     descZh: '客观题高分常常伴随“AI 味太重、满屏套话、页面很土”。本榜融合 Arena.ai 去水份盲投人味、Design Arena 五维审美与 GDPval 44 职业专家交付，专门衡量“真实人类用起来爽不爽”。',
     descEn: 'High test scores often come with robotic prose and generic UIs. This tab blends Arena.ai style-controlled chat, Design Arena 5D aesthetics, and GDPval 44-job expert deliverables.',
-    trapZh: '人类盲测偏重观感与沟通流畅度，复杂数学或隐蔽代码 Bug 可能被漂亮话术掩盖——严谨任务请交叉对照「前沿极限」。',
-    trapEn: 'Human blind votes reward polish and clarity, which can mask subtle logic bugs — cross-check Frontier Hard for rigorous engineering.',
+    trapZh: '人类盲测偏重第一眼观感与流畅度：部分模型靠后训练模板在单轮视觉或闲聊榜冲高，但综合智能偏低或 AI 套话率极高（50%+），日常复杂开发容易露馅——务必交叉核验「综合智能」与「WebDev 交互前端」。',
+    trapEn: 'Blind crowd votes reward first-impression polish: some style-tuned models score high on single-shot aesthetics or chat while lagging in core reasoning or carrying heavy AI-slop (50%+) — always cross-check Core Intelligence & WebDev.',
     recipes: [
       {
         id: 'human-antislop',

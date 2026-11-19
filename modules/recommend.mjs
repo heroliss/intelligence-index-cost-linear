@@ -3,7 +3,7 @@ import {
   valuePerDollar,
   computeScenarioScore,
   SCENARIO_PRESETS
-} from '../chart-math.mjs?v=20261120-06';
+} from '../chart-math.mjs?v=20261120-07';
 
 export const RECOMMEND_USE_CASES = [
   {
@@ -51,8 +51,8 @@ export const RECOMMEND_USE_CASES = [
     scenarioId: 'default',
     unitZh: '任务',
     unitEn: 'task',
-    descZh: '聚焦 Arena.ai 去水份真人盲投人味与去 AI 套话自然度，写文章聊思路更自然',
-    descEn: 'Prioritizes Arena.ai style-controlled human preference and Anti-Slop naturalness'
+    descZh: '按「自然对话主力」「低 AI 味写作派」「轻量高效参照」三流派对撞，并标明 AI 套话率与推理短板',
+    descEn: 'Contrasts Natural Chat Leader, Low-Slop Writing Craft, and Lightweight Alt — flagging AI-slop & weak reasoning'
   },
   {
     id: 'design',
@@ -299,10 +299,20 @@ function buildEvidenceLookup(snapshot, context = {}) {
 
     if (isMedia) {
       if (isFrontier) proofs.push({zh: '帕累托前沿', en: 'Pareto frontier'});
-      if (uc.mediaTrack === 'image' && row.mediaScores?.t2i != null && row.mediaScores?.imgEdit != null) {
-        proofs.push({zh: '文生图 + 修图双全', en: 'T2I + Edit'});
-      } else if (uc.mediaTrack === 'video' && row.mediaScores?.i2v != null && row.mediaScores?.t2v != null) {
-        proofs.push({zh: '文生 + 图生双覆盖', en: 'T2V + I2V'});
+      if (uc.mediaTrack === 'image') {
+        if (row.mediaScores?.t2i != null && row.mediaScores?.imgEdit != null) {
+          proofs.push({zh: '文生图 + 修图双全', en: 'T2I + Edit'});
+        } else if (row.mediaScores?.t2i == null && row.mediaScores?.imgEdit != null) {
+          caveats.push({zh: '仅支持修图（无文生图）', en: 'Image-edit only (no T2I)'});
+        } else if (row.mediaScores?.t2i != null && row.mediaScores?.imgEdit == null) {
+          caveats.push({zh: '仅支持文生图（无修图）', en: 'T2I only (no editing)'});
+        }
+      } else if (uc.mediaTrack === 'video') {
+        if (row.mediaScores?.i2v != null && row.mediaScores?.t2v != null) {
+          proofs.push({zh: '文生 + 图生双覆盖', en: 'T2V + I2V'});
+        } else if (row.mediaScores?.t2v == null && row.mediaScores?.i2v != null) {
+          caveats.push({zh: '仅支持图生视频（无文生）', en: 'Image-to-video only'});
+        }
       } else if (uc.mediaTrack === 'tts') {
         const ttfa = row.mediaRaw?.ttfaMs;
         if (ttfa != null && ttfa <= 250) proofs.push({zh: `低首包 ${Math.round(ttfa)}ms`, en: `Fast TTFA ${Math.round(ttfa)}ms`});
@@ -326,11 +336,26 @@ function buildEvidenceLookup(snapshot, context = {}) {
       if (web && web <= 10) proofs.push({zh: `WebDev #${web}`, en: `WebDev #${web}`});
       if (lbDes && lbDes <= 10 && proofs.length < 2) proofs.push({zh: `LB2 设计 #${lbDes}`, en: `LB2 Design #${lbDes}`});
       if (isFrontier && proofs.length < 2) proofs.push({zh: '帕累托前沿', en: 'Pareto frontier'});
+    } else if (uc.id === 'writing') {
+      if (chat && chat.rank <= 15) proofs.push({zh: `Arena 聊天 ${chat.exact ? '' : '~'}#${chat.rank}`, en: `Arena Chat ${chat.exact ? '' : '~'}#${chat.rank}`});
+      if (row.arenaRaw?.slop != null && row.arenaRaw.slop <= 25 && proofs.length < 2) {
+        proofs.push({zh: `低 AI 套话 (Slop ${Math.round(row.arenaRaw.slop)}%)`, en: `Low AI-slop (${Math.round(row.arenaRaw.slop)}%)`});
+      }
+      if (lb && lb <= 10 && proofs.length < 2) proofs.push({zh: `LB2 防污染 #${lb}`, en: `LiveBench #${lb}`});
+      if (isFrontier && proofs.length < 2) proofs.push({zh: '帕累托前沿', en: 'Pareto frontier'});
     } else {
       if (chat && chat.rank <= 10) proofs.push({zh: `Arena 聊天 ${chat.exact ? '' : '~'}#${chat.rank}`, en: `Arena Chat ${chat.exact ? '' : '~'}#${chat.rank}`});
-      if (uc.id === 'coding-api' && web && web <= 10) proofs.push({zh: `WebDev #${web}`, en: `WebDev #${web}`});
-      else if (lb && lb <= 10) proofs.push({zh: `LB2 防污染 #${lb}`, en: `LiveBench #${lb}`});
+      if (uc.id === 'research' && row.subscores?.hallucination != null && row.subscores.hallucination <= 20) {
+        proofs.push({zh: `盲区幻觉仅 ${Math.round(row.subscores.hallucination)}%`, en: `Low hallucination ${Math.round(row.subscores.hallucination)}%`});
+      } else if (uc.id === 'coding-api' && web && web <= 10) {
+        proofs.push({zh: `WebDev #${web}`, en: `WebDev #${web}`});
+      } else if (lb && lb <= 10) {
+        proofs.push({zh: `LB2 防污染 #${lb}`, en: `LiveBench #${lb}`});
+      }
       if (div?.kind === 'consensus' && chat && proofs.length < 2) proofs.push({zh: '全机构共识', en: 'Cross-org consensus'});
+      if (chat && chat.rank <= 20 && proofs.length === 0) {
+        proofs.push({zh: `Arena 聊天 ${chat.exact ? '' : '~'}#${chat.rank}`, en: `Arena Chat ${chat.exact ? '' : '~'}#${chat.rank}`});
+      }
       if (isFrontier && proofs.length < 2) proofs.push({zh: '帕累托前沿', en: 'Pareto frontier'});
     }
 
@@ -358,13 +383,20 @@ function buildEvidenceLookup(snapshot, context = {}) {
         caveats.push({zh: '缺 Arena 聊天盲测 · 实测体感待自验', en: 'No Arena Chat blind votes yet'});
       }
     } else if (uc.id === 'writing') {
-      if (isWeakCore && aaRank != null) {
-        caveats.push({zh: `综合推理偏弱 (AA #${aaRank}) · 复杂逻辑慎用`, en: `Weak core reasoning (AA #${aaRank}) · light chat only`});
-      }
-      if (row.arenaRaw?.slop != null && row.arenaRaw.slop >= 50 && caveats.length < 2) {
+      if (row.arenaRaw?.slop != null && row.arenaRaw.slop >= 50) {
         caveats.push({zh: `AI 套话偏高 (Slop ${Math.round(row.arenaRaw.slop)}%)`, en: `High AI-slop style (${Math.round(row.arenaRaw.slop)}%)`});
       }
-    } else if (!chat && ['general', 'coding-api', 'research'].includes(uc.id)) {
+      if (isWeakCore && aaRank != null && caveats.length < 2) {
+        caveats.push({zh: `综合推理偏弱 (AA #${aaRank}) · 复杂逻辑慎用`, en: `Weak core reasoning (AA #${aaRank}) · light chat only`});
+      }
+    } else if (uc.id === 'research') {
+      if (row.subscores?.hallucination != null && row.subscores.hallucination >= 45) {
+        caveats.push({zh: `盲区幻觉率 ${Math.round(row.subscores.hallucination)}% · 严核引用`, en: `${Math.round(row.subscores.hallucination)}% blind-spot hallucination — verify citations`});
+      }
+      if (!chat && caveats.length < 2) {
+        caveats.push({zh: '缺 Arena 聊天盲测 · 实测体感待自验', en: 'No Arena Chat blind votes yet'});
+      }
+    } else if (!chat && ['general', 'coding-api'].includes(uc.id)) {
       caveats.push({zh: '缺 Arena 聊天盲测 · 实测体感待自验', en: 'No Arena Chat blind votes yet'});
     } else if (div && div.gap <= -12) {
       caveats.push({zh: `硬考明显强于盲测体感 (存在偏科分歧)`, en: 'Hard exams outpace human vibe ratings'});
@@ -372,7 +404,7 @@ function buildEvidenceLookup(snapshot, context = {}) {
     if (uc.id === 'design' && row.arenaRaw?.slop != null && row.arenaRaw.slop >= 50 && caveats.length < 2) {
       caveats.push({zh: `AI 套话偏高 (Slop ${Math.round(row.arenaRaw.slop)}%)`, en: `High AI-slop style (${Math.round(row.arenaRaw.slop)}%)`});
     }
-    if (row.subscores?.hallucination != null && row.subscores.hallucination >= 65 && ['general', 'research'].includes(uc.id)) {
+    if (uc.id === 'general' && row.subscores?.hallucination != null && row.subscores.hallucination >= 55 && caveats.length < 2) {
       caveats.push({zh: `盲区幻觉率 ${Math.round(row.subscores.hallucination)}%`, en: `${Math.round(row.subscores.hallucination)}% blind-spot hallucination`});
     }
     if (row.timeSec >= 1800 && ['general', 'coding-api', 'research'].includes(uc.id) && caveats.length < 2) {
@@ -448,6 +480,7 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
   const usedFamilies = new Set();
   const familyKeyOf = r => {
     if (uc.tab === 'coding-agents') return r.agentName ? `${r.agentName}|${r.creator?.name || ''}` : r.id;
+    if (uc.tab === 'media') return r.creator?.name || r.id;
     return r.family?.slug || r.id;
   };
   const isFresh = (r, diffFam = true) => {
@@ -697,19 +730,133 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
         }
       });
     }
+  } else if (uc.id === 'writing') {
+    // 3 DISTINCT ARCHETYPES FOR WRITING & NATURAL CHAT (prevents high-slop crowd pleasers from dominating without low-slop contrast!):
+    const poolAAs = projected.map(r => evidence.aaIndexOf(r)).filter(v => typeof v === 'number');
+    const maxPoolAA = poolAAs.length ? Math.max(...poolAAs) : 0;
+    const coreFloor = Math.max(evidence.maxAA * 0.72, maxPoolAA * 0.75);
+    const hasCore = r => {
+      const aa = evidence.aaIndexOf(r);
+      return aa == null || aa >= coreFloor;
+    };
+    const isLowSlop = r => r.arenaRaw?.slop == null || r.arenaRaw.slop < 45;
+
+    // 1. Natural Chat Leader (Arena Chat leader with solid core intelligence & avoiding heavy AI-slop)
+    const chatClean = projected.filter(r => hasCore(r) && isLowSlop(r));
+    const chatBase = chatClean.length ? chatClean : projected;
+    const maxChat = Math.max(...chatBase.map(r => r.intelligenceIndex));
+    const slot1Pool = (bill.id === 'sub'
+      ? (chatBase.filter(r => r.cost <= subFriendlyCap).length ? chatBase.filter(r => r.cost <= subFriendlyCap) : chatBase)
+      : chatBase.filter(r => r.intelligenceIndex >= maxChat * (bill.id === 'api-budget' ? 0.65 : 0.78))
+    ).sort((a, b) => {
+      if (bill.id === 'sub') return b.intelligenceIndex - a.intelligenceIndex || a.cost - b.cost;
+      return scoreVal(b, bill.alpha) - scoreVal(a, bill.alpha) || b.intelligenceIndex - a.intelligenceIndex;
+    });
+    const slot1 = claim(slot1Pool[0]) || claim(sortedByScore[0]);
+    if (slot1) {
+      const chatR = evidence.getChatRank(slot1);
+      picks.push({
+        slot: 'primary',
+        badgeZh: '自然对话主力',
+        badgeEn: 'Natural Chat Leader',
+        scoreLabelZh: '对话人味分',
+        scoreLabelEn: 'Chat Vibe',
+        row: slot1,
+        score: slot1._pickScore,
+        isFrontier: frontierIds.has(slot1.id),
+        ...evidence.getSignals(slot1, uc, frontierIds.has(slot1.id)),
+        reason: {
+          zh: chatR
+            ? `Arena.ai 去水份聊天盲测排 ${chatR.exact ? '' : '~'}#${chatR.rank} 且综合逻辑扎实，聊思路写长文都不易空泛跑偏`
+            : `对话自然度与综合逻辑均衡，适合日常写作与深度讨论`,
+          en: chatR
+            ? `Arena.ai style-controlled Chat ${chatR.exact ? '' : '~'}#${chatR.rank} with solid reasoning — stays natural without fluff`
+            : `Balanced natural conversation and core reasoning for daily writing`
+        }
+      });
+    }
+
+    // 2. Low-Slop Writing Craft (optimizes Anti-Slop + Chat from a DIFFERENT creator/family while enforcing core intelligence!)
+    const slopAll = projected.filter(r => isFresh(r, true) && typeof r.humanScores?.antiSlop === 'number' && r.humanScores.antiSlop >= 65);
+    const slopCore = slopAll.filter(hasCore);
+    const slopPool = slopCore.length ? slopCore : slopAll;
+    const diffCreatorSlop = slot1 ? slopPool.filter(r => r.creator?.name !== slot1.creator?.name) : slopPool;
+    const craftBase = diffCreatorSlop.length ? diffCreatorSlop : slopPool;
+    const craftBlend = r => 0.55 * r.humanScores.antiSlop + 0.45 * r.intelligenceIndex;
+    const craftSorted = (bill.id === 'sub'
+      ? (craftBase.filter(r => r.cost <= subFriendlyCap).length ? craftBase.filter(r => r.cost <= subFriendlyCap) : craftBase)
+      : craftBase
+    ).sort((a, b) => {
+      if (bill.id === 'sub') return craftBlend(b) - craftBlend(a) || a.cost - b.cost;
+      const va = valuePerDollar({intelligenceIndex: craftBlend(a), cost: a.cost}, bill.alpha, 0, 0) ?? -1;
+      const vb = valuePerDollar({intelligenceIndex: craftBlend(b), cost: b.cost}, bill.alpha, 0, 0) ?? -1;
+      return vb - va || craftBlend(b) - craftBlend(a);
+    });
+    const slot2 = claim(craftSorted[0]) || claim(sortedByScore.find(r => isFresh(r, true))) || claim(sortedByScore.find(r => isFresh(r, false)));
+    if (slot2) {
+      const hasAnti = typeof slot2.humanScores?.antiSlop === 'number';
+      picks.push({
+        slot: 'flagship',
+        badgeZh: hasAnti ? '低 AI 味写作派' : '同级风格对照',
+        badgeEn: hasAnti ? 'Low-Slop Craft' : 'Style Peer Alt',
+        scoreLabelZh: hasAnti ? '去套话自然度' : '对话人味分',
+        scoreLabelEn: hasAnti ? 'Anti-Slop' : 'Chat Vibe',
+        row: slot2,
+        score: hasAnti ? slot2.humanScores.antiSlop : slot2._pickScore,
+        isFrontier: frontierIds.has(slot2.id),
+        ...evidence.getSignals(slot2, uc, frontierIds.has(slot2.id)),
+        reason: {
+          zh: hasAnti
+            ? `PersonalityBench 去 AI 套话达 ${Math.round(slot2.humanScores.antiSlop)}%，极少输出模板排比和官腔，文字质感更像真人`
+            : `不同厂商的对话风格参照，建议与第一款实测同一篇文案对比语感`,
+          en: hasAnti
+            ? `${Math.round(slot2.humanScores.antiSlop)}% Anti-Slop naturalness — avoids clichés and boilerplate framing for human-sounding prose`
+            : `Cross-vendor writing style peer to test side-by-side on your own prompts`
+        }
+      });
+    }
+
+    // 3. Lightweight / Cost-Efficient Writing Alt (transparently flags weak core / slop if applicable)
+    const cheapPool = projected
+      .filter(r => isFresh(r, true) && r.cost < (slot1?.cost || Infinity) * 0.85 && r.intelligenceIndex >= maxScore * 0.6)
+      .sort((a, b) => scoreVal(b, 2.0) - scoreVal(a, 2.0) || a.cost - b.cost);
+    const slot3 = claim(cheapPool[0]) || claim(sortedByScore.find(r => isFresh(r, true))) || claim(sortedByScore.find(r => isFresh(r, false)));
+    if (slot3) {
+      const savePct = slot1 ? formatPctDelta(slot3.cost, slot1.cost) : 0;
+      picks.push({
+        slot: 'saving',
+        badgeZh: savePct >= 15 ? '低价轻量参照' : '风格备选参照',
+        badgeEn: savePct >= 15 ? 'Lightweight Alt' : 'Style Alt',
+        scoreLabelZh: '对话人味分',
+        scoreLabelEn: 'Chat Vibe',
+        row: slot3,
+        score: slot3._pickScore,
+        isFrontier: frontierIds.has(slot3.id),
+        ...evidence.getSignals(slot3, uc, frontierIds.has(slot3.id)),
+        reason: {
+          zh: savePct >= 15
+            ? `单次成本低 ${savePct}%，适合高频润色、头脑风暴与轻量日常聊天（留意卡面套话与推理提示）`
+            : `另一流派的对话风格参照，可直接送入剖析对比查看去套话与综合分差`,
+          en: savePct >= 15
+            ? `${savePct}% lower cost for casual drafting and quick chats (check slop & reasoning caveats above)`
+            : `Alternative conversational style to inspect side-by-side in Compare view`
+        }
+      });
+    }
   } else {
-    // Coding Agents, Human Arena (Writing / Design), and Media (Image / Video / TTS)
+    // Coding Agents and Media (Image / Video / TTS)
     const floorRatio = bill.id === 'api-budget' ? 0.62 : bill.id === 'api-balanced' ? 0.78 : 0.88;
     const minScoreFloor = maxScore * floorRatio;
+    const mediaGenEligible = r => !(uc.mediaTrack === 'image' && r.mediaScores?.t2i == null);
 
     let slot1;
     if (bill.id === 'sub') {
       // Monthly plan / IDE users care about top real-world capability without extreme API-only burn
-      const subPool = projected.filter(r => r.cost <= subFriendlyCap);
+      const subPool = projected.filter(r => r.cost <= subFriendlyCap && mediaGenEligible(r));
       const subBest = (subPool.length ? subPool : projected).sort((a, b) => b.intelligenceIndex - a.intelligenceIndex || a.cost - b.cost);
       slot1 = claim(subBest[0]);
     } else {
-      const elig = projected.filter(r => r.intelligenceIndex >= minScoreFloor);
+      const elig = projected.filter(r => r.intelligenceIndex >= minScoreFloor && mediaGenEligible(r));
       const cands = (elig.length ? elig : projected).sort((a, b) =>
         scoreVal(b, bill.alpha) - scoreVal(a, bill.alpha)
         || b.intelligenceIndex - a.intelligenceIndex
@@ -725,26 +872,28 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
       slot2 = claim(topCeiling);
     } else {
       slot2IsRunnerUp = true;
-      slot2 = claim(sortedByScore.find(r => isFresh(r, true))) || claim(sortedByScore.find(r => isFresh(r, false)));
+      slot2 = claim(sortedByScore.find(r => isFresh(r, true) && mediaGenEligible(r)))
+        || claim(sortedByScore.find(r => isFresh(r, true)))
+        || claim(sortedByScore.find(r => isFresh(r, false)));
     }
 
-    // 3rd slot: cheaper Pareto alternative (or balanced step-up if slot1 is already ultra-cheap)
-    const saverFloor = Math.max(maxScore * 0.65, (slot1?.intelligenceIndex || 0) * 0.78);
+    // 3rd slot: cheaper Pareto alternative (avoiding edit-only or severely degraded low-score picks on media!)
+    const saverFloor = Math.max(maxScore * (uc.tab === 'media' ? 0.72 : 0.65), (slot1?.intelligenceIndex || 0) * 0.78);
     const cheaper = projected
-      .filter(r => isFresh(r, true) && r.cost < (slot1?.cost || Infinity) * 0.85 && r.intelligenceIndex >= saverFloor)
+      .filter(r => isFresh(r, true) && mediaGenEligible(r) && r.cost < (slot1?.cost || Infinity) * 0.85 && r.intelligenceIndex >= saverFloor)
       .sort((a, b) => scoreVal(b, 1.8) - scoreVal(a, 1.8) || a.cost - b.cost);
     let slot3IsStepUp = false;
     let slot3 = claim(cheaper[0]);
     if (!slot3) {
       const cheaperAny = projected
-        .filter(r => isFresh(r, false) && r.cost < (slot1?.cost || Infinity) * 0.9 && r.intelligenceIndex >= maxScore * 0.55)
+        .filter(r => isFresh(r, false) && mediaGenEligible(r) && r.cost < (slot1?.cost || Infinity) * 0.9 && r.intelligenceIndex >= maxScore * (uc.tab === 'media' ? 0.7 : 0.55))
         .sort((a, b) => scoreVal(b, 1.8) - scoreVal(a, 1.8) || a.cost - b.cost);
       slot3 = claim(cheaperAny[0]);
     }
     if (!slot3) {
       slot3IsStepUp = true;
       const stepUp = projected
-        .filter(r => isFresh(r, true) && r.intelligenceIndex > (slot1?.intelligenceIndex || 0))
+        .filter(r => isFresh(r, true) && mediaGenEligible(r) && r.intelligenceIndex > (slot1?.intelligenceIndex || 0))
         .sort((a, b) => scoreVal(b, 3.2) - scoreVal(a, 3.2) || b.intelligenceIndex - a.intelligenceIndex);
       slot3 = claim(stepUp[0]) || claim(projected.find(r => isFresh(r, true))) || claim(projected.find(r => isFresh(r, false)));
     }
@@ -821,4 +970,37 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
   }
 
   return {useCase: uc, billing: bill, budget: bill, license: lic, totalPool, picks};
+}
+
+/**
+ * Single-source-of-truth objective caveats for any pinned model dot on any scatter chart,
+ * keeping scatter inspection consistent with the Shortlist Builder's risk flags.
+ */
+export function getRowCaveats(snapshot, row, tabKey, context = {}) {
+  if (!snapshot || !row) return [];
+  const evidence = buildEvidenceLookup(snapshot, context);
+  if (tabKey === 'coding-agents') {
+    const uc = RECOMMEND_USE_CASES.find(x => x.id === 'coding-agent');
+    return evidence.getSignals(row, uc, false).caveats;
+  }
+  if (tabKey === 'media') {
+    const track = row.mediaKind || 'image';
+    const uc = RECOMMEND_USE_CASES.find(x => x.mediaTrack === track) || RECOMMEND_USE_CASES[6];
+    return evidence.getSignals(row, uc, false).caveats;
+  }
+  const out = [];
+  const pushUnique = item => {
+    if (item && !out.some(x => x.zh === item.zh)) out.push(item);
+  };
+  if (tabKey === 'human-arena') {
+    for (const c of evidence.getSignals(row, RECOMMEND_USE_CASES.find(x => x.id === 'design'), false).caveats) pushUnique(c);
+    for (const c of evidence.getSignals(row, RECOMMEND_USE_CASES.find(x => x.id === 'writing'), false).caveats) pushUnique(c);
+    return out.slice(0, 3);
+  }
+  // models, frontier, cyber
+  for (const c of evidence.getSignals(row, RECOMMEND_USE_CASES[0], false).caveats) pushUnique(c);
+  if (tabKey === 'cyber' && row.refusalRate != null && row.refusalRate >= 35) {
+    pushUnique({zh: `安全拦截拒答率 ${Math.round(row.refusalRate)}%`, en: `High refusal rate (${Math.round(row.refusalRate)}%)`});
+  }
+  return out.slice(0, 3);
 }

@@ -5,7 +5,8 @@ import {
   RECOMMEND_USE_CASES,
   RECOMMEND_BILLING,
   RECOMMEND_LICENSES,
-  recommendModels
+  recommendModels,
+  getRowCaveats
 } from '../modules/recommend.mjs';
 import {computeOrgDivergence} from '../modules/divergence.mjs';
 import {createNavHistory} from '../modules/nav-history.mjs';
@@ -81,9 +82,40 @@ test('recommendModels returns distinct multi-archetype picks with objective proo
   assert.ok(des.picks[2].proofs.some(pr => pr.zh.includes('WebDev #1')), `ceiling pick (${des.picks[2].row.name}) must show WebDev #1 proof`);
   assert.ok(des.picks[2].caveats.some(cv => cv.zh.includes('常规月卡')), 'high-cost design ceiling carries subscription caveat');
 
-  // 2b. Writing under monthly plan keeps Arena Chat #1 above high-slop #2 and flags high-slop / weak-core caveats
+  // 2b. Writing under monthly plan contrasts Natural Chat #1 against cross-vendor Low-Slop Craft (enforcing core intelligence!)
   const wrt = recommendModels(snapshot, {useCase: 'writing', billing: 'sub', license: 'all'});
+  assert.equal(wrt.picks[0].badgeZh, '自然对话主力');
   assert.ok(wrt.picks[0].proofs.some(pr => pr.zh.includes('Arena 聊天 #1')), `writing leader (${wrt.picks[0].row.name}) must carry Arena Chat #1 proof`);
+  assert.equal(wrt.picks[1].badgeZh, '低 AI 味写作派');
+  assert.notEqual(wrt.picks[1].row.creator?.name, wrt.picks[0].row.creator?.name, 'writing slot 2 contrasts a different vendor');
+  assert.ok(wrt.picks[1].row.aaIndex >= 50, `low-slop writing pick (${wrt.picks[1].row.name}) passes core intelligence floor`);
+
+  // 2c. Research highlights low hallucination proofs and warns on high blind-spot hallucination (>=45%)
+  const res = recommendModels(snapshot, {useCase: 'research', billing: 'sub', license: 'all'});
+  assert.ok(res.picks[0].proofs.some(pr => pr.zh.includes('盲区幻觉仅')), `research leader (${res.picks[0].row.name}) carries low-hallucination proof`);
+  for (const p of res.picks) {
+    if (p.row.subscores?.hallucination >= 45) {
+      assert.ok(p.caveats.some(cv => cv.zh.includes('盲区幻觉率')), `research pick (${p.row.name}) with ${p.row.subscores.hallucination}% hallucination must warn`);
+    }
+  }
+
+  // 2d. Image & TTS diversify creators across top peers and never surface edit-only image models as T2I picks
+  const img = recommendModels(snapshot, {useCase: 'image', billing: 'sub', license: 'all'});
+  assert.notEqual(img.picks[0].row.creator?.name, img.picks[1].row.creator?.name, 'image top 2 picks come from distinct vendors');
+  const imgBal = recommendModels(snapshot, {useCase: 'image', billing: 'api-balanced', license: 'all'});
+  assert.ok(imgBal.picks.every(p => p.row.mediaScores?.t2i != null), 'image balanced picks must support text-to-image');
+  const tts = recommendModels(snapshot, {useCase: 'tts', billing: 'sub', license: 'all'});
+  assert.notEqual(tts.picks[0].row.creator?.name, tts.picks[1].row.creator?.name, 'tts top 2 picks come from distinct vendors');
+
+  // 2e. getRowCaveats exposes unified objective caveats for scatter pinned cards
+  const museWonder = snapshot.humanArenaModels.find(x => /Muse Wonder/i.test(x.name));
+  const museCav = getRowCaveats(snapshot, museWonder, 'human-arena');
+  assert.ok(museCav.some(c => c.zh.includes('综合能力偏弱')), 'pinned Muse Wonder flags weak core reasoning');
+  const editOnlyImg = snapshot.mediaModels.find(x => x.mediaKind === 'image' && x.mediaScores?.t2i == null && x.mediaScores?.imgEdit != null);
+  if (editOnlyImg) {
+    const editCav = getRowCaveats(snapshot, editOnlyImg, 'media');
+    assert.ok(editCav.some(c => c.zh.includes('仅支持修图')), 'pinned edit-only image model flags no T2I');
+  }
 
   // 3. End-to-end Coding Agents under monthly plan mode picks top real-world Coding Agent within mainstream burn
   const ca = recommendModels(snapshot, {useCase: 'coding-agent', billing: 'sub', license: 'all'});
