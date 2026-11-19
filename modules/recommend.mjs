@@ -3,7 +3,7 @@ import {
   valuePerDollar,
   computeScenarioScore,
   SCENARIO_PRESETS
-} from '../chart-math.mjs?v=20261120-03';
+} from '../chart-math.mjs?v=20261120-04';
 
 export const RECOMMEND_USE_CASES = [
   {
@@ -121,12 +121,12 @@ export const RECOMMEND_USE_CASES = [
 
 export const RECOMMEND_BILLING = [
   {id: 'sub', zh: '月卡 / 订阅工具', en: 'Monthly Plan / IDE', alpha: 8},
-  {id: 'api-balanced', zh: '按量 API 均衡（推荐）', en: 'API Balanced (Rec.)', alpha: 3.2},
+  {id: 'api-balanced', zh: '按量 API 均衡', en: 'API Balanced', alpha: 3.2},
   {id: 'api-budget', zh: '极致低价跑批', en: 'API Lowest Cost', alpha: 1.4}
 ];
 
 export const RECOMMEND_LICENSES = [
-  {id: 'all', zh: '不限（推荐）', en: 'Any (Recommended)'},
+  {id: 'all', zh: '不限', en: 'Any'},
   {id: 'open', zh: '仅开源可自部署', en: 'Open-Weights Only'},
   {id: 'closed', zh: '仅商业闭源', en: 'Proprietary Only'}
 ];
@@ -317,8 +317,8 @@ function buildEvidenceLookup(snapshot, context = {}) {
 export function recommendModels(snapshot, {useCase = 'general', billing = null, budget = null, license = 'all'} = {}, context = {}) {
   const uc = RECOMMEND_USE_CASES.find(x => x.id === useCase) || RECOMMEND_USE_CASES[0];
   // Support legacy `budget` param values cleanly (`balanced` -> `api-balanced`, `budget` -> `api-budget`, `flagship` -> `sub`)
-  const rawBilling = billing || (budget === 'flagship' ? 'sub' : budget === 'budget' ? 'api-budget' : budget === 'balanced' ? 'api-balanced' : 'api-balanced');
-  const bill = RECOMMEND_BILLING.find(x => x.id === rawBilling) || RECOMMEND_BILLING[1];
+  const rawBilling = billing || (budget === 'flagship' ? 'sub' : budget === 'budget' ? 'api-budget' : budget === 'balanced' ? 'api-balanced' : 'sub');
+  const bill = RECOMMEND_BILLING.find(x => x.id === rawBilling) || RECOMMEND_BILLING[0];
   const lic = RECOMMEND_LICENSES.find(x => x.id === license) || RECOMMEND_LICENSES[0];
 
   const sourceKey = uc.tab === 'human-arena'

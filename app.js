@@ -29,16 +29,16 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261120-03';
+} from './chart-math.mjs?v=20261120-04';
 import {
   RECOMMEND_USE_CASES,
   RECOMMEND_BILLING,
   RECOMMEND_LICENSES,
   recommendModels
-} from './modules/recommend.mjs?v=20261120-03';
-import {computeOrgDivergence} from './modules/divergence.mjs?v=20261120-03';
-import {createNavHistory} from './modules/nav-history.mjs?v=20261120-03';
-import {GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261120-03';
+} from './modules/recommend.mjs?v=20261120-04';
+import {computeOrgDivergence} from './modules/divergence.mjs?v=20261120-04';
+import {createNavHistory} from './modules/nav-history.mjs?v=20261120-04';
+import {GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261120-04';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -412,7 +412,7 @@ let orgCreatorColors = new Map();
 let pendingUrlTimer = 0;
 let orgFocus = 'all';
 let orgDivFilter = 'all';
-const pickerChoice = {useCase: 'general', billing: 'api-balanced', license: 'all'};
+const pickerChoice = {useCase: 'general', billing: 'sub', license: 'all'};
 let orgBumpLimit = 12;
 let orgChartCollapsed = false;
 const orgExpandedCards = new Set();
@@ -11867,7 +11867,7 @@ function renderPickerTab(frag) {
 
   if (!rec.picks.length) {
     const empty = html('div', null, 'guide-hero');
-    empty.append(html('p', t('当前开源筛选下暂无该场景收录模型，建议将第 3 步切回「不限（推荐）」。', 'No models match this exact filter — try setting Step 3 back to Any.')));
+    empty.append(html('p', t('当前开源筛选下暂无该场景收录模型，建议将第 3 步切回「不限」。', 'No models match this exact filter — try setting Step 3 back to Any.')));
     frag.append(empty);
     return;
   }

@@ -80,9 +80,15 @@ test('recommendModels returns distinct multi-archetype picks with objective proo
     }
   }
 
-  // 3. Legacy `budget` option still maps cleanly to `billing`
-  const legacy = recommendModels(snapshot, {useCase: 'general', budget: 'flagship', license: 'all'});
-  assert.equal(legacy.billing.id, 'sub');
+  // 3. Default billing is monthly plan (`sub`) and option chips stay neutral without editorial "Recommended" nudges
+  const def = recommendModels(snapshot);
+  assert.equal(def.billing.id, 'sub');
+  assert.ok(RECOMMEND_BILLING.every(b => !b.zh.includes('推荐') && !/rec/i.test(b.en)), 'billing labels stay neutral');
+  assert.ok(RECOMMEND_LICENSES.every(l => !l.zh.includes('推荐') && !/rec/i.test(l.en)), 'license labels stay neutral');
+
+  // 4. Legacy `budget` option still maps cleanly to `billing`
+  const legacy = recommendModels(snapshot, {useCase: 'general', budget: 'balanced', license: 'all'});
+  assert.equal(legacy.billing.id, 'api-balanced');
 });
 
 test('computeOrgDivergence eliminates board-size bias and surfaces human favorites, hard specialists, and consensus leaders', async () => {
