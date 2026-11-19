@@ -564,15 +564,19 @@ test('paretoFrontiersByGroup computes independent Pareto frontiers per billing m
   assert.ok(allIds.has('img-sota'), 'image SOTA is preserved despite costing more than TTS SOTA');
 });
 
-test('cache-busting version query strings match across index.html and app.js', async () => {
+test('cache-busting version query strings match across index.html, app.js, and ES modules', async () => {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
   const js = await readFile(new URL('../app.js', import.meta.url), 'utf8');
+  const rec = await readFile(new URL('../modules/recommend.mjs', import.meta.url), 'utf8');
   const cssVer = html.match(/styles\.css\?v=([^"']+)/)?.[1];
   const appVer = html.match(/app\.js\?v=([^"']+)/)?.[1];
-  const mathVer = js.match(/chart-math\.mjs\?v=([^"']+)/)?.[1];
   assert.ok(cssVer, 'styles.css should have a cache-busting version');
   assert.equal(cssVer, appVer, 'index.html styles.css and app.js versions must match');
-  assert.equal(appVer, mathVer, 'app.js and chart-math.mjs versions must match');
+  const jsVers = [...js.matchAll(/\.mjs\?v=([^"']+)/g)].map(m => m[1]);
+  assert.ok(jsVers.length >= 5, 'app.js should import chart-math and ES modules with version query strings');
+  for (const v of jsVers) assert.equal(v, appVer, `app.js module import version ${v} must match ${appVer}`);
+  const recVer = rec.match(/chart-math\.mjs\?v=([^"']+)/)?.[1];
+  assert.equal(recVer, appVer, 'modules/recommend.mjs chart-math version must match app.js');
 });
 
 test('multimodal media tab enforces strictly isolated tracks without a cross-modality All view', async () => {

@@ -29,7 +29,16 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261120-01';
+} from './chart-math.mjs?v=20261120-02';
+import {
+  RECOMMEND_USE_CASES,
+  RECOMMEND_BUDGETS,
+  RECOMMEND_LICENSES,
+  recommendModels
+} from './modules/recommend.mjs?v=20261120-02';
+import {computeOrgDivergence} from './modules/divergence.mjs?v=20261120-02';
+import {createNavHistory} from './modules/nav-history.mjs?v=20261120-02';
+import {GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261120-02';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -401,15 +410,9 @@ let orgRankIndex = new Map();
 let orgFamilyIndex = new Map();
 let orgCreatorColors = new Map();
 let pendingUrlTimer = 0;
-const navSessionId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-let navStack = [];
-let navIndex = -1;
-let navUidSeq = 0;
-let navDepth = 0;
-let isRestoringNav = false;
-let suppressUrlReplace = false;
-const MAX_NAV_STACK = 50;
 let orgFocus = 'all';
+let orgDivFilter = 'all';
+const pickerChoice = {useCase: 'general', budget: 'balanced', license: 'all'};
 let orgBumpLimit = 12;
 let orgChartCollapsed = false;
 const orgExpandedCards = new Set();
@@ -899,7 +902,7 @@ function applyRouteParams(target, params) {
     target.mode = view;
   }
   const org = params.get('org');
-  if (['all', 'bump', 'aa', 'livebench', 'arenaChat', 'arenaWebdev', 'designArena', 'aaGdpval'].includes(org)) orgFocus = org;
+  if (['all', 'bump', 'divergence', 'aa', 'livebench', 'arenaChat', 'arenaWebdev', 'designArena', 'aaGdpval'].includes(org)) orgFocus = org;
   if (params.get('orgm') === '1') orgMatchedOnly = true;
   const bl = Number(params.get('bl'));
   if (bl === 12 || bl === 18) orgBumpLimit = bl;
@@ -1116,7 +1119,7 @@ function buildUrlHash({includeLang = false} = {}) {
 }
 
 function syncUrlHash({includeLang = false} = {}) {
-  if (!state || suppressUrlReplace || isRestoringNav) return;
+  if (!state || navHistory.isSuppressingUrl()) return;
   const nextHash = buildUrlHash({includeLang});
   const current = location.hash || '';
   if (current !== nextHash) {
@@ -1151,6 +1154,7 @@ function captureNavSnapshot() {
     sortKey: state.sortKey || 'intelligenceIndex',
     sortDirection: state.sortDirection || 'desc',
     orgFocus,
+    orgDivFilter,
     orgPinnedKey,
     orgMatchedOnly,
     orgDetailSort: {...orgDetailSort},
@@ -1202,6 +1206,7 @@ function navSnapshotLabel(snap) {
   const parts = [t(tabZh, tabEn)];
   if (snap.key === 'orgs') {
     if (snap.orgFocus === 'bump') parts.push(t('跨机构轨迹图', 'Bump Chart'));
+    else if (snap.orgFocus === 'divergence') parts.push(t('争议分歧榜', 'Divergence'));
     else if (snap.orgFocus && snap.orgFocus !== 'all') {
       const b = orgBoards.find(x => x.id === snap.orgFocus);
       if (b) parts.push(t(b.pillZh, b.pillEn));
@@ -1245,22 +1250,19 @@ function navSnapshotLabel(snap) {
   return parts.join(' · ');
 }
 
-function syncNavButtons() {
+function renderNavButtonsState({stack, index, canBack, canForward, hasHistory}) {
   const wrap = $('#navHistory');
   const backBtn = $('#navBackBtn');
   const fwdBtn = $('#navForwardBtn');
   if (!wrap || !backBtn || !fwdBtn) return;
-  const hasHistory = navStack.length > 1;
   wrap.hidden = !hasHistory;
   wrap.setAttribute('aria-label', t('站内历史导航', 'In-app navigation history'));
   $('#navBackLabel').textContent = t('返回', 'Back');
   if (!hasHistory) return;
 
-  const canBack = navIndex > 0;
-  const canFwd = navIndex >= 0 && navIndex < navStack.length - 1;
   backBtn.disabled = !canBack;
   if (canBack) {
-    const dest = navSnapshotLabel(navStack[navIndex - 1].snap);
+    const dest = navSnapshotLabel(stack[index - 1].snap);
     const tipTxt = t(`返回：${dest} (Alt+←)`, `Back to: ${dest} (Alt+←)`);
     backBtn.title = tipTxt;
     backBtn.setAttribute('aria-label', tipTxt);
@@ -1270,73 +1272,14 @@ function syncNavButtons() {
     backBtn.setAttribute('aria-label', tipTxt);
   }
 
-  fwdBtn.hidden = !canFwd;
-  fwdBtn.disabled = !canFwd;
-  if (canFwd) {
-    const dest = navSnapshotLabel(navStack[navIndex + 1].snap);
+  fwdBtn.hidden = !canForward;
+  fwdBtn.disabled = !canForward;
+  if (canForward) {
+    const dest = navSnapshotLabel(stack[index + 1].snap);
     const tipTxt = t(`前进：${dest} (Alt+→)`, `Forward to: ${dest} (Alt+→)`);
     fwdBtn.title = tipTxt;
     fwdBtn.setAttribute('aria-label', tipTxt);
   }
-}
-
-function initNavHistory() {
-  const snap = captureNavSnapshot();
-  if (!snap) return;
-  navUidSeq++;
-  navStack = [{uid: navUidSeq, snap}];
-  navIndex = 0;
-  const nextHash = buildUrlHash();
-  try {
-    history.replaceState({__navSession: navSessionId, navUid: navUidSeq}, '', nextHash || location.pathname + location.search);
-  } catch {}
-  syncNavButtons();
-}
-
-function commitNavPoint(beforeSnap) {
-  const afterSnap = captureNavSnapshot();
-  if (!afterSnap) {
-    syncNavButtons();
-    return;
-  }
-  if (beforeSnap && navSignature(beforeSnap) === navSignature(afterSnap)) {
-    syncUrlHash();
-    syncNavButtons();
-    return;
-  }
-  if (!navStack.length && beforeSnap) {
-    navStack.push({uid: ++navUidSeq, snap: beforeSnap});
-    navIndex = 0;
-  }
-  navStack.length = navIndex + 1;
-  const uid = ++navUidSeq;
-  navStack.push({uid, snap: afterSnap});
-  if (navStack.length > MAX_NAV_STACK) navStack.shift();
-  navIndex = navStack.length - 1;
-  const nextHash = buildUrlHash();
-  try {
-    history.pushState({__navSession: navSessionId, navUid: uid}, '', nextHash || location.pathname + location.search);
-  } catch {}
-  syncNavButtons();
-}
-
-function runNavAction(fn) {
-  if (isRestoringNav || !snapshot || !state || navDepth > 0) return fn();
-  navDepth++;
-  const beforeSnap = captureNavSnapshot();
-  if (navStack.length && navIndex >= 0 && navIndex < navStack.length && beforeSnap) {
-    navStack[navIndex].snap = beforeSnap;
-  }
-  suppressUrlReplace = true;
-  let result;
-  try {
-    result = fn();
-  } finally {
-    suppressUrlReplace = false;
-    navDepth--;
-  }
-  commitNavPoint(beforeSnap);
-  return result;
 }
 
 function restoreNavSnapshot(snap, direction = 'back') {
@@ -1354,6 +1297,7 @@ function restoreNavSnapshot(snap, direction = 'back') {
   clearHover();
 
   orgFocus = snap.orgFocus || 'all';
+  orgDivFilter = snap.orgDivFilter || 'all';
   orgPinnedKey = snap.orgPinnedKey || null;
   orgMatchedOnly = !!snap.orgMatchedOnly;
   orgDetailSort = snap.orgDetailSort ? {...snap.orgDetailSort} : {boardId: null, colKey: null, dir: 'desc'};
@@ -1430,30 +1374,22 @@ function restoreNavSnapshot(snap, direction = 'back') {
     ? (direction === 'forward' ? t(`已前进：${lbl}`, `Forward to: ${lbl}`) : t(`已返回：${lbl}`, `Back to: ${lbl}`))
     : '';
   updateSummary();
-  syncNavButtons();
 }
 
-function navStep(delta) {
-  const targetIdx = navIndex + delta;
-  if (targetIdx < 0 || targetIdx >= navStack.length) return;
-  const curSnap = captureNavSnapshot();
-  if (curSnap && navStack[navIndex]) navStack[navIndex].snap = curSnap;
-  if (history.state?.__navSession === navSessionId) {
-    if (delta < 0) history.back();
-    else history.forward();
-    return;
-  }
-  isRestoringNav = true;
-  navIndex = targetIdx;
-  try {
-    restoreNavSnapshot(navStack[targetIdx].snap, delta < 0 ? 'back' : 'forward');
-  } finally {
-    isRestoringNav = false;
-  }
-}
+const navHistory = createNavHistory({
+  captureSnapshot: captureNavSnapshot,
+  signatureOf: navSignature,
+  restoreSnapshot: restoreNavSnapshot,
+  buildUrlHash,
+  onButtonsChange: renderNavButtonsState,
+  maxStack: 50
+});
 
-function navBack() { navStep(-1); }
-function navForward() { navStep(1); }
+const syncNavButtons = () => navHistory.syncButtons();
+const initNavHistory = () => navHistory.init();
+const runNavAction = fn => navHistory.runAction(fn, {canCommit: () => !!(snapshot && state), fallbackSyncUrl: syncUrlHash});
+const navBack = () => navHistory.back();
+const navForward = () => navHistory.forward();
 
 function licenseFilteredRows(rows = state.rows) {
   const useCache = rows === state.rows;
@@ -1817,6 +1753,11 @@ function syncStaticText() {
   $('#tab-orgs').title = t(
     '6 家权威测评机构原始榜单原序对照（AA / LiveBench 2.0 / Arena.ai / Design Arena / GDPval），支持跨榜轨迹与单榜精析',
     '6 un-blended official organization leaderboards side-by-side with cross-org rank trajectories and sub-metric inspection'
+  );
+  $('#pickerBtnText').textContent = t('帮我选', 'Pick');
+  $('#pickerBtn').title = t(
+    '3 步帮我选模型：按用途、预算与开源偏好一键推荐 3 款候选并支持直接剖析对比',
+    '3-Step Model Picker: answer 3 quick choices for 3 tailored recommendations'
   );
   $('#guideBtnText').textContent = t('读懂榜单', 'Guide');
   $('#guideBtn').title = t(
@@ -2224,43 +2165,14 @@ for (const tab of document.querySelectorAll('.tabs [role=tab]')) {
 
 addEventListener('popstate', event => {
   if (!snapshot) return;
-  const st = event.state;
-  if (st && st.__navSession === navSessionId) {
-    const targetIdx = navStack.findIndex(item => item.uid === st.navUid);
-    if (targetIdx !== -1 && targetIdx !== navIndex) {
-      const curSnap = captureNavSnapshot();
-      if (curSnap && navStack[navIndex]) navStack[navIndex].snap = curSnap;
-      const dir = targetIdx < navIndex ? 'back' : 'forward';
-      isRestoringNav = true;
-      navIndex = targetIdx;
-      try {
-        restoreNavSnapshot(navStack[targetIdx].snap, dir);
-      } finally {
-        isRestoringNav = false;
-      }
-    } else {
-      syncNavButtons();
-    }
-    return;
-  }
-  const parsed = parseHash();
-  chooseChart(parsed.chart, {changeHash: false, routeParams: parsed.params});
-  const snap = captureNavSnapshot();
-  if (snap) {
-    navStack.length = navIndex + 1;
-    const uid = ++navUidSeq;
-    navStack.push({uid, snap});
-    if (navStack.length > MAX_NAV_STACK) navStack.shift();
-    navIndex = navStack.length - 1;
-    try {
-      history.replaceState({__navSession: navSessionId, navUid: uid}, '', location.hash || location.pathname + location.search);
-    } catch {}
-    syncNavButtons();
-  }
+  navHistory.handlePopState(event.state, () => {
+    const parsed = parseHash();
+    chooseChart(parsed.chart, {changeHash: false, routeParams: parsed.params});
+  });
 });
 
 addEventListener('hashchange', () => {
-  if (history.state?.__navSession === navSessionId) return;
+  if (navHistory.ownsCurrentHistory()) return;
   const parsed = parseHash();
   chooseChart(parsed.chart, {changeHash: false, routeParams: parsed.params});
 });
@@ -2925,6 +2837,7 @@ function syncResponsiveChrome() {
     secBox = html('div', null, 'mobile-secondary-actions');
     secBox.id = 'mobileSecActions';
   }
+  const pickerEl = $('#pickerBtn');
   const guideEl = $('#guideBtn');
   const updateWrapEl = document.querySelector('.update-wrap');
   const shareEl = $('#shareBtn');
@@ -2934,10 +2847,11 @@ function syncResponsiveChrome() {
   if (mobileLayout.matches) {
     app.insertBefore(topbar, $('#chart-panel'));
     app.insertBefore(tabs, $('#chart-panel'));
-    secBox.append(guideEl, updateWrapEl, shareEl);
+    secBox.append(pickerEl, guideEl, updateWrapEl, shareEl);
     $('#controlPanel').insertBefore(heading, $('#toolbar'));
     $('#controlPanel').append(secBox, footer);
   } else {
+    topActions.insertBefore(pickerEl, cmdEl);
     topActions.insertBefore(guideEl, cmdEl);
     topActions.insertBefore(updateWrapEl, langEl);
     topActions.insertBefore(shareEl, langEl);
@@ -7672,6 +7586,11 @@ function updateSummary() {
         `跨 ${orgBoards.length} 份独立机构原榜排名轨迹图 · 单击锁定基准曲线，悬停另一模型即可双线对照`,
         `Cross-org rank trajectory across ${orgBoards.length} official boards · Click to pin one trajectory, hover another to compare`
       );
+    } else if (orgFocus === 'divergence') {
+      $('#viewStatus').textContent = t(
+        '自动化硬考（AA / LiveBench）vs 真人盲测（Arena.ai / Design Arena）同批百分位分歧对照 · 消除榜单容量偏差',
+        'Automated hard evals (AA / LiveBench) vs. blind human taste (Arena.ai / Design) cohort percentile divergence'
+      );
     } else if (activeOrg) {
       const shownOrgRows = filterOrgRows(activeOrg.rows).length;
       $('#viewStatus').textContent = t(
@@ -8999,12 +8918,12 @@ document.addEventListener('keydown', event => {
   }
   const tag = event.target?.tagName;
   const typing = tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || event.target?.isContentEditable;
-  if (!typing && event.altKey && !event.ctrlKey && !event.metaKey && event.key === 'ArrowLeft' && navIndex > 0) {
+  if (!typing && event.altKey && !event.ctrlKey && !event.metaKey && event.key === 'ArrowLeft' && navHistory.canBack()) {
     event.preventDefault();
     navBack();
     return;
   }
-  if (!typing && event.altKey && !event.ctrlKey && !event.metaKey && event.key === 'ArrowRight' && navIndex < navStack.length - 1) {
+  if (!typing && event.altKey && !event.ctrlKey && !event.metaKey && event.key === 'ArrowRight' && navHistory.canForward()) {
     event.preventDefault();
     navForward();
     return;
@@ -9019,8 +8938,8 @@ document.addEventListener('keydown', event => {
     return;
   }
   if (!typing && !event.ctrlKey && !event.metaKey && !event.altKey) {
-    if (state && activeKey === 'orgs' && ['1', '2'].includes(event.key)) {
-      const nextFocus = event.key === '1' ? 'all' : 'bump';
+    if (state && activeKey === 'orgs' && ['1', '2', '3'].includes(event.key)) {
+      const nextFocus = event.key === '1' ? 'all' : event.key === '2' ? 'bump' : 'divergence';
       if (orgFocus !== nextFocus) {
         event.preventDefault();
         runNavAction(() => {
@@ -9658,7 +9577,7 @@ function buildStandaloneOrgBoards(snap) {
       }
     }
   }
-  if (orgFocus !== 'all' && orgFocus !== 'bump' && !orgBoards.some(b => b.id === orgFocus)) {
+  if (orgFocus !== 'all' && orgFocus !== 'bump' && orgFocus !== 'divergence' && !orgBoards.some(b => b.id === orgFocus)) {
     orgFocus = 'all';
   }
 }
@@ -9833,7 +9752,7 @@ function rebuildOrgDomIndex(container) {
   for (const el of container.querySelectorAll('[data-spot-key]')) {
     const sk = el.dataset.spotKey;
     const scopeId = el.dataset.orgScope || 'default';
-    const scrollHost = el.closest('.org-card-list, .org-detail-scroll, .org-viz-scroll') || null;
+    const scrollHost = el.closest('.org-card-list, .org-detail-scroll, .org-viz-scroll, .org-div-scroll') || null;
     const item = {el, scopeId, scrollHost};
     let list = byKey.get(sk);
     if (!list) {
@@ -10008,7 +9927,7 @@ function collectSpotMatches(targetKey, hintRow, clsName) {
   }
   const meta = resolveOrgSpotMeta(targetKey, hintRow);
   if (meta?.famSlug) {
-    for (const sc of ['aa', 'livebench', 'arenaChat', 'arenaWebdev', 'designArena', 'aaGdpval', 'viz', 'table']) {
+    for (const sc of ['aa', 'livebench', 'arenaChat', 'arenaWebdev', 'designArena', 'aaGdpval', 'viz', 'table', 'div']) {
       if (coveredScopes.has(sc)) continue;
       const sibHit = orgDomIndex.bestByFamScope.get(`${meta.famSlug}|${sc}`);
       if (sibHit) {
@@ -10924,6 +10843,236 @@ function renderOrgDetailTable(container, board) {
   container.replaceChildren(wrap);
 }
 
+function renderOrgDivergence(container) {
+  const wrap = html('div', null, 'org-div-wrap');
+  const baseById = new Map((snapshot?.models || []).map(m => [m.id, m]));
+  const boardById = new Map(orgBoards.map(b => [b.id, b]));
+  const q = (state?.search || '').trim().toLowerCase();
+  const comp = state?.company || null;
+  const lic = state?.license || 'all';
+  const starOnly = !!state?.starredOnly;
+
+  const divData = computeOrgDivergence(orgBoards, orgRankIndex, baseById, ({modelId, rec, base}) => {
+    if (comp && rec.creator !== comp) return false;
+    if (lic === 'open' && !base?.isOpenWeights) return false;
+    if (lic === 'closed' && base?.isOpenWeights) return false;
+    if (starOnly && !isStarred({id: modelId, name: rec.name, creator: {name: rec.creator}})) return false;
+    if (q && !`${rec.name} ${rec.shortName} ${rec.creator}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  const head = html('div', null, 'org-div-head');
+  const hCopy = html('div', null, 'org-div-copy');
+  hCopy.append(
+    html('strong', t('争议分歧榜：自动化硬考 vs. 真人盲测', 'Org Divergence: Hard Evals vs. Blind Human Taste')),
+    html('span', t(
+      '同批 40+ 家族模型按各自官方排序折算 0–100 同批百分位（彻底消除 AA 137 项 vs Arena 60 项的容量偏差）· 向右青绿 = 真人盲测更爱，向左琥珀 = 硬考明显更强',
+      'Cohort-normalized 0–100 percentiles across shared models (eliminating board-size bias) · Right teal = loved by human voters, left amber = hard-exam specialist'
+    ), 'org-meta-count')
+  );
+
+  const filterRow = html('div', null, 'org-div-filters');
+  for (const [fid, zh, en, cnt] of [
+    ['all', '全部分歧', 'All', divData.counts.all],
+    ['human', '体感胜跑分', 'Human > Hard', divData.counts.human],
+    ['auto', '硬考胜体感', 'Hard > Human', divData.counts.auto],
+    ['consensus', '全机构共识', 'Consensus', divData.counts.consensus]
+  ]) {
+    const b = html('button', `${t(zh, en)} (${cnt})`, 'org-mini-btn');
+    b.type = 'button';
+    b.setAttribute('aria-pressed', String(orgDivFilter === fid));
+    b.addEventListener('click', () => {
+      if (orgDivFilter === fid) return;
+      orgDivFilter = fid;
+      renderOrgLeaderboards();
+    });
+    filterRow.append(b);
+  }
+  head.append(hCopy, filterRow);
+  wrap.append(head);
+
+  if (!divData.rows.length) {
+    const emptyBox = html('div', null, 'org-empty');
+    const notice = makeEmptyResetNotice(
+      '当前筛选条件下暂无同时覆盖自动化硬考与真人盲测的模型。',
+      'No models covered by both automated & human boards under current filters.',
+      {clearOrgMatch: true}
+    );
+    emptyBox.append(notice);
+    wrap.append(emptyBox);
+    container.replaceChildren(wrap);
+    return;
+  }
+
+  const fmtEntries = entries => entries.map(e => {
+    const tag = boardById.get(e.boardId)?.shortTag || e.boardId;
+    return `${tag} ${e.exact ? '' : '~'}#${e.rank}`;
+  }).join(' · ');
+
+  // 3-column insight highlight strip
+  const kpis = html('div', null, 'org-div-kpis');
+  const makeKpi = (cls, labelZh, labelEn, item, detailTxt) => {
+    const btn = html('button', null, `org-div-kpi${cls ? ' ' + cls : ''}`);
+    btn.type = 'button';
+    if (!item) {
+      btn.disabled = true;
+      btn.append(html('span', t(labelZh, labelEn), 'org-div-kpi-label'), html('span', '—', 'org-div-kpi-sub'));
+      return btn;
+    }
+    const top = html('div', null, 'org-div-kpi-main');
+    top.append(html('strong', item.shortName), html('span', item.cost ? money(item.cost) : '—', 'org-meta-count'));
+    btn.append(
+      html('span', t(labelZh, labelEn), 'org-div-kpi-label'),
+      top,
+      html('span', detailTxt, 'org-div-kpi-sub')
+    );
+    btn.addEventListener('click', () => {
+      orgPinnedKey = item.modelId;
+      lastOrgBarSig = '';
+      applyOrgSpotlight(null, null, {scrollPinned: true});
+    });
+    return btn;
+  };
+  kpis.append(
+    makeKpi(
+      '',
+      '最大「体感逆袭」（真人更爱）',
+      'Top Human Favorite (Vibe > Exam)',
+      divData.topHumanFavorite,
+      divData.topHumanFavorite
+        ? `${t('盲测分位领先', 'Human lead')} +${format(divData.topHumanFavorite.gap, 1)} · ${fmtEntries(divData.topHumanFavorite.humanEntries)} vs ${fmtEntries(divData.topHumanFavorite.autoEntries)}`
+        : ''
+    ),
+    makeKpi(
+      'is-auto',
+      '最大「硬考偏科」（跑分更强）',
+      'Top Hard-Eval Specialist (Exam > Vibe)',
+      divData.topHardSpecialist,
+      divData.topHardSpecialist
+        ? `${t('硬考分位领先', 'Hard lead')} +${format(Math.abs(divData.topHardSpecialist.gap), 1)} · ${fmtEntries(divData.topHardSpecialist.autoEntries)} vs ${fmtEntries(divData.topHardSpecialist.humanEntries)}`
+        : ''
+    ),
+    makeKpi(
+      '',
+      '最稳「全机构共识」旗舰',
+      'Strongest Cross-Org Consensus',
+      divData.topConsensus,
+      divData.topConsensus
+        ? `${t('硬考', 'Hard')} ${format(divData.topConsensus.autoPct, 0)}% · ${t('盲测', 'Human')} ${format(divData.topConsensus.humanPct, 0)}% (${divData.topConsensus.coveredCount}${t('榜全优', ' boards')})`
+        : ''
+    )
+  );
+  wrap.append(kpis);
+
+  let shown = divData.rows;
+  if (orgDivFilter === 'human') shown = shown.filter(r => r.gap >= 8).sort((a, b) => b.gap - a.gap);
+  else if (orgDivFilter === 'auto') shown = shown.filter(r => r.gap <= -8).sort((a, b) => a.gap - b.gap);
+  else if (orgDivFilter === 'consensus') shown = shown.filter(r => r.kind === 'consensus').sort((a, b) => b.overallPct - a.overallPct);
+
+  const maxAbsGap = Math.max(25, ...divData.rows.map(r => r.absGap));
+  const scroller = html('div', null, 'org-div-scroll');
+  const table = html('table', null, 'org-div-table');
+  const thead = html('thead');
+  const trH = html('tr');
+  trH.append(
+    html('th', t('模型（点击锁定跨榜对齐）', 'Model (click to pin cross-org)')),
+    html('th', t('自动化硬考 (AA / LB2)', 'Hard Evals (AA / LB2)')),
+    html('th', t('真人盲测 (Arena / Design)', 'Human Taste (Arena / Design)')),
+    html('th', t('硬考 ← 分歧方向 → 体感', 'Hard ← Divergence → Human')),
+    html('th', t('最强 ↔ 最弱机构', 'Best ↔ Worst Org')),
+    html('th', t('操作', 'Action'), 'num')
+  );
+  thead.append(trH);
+
+  const tbody = html('tbody');
+  if (!shown.length) {
+    const tr = html('tr');
+    const td = html('td', t('该分歧分类下暂无匹配模型，请切换上方分类标签。', 'No models in this divergence bucket. Try another filter pill above.'), 'org-empty-cell');
+    td.colSpan = 6;
+    tr.append(td);
+    tbody.append(tr);
+  } else {
+    for (const r of shown) {
+      const tr = html('tr');
+      tr.dataset.spotKey = r.modelId;
+      tr.dataset.orgScope = 'div';
+      if (r.familySlug) tr.dataset.familySlug = r.familySlug;
+      orgRowByEl.set(tr, {modelId: r.modelId, familySlug: r.familySlug, name: r.name, shortName: r.shortName, creator: r.creator, creatorColor: r.creatorColor, cost: r.cost});
+
+      const tdName = html('td', null, 'org-name-cell');
+      const nameWrap = html('div', null, 'org-detail-name-wrap');
+      const dot = html('i', null, 'creator-dot');
+      dot.style.background = orgCreatorColor(r.creator, r.creatorColor);
+      dot.setAttribute('aria-hidden', 'true');
+      const copy = html('div', null, 'org-detail-name-copy');
+      const subBits = [r.creator];
+      if (r.cost != null && r.cost > 0) subBits.push(money(r.cost));
+      if (r.isOpenWeights) subBits.push(t('开源', 'Open'));
+      copy.append(html('strong', r.shortName), html('span', subBits.join(' · '), 'org-row-sub'));
+      nameWrap.append(dot, copy);
+      tdName.append(nameWrap);
+
+      const tdAuto = html('td', null, 'org-div-ranks-cell');
+      const autoTxt = fmtEntries(r.autoEntries);
+      tdAuto.title = `${Math.round(r.autoPct)}% · ${autoTxt}`;
+      tdAuto.append(html('b', `${Math.round(r.autoPct)}%`), document.createTextNode(autoTxt));
+
+      const tdHuman = html('td', null, 'org-div-ranks-cell');
+      const humanTxt = fmtEntries(r.humanEntries);
+      tdHuman.title = `${Math.round(r.humanPct)}% · ${humanTxt}`;
+      tdHuman.append(html('b', `${Math.round(r.humanPct)}%`), document.createTextNode(humanTxt));
+
+      const tdBar = html('td', null, 'org-div-bar-cell');
+      const barWrap = html('div', null, 'org-div-bar-wrap');
+      const track = html('div', null, 'org-div-track');
+      track.append(html('span', null, 'org-div-axis'));
+      const halfPct = Math.min(48, Math.max(3, (r.absGap / maxAbsGap) * 48));
+      if (r.absGap >= 1.5) {
+        const fill = html('span', null, `org-div-fill ${r.gap > 0 ? 'is-human' : 'is-auto'}`);
+        fill.style.width = `${halfPct.toFixed(1)}%`;
+        track.append(fill);
+      }
+      const deltaCls = r.gap >= 8 ? 'is-human' : r.gap <= -8 ? 'is-auto' : 'is-even';
+      const deltaTxt = r.gap >= 8
+        ? t(`体感 +${format(r.gap, 0)}`, `Human +${format(r.gap, 0)}`)
+        : r.gap <= -8
+          ? t(`硬考 +${format(Math.abs(r.gap), 0)}`, `Hard +${format(Math.abs(r.gap), 0)}`)
+          : t('基本一致', 'Aligned');
+      barWrap.append(track, html('span', deltaTxt, `org-div-delta ${deltaCls}`));
+      tdBar.append(barWrap);
+
+      const bestTag = boardById.get(r.bestOrg.boardId)?.shortTag || r.bestOrg.boardId;
+      const worstTag = boardById.get(r.worstOrg.boardId)?.shortTag || r.worstOrg.boardId;
+      const tdSpread = html('td', `${bestTag} ${r.bestOrg.exact ? '' : '~'}#${r.bestOrg.rank} ↔ ${worstTag} ${r.worstOrg.exact ? '' : '~'}#${r.worstOrg.rank}`, 'org-div-ranks-cell');
+
+      const tdAct = html('td', null, 'num org-act-cell');
+      const loc = html('button', t('定位', 'Locate'), 'org-micro-btn');
+      loc.type = 'button';
+      loc.setAttribute('aria-label', t(`在散点图中定位 ${r.shortName}`, `Locate ${r.shortName} in scatter chart`));
+      loc.addEventListener('click', e => {
+        e.stopPropagation();
+        locateOrgModel({modelId: r.modelId}, orgBoards[0]);
+      });
+      const inCmp = isInCompareAnyModelTab(r.modelId);
+      const cmp = html('button', inCmp ? t('已选', 'In') : t('+对比', '+Cmp'), `org-micro-btn${inCmp ? ' is-in' : ''}`);
+      cmp.type = 'button';
+      cmp.setAttribute('aria-label', inCmp ? t(`从对比移除 ${r.shortName}`, `Remove ${r.shortName}`) : t(`将 ${r.shortName} 加入剖析对比`, `Add ${r.shortName} to compare`));
+      cmp.addEventListener('click', e => {
+        e.stopPropagation();
+        toggleOrgCompare({modelId: r.modelId}, orgBoards[0], false);
+      });
+      tdAct.append(loc, cmp);
+
+      tr.append(tdName, tdAuto, tdHuman, tdBar, tdSpread, tdAct);
+      tbody.append(tr);
+    }
+  }
+  table.append(thead, tbody);
+  scroller.append(table);
+  wrap.append(scroller);
+  container.replaceChildren(wrap);
+}
+
 function renderOrgLeaderboards() {
   if (!state || !orgBoards.length) return;
   $('#exportPng').hidden = orgFocus !== 'bump';
@@ -10932,7 +11081,8 @@ function renderOrgLeaderboards() {
   const mFrag = document.createDocumentFragment();
   for (const [id, zh, en] of [
     ['all', '6 机构并排', 'Side-by-Side'],
-    ['bump', '跨机构轨迹图', 'Rank Trajectory']
+    ['bump', '跨机构轨迹图', 'Rank Trajectory'],
+    ['divergence', '争议分歧榜', 'Divergence']
   ]) {
     const b = html('button');
     b.type = 'button';
@@ -10944,11 +11094,17 @@ function renderOrgLeaderboards() {
         node('rect', {x: 6.3, y: 2.5, width: 3.4, height: 11, rx: 0.9, fill: 'none', stroke: 'currentColor', 'stroke-width': 1.25}),
         node('rect', {x: 10.8, y: 2.5, width: 3.4, height: 11, rx: 0.9, fill: 'none', stroke: 'currentColor', 'stroke-width': 1.25})
       );
-    } else {
+    } else if (id === 'bump') {
       ic.append(
         node('path', {d: 'M2 11.5 C5.2 11.5, 5.8 4.5, 8 4.5 C10.2 4.5, 10.8 10, 14 6', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.4, 'stroke-linecap': 'round'}),
         node('path', {d: 'M2 5.5 C5.2 5.5, 5.8 11, 8 11 C10.2 11, 10.8 4.8, 14 11.2', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.15, 'stroke-dasharray': '2 2', opacity: 0.72, 'stroke-linecap': 'round'}),
         node('circle', {cx: 8, cy: 4.5, r: 1.4, fill: 'currentColor'})
+      );
+    } else {
+      ic.append(
+        node('line', {x1: 8, y1: 2.2, x2: 8, y2: 13.8, stroke: 'currentColor', 'stroke-width': 1.25, opacity: 0.65}),
+        node('rect', {x: 8, y: 3.5, width: 5.5, height: 2.6, rx: 0.8, fill: 'currentColor'}),
+        node('rect', {x: 2.5, y: 9.8, width: 5.5, height: 2.6, rx: 0.8, fill: 'currentColor', opacity: 0.75})
       );
     }
     b.append(ic, html('span', t(zh, en)));
@@ -10987,7 +11143,7 @@ function renderOrgLeaderboards() {
   selGroup.replaceChildren(pFrag);
 
   const matchBtn = $('#orgMatchedToggle');
-  matchBtn.hidden = orgFocus === 'bump';
+  matchBtn.hidden = orgFocus === 'bump' || orgFocus === 'divergence';
   matchBtn.setAttribute('aria-pressed', String(orgMatchedOnly));
   matchBtn.textContent = orgMatchedOnly
     ? t('仅看可对齐全站模型 ✓', 'Aligned models only ✓')
@@ -11014,6 +11170,8 @@ function renderOrgLeaderboards() {
   pendingOrgHoverRow = null;
   if (orgFocus === 'bump') {
     renderOrgBumpChart(content);
+  } else if (orgFocus === 'divergence') {
+    renderOrgDivergence(content);
   } else if (activeBoard) {
     renderOrgDetailTable(content, activeBoard);
   } else {
@@ -11133,759 +11291,439 @@ function syncOnboardingStrip() {
       '看图口诀：越靠左上越理想（高分且低价）· 虚线为帕累托前沿（同价位无可替代）· 单击圆点看跨榜详情',
       'Quick read: Upper-left is best (high score, low cost) · Dashed line = Pareto frontier (unbeaten at its price) · Click dots for details'
     );
-  $('#onboardingGuideBtn').textContent = t('导览与机构解读', 'Guide & Insights');
+  $('#onboardingPickerBtn').textContent = t('3 步帮我选模型', '3-Step Model Picker');
+  $('#onboardingGuideBtn').textContent = t('读懂榜单', 'Guide');
   $('#onboardingDismissBtn').textContent = t('知道了', 'Got it');
   $('#onboardingDismissBtn').setAttribute('aria-label', t('关闭新手读图提示', 'Dismiss quick-read hint'));
 }
 
-const GUIDE_TAB_PROFILES = {
-  models: {
-    badgeZh: '综合基线 · 覆盖最全',
-    badgeEn: 'Baseline · Widest Coverage',
-    titleZh: '综合智能（Artificial Analysis v5）',
-    titleEn: 'Intelligence Index (Artificial Analysis v5)',
-    descZh: '将代码、科学推理、百万长上下文、全科闭卷等 10 项标准化任务合成为 0–100 总分，并同口径记录真实跑完一套任务的美元 API 花费与平均耗时，是新手对比“花多少钱买多少智商”的第一入口。',
-    descEn: 'Combines 10 standardized tasks (coding, reasoning, long context, closed-book knowledge) into a 0–100 score paired with real USD API cost and wall time — the best starting point for value comparisons.',
-    trapZh: '总分高不代表聊起来像人，也不代表前端好看；且部分旧子项在顶级模型上渐趋饱和。想看清顶尖差距请切换「前沿极限」或用下方隐藏玩法拆解。',
-    trapEn: 'High overall scores don’t guarantee natural writing or great UI aesthetics, and some legacy tasks are saturating. Use Frontier Hard or the interactive recipes below to look deeper.',
-    recipes: [
-      {
-        titleZh: '揭秘推理“加档”边际收益',
-        titleEn: 'Expose Reasoning-Effort Diminishing Returns',
-        descZh: '开启「推理轨迹」连线同一模型家族的 Low → Medium → High → Xhigh 思考档位，一眼识别哪些模型加档后成本暴涨 5 倍但分数几乎不动。',
-        descEn: 'Turn on Effort Paths to connect Low → Medium → High → Xhigh variants of the same family and spot where extra thinking cost stops paying off.',
-        run() {
-          resetActiveFilters();
-          showView('chart');
-          state.effortCurves = true;
-          state.view = {...state.bounds};
-          syncControls();
-          syncUrlHash();
-          scheduleDraw();
-          selectionNotice = t(
-            '已开启「推理轨迹」：虚线连接同系列不同思考档位，斜率越平缓说明加档越不划算',
-            'Effort Paths active: dashed trails link effort tiers within each family — flatter slopes mean diminishing returns'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '回看过去一年 AI 降本幅度',
-        titleEn: 'Replay 1-Year AI Cost Deflation',
-        descZh: '打开「历史演进」时间轴并定位到半年前，实线为历史前沿、虚线为今日前沿，直接看到同等智能水平便宜了多少倍。',
-        descEn: 'Open Historical Evolution to compare the Pareto frontier 6 months ago (solid) against today (dashed) and measure exact price deflation.',
-        run() {
-          resetActiveFilters();
-          showView('chart');
-          if (state.releaseDates.length) {
-            state.historyMode = true;
-            const sixMo = shiftMonthsIso(state.releaseDates.at(-1), -6);
-            const idx = state.releaseDates.findIndex(d => d >= sixMo);
-            state.historyIndex = idx === -1 ? Math.floor(state.releaseDates.length * 0.45) : idx;
-          }
-          syncControls();
-          syncUrlHash();
-          scheduleDraw();
-          selectionNotice = t(
-            '已开启「历史演进」：拖动上方时间轴或点「▶ 回放演进」观察同等能力成本暴跌轨迹',
-            'History mode active: scrub the timeline or click Play to watch identical capability become multiples cheaper'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '防污染照妖镜：切换 LiveBench 2.0 纵轴',
-        titleEn: 'Contamination Check: Switch Y to LiveBench 2.0',
-        descZh: '把纵轴换成按月出新题的 LiveBench 2.0，对比各模型在“从未见过的客观难题”上的真实排名与单价。',
-        descEn: 'Switch the Y-axis to monthly contamination-free LiveBench 2.0 scores to expose models inflated on stale public test sets.',
-        run() {
-          resetActiveFilters();
-          showView('chart');
-          applyYLens(state, 'livebench');
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '纵轴已切至「LiveBench 2.0 防污染总分」：远离左上前沿的旧高分模型往往受旧题库红利影响',
-            'Y-axis set to LiveBench 2.0 (contamination-free): compare positions against overall index to spot benchmark overfitting'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '按你的真实业务重算前沿（全栈研发 + 等值切线）',
-        titleEn: 'Re-rank for Your Workflow (Full-Stack + Iso-Value)',
-        descZh: '启用「全栈研发」场景配方并勾出「等值切线」，把通用总分重算为你工作流专属的性价比榜首。',
-        descEn: 'Apply the Full-Stack Dev scenario weights with the Iso-Value contour to find the true best-value winner for engineering.',
-        run() {
-          resetActiveFilters();
-          showView('chart');
-          const preset = SCENARIO_PRESETS.find(p => p.id === 'fullstack');
-          if (preset) {
-            state.scenarioId = preset.id;
-            state.scenarioWeights = {...preset.weights};
-          }
-          state.isoCurve = true;
-          reprojectRows(state);
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '已切换「全栈研发」场景配方并开启等值切线：点工具栏「场景配方」可微调五维权重',
-            'Full-Stack scenario + Iso-Value active: open Scenarios in the toolbar to customize all 5 workflow weights'
-          );
-          updateSummary();
-        }
-      }
-    ]
+const GUIDE_RECIPE_RUNNERS = {
+  'models-effort': () => {
+    resetActiveFilters();
+    showView('chart');
+    state.effortCurves = true;
+    state.view = {...state.bounds};
+    syncControls();
+    syncUrlHash();
+    scheduleDraw();
+    selectionNotice = t(
+      '已开启「推理轨迹」：虚线连接同系列不同思考档位，斜率越平缓说明加档越不划算',
+      'Effort Paths active: dashed trails link effort tiers within each family — flatter slopes mean diminishing returns'
+    );
+    updateSummary();
   },
-  frontier: {
-    badgeZh: '去水份硬考 · 专测旗舰分差',
-    badgeEn: 'Unsaturated Hard Suites',
-    titleZh: '前沿极限（剔除已饱和旧题）',
-    titleEn: 'Frontier Hard (Strips Saturated Legacy Suites)',
-    descZh: '很多常见基准在顶级模型上已经考到 90%+ 失去区分度。本榜只保留 GDP-PDF 全过、FrontierCode 2.0、Terminal 4.0、CritPt、Automation 与 HLE 六大未饱和难题，专门拉开旗舰硬实力差距。',
-    descEn: 'Legacy tests hit 90%+ ceilings on top models. This tab keeps only 6 unsaturated hard suites (GDP-PDF, FrontierCode 2.0, Terminal 4.0, CritPt, Automation, HLE) to reveal true SOTA separation.',
-    trapZh: '难题本身高度依赖深度思考 Token，成本跨度极大；别忘了结合「抗刷榜跃升」标签找出低价却在难题逆袭的黑马。',
-    trapEn: 'Hard suites burn heavy reasoning tokens; watch the rank-riser filter to catch lower-priced models that jump ahead when easy questions are removed.',
-    recipes: [
-      {
-        titleZh: '揪出“抗刷榜硬核逆袭”黑马',
-        titleEn: 'Find Hard-Eval Rank Risers',
-        descZh: '筛选「抗刷榜硬核跃升 (排名↑)」，只看剔除旧题后名次显著上涨的硬核实力派，避开“简单题刷分王”。',
-        descEn: 'Filter to models whose rank climbs once saturated easy suites are removed — avoiding inflated benchmark specialists.',
-        run() {
-          resetActiveFilters();
-          showView('chart');
-          state.extraFilter = 'delta:up';
-          renderLegend();
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '已筛选「抗刷榜硬核跃升」模型：这些模型在剔除旧题后名次上升，硬核泛化更稳',
-            'Filtered to Hard-Eval Rank Risers: models that climb the standings when saturated legacy tests are stripped'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '百万长上下文压力测试 (MLCR)',
-        titleEn: 'Million-Token Long-Context Stress Test (MLCR)',
-        descZh: '把纵轴切为 MLCR 超长上下文，许多短文本高分模型在百万字多文档检索里会断崖下跌。',
-        descEn: 'Switch Y-axis to MLCR long-context retrieval — many strong short-context models drop sharply at massive document scales.',
-        run() {
-          resetActiveFilters();
-          showView('chart');
-          applyYLens(state, 'mlcr');
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '纵轴已切至「MLCR 百万长上下文」：观察哪些低价模型在长文档里依然稳住高分',
-            'Y-axis set to MLCR Million-Token Context: spot models that keep accuracy intact on huge documents'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '垂类实战：顶尖律所 Harvey BigLaw',
-        titleEn: 'Vertical Domain: Harvey BigLaw Legal Eval',
-        descZh: '切到 Harvey 顶尖律所实测纵轴，观察专业合同审查与法律推理场景下谁最值得付费。',
-        descEn: 'Switch Y-axis to Harvey BigLaw legal evaluation to compare cost vs. rigor in high-stakes legal work.',
-        run() {
-          resetActiveFilters();
-          showView('chart');
-          applyYLens(state, 'harveyLaw');
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '纵轴已切至「Harvey 顶尖律所」：工具栏下拉框还可切到 IT-Bench SRE 排障、Terminal 4.0 等专项',
-            'Y-axis set to Harvey BigLaw: use the Y-lens dropdown to switch to IT-Bench SRE, Terminal 4.0, or HLE'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '开源权重离闭源前沿有多近？',
-        titleEn: 'How Close Are Open-Weights to Frontier?',
-        descZh: '切换「仅开源」并打开「等值切线」，直接找出可私有化部署的最强硬核开源模型。',
-        descEn: 'Filter to Open-Weights with the Iso-Value contour to identify the strongest self-hostable hard-eval models.',
-        run() {
-          resetActiveFilters();
-          showView('chart');
-          state.license = 'open';
-          state.isoCurve = true;
-          renderLegend();
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '已筛选「仅开源」前沿模型并画出等值切线：开源前沿集中在左下极低成本带',
-            'Open-Weights filter + Iso-Value contour active: inspect the strongest self-hostable models'
-          );
-          updateSummary();
-        }
-      }
-    ]
+  'models-history': () => {
+    resetActiveFilters();
+    showView('chart');
+    if (state.releaseDates.length) {
+      state.historyMode = true;
+      const sixMo = shiftMonthsIso(state.releaseDates.at(-1), -6);
+      const idx = state.releaseDates.findIndex(d => d >= sixMo);
+      state.historyIndex = idx === -1 ? Math.floor(state.releaseDates.length * 0.45) : idx;
+    }
+    syncControls();
+    syncUrlHash();
+    scheduleDraw();
+    selectionNotice = t(
+      '已开启「历史演进」：拖动上方时间轴或点「▶ 回放演进」观察同等能力成本暴跌轨迹',
+      'History mode active: scrub the timeline or click Play to watch identical capability become multiples cheaper'
+    );
+    updateSummary();
   },
-  'human-arena': {
-    badgeZh: '真人盲测 · 体感与审美',
-    badgeEn: 'Blind Human Taste & Vibe',
-    titleZh: '人类与审美（体感 · 视觉 · 办公交付）',
-    titleEn: 'Human & Aesthetic Arena (Chat · Design · Deliverables)',
-    descZh: '客观题高分常常伴随“AI 味太重、满屏套话、页面很土”。本榜融合 Arena.ai 去水份盲投人味、Design Arena 五维审美与 GDPval 44 职业专家交付，专门衡量“真实人类用起来爽不爽”。',
-    descEn: 'High test scores often come with robotic prose and generic UIs. This tab blends Arena.ai style-controlled chat, Design Arena 5D aesthetics, and GDPval 44-job expert deliverables.',
-    trapZh: '人类盲测偏重观感与沟通流畅度，复杂数学或隐蔽代码 Bug 可能被漂亮话术掩盖——严谨任务请交叉对照「前沿极限」。',
-    trapEn: 'Human blind votes reward polish and clarity, which can mask subtle logic bugs — cross-check Frontier Hard for rigorous engineering.',
-    recipes: [
-      {
-        titleZh: '拒绝“AI 味套话”：去 AI 套话自然度排行',
-        titleEn: 'Cut Robotic Prose: Anti-Slop Naturalness',
-        descZh: '将纵轴切为「去 AI 套话自然度」，快速避开满口“当然！这是一个很好的问题”的模板腔模型。',
-        descEn: 'Switch Y-axis to Anti-Slop Naturalness to avoid models heavy on clichés and boilerplate framing.',
-        run() {
-          resetActiveFilters();
-          showView('chart');
-          applyYLens(state, 'antiSlop');
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '纵轴已切至「去 AI 套话自然度」：分数越高，文字越自然克制、越少机械套话',
-            'Y-axis set to Anti-Slop Naturalness: higher scores mean cleaner, less cliché-ridden writing'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '前端/页面不土气：Design Arena 五维审美',
-        titleEn: 'UI & Web Aesthetics: Design Arena 5D',
-        descZh: '切到「视觉审美五维总分」并筛选高视觉审美门槛 (Website Elo ≥ 1300)，直奔审美第一梯队。',
-        descEn: 'Switch Y-axis to Design Arena 5D aesthetics and filter to Website Elo ≥ 1300 for top visual craft.',
-        run() {
-          resetActiveFilters();
-          showView('chart');
-          applyYLens(state, 'pureVisual');
-          state.extraFilter = 'design:top';
-          renderLegend();
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '已聚焦 Design Arena 高审美第一梯队：适合选网页原型、UI 组件与数据可视化主力模型',
-            'Focused on top Design Arena models (Website Elo ≥ 1300) for web, UI, and visual craft'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '买来当数字员工：44 职业真实交付盲评',
-        titleEn: 'Real Work Products: 44-Job Expert Deliverables',
-        descZh: '纵轴切为「专家办公交付 (GDPval)」，看金融、法律、医疗、工程资深专家盲选出的真实交付冠军。',
-        descEn: 'Switch Y-axis to GDPval expert deliverables to see which models produce usable work artifacts across 44 professions.',
-        run() {
-          resetActiveFilters();
-          showView('chart');
-          applyYLens(state, 'deliverable');
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '纵轴已切至「44 职业专家办公交付」：衡量研报、表格、方案等直接可用成果质量',
-            'Y-axis set to 44-Job Expert Deliverables: measures directly usable professional work products'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '微距对比：同时剖析人味、审美与交付短板',
-        titleEn: 'Side-by-Side Anatomy of Vibe, Taste & Rigor',
-        descZh: '一键切到「剖析对比」并自动选出 4 款代表模型，用雷达图与微距跑道看清谁是偏科生。',
-        descEn: 'Jump to Compare view with 4 representative models to inspect radar & zoomed-strip trade-offs.',
-        run() {
-          resetActiveFilters();
-          state.compareIds = defaultCompareIds(state.rows);
-          showView('compare');
-          selectionNotice = t(
-            '已打开「剖析对比」：可切换「微距跑道」或「胜负分差 Δ」放大细微差距',
-            'Compare view open: switch between Radar, Zoomed Strip, and Delta Δ views above the chart'
-          );
-          updateSummary();
-        }
-      }
-    ]
+  'models-livebench': () => {
+    resetActiveFilters();
+    showView('chart');
+    applyYLens(state, 'livebench');
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '纵轴已切至「LiveBench 2.0 防污染总分」：远离左上前沿的旧高分模型往往受旧题库红利影响',
+      'Y-axis set to LiveBench 2.0 (contamination-free): compare positions against overall index to spot benchmark overfitting'
+    );
+    updateSummary();
   },
-  'coding-agents': {
-    badgeZh: '模型 + 框架端到端实测',
-    badgeEn: 'End-to-End Model + Harness',
-    titleZh: '编程智能体（Model + Agent Harness）',
-    titleEn: 'Coding Agents (Model + Harness End-to-End)',
-    descZh: '现实写代码不只是模型裸考，更是“模型 + Agent 框架（Claude Code、Codex 等）”在真实终端改代码、跑测试、修 Bug 的协同表现。',
-    descEn: 'Real engineering combines a model with an agent harness (Claude Code, Codex, etc.) editing repos, running shells, and iterating until tests pass.',
-    trapZh: '相同模型套不同框架，成绩和花费能差出几倍；且“均值成本”可能掩盖 P95 死循环烧钱风险，务必点「剖析对比」看成本分位数。',
-    trapEn: 'The same model in different harnesses can differ dramatically in score and spend; check Compare view for P50 vs P95 tail-cost blowups.',
-    recipes: [
-      {
-        titleZh: '拆解 P50 vs P95 成本长尾与缓存命中率',
-        titleEn: 'Inspect P50 vs P95 Tail Costs & Cache Hit Rate',
-        descZh: '打开「剖析对比」，看清各编程智能体单次任务的中位花费 vs 95% 极端长尾花费、平均步数与 Prompt 缓存命中率。',
-        descEn: 'Open Compare view to inspect median vs. P95 tail cost, average step count, and prompt cache hit rate.',
-        run() {
-          resetActiveFilters();
-          showView('compare');
-          selectionNotice = t(
-            '向下看「单任务成本结构拆解」：P95 远高于均值说明该智能体偶发长尾重试很烧钱',
-            'Check Cost Anatomy below: P95 >> Mean warns of occasional expensive retry loops'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '月卡订阅回本线 + 80/20 混合路由省钱算账',
-        titleEn: 'Subscription Break-Even + 80/20 Hybrid Routing',
-        descZh: '切到「订阅回本」并展开「混合路由模拟」，实测每月写多少任务买 $20/$100/$200 订阅划算，或混用轻量+旗舰能省多少。',
-        descEn: 'Open Sub vs API with Hybrid Routing enabled to see when $20/$100/$200 plans pay off — or how an 80/20 split cuts bills.',
-        run() {
-          resetActiveFilters();
-          showView('sub');
-          state.routerOpen = true;
-          syncRouterControls();
-          syncUrlHash();
-          selectionNotice = t(
-            '已打开「订阅回本 + 混合路由」：拖动月任务量与分流比例，实时算清订阅还是 API 省钱',
-            'Sub vs API + Hybrid Routing active: adjust monthly tasks & routing share to optimize spend'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '横轴切换「实测耗时」：谁强还不用苦等？',
-        titleEn: 'Switch X-Axis to Wall Time: Fast & Strong',
-        descZh: '将横轴从成本切为平均耗时，有些高分 Agent 平均一个任务要跑 15 分钟以上，切耗时轴立现原形。',
-        descEn: 'Switch X-axis to measured wall time to separate snappy coding agents from slow 15+ minute runs.',
-        run() {
-          resetActiveFilters();
-          showView('chart');
-          syncMetricViewport(state, 'time');
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '横轴已切至「每任务平均耗时」：越靠左上代表既能解难题、等待时间又短',
-            'X-axis switched to Mean Wall Time: upper-left agents solve hard repos without long waits'
-          );
-          updateSummary();
-        }
-      }
-    ]
+  'models-fullstack': () => {
+    resetActiveFilters();
+    showView('chart');
+    const preset = SCENARIO_PRESETS.find(p => p.id === 'fullstack');
+    if (preset) {
+      state.scenarioId = preset.id;
+      state.scenarioWeights = {...preset.weights};
+    }
+    state.isoCurve = true;
+    reprojectRows(state);
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '已切换「全栈研发」场景配方并开启等值切线：点工具栏「场景配方」可微调五维权重',
+      'Full-Stack scenario + Iso-Value active: open Scenarios in the toolbar to customize all 5 workflow weights'
+    );
+    updateSummary();
   },
-  cyber: {
-    badgeZh: '攻防实测 + 拒答率透明',
-    badgeEn: 'Security Evals + Refusal Rate',
-    titleZh: '网络安全（攻防实力与安全护栏）',
-    titleEn: 'Cyber Index (Capability & Safeguard Refusals)',
-    descZh: '评估模型在漏洞挖掘、红蓝攻防与安全代码审计任务上的实测能力，同时透明公开每个模型的安全护栏拒答比例。',
-    descEn: 'Measures vulnerability analysis, offensive/defensive cyber tasks, and secure auditing alongside each model’s safeguard refusal rate.',
-    trapZh: '安全场景最怕“一问漏洞就拒答”导致白花钱。筛选拒答率前先明确你的合规授权场景，别只盯着总分。',
-    trapEn: 'Over-eager refusals can break authorized pentesting or code auditing workflows — always check refusal rate alongside score.',
-    recipes: [
-      {
-        titleZh: '筛选「零安全拒答 (0%)」：适合合规审计/红蓝演练',
-        titleEn: 'Filter to Zero Refusal (0%) for Authorized Audits',
-        descZh: '只看在合法安全评测里零拒答的模型，避免正常代码漏洞分析被安全护栏误杀。',
-        descEn: 'Show models with 0% refusal rate on authorized security evaluations so legitimate auditing isn’t blocked.',
-        run() {
-          resetActiveFilters();
-          showView('chart');
-          state.extraFilter = 'refusal:zero';
-          renderLegend();
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '已筛选「零安全拒答 (0%)」安全模型：悬停任意圆点可查看具体拒答率与防护状态',
-            'Filtered to 0% refusal cyber models: hover any dot to inspect refusal rate and safeguard status'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '对比「含安全拦截 (>0%)」模型的分价影响',
-        titleEn: 'Inspect Models with Active Safeguards (>0% Refusal)',
-        descZh: '查看启用主动安全拦截机制的模型分布，评估强护栏与攻防实用性之间的权衡。',
-        descEn: 'Inspect models with active refusal safeguards to see how guardrails trade off against benchmark score.',
-        run() {
-          resetActiveFilters();
-          showView('chart');
-          state.extraFilter = 'refusal:guarded';
-          renderLegend();
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '已筛选「含安全拦截 (>0%)」模型：可点击数据表横向比较各模型拒答率与单价',
-            'Filtered to safeguarded (>0% refusal) models: switch to Table view for side-by-side comparison'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '按性价比排安全初筛主力榜',
-        titleEn: 'Sort Security Models by Value per Dollar',
-        descZh: '切到「数据表」并按性价比降序，快速挑出适合 CI 自动化安全扫描的低成本高分模型。',
-        descEn: 'Open Table view sorted by Value/USD to pick economical models for continuous security scanning.',
-        run() {
-          resetActiveFilters();
-          state.sortKey = 'valuePerDollar';
-          state.sortDirection = 'desc';
-          showView('table');
-          selectionNotice = t(
-            '已按「性价比」降序排列网络安全数据表：顶部可拖动 α 滑块调整偏省钱还是偏高分',
-            'Table sorted by Value/USD: drag the α slider above to tilt between lowest cost and highest score'
-          );
-          updateSummary();
-        }
-      }
-    ]
+  'frontier-risers': () => {
+    resetActiveFilters();
+    showView('chart');
+    state.extraFilter = 'delta:up';
+    renderLegend();
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '已筛选「抗刷榜硬核跃升」模型：这些模型在剔除旧题后名次上升，硬核泛化更稳',
+      'Filtered to Hard-Eval Rank Risers: models that climb the standings when saturated legacy tests are stripped'
+    );
+    updateSummary();
   },
-  'media:image': {
-    badgeZh: '独立赛道 · 仅比图像 $/张',
-    badgeEn: 'Isolated Track · Image $/img',
-    titleZh: '多模态生成 · 图像赛道（文生图 / 修图）',
-    titleEn: 'Media Arena · Image Track (T2I & Editing)',
-    descZh: '基于 AA Image Arena 真人双盲投票 Elo 校准分，横轴严格统一为单张出图 API 均价（$/张），绝不与视频或语音混排。',
-    descEn: 'Blind human Elo calibrated to 0–100 from AA Image Arena, plotted strictly on linear USD per image ($/img) — isolated from video and speech.',
-    trapZh: '有的引擎只擅长从零画图 (T2I) 却不会改图 (Edit)；而且顶级旗舰单张价格可达甜点区 10 倍以上，批量出图建议优先看帕累托前沿。',
-    trapEn: 'Some models only excel at T2I and lack editing support, and flagship per-image cost can exceed sweet-spot models by 10×.',
-    recipes: [
-      {
-        titleZh: '找出「文生图 + 指令修图」全能引擎',
-        titleEn: 'Find Dual T2I + Image Editing Engines',
-        descZh: '筛选同时覆盖文生图和指令修图双赛道盲测的图像引擎，一套 API 搞定生成与局部改图。',
-        descEn: 'Filter to engines blind-tested on BOTH Text-to-Image and Image Editing for unified creative pipelines.',
-        run() {
-          resetActiveFilters();
-          setMediaTrack('image');
-          showView('chart');
-          state.extraFilter = 'msub:imgBoth';
-          renderLegend();
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '已筛选「同时覆盖文生图与修图」图像引擎：可在纵轴下拉框分别看 T2I 与 Edit 分数',
-            'Filtered to dual T2I + Editing engines: use the Y-lens selector to toggle T2I vs. Edit scores'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '聚焦图像帕累托前沿 + 等值切线',
-        titleEn: 'Isolate Image Pareto Frontier + Iso-Value',
-        descZh: '只看当前无可替代的图像前沿引擎并画出等性价比切线，一眼看清 $0.01–$0.04 甜点区与 $0.20+ 旗舰差价。',
-        descEn: 'Show only Pareto-optimal image models with the Iso-Value contour to compare $0.01–$0.04 sweet spots vs. $0.20+ flagships.',
-        run() {
-          resetActiveFilters();
-          setMediaTrack('image');
-          showView('chart');
-          state.frontierOnly = true;
-          state.isoCurve = true;
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '已聚焦「图像前沿 + 等值切线」：离青绿切线越近，单张美元换回的盲测观感越高',
-            'Image Pareto frontier + Iso-Value active: points closest to the teal curve deliver peak perceptual value per image'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '创意包月 vs 单张 API 回本测算',
-        titleEn: 'Creative Plan vs. Per-Image API Break-Even',
-        descZh: '切到「订阅回本」，按你每月的实际出图张数算出买包月会员还是走按量 API 更省钱。',
-        descEn: 'Open Sub vs API to calculate how many monthly images you need before a flat creative subscription pays off.',
-        run() {
-          resetActiveFilters();
-          setMediaTrack('image');
-          showView('sub');
-          selectionNotice = t(
-            '已打开图像「订阅回本」测算：拖动预计每月出图张数即可看各引擎 API 账单对比',
-            'Image Sub vs API open: adjust monthly image volume to compare flat subscriptions against per-image API spend'
-          );
-          updateSummary();
-        }
-      }
-    ]
+  'frontier-mlcr': () => {
+    resetActiveFilters();
+    showView('chart');
+    applyYLens(state, 'mlcr');
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '纵轴已切至「MLCR 百万长上下文」：观察哪些低价模型在长文档里依然稳住高分',
+      'Y-axis set to MLCR Million-Token Context: spot models that keep accuracy intact on huge documents'
+    );
+    updateSummary();
   },
-  'media:video': {
-    badgeZh: '独立赛道 · 仅比视频 $/5秒',
-    badgeEn: 'Isolated Track · Video $/5s',
-    titleZh: '多模态生成 · 视频赛道（文生 / 图生 / 编辑）',
-    titleEn: 'Media Arena · Video Track (T2V / I2V / Edit)',
-    descZh: '基于 AA Video Arena 真人盲评校准分，横轴统一按每 5 秒短片 API 均价（$/5秒）线性比较，覆盖文生视频、图生视频与视频编辑。',
-    descEn: 'Blind human video ratings (0–100) plotted strictly on linear USD per 5-second clip ($/5s), covering T2V, I2V, and Video Editing.',
-    trapZh: '真实影视/广告工作流大多先出精修首帧再做「图生视频 (I2V)」，而 I2V 与文生视频 (T2V) 的榜首常常不是同一款引擎。',
-    trapEn: 'Production workflows usually keyframe first and run Image-to-Video (I2V) — whose leader often differs from Text-to-Video (T2V).',
-    recipes: [
-      {
-        titleZh: '切换「图生视频 (I2V)」纵轴找主力',
-        titleEn: 'Switch Y-Axis to Image-to-Video (I2V)',
-        descZh: '按图生视频专项盲测分重新排布前沿，找到最适合“先画分镜、再动起来”的高性价比视频引擎。',
-        descEn: 'Re-rank the video frontier specifically by Image-to-Video blind quality for storyboard-to-motion workflows.',
-        run() {
-          resetActiveFilters();
-          setMediaTrack('video');
-          showView('chart');
-          applyYLens(state, 'i2v');
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '纵轴已切至「图生视频 (I2V)」：横轴为每 5 秒短片单价，越靠左上越值得主力批量生成',
-            'Y-axis set to Image-to-Video (I2V): compare $/5s clip cost along the upper-left frontier'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '只看支持「视频编辑 (Edit)」的引擎',
-        titleEn: 'Isolate Video Editing (Edit) Engines',
-        descZh: '将纵轴切为视频编辑盲测分，专门比较能够对现有镜头做指令级修改/重绘的视频模型。',
-        descEn: 'Switch Y-axis to Video Editing Arena to compare engines that modify existing footage by prompt.',
-        run() {
-          resetActiveFilters();
-          setMediaTrack('video');
-          showView('chart');
-          applyYLens(state, 'vidEdit');
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '纵轴已切至「视频编辑 (Edit)」：点击任意引擎可查看其 T2V / I2V / Edit 三项细分分',
-            'Y-axis set to Video Editing: click any model to inspect its T2V, I2V, and Edit breakdown'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '按每月 5 秒镜头数算月卡回本',
-        titleEn: 'Monthly Video Plan vs. Per-Clip API',
-        descZh: '打开「订阅回本」，按每月生成多少条 5 秒短片快速比较月卡订阅与按量 API 账单。',
-        descEn: 'Open Sub vs API to compare flat video subscriptions against per-5s-clip API pricing.',
-        run() {
-          resetActiveFilters();
-          setMediaTrack('video');
-          showView('sub');
-          selectionNotice = t(
-            '已打开视频「订阅回本」测算：拖动月生成段数即可估算可灵 / Runway / Sora 类月卡回本点',
-            'Video Sub vs API open: adjust monthly 5s clip volume to see break-even points vs. flat plans'
-          );
-          updateSummary();
-        }
-      }
-    ]
+  'frontier-law': () => {
+    resetActiveFilters();
+    showView('chart');
+    applyYLens(state, 'harveyLaw');
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '纵轴已切至「Harvey 顶尖律所」：工具栏下拉框还可切到 IT-Bench SRE 排障、Terminal 4.0 等专项',
+      'Y-axis set to Harvey BigLaw: use the Y-lens dropdown to switch to IT-Bench SRE, Terminal 4.0, or HLE'
+    );
+    updateSummary();
   },
-  'media:tts': {
-    badgeZh: '独立赛道 · 仅比语音 $/千字',
-    badgeEn: 'Isolated Track · TTS $/1k chars',
-    titleZh: '多模态生成 · 语音合成 TTS 赛道',
-    titleEn: 'Media Arena · Speech TTS Track',
-    descZh: '基于 AA Speech Arena 真人盲听自然度校准分，横轴按每千字符（约 1 分钟播音）API 均价线性排布，且独有实测生成耗时与首包延迟 (TTFA)。',
-    descEn: 'Blind human speech naturalness (0–100) plotted on USD per 1k chars (~1 min audio), with measured wall time and time-to-first-audio (TTFA).',
-    trapZh: '做有声书看“每千字单价 + 自然度”，但做实时语音对话必须看「首包延迟 TTFA」——开口慢 1 秒体验就会卡顿。',
-    trapEn: 'Audiobooks care about $/1k chars, but live voice agents need low TTFA latency — waiting >1s to start speaking breaks conversation flow.',
-    recipes: [
-      {
-        titleZh: '实时语音对话：筛选低首包延迟 (TTFA ≤ 250ms)',
-        titleEn: 'Live Voice Agents: Low Latency (TTFA ≤ 250ms)',
-        descZh: '只看首包响应 ≤ 250 毫秒的极速语音引擎，保证实时语音助手开口不卡顿。',
-        descEn: 'Filter to speech engines with time-to-first-audio ≤ 250ms for responsive conversational voice agents.',
-        run() {
-          resetActiveFilters();
-          setMediaTrack('tts');
-          showView('chart');
-          state.extraFilter = 'msub:ttsFast';
-          renderLegend();
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '已筛选「低首包延迟 (TTFA ≤ 250ms)」语音引擎：悬停任意圆点查看精确毫秒数',
-            'Filtered to TTFA ≤ 250ms speech engines: hover any dot to inspect exact latency in ms'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '横轴切为「实测耗时」：自然度 vs 生成速度',
-        titleEn: 'Switch X-Axis to Latency: Quality vs. Speed',
-        descZh: '语音赛道独有实测耗时轴！把横轴切为耗时，直观看清哪些高自然度引擎生成整段播音也飞快。',
-        descEn: 'TTS includes measured generation latency — switch X-axis to Time to find fast, natural voices.',
-        run() {
-          resetActiveFilters();
-          setMediaTrack('tts');
-          showView('chart');
-          syncMetricViewport(state, 'time');
-          syncControls();
-          syncUrlHash();
-          buildPlot();
-          selectionNotice = t(
-            '语音赛道横轴已切至「实测耗时」：越靠左上代表语音既自然、整段合成又快',
-            'TTS X-axis switched to Measured Time: upper-left voices are both natural and fast'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '大批量配音性价比排行表',
-        titleEn: 'Bulk Narration Value Table',
-        descZh: '切到「数据表」按性价比排序，快速找出每千字几厘钱却接近顶级人声自然度的配音引擎。',
-        descEn: 'Sort TTS engines by Value/USD in Table view to spot ultra-low-cost voices near the top of blind ratings.',
-        run() {
-          resetActiveFilters();
-          setMediaTrack('tts');
-          state.sortKey = 'valuePerDollar';
-          state.sortDirection = 'desc';
-          showView('table');
-          selectionNotice = t(
-            '已按「性价比」降序排列语音引擎表：适合有声书、播客与大规模配音选型',
-            'TTS Table sorted by Value/USD for high-volume narration and audio production'
-          );
-          updateSummary();
-        }
-      }
-    ]
+  'frontier-open': () => {
+    resetActiveFilters();
+    showView('chart');
+    state.license = 'open';
+    state.isoCurve = true;
+    renderLegend();
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '已筛选「仅开源」前沿模型并画出等值切线：开源前沿集中在左下极低成本带',
+      'Open-Weights filter + Iso-Value contour active: inspect the strongest self-hostable models'
+    );
+    updateSummary();
   },
-  orgs: {
-    badgeZh: '6 份权威原榜 · 绝不混算改序',
-    badgeEn: '6 Official Un-Blended Boards',
-    titleZh: '机构分榜（跨机构交叉验证）',
-    titleEn: 'Organization Leaderboards (Cross-Agency Verification)',
-    descZh: '任何单一榜单都有盲区。这里严格保留 Artificial Analysis、LiveBench 2.0、Arena.ai 聊天/WebDev、Design Arena 与 GDPval 6 份官方原始排名，帮你一眼拆穿“单榜刷分王”，找出全维度稳健模型。',
-    descEn: 'Every benchmark has blind spots. This view preserves 6 official leaderboards untouched so you can spot specialists vs. true all-rounders at a glance.',
-    trapZh: '如果某模型在自动化榜排前 3，但在真人聊天或防污染榜掉出前 15，说明它存在明显偏科或旧题库红利——用「跨机构轨迹图」最直观。',
-    trapEn: 'If a model ranks top-3 on automated tests but drops past #15 on live or human boards, it’s either specialized or overfit — inspect the Bump Chart.',
-    recipes: [
-      {
-        titleZh: '打开「跨机构轨迹图 (Bump Chart)」识别偏科生',
-        titleEn: 'Open Cross-Org Rank Trajectory (Bump Chart)',
-        descZh: '折线越平缓靠上说明各机构共识越强；折线大起大落说明在不同评测口径下表现割裂。',
-        descEn: 'Flat high lines show cross-agency consensus; steep zigzags expose sharp specialization or benchmark bias.',
-        run() {
-          resetActiveFilters({clearOrgMatch: true});
-          orgFocus = 'bump';
-          syncUrlHash();
-          renderOrgLeaderboards();
-          updateSummary();
-          selectionNotice = t(
-            '已切到「跨机构轨迹图」：悬停或单击任意曲线高亮其 6 榜原分，点机构列标题可进单榜精析',
-            'Bump Chart open: hover/click any line to trace ranks across all 6 orgs; click column headers to inspect'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '单榜精析：LiveBench 2.0 防污染七维热力表',
-        titleEn: 'Deep Dive: LiveBench 2.0 7-Suite Heatmap',
-        descZh: '直接展开 LiveBench 2.0 精析视图，按长程智能体、真实编程、视觉设计等无污染子项自由排序。',
-        descEn: 'Inspect the full LiveBench 2.0 table with sortable heat-tinted sub-suites (Agentic, Coding, Design, Data).',
-        run() {
-          resetActiveFilters({clearOrgMatch: true});
-          orgFocus = 'livebench';
-          orgDetailSort = {boardId: 'livebench', colKey: null, dir: 'desc'};
-          syncUrlHash();
-          renderOrgLeaderboards();
-          selectionNotice = t(
-            '已进入 LiveBench 2.0 单榜精析：点击任意列头可按单项成绩或实测单价重新排序',
-            'Inspecting LiveBench 2.0: click any column header to sort by sub-suite score or measured cost'
-          );
-          updateSummary();
-        }
-      },
-      {
-        titleZh: '一键锁定榜首模型，同步对齐全部 6 榜位置',
-        titleEn: 'Pin Top Model to Auto-Align All 6 Lists',
-        descZh: '在 6 机构并排视图中自动锁定当前综合榜首（琥珀金），其余 5 张榜单立刻自动滚动对齐它的排名。',
-        descEn: 'Lock the #1 overall model in Amber to auto-scroll and highlight its exact standing across all 6 org cards.',
-        run() {
-          resetActiveFilters({clearOrgMatch: true});
-          orgFocus = 'all';
-          const topId = orgBoards[0]?.rows?.[0]?.modelId || null;
-          orgPinnedKey = topId;
-          syncUrlHash();
-          renderOrgLeaderboards();
-          if (topId) applyOrgSpotlight(null, null, {scrollPinned: true});
-          selectionNotice = t(
-            '已用琥珀金锁定榜首模型：悬停其他行可触发双模型实时对比，按 Esc 解锁',
-            'Top model pinned in Amber: hover any other row for dual comparison, or press Esc to unpin'
-          );
-          updateSummary();
-        }
-      }
-    ]
+  'human-antislop': () => {
+    resetActiveFilters();
+    showView('chart');
+    applyYLens(state, 'antiSlop');
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '纵轴已切至「去 AI 套话自然度」：分数越高，文字越自然克制、越少机械套话',
+      'Y-axis set to Anti-Slop Naturalness: higher scores mean cleaner, less cliché-ridden writing'
+    );
+    updateSummary();
+  },
+  'human-design': () => {
+    resetActiveFilters();
+    showView('chart');
+    applyYLens(state, 'pureVisual');
+    state.extraFilter = 'design:top';
+    renderLegend();
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '已聚焦 Design Arena 高审美第一梯队：适合选网页原型、UI 组件与数据可视化主力模型',
+      'Focused on top Design Arena models (Website Elo ≥ 1300) for web, UI, and visual craft'
+    );
+    updateSummary();
+  },
+  'human-gdpval': () => {
+    resetActiveFilters();
+    showView('chart');
+    applyYLens(state, 'deliverable');
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '纵轴已切至「44 职业专家办公交付」：衡量研报、表格、方案等直接可用成果质量',
+      'Y-axis set to 44-Job Expert Deliverables: measures directly usable professional work products'
+    );
+    updateSummary();
+  },
+  'human-compare': () => {
+    resetActiveFilters();
+    state.compareIds = defaultCompareIds(state.rows);
+    showView('compare');
+    selectionNotice = t(
+      '已打开「剖析对比」：可切换「微距跑道」或「胜负分差 Δ」放大细微差距',
+      'Compare view open: switch between Radar, Zoomed Strip, and Delta Δ views above the chart'
+    );
+    updateSummary();
+  },
+  'coding-tail': () => {
+    resetActiveFilters();
+    showView('compare');
+    selectionNotice = t(
+      '向下看「单任务成本结构拆解」：P95 远高于均值说明该智能体偶发长尾重试很烧钱',
+      'Check Cost Anatomy below: P95 >> Mean warns of occasional expensive retry loops'
+    );
+    updateSummary();
+  },
+  'coding-sub': () => {
+    resetActiveFilters();
+    showView('sub');
+    state.routerOpen = true;
+    syncRouterControls();
+    syncUrlHash();
+    selectionNotice = t(
+      '已打开「订阅回本 + 混合路由」：拖动月任务量与分流比例，实时算清订阅还是 API 省钱',
+      'Sub vs API + Hybrid Routing active: adjust monthly tasks & routing share to optimize spend'
+    );
+    updateSummary();
+  },
+  'coding-time': () => {
+    resetActiveFilters();
+    showView('chart');
+    syncMetricViewport(state, 'time');
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '横轴已切至「每任务平均耗时」：越靠左上代表既能解难题、等待时间又短',
+      'X-axis switched to Mean Wall Time: upper-left agents solve hard repos without long waits'
+    );
+    updateSummary();
+  },
+  'cyber-zero': () => {
+    resetActiveFilters();
+    showView('chart');
+    state.extraFilter = 'refusal:zero';
+    renderLegend();
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '已筛选「零安全拒答 (0%)」安全模型：悬停任意圆点可查看具体拒答率与防护状态',
+      'Filtered to 0% refusal cyber models: hover any dot to inspect refusal rate and safeguard status'
+    );
+    updateSummary();
+  },
+  'cyber-guarded': () => {
+    resetActiveFilters();
+    showView('chart');
+    state.extraFilter = 'refusal:guarded';
+    renderLegend();
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '已筛选「含安全拦截 (>0%)」模型：可点击数据表横向比较各模型拒答率与单价',
+      'Filtered to safeguarded (>0% refusal) models: switch to Table view for side-by-side comparison'
+    );
+    updateSummary();
+  },
+  'cyber-value': () => {
+    resetActiveFilters();
+    state.sortKey = 'valuePerDollar';
+    state.sortDirection = 'desc';
+    showView('table');
+    selectionNotice = t(
+      '已按「性价比」降序排列网络安全数据表：顶部可拖动 α 滑块调整偏省钱还是偏高分',
+      'Table sorted by Value/USD: drag the α slider above to tilt between lowest cost and highest score'
+    );
+    updateSummary();
+  },
+  'img-both': () => {
+    resetActiveFilters();
+    setMediaTrack('image');
+    showView('chart');
+    state.extraFilter = 'msub:imgBoth';
+    renderLegend();
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '已筛选「同时覆盖文生图与修图」图像引擎：可在纵轴下拉框分别看 T2I 与 Edit 分数',
+      'Filtered to dual T2I + Editing engines: use the Y-lens selector to toggle T2I vs. Edit scores'
+    );
+    updateSummary();
+  },
+  'img-frontier': () => {
+    resetActiveFilters();
+    setMediaTrack('image');
+    showView('chart');
+    state.frontierOnly = true;
+    state.isoCurve = true;
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '已聚焦「图像前沿 + 等值切线」：离青绿切线越近，单张美元换回的盲测观感越高',
+      'Image Pareto frontier + Iso-Value active: points closest to the teal curve deliver peak perceptual value per image'
+    );
+    updateSummary();
+  },
+  'img-sub': () => {
+    resetActiveFilters();
+    setMediaTrack('image');
+    showView('sub');
+    selectionNotice = t(
+      '已打开图像「订阅回本」测算：拖动预计每月出图张数即可看各引擎 API 账单对比',
+      'Image Sub vs API open: adjust monthly image volume to compare flat subscriptions against per-image API spend'
+    );
+    updateSummary();
+  },
+  'vid-i2v': () => {
+    resetActiveFilters();
+    setMediaTrack('video');
+    showView('chart');
+    applyYLens(state, 'i2v');
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '纵轴已切至「图生视频 (I2V)」：横轴为每 5 秒短片单价，越靠左上越值得主力批量生成',
+      'Y-axis set to Image-to-Video (I2V): compare $/5s clip cost along the upper-left frontier'
+    );
+    updateSummary();
+  },
+  'vid-edit': () => {
+    resetActiveFilters();
+    setMediaTrack('video');
+    showView('chart');
+    applyYLens(state, 'vidEdit');
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '纵轴已切至「视频编辑 (Edit)」：点击任意引擎可查看其 T2V / I2V / Edit 三项细分分',
+      'Y-axis set to Video Editing: click any model to inspect its T2V, I2V, and Edit breakdown'
+    );
+    updateSummary();
+  },
+  'vid-sub': () => {
+    resetActiveFilters();
+    setMediaTrack('video');
+    showView('sub');
+    selectionNotice = t(
+      '已打开视频「订阅回本」测算：拖动月生成段数即可估算可灵 / Runway / Sora 类月卡回本点',
+      'Video Sub vs API open: adjust monthly 5s clip volume to see break-even points vs. flat plans'
+    );
+    updateSummary();
+  },
+  'tts-fast': () => {
+    resetActiveFilters();
+    setMediaTrack('tts');
+    showView('chart');
+    state.extraFilter = 'msub:ttsFast';
+    renderLegend();
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '已筛选「低首包延迟 (TTFA ≤ 250ms)」语音引擎：悬停任意圆点查看精确毫秒数',
+      'Filtered to TTFA ≤ 250ms speech engines: hover any dot to inspect exact latency in ms'
+    );
+    updateSummary();
+  },
+  'tts-time': () => {
+    resetActiveFilters();
+    setMediaTrack('tts');
+    showView('chart');
+    syncMetricViewport(state, 'time');
+    syncControls();
+    syncUrlHash();
+    buildPlot();
+    selectionNotice = t(
+      '语音赛道横轴已切至「实测耗时」：越靠左上代表语音既自然、整段合成又快',
+      'TTS X-axis switched to Measured Time: upper-left voices are both natural and fast'
+    );
+    updateSummary();
+  },
+  'tts-value': () => {
+    resetActiveFilters();
+    setMediaTrack('tts');
+    state.sortKey = 'valuePerDollar';
+    state.sortDirection = 'desc';
+    showView('table');
+    selectionNotice = t(
+      '已按「性价比」降序排列语音引擎表：适合有声书、播客与大规模配音选型',
+      'TTS Table sorted by Value/USD for high-volume narration and audio production'
+    );
+    updateSummary();
+  },
+  'orgs-divergence': () => {
+    resetActiveFilters({clearOrgMatch: true});
+    orgFocus = 'divergence';
+    orgDivFilter = 'all';
+    syncUrlHash();
+    renderOrgLeaderboards();
+    selectionNotice = t(
+      '已打开「争议分歧榜」：向右青绿代表真人盲测远胜自动化考分，向左琥珀代表硬考强但体感相对偏弱',
+      'Divergence board open: teal bars = loved more by human voters, amber bars = hard-exam specialists'
+    );
+    updateSummary();
+  },
+  'orgs-bump': () => {
+    resetActiveFilters({clearOrgMatch: true});
+    orgFocus = 'bump';
+    syncUrlHash();
+    renderOrgLeaderboards();
+    selectionNotice = t(
+      '已切到「跨机构轨迹图」：悬停或单击任意曲线高亮其 6 榜原分，点机构列标题可进单榜精析',
+      'Bump Chart open: hover/click any line to trace ranks across all 6 orgs; click column headers to inspect'
+    );
+    updateSummary();
+  },
+  'orgs-livebench': () => {
+    resetActiveFilters({clearOrgMatch: true});
+    orgFocus = 'livebench';
+    orgDetailSort = {boardId: 'livebench', colKey: null, dir: 'desc'};
+    syncUrlHash();
+    renderOrgLeaderboards();
+    selectionNotice = t(
+      '已进入 LiveBench 2.0 单榜精析：点击任意列头可按单项成绩或实测单价重新排序',
+      'Inspecting LiveBench 2.0: click any column header to sort by sub-suite score or measured cost'
+    );
+    updateSummary();
+  },
+  'orgs-pin-top': () => {
+    resetActiveFilters({clearOrgMatch: true});
+    orgFocus = 'all';
+    const topId = orgBoards[0]?.rows?.[0]?.modelId || null;
+    orgPinnedKey = topId;
+    syncUrlHash();
+    renderOrgLeaderboards();
+    if (topId) applyOrgSpotlight(null, null, {scrollPinned: true});
+    selectionNotice = t(
+      '已用琥珀金锁定榜首模型：悬停其他行可触发双模型实时对比，按 Esc 解锁',
+      'Top model pinned in Amber: hover any other row for dual comparison, or press Esc to unpin'
+    );
+    updateSummary();
   }
 };
 
-const GUIDE_GLOSSARY = [
-  {
-    titleZh: '为什么要坚持「线性美元横轴」？',
-    titleEn: 'Why a Strictly Linear USD X-Axis?',
-    descZh: '对数坐标会把 $0.5 和 $5 压缩成同样宽的一格，让人产生“贵 10 倍也没贵多少”的错觉。线性坐标严格按真实美元比例拉开距离，让你一眼看穿多花 10 倍钱到底多买到几分能力。',
-    descEn: 'Log axes compress $0.50 and $5.00 into equal visual steps, disguising 10× price jumps. A linear axis shows true economic distance so diminishing returns are unmistakable.'
-  },
-  {
-    titleZh: '帕累托前沿（虚折线）',
-    titleEn: 'Pareto Frontier (Dashed Envelope)',
-    descZh: '串联起“在同等价位下无人能敌”的最高分模型。如果你想比前沿上的模型更强，就必须花更多钱；想比它便宜，就只能接受更低分。虚线右下方的点通常已有更优平替。',
-    descEn: 'Connects models unbeatable at their price: to score higher you must pay more; to pay less you must give up score. Points below and right of the line are dominated.'
-  },
-  {
-    titleZh: '优于中位参考区（左上绿区）',
-    titleEn: 'Above-Median Sweet Spot (Green Zone)',
-    descZh: '同时满足「得分高于全榜中位数」且「单任务成本（或耗时）低于全榜中位数」。对大多数新手而言，日常主力模型优先从这片左上绿区里挑，最不容易踩高价低能的坑。',
-    descEn: 'Marks models simultaneously above median score AND below median cost/time. For most newcomers choosing a daily driver, starting inside this upper-left zone avoids bad value traps.'
-  },
-  {
-    titleZh: '智能权重 α 与等值切线',
-    titleEn: 'Intelligence Weight α & Iso-Value Curve',
-    descZh: '不同场景对“省钱 vs 能力”的看重不同：α = 0–1 偏极致省钱，α = 3 为均衡主力，α ≥ 8 偏不计成本追顶尖。开启「等值切线」后，散点图会画出与当前 α 榜首等价的曲线。',
-    descEn: 'Controls how aggressively value rankings favor capability over price: α = 0–1 favors cheapest, α = 3 balances both, α ≥ 8 favors top scores. Iso-Value plots equal-value contours on the scatter chart.'
-  },
-  {
-    titleZh: '同系列推理档位轨迹',
-    titleEn: 'Reasoning Effort Trajectories',
-    descZh: '同一代模型常提供 Low / Medium / High / Xhigh 思考力度。开启「推理轨迹」连线后，可以直观看到“多思考一会儿”究竟换来陡峭提分，还是徒增数倍账单的水平拖尾。',
-    descEn: 'Modern models ship multiple thinking levels (Low → Xhigh). Effort Paths link siblings so you can see whether turning reasoning up yields steep gains or flat cost burn.'
-  },
-  {
-    titleZh: '订阅回本线与 80/20 混合路由',
-    titleEn: 'Subscription Break-Even & 80/20 Hybrid Routing',
-    descZh: '把官方 API 单任务均价乘以每月任务量，直接对比 $20 / $100 / $200 月卡。再配合「80% 低价主力 + 20% 顶级旗舰」混合路由模拟，往往花不到 1/3 的钱就能拿回 95% 旗舰体验。',
-    descEn: 'Multiplies per-task API cost by monthly volume to check if $20/$100/$200 subscriptions save money — and models an 80% fast / 20% flagship split that cuts bills dramatically.'
-  },
-  {
-    titleZh: '盲区幻觉率与自定义场景配方',
-    titleEn: 'Hallucination Rate & Custom Scenarios',
-    descZh: '答对率高不代表不会一本正经胡说：悬停或在「剖析对比」里可看各模型的盲区幻觉率。点工具栏「场景配方」，还能按全栈研发、设计审美或严谨办公权重重算专属榜单。',
-    descEn: 'Accuracy alone doesn’t capture fabrication risk — check hallucination rates on hover or in Compare. Use Scenarios to re-weight the chart for dev, design, or rigorous research.'
-  }
-];
-
 function currentGuideProfileKey() {
   if (activeKey === 'media') return `media:${state?.mediaTrack || 'image'}`;
-  return GUIDE_TAB_PROFILES[activeKey] ? activeKey : 'models';
+  return GUIDE_TAB_META[activeKey] ? activeKey : 'models';
 }
 
 function setGuideOpen(open, tabName = null) {
-  if (tabName && ['current', 'orgs', 'glossary'].includes(tabName)) guideTab = tabName;
+  if (tabName && ['picker', 'current', 'orgs', 'glossary'].includes(tabName)) guideTab = tabName;
   guideOpen = !!open;
   const backdrop = $('#guideBackdrop');
   if (!backdrop) return;
   backdrop.hidden = !guideOpen;
-  $('#guideBtn')?.setAttribute('aria-expanded', String(guideOpen));
+  $('#guideBtn')?.setAttribute('aria-expanded', String(guideOpen && guideTab !== 'picker'));
+  $('#pickerBtn')?.setAttribute('aria-expanded', String(guideOpen && guideTab === 'picker'));
   if (guideOpen) {
     if (cmdOpen) setCmdOpen(false);
     if (changelogOpen) setChangelogOpen(false);
@@ -11894,16 +11732,206 @@ function setGuideOpen(open, tabName = null) {
     renderGuideDialog();
     requestAnimationFrame(() => $('#guideCloseBtn')?.focus({preventScroll: true}));
   } else {
-    $('#guideBtn')?.focus({preventScroll: true});
+    (guideTab === 'picker' ? $('#pickerBtn') : $('#guideBtn'))?.focus({preventScroll: true});
   }
 }
 
-function renderGuideDialog() {
-  $('#guideDialogTitle').textContent = t('读懂榜单与隐藏洞察', 'Benchmark Guide & Hidden Insights');
-  $('#guideDialogSub').textContent = t(
-    '了解各测评机构侧重、避开常见误区，一键实操发现数据背后的规律',
-    'Understand what each agency tests, avoid common traps, and explore hidden data patterns in one click'
+function applyPickerContext(recResult, {targetRow = null, toCompare = false} = {}) {
+  const {useCase, license, picks} = recResult;
+  setGuideOpen(false);
+  runNavAction(() => {
+    chooseChart(useCase.tab, {changeHash: false});
+    if (!state) return;
+    if (useCase.tab === 'media' && useCase.mediaTrack) {
+      setMediaTrack(useCase.mediaTrack, {reRender: false, updateUrl: false});
+    }
+    state.search = '';
+    state.company = null;
+    state.starredOnly = false;
+    state.frontierOnly = false;
+    state.extraFilter = '';
+    state.minScore = 0;
+    state.maxCost = 0;
+    state.license = license.id;
+    if (useCase.scenarioId && useCase.scenarioId !== 'default' && !['coding-agents', 'media'].includes(useCase.tab)) {
+      const preset = SCENARIO_PRESETS.find(p => p.id === useCase.scenarioId);
+      state.scenarioId = preset ? preset.id : 'default';
+      state.scenarioWeights = preset?.weights ? {...preset.weights} : null;
+      state.yLens = '';
+      reprojectRows(state);
+    } else {
+      state.scenarioId = 'default';
+      state.scenarioWeights = null;
+      applyYLens(state, useCase.yLens || '');
+    }
+    if (toCompare && picks.length) {
+      const ids = picks.map(p => p.row.id).filter(id => state.rows.some(r => r.id === id));
+      if (ids.length) {
+        state.compareIds = ids;
+        if (!['coding-agents', 'media'].includes(activeKey)) lastModelCompareIds = [...ids];
+      }
+      renderLegend();
+      showView('compare');
+      selectionNotice = t(
+        `已按「${useCase.zh}」将推荐的 ${ids.length} 款模型送入剖析对比（点左上 ‹ 返回可随时退回）`,
+        `Loaded ${ids.length} recommended ${useCase.en} models into Compare view`
+      );
+      updateSummary();
+      return;
+    }
+    renderLegend();
+    syncControls();
+    buildPlot();
+    if (targetRow) {
+      const liveRow = state.rows.find(r => r.id === targetRow.id);
+      if (liveRow) locateRowInChart(liveRow);
+    } else {
+      showView('chart');
+      selectionNotice = t(
+        `已切换至「${useCase.zh}」前沿散点视野（左上角为最优区间）`,
+        `Opened ${useCase.en} scatter frontier (upper-left is best)`
+      );
+      updateSummary();
+    }
+  });
+}
+
+function renderPickerTab(frag) {
+  const steps = html('section', null, 'picker-steps');
+
+  // Step 1: Use Case
+  const s1 = html('div', null, 'picker-step');
+  const s1Lbl = html('div', null, 'picker-step-label');
+  s1Lbl.append(
+    document.createTextNode(t('1. 你主要拿模型做什么？', '1. What is your primary use case?')),
+    html('span', t('单选场景，实时重算', 'Pick one — updates live'))
   );
+  const s1Chips = html('div', null, 'picker-chips');
+  for (const uc of RECOMMEND_USE_CASES) {
+    const b = html('button', t(uc.zh, uc.en), 'picker-chip');
+    b.type = 'button';
+    b.setAttribute('aria-pressed', String(pickerChoice.useCase === uc.id));
+    b.addEventListener('click', () => {
+      pickerChoice.useCase = uc.id;
+      renderGuideDialog();
+    });
+    s1Chips.append(b);
+  }
+  s1.append(s1Lbl, s1Chips);
+
+  // Step 2 & Step 3 side-by-side
+  const row23 = html('div', null, 'picker-step-row');
+  const s2 = html('div', null, 'picker-step');
+  s2.append(html('div', t('2. 预算与付费偏好？', '2. Cost vs. capability priority?'), 'picker-step-label'));
+  const s2Chips = html('div', null, 'picker-chips');
+  for (const bud of RECOMMEND_BUDGETS) {
+    const b = html('button', t(bud.zh, bud.en), 'picker-chip');
+    b.type = 'button';
+    b.setAttribute('aria-pressed', String(pickerChoice.budget === bud.id));
+    b.addEventListener('click', () => {
+      pickerChoice.budget = bud.id;
+      renderGuideDialog();
+    });
+    s2Chips.append(b);
+  }
+  s2.append(s2Chips);
+
+  const s3 = html('div', null, 'picker-step');
+  s3.append(html('div', t('3. 开源 / 部署要求？', '3. Open-weights preference?'), 'picker-step-label'));
+  const s3Chips = html('div', null, 'picker-chips');
+  for (const lic of RECOMMEND_LICENSES) {
+    const b = html('button', t(lic.zh, lic.en), 'picker-chip');
+    b.type = 'button';
+    b.setAttribute('aria-pressed', String(pickerChoice.license === lic.id));
+    b.addEventListener('click', () => {
+      pickerChoice.license = lic.id;
+      renderGuideDialog();
+    });
+    s3Chips.append(b);
+  }
+  s3.append(s3Chips);
+  row23.append(s2, s3);
+  steps.append(s1, row23);
+  frag.append(steps);
+
+  const rec = recommendModels(snapshot, pickerChoice);
+  const secHead = html('div', null, 'guide-sec-head');
+  secHead.append(
+    html('h3', t(`为你从 ${rec.totalPool} 款候选中挑出 3 个参考方案`, `3 Curated Picks from ${rec.totalPool} Models`)),
+    html('span', t(rec.useCase.descZh, rec.useCase.descEn))
+  );
+  frag.append(secHead);
+
+  if (!rec.picks.length) {
+    const empty = html('div', null, 'guide-hero');
+    empty.append(html('p', t('当前开源筛选下暂无该场景收录模型，建议将第 3 步切回「不限（推荐）」。', 'No models match this exact filter — try setting Step 3 back to Any.')));
+    frag.append(empty);
+    return;
+  }
+
+  const grid = html('div', null, 'picker-results');
+  const unitTxt = t(rec.useCase.unitZh, rec.useCase.unitEn);
+  for (const pick of rec.picks) {
+    const card = html('article', null, `picker-card is-${pick.slot}`);
+    const top = html('div', null, 'picker-card-top');
+    top.append(
+      html('span', t(pick.badgeZh, pick.badgeEn), 'picker-role'),
+      html('span', pick.row.isOpenWeights ? t('开源', 'Open') : t('闭源', 'Closed'), 'org-tag-pill')
+    );
+    const modelLine = html('div', null, 'picker-model');
+    const dot = html('i', null, 'creator-dot');
+    dot.style.background = color(pick.row.creator?.color);
+    dot.setAttribute('aria-hidden', 'true');
+    const nm = html('strong', pick.row.shortName || pick.row.name);
+    nm.title = pick.row.name;
+    modelLine.append(dot, nm);
+
+    const meta = html('div', `${pick.row.creator?.name || 'Other'}${pick.isFrontier ? ' · ' + t('帕累托前沿', 'Pareto') : ''}`, 'picker-meta');
+
+    const metrics = html('div', null, 'picker-metrics');
+    const mScore = html('div');
+    mScore.append(html('span', t('场景得分', 'Score')), html('b', format(pick.score, 1)));
+    const mCost = html('div');
+    mCost.append(html('span', t(`单${unitTxt}成本`, `Cost/${unitTxt}`)), html('b', money(pick.row.cost)));
+    metrics.append(mScore, mCost);
+
+    const reason = html('p', t(pick.reason.zh, pick.reason.en), 'picker-reason');
+
+    const acts = html('div', null, 'picker-card-acts');
+    const locBtn = html('button', t('图中定位 →', 'Locate →'), 'org-mini-btn');
+    locBtn.type = 'button';
+    locBtn.addEventListener('click', () => applyPickerContext(rec, {targetRow: pick.row}));
+    acts.append(locBtn);
+
+    card.append(top, modelLine, meta, metrics, reason, acts);
+    grid.append(card);
+  }
+  frag.append(grid);
+
+  const footBar = html('div', null, 'picker-footer-bar');
+  footBar.append(
+    html('span', t('想进一步看雷达分项、幻觉率与多云比价？直接将这几款送进剖析对比', 'Want radar breakdowns, hallucination rates & multi-cloud pricing? Compare them side-by-side'), 'picker-footer-note')
+  );
+  const footActs = html('div', null, 'picker-footer-acts');
+  const scatterBtn = html('button', t('看场景前沿散点', 'View Frontier'), 'org-mini-btn');
+  scatterBtn.type = 'button';
+  scatterBtn.addEventListener('click', () => applyPickerContext(rec, {toCompare: false}));
+  const cmpBtn = html('button', t(`一键剖析对比这 ${rec.picks.length} 款 →`, `Compare all ${rec.picks.length} picks →`), 'guide-try-btn');
+  cmpBtn.type = 'button';
+  cmpBtn.addEventListener('click', () => applyPickerContext(rec, {toCompare: true}));
+  footActs.append(scatterBtn, cmpBtn);
+  footBar.append(footActs);
+  frag.append(footBar);
+}
+
+function renderGuideDialog() {
+  $('#guideDialogTitle').textContent = guideTab === 'picker'
+    ? t('3 步帮我选模型', '3-Step Model Picker')
+    : t('读懂榜单与隐藏洞察', 'Benchmark Guide & Hidden Insights');
+  $('#guideDialogSub').textContent = guideTab === 'picker'
+    ? t('不用看懂坐标轴与术语：按真实用途、预算与开源偏好，实时推荐 3 款代表模型', 'Skip the jargon: choose your use case, budget & license for 3 data-backed recommendations')
+    : t('了解各测评机构侧重、避开常见误区，一键实操发现数据背后的规律', 'Understand what each agency tests, avoid common traps, and explore hidden data patterns in one click');
+  $('#gtabPicker').textContent = t('3 步选模型', '3-Step Picker');
   $('#gtabCurrent').textContent = t('当前榜与隐藏玩法', 'Current Tab & Insights');
   $('#gtabOrgs').textContent = t('测评机构特点', 'Eval Agencies');
   $('#gtabGlossary').textContent = t('看图与指标速查', 'Chart & Metrics');
@@ -11922,8 +11950,10 @@ function renderGuideDialog() {
   const body = $('#guideBody');
   const frag = document.createDocumentFragment();
 
-  if (guideTab === 'current') {
-    const prof = GUIDE_TAB_PROFILES[currentGuideProfileKey()];
+  if (guideTab === 'picker') {
+    renderPickerTab(frag);
+  } else if (guideTab === 'current') {
+    const prof = GUIDE_TAB_META[currentGuideProfileKey()];
     const hero = html('section', null, 'guide-hero');
     const heroHead = html('div', null, 'guide-hero-head');
     heroHead.append(
@@ -11951,7 +11981,8 @@ function renderGuideDialog() {
       btn.type = 'button';
       btn.addEventListener('click', () => {
         setGuideOpen(false);
-        runNavAction(() => rec.run());
+        const runner = GUIDE_RECIPE_RUNNERS[rec.id];
+        if (runner) runNavAction(() => runner());
       });
       row.append(copy, btn);
       list.append(row);
@@ -12084,7 +12115,9 @@ function renderGuideDialog() {
 
 $('#navBackBtn')?.addEventListener('click', navBack);
 $('#navForwardBtn')?.addEventListener('click', navForward);
-$('#guideBtn')?.addEventListener('click', () => setGuideOpen(!guideOpen, 'current'));
+$('#pickerBtn')?.addEventListener('click', () => setGuideOpen(!(guideOpen && guideTab === 'picker'), 'picker'));
+$('#guideBtn')?.addEventListener('click', () => setGuideOpen(!(guideOpen && guideTab !== 'picker'), 'current'));
+$('#onboardingPickerBtn')?.addEventListener('click', () => setGuideOpen(true, 'picker'));
 $('#onboardingGuideBtn')?.addEventListener('click', () => setGuideOpen(true, 'current'));
 $('#onboardingDismissBtn')?.addEventListener('click', () => {
   onboardingDismissed = true;
