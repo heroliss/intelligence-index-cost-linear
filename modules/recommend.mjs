@@ -3,8 +3,8 @@ import {
   valuePerDollar,
   computeScenarioScore,
   SCENARIO_PRESETS
-} from '../chart-math.mjs?v=20261121-01';
-import {computeOrgDivergence} from './divergence.mjs?v=20261121-01';
+} from '../chart-math.mjs?v=20261121-02';
+import {computeOrgDivergence} from './divergence.mjs?v=20261121-02';
 
 export const RECOMMEND_USE_CASES = [
   {

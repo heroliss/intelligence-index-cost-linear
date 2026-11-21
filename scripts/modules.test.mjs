@@ -10,7 +10,7 @@ import {
 } from '../modules/recommend.mjs';
 import {computeOrgDivergence} from '../modules/divergence.mjs';
 import {createNavHistory} from '../modules/nav-history.mjs';
-import {GUIDE_TAB_META, GUIDE_GLOSSARY} from '../modules/guide-content.mjs';
+import {GUIDE_PROFILE_ORDER, GUIDE_TAB_META, GUIDE_GLOSSARY} from '../modules/guide-content.mjs';
 
 test('recommendModels returns distinct multi-archetype picks with objective proofs & caveats across all 81 live combinations', async () => {
   const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
@@ -491,13 +491,19 @@ test('createNavHistory coalesces nested actions, supports back/forward/popstate,
   assert.equal(nav.getState().stack.length, 4, 'stack is capped at maxStack');
 });
 
-test('guide-content exports complete bilingual metadata and unique recipe IDs', () => {
+test('guide-content exports complete bilingual metadata, ordered profile chips, and wired recipe runners', async () => {
   const expectedKeys = ['models', 'frontier', 'human-arena', 'coding-agents', 'cyber', 'media:image', 'media:video', 'media:tts', 'orgs'];
+  assert.deepEqual(GUIDE_PROFILE_ORDER, expectedKeys, 'GUIDE_PROFILE_ORDER lists all 9 tabs/tracks in display order');
   for (const k of expectedKeys) {
     assert.ok(GUIDE_TAB_META[k], `missing GUIDE_TAB_META.${k}`);
+    assert.ok(GUIDE_TAB_META[k].shortZh && GUIDE_TAB_META[k].shortEn, `${k} has short bilingual chip labels`);
     assert.ok(GUIDE_TAB_META[k].recipes.length >= 3, `${k} has at least 3 recipes`);
   }
   const allIds = Object.values(GUIDE_TAB_META).flatMap(m => m.recipes.map(r => r.id));
   assert.equal(new Set(allIds).size, allIds.length, 'all recipe IDs must be unique');
+  const appSrc = await readFile(new URL('../app.js', import.meta.url), 'utf8');
+  for (const id of allIds) {
+    assert.ok(appSrc.includes(`'${id}':`), `missing GUIDE_RECIPE_RUNNERS handler for recipe "${id}"`);
+  }
   assert.ok(GUIDE_GLOSSARY.length >= 7);
 });

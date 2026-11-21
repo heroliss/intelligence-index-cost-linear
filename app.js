@@ -29,17 +29,17 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261121-01';
+} from './chart-math.mjs?v=20261121-02';
 import {
   RECOMMEND_USE_CASES,
   RECOMMEND_BILLING,
   RECOMMEND_LICENSES,
   recommendModels,
   getRowCaveats
-} from './modules/recommend.mjs?v=20261121-01';
-import {computeOrgDivergence} from './modules/divergence.mjs?v=20261121-01';
-import {createNavHistory} from './modules/nav-history.mjs?v=20261121-01';
-import {GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261121-01';
+} from './modules/recommend.mjs?v=20261121-02';
+import {computeOrgDivergence} from './modules/divergence.mjs?v=20261121-02';
+import {createNavHistory} from './modules/nav-history.mjs?v=20261121-02';
+import {GUIDE_PROFILE_ORDER, GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261121-02';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -443,7 +443,7 @@ const ONBOARDING_KEY = 'intelligence-cost-onboard-v1';
 let onboardingDismissed = (() => {
   try { return localStorage.getItem(ONBOARDING_KEY) === '1'; } catch { return false; }
 })();
-let controlsOpen = !mobileLayout.matches, controlsTouched = false, valueDetailsOpen = false, changelogOpen = false, scenarioOpen = false, radarInfoOpen = false, comparePickerOpen = false, cmdOpen = false, cmdIndex = 0, guideOpen = false, guideTab = 'current', selectionNotice = '', radarCtx = null, shareTimer = 0, copyMdTimer = 0, curveFrame;
+let controlsOpen = !mobileLayout.matches, controlsTouched = false, valueDetailsOpen = false, changelogOpen = false, scenarioOpen = false, radarInfoOpen = false, comparePickerOpen = false, cmdOpen = false, cmdIndex = 0, guideOpen = false, guideTab = 'current', guidePreviewKey = null, selectionNotice = '', radarCtx = null, shareTimer = 0, copyMdTimer = 0, curveFrame;
 
 function starKeyOf(row) {
   if (!row) return '';
@@ -11712,6 +11712,32 @@ function currentGuideProfileKey() {
   return GUIDE_TAB_META[activeKey] ? activeKey : 'models';
 }
 
+function guideProfileAvailable(profileKey) {
+  if (!GUIDE_TAB_META[profileKey]) return false;
+  if (!snapshot) return true;
+  if (profileKey.startsWith('media:')) {
+    const track = profileKey.slice('media:'.length);
+    return Array.isArray(snapshot.mediaModels) && snapshot.mediaModels.some(m => m.mediaKind === track);
+  }
+  const meta = BENCHMARKS[profileKey];
+  if (!meta) return false;
+  const arr = snapshot[meta.key];
+  return Array.isArray(arr) && arr.length > 0;
+}
+
+function activateGuideProfileTarget(profileKey) {
+  if (!profileKey) return;
+  const isMedia = profileKey.startsWith('media:');
+  const targetTab = isMedia ? 'media' : profileKey;
+  const targetTrack = isMedia ? profileKey.slice('media:'.length) : null;
+  if (activeKey !== targetTab) {
+    chooseChart(targetTab, {changeHash: false});
+  }
+  if (targetTrack && state && state.mediaTrack !== targetTrack) {
+    setMediaTrack(targetTrack, {reRender: false, updateUrl: false});
+  }
+}
+
 function setGuideOpen(open, tabName = null) {
   if (tabName && ['picker', 'current', 'orgs', 'glossary'].includes(tabName)) guideTab = tabName;
   guideOpen = !!open;
@@ -11721,6 +11747,7 @@ function setGuideOpen(open, tabName = null) {
   $('#guideBtn')?.setAttribute('aria-expanded', String(guideOpen && guideTab !== 'picker'));
   $('#pickerBtn')?.setAttribute('aria-expanded', String(guideOpen && guideTab === 'picker'));
   if (guideOpen) {
+    guidePreviewKey = currentGuideProfileKey();
     if (cmdOpen) setCmdOpen(false);
     if (changelogOpen) setChangelogOpen(false);
     if (scenarioOpen) setScenarioOpen(false);
@@ -11977,7 +12004,7 @@ function renderGuideDialog() {
     ? t('榜单跑分≠全部体验：这里只帮你快速缩小到 3 类不同取向候选，并摊开跨榜证据与高价/缺盲测风险', 'Benchmarks aren’t the whole story: narrow down to 3 contrasting archetypes with proof badges & caveats upfront')
     : t('了解各测评机构侧重、避开常见误区，一键实操发现数据背后的规律', 'Understand what each agency tests, avoid common traps, and explore hidden data patterns in one click');
   $('#gtabPicker').textContent = t('3 步缩小候选', '3-Step Shortlist');
-  $('#gtabCurrent').textContent = t('当前榜与隐藏玩法', 'Current Tab & Insights');
+  $('#gtabCurrent').textContent = t('各榜导览与玩法', 'Tab Guides & Insights');
   $('#gtabOrgs').textContent = t('测评机构特点', 'Eval Agencies');
   $('#gtabGlossary').textContent = t('看图与指标速查', 'Chart & Metrics');
   $('#guideFootHint').textContent = t(
@@ -11998,12 +12025,62 @@ function renderGuideDialog() {
   if (guideTab === 'picker') {
     renderPickerTab(frag);
   } else if (guideTab === 'current') {
-    const prof = GUIDE_TAB_META[currentGuideProfileKey()];
+    const liveKey = currentGuideProfileKey();
+    const previewKey = (guidePreviewKey && guideProfileAvailable(guidePreviewKey)) ? guidePreviewKey : liveKey;
+    const isOtherTab = previewKey !== liveKey;
+    const prof = GUIDE_TAB_META[previewKey];
+
+    const switcher = html('div', null, 'guide-profile-switch');
+    const bar = html('div', null, 'guide-profile-bar');
+    bar.append(html('span', t(
+      '可自由切换预览其他榜单的避坑与隐藏玩法（仅刷新此处列表，不改动外部大图）',
+      'Preview any tab’s traps & hidden recipes here — browsing won’t change your chart outside'
+    )));
+    if (isOtherTab) {
+      const backBtn = html('button', t('回到当前榜 ↺', 'Back to active ↺'), 'guide-profile-back');
+      backBtn.type = 'button';
+      backBtn.addEventListener('click', () => {
+        guidePreviewKey = liveKey;
+        renderGuideDialog();
+      });
+      bar.append(backBtn);
+    }
+    const chips = html('div', null, 'picker-chips');
+    chips.setAttribute('role', 'group');
+    chips.setAttribute('aria-label', t('切换预览榜单导览', 'Preview guide by tab'));
+    for (const key of GUIDE_PROFILE_ORDER) {
+      if (!guideProfileAvailable(key)) continue;
+      const meta = GUIDE_TAB_META[key];
+      const chip = html('button', null, 'picker-chip');
+      chip.type = 'button';
+      chip.setAttribute('aria-pressed', String(key === previewKey));
+      if (key === liveKey) {
+        const dot = html('i', null, 'guide-live-dot');
+        dot.setAttribute('aria-hidden', 'true');
+        chip.append(dot);
+        chip.title = t('当前页面正在浏览的榜单', 'Currently active tab behind this dialog');
+      }
+      chip.append(document.createTextNode(t(meta.shortZh, meta.shortEn)));
+      chip.addEventListener('click', () => {
+        if (guidePreviewKey === key) return;
+        guidePreviewKey = key;
+        renderGuideDialog();
+      });
+      chips.append(chip);
+    }
+    switcher.append(bar, chips);
+    frag.append(switcher);
+
     const hero = html('section', null, 'guide-hero');
     const heroHead = html('div', null, 'guide-hero-head');
+    const heroTags = html('div', null, 'guide-hero-tags');
+    heroTags.append(
+      html('span', isOtherTab ? t('预览其他榜', 'Previewing') : t('当前所在', 'Active Tab'), `guide-hero-state${isOtherTab ? '' : ' is-live'}`),
+      html('span', t(prof.badgeZh, prof.badgeEn), 'guide-hero-badge')
+    );
     heroHead.append(
       html('strong', t(prof.titleZh, prof.titleEn)),
-      html('span', t(prof.badgeZh, prof.badgeEn), 'guide-hero-badge')
+      heroTags
     );
     const trap = html('div', null, 'guide-hero-trap');
     trap.append(html('b', t('新手避坑：', 'Watch out: ')), document.createTextNode(t(prof.trapZh, prof.trapEn)));
@@ -12013,7 +12090,9 @@ function renderGuideDialog() {
     const secHead = html('div', null, 'guide-sec-head');
     secHead.append(
       html('h3', t('数据背后可以挖掘的隐藏信息', 'Hidden Insights You Can Uncover Here')),
-      html('span', t('点击按钮立即在当前页面实操', 'Click any recipe to apply it live'))
+      html('span', isOtherTab
+        ? t('点击将自动切至该榜并一键套用（可随时点 ‹ 返回退回）', 'Click switches to this tab & applies live (‹ Back restores your view)')
+        : t('点击按钮立即在当前页面实操', 'Click any recipe to apply it live'))
     );
     frag.append(secHead);
 
@@ -12022,12 +12101,17 @@ function renderGuideDialog() {
       const row = html('div', null, 'guide-recipe-item');
       const copy = html('div', null, 'guide-recipe-copy');
       copy.append(html('strong', t(rec.titleZh, rec.titleEn)), html('span', t(rec.descZh, rec.descEn)));
-      const btn = html('button', t('立即体验 →', 'Try now →'), 'guide-try-btn');
+      const btn = html('button', isOtherTab ? t('切榜体验 →', 'Switch & Try →') : t('立即体验 →', 'Try now →'), 'guide-try-btn');
       btn.type = 'button';
       btn.addEventListener('click', () => {
         setGuideOpen(false);
         const runner = GUIDE_RECIPE_RUNNERS[rec.id];
-        if (runner) runNavAction(() => runner());
+        if (runner) {
+          runNavAction(() => {
+            activateGuideProfileTarget(previewKey);
+            runner();
+          });
+        }
       });
       row.append(copy, btn);
       list.append(row);

@@ -1,5 +1,19 @@
+export const GUIDE_PROFILE_ORDER = [
+  'models',
+  'frontier',
+  'human-arena',
+  'coding-agents',
+  'cyber',
+  'media:image',
+  'media:video',
+  'media:tts',
+  'orgs'
+];
+
 export const GUIDE_TAB_META = {
   models: {
+    shortZh: '综合智能',
+    shortEn: 'Intelligence',
     badgeZh: '综合基线 · 覆盖最全',
     badgeEn: 'Baseline · Widest Coverage',
     titleZh: '综合智能（Artificial Analysis v5）',
@@ -40,6 +54,8 @@ export const GUIDE_TAB_META = {
     ]
   },
   frontier: {
+    shortZh: '前沿极限',
+    shortEn: 'Frontier Hard',
     badgeZh: '去水份硬考 · 专测旗舰分差',
     badgeEn: 'Unsaturated Hard Suites',
     titleZh: '前沿极限（剔除已饱和旧题）',
@@ -80,6 +96,8 @@ export const GUIDE_TAB_META = {
     ]
   },
   'human-arena': {
+    shortZh: '人类审美',
+    shortEn: 'Human Arena',
     badgeZh: '真人盲测 · 体感与审美',
     badgeEn: 'Blind Human Taste & Vibe',
     titleZh: '人类与审美（体感 · 视觉 · 办公交付）',
@@ -120,6 +138,8 @@ export const GUIDE_TAB_META = {
     ]
   },
   'coding-agents': {
+    shortZh: '编程智能体',
+    shortEn: 'Coding Agents',
     badgeZh: '模型 + 框架端到端实测',
     badgeEn: 'End-to-End Model + Harness',
     titleZh: '编程智能体（Model + Agent Harness）',
@@ -153,6 +173,8 @@ export const GUIDE_TAB_META = {
     ]
   },
   cyber: {
+    shortZh: '网络安全',
+    shortEn: 'Cyber',
     badgeZh: '攻防实测 + 拒答率透明',
     badgeEn: 'Security Evals + Refusal Rate',
     titleZh: '网络安全（攻防实力与安全护栏）',
@@ -186,6 +208,8 @@ export const GUIDE_TAB_META = {
     ]
   },
   'media:image': {
+    shortZh: '图像',
+    shortEn: 'Image',
     badgeZh: '独立赛道 · 仅比图像 $/张',
     badgeEn: 'Isolated Track · Image $/img',
     titleZh: '多模态生成 · 图像赛道（文生图 / 修图）',
@@ -219,6 +243,8 @@ export const GUIDE_TAB_META = {
     ]
   },
   'media:video': {
+    shortZh: '视频',
+    shortEn: 'Video',
     badgeZh: '独立赛道 · 仅比视频 $/5秒',
     badgeEn: 'Isolated Track · Video $/5s',
     titleZh: '多模态生成 · 视频赛道（文生 / 图生 / 编辑）',
@@ -252,6 +278,8 @@ export const GUIDE_TAB_META = {
     ]
   },
   'media:tts': {
+    shortZh: '语音',
+    shortEn: 'Speech',
     badgeZh: '独立赛道 · 仅比语音 $/千字',
     badgeEn: 'Isolated Track · TTS $/1k chars',
     titleZh: '多模态生成 · 语音合成 TTS 赛道',
@@ -285,6 +313,8 @@ export const GUIDE_TAB_META = {
     ]
   },
   orgs: {
+    shortZh: '机构分榜',
+    shortEn: 'Org Boards',
     badgeZh: '6 份权威原榜 · 绝不混算改序',
     badgeEn: '6 Official Un-Blended Boards',
     titleZh: '机构分榜（跨机构交叉验证）',
