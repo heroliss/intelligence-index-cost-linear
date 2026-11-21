@@ -131,9 +131,11 @@ export function computeOrgDivergence(orgBoards, orgRankIndex, baseById, filterFn
 
   const humanFavs = rows.filter(r => r.gap > 0).sort((a, b) => b.gap - a.gap);
   const hardSpecs = rows.filter(r => r.gap < 0).sort((a, b) => a.gap - b.gap);
-  const consensusPool = rows
-    .filter(r => r.autoPct >= 65 && r.humanPct >= 65 && r.coveredCount >= 3)
-    .sort((a, b) => (a.absGap + a.pctSpread * 0.25) - (b.absGap + b.pctSpread * 0.25) || b.overallPct - a.overallPct);
+  const strictConsensus = rows.filter(r => r.kind === 'consensus');
+  const consensusPool = (strictConsensus.length
+    ? strictConsensus
+    : rows.filter(r => r.autoPct >= 65 && r.humanPct >= 65 && r.absGap < 8 && r.coveredCount >= 3)
+  ).sort((a, b) => (a.absGap + a.pctSpread * 0.25) - (b.absGap + b.pctSpread * 0.25) || b.overallPct - a.overallPct);
 
   return {
     rows,

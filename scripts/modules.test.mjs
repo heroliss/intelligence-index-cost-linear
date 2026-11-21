@@ -422,6 +422,22 @@ test('computeOrgDivergence eliminates board-size bias and surfaces human favorit
   }
   assert.equal(live.counts.human, live.rows.filter(r => r.kind === 'human').length);
   assert.equal(live.counts.auto, live.rows.filter(r => r.kind === 'auto').length);
+  assert.ok(live.topConsensus.absGap < 8, `topConsensus (${live.topConsensus.name}) must have |gap| < 8`);
+
+  // Narrow-filter test: when all models have high divergence (|gap| >= 8), topConsensus must be null (never contradict row kind!)
+  const splitBoards = [
+    {id: 'aa', shortTag: 'AA'},
+    {id: 'livebench', shortTag: 'LB2'},
+    {id: 'arenaChat', shortTag: 'Chat'}
+  ];
+  const splitIdx = new Map([
+    ['a', {name: 'A', shortName: 'A', creator: 'X', ranks: {aa: {rank: 1, exact: true, score: 90}, livebench: {rank: 1, exact: true, score: 90}, arenaChat: {rank: 4, exact: true, score: 1300}}}],
+    ['b', {name: 'B', shortName: 'B', creator: 'X', ranks: {aa: {rank: 2, exact: true, score: 85}, livebench: {rank: 2, exact: true, score: 85}, arenaChat: {rank: 3, exact: true, score: 1350}}}],
+    ['c', {name: 'C', shortName: 'C', creator: 'X', ranks: {aa: {rank: 3, exact: true, score: 80}, livebench: {rank: 3, exact: true, score: 80}, arenaChat: {rank: 2, exact: true, score: 1400}}}],
+    ['d', {name: 'D', shortName: 'D', creator: 'X', ranks: {aa: {rank: 4, exact: true, score: 75}, livebench: {rank: 4, exact: true, score: 75}, arenaChat: {rank: 1, exact: true, score: 1450}}}]
+  ]);
+  const split = computeOrgDivergence(splitBoards, splitIdx, new Map());
+  assert.equal(split.topConsensus, null, 'high-divergence pool must not surface a divergent model as topConsensus');
 });
 
 test('createNavHistory coalesces nested actions, supports back/forward/popstate, truncates forward tail, and enforces maxStack', () => {

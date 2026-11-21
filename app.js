@@ -29,23 +29,23 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261122-02';
+} from './chart-math.mjs?v=20261122-03';
 import {
   RECOMMEND_USE_CASES,
   RECOMMEND_BILLING,
   RECOMMEND_LICENSES,
   recommendModels,
   getRowCaveats
-} from './modules/recommend.mjs?v=20261122-02';
-import {computeOrgDivergence} from './modules/divergence.mjs?v=20261122-02';
-import {createNavHistory} from './modules/nav-history.mjs?v=20261122-02';
-import {GUIDE_PROFILE_ORDER, GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261122-02';
+} from './modules/recommend.mjs?v=20261122-03';
+import {computeOrgDivergence} from './modules/divergence.mjs?v=20261122-03';
+import {createNavHistory} from './modules/nav-history.mjs?v=20261122-03';
+import {GUIDE_PROFILE_ORDER, GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261122-03';
 import {
   UPDATE_FILTERS,
   buildUpdateFeed,
   filterUpdateFeed,
   resolveUpdateDetail
-} from './modules/updates.mjs?v=20261122-02';
+} from './modules/updates.mjs?v=20261122-03';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -2477,7 +2477,17 @@ function renderChangelog({preserveListScroll = false} = {}) {
     }
   }
   listPane.replaceChildren(listFrag);
-  if (preserveListScroll) listPane.scrollTop = prevScroll;
+  if (preserveListScroll) {
+    listPane.scrollTop = prevScroll;
+  } else {
+    listPane.scrollTop = 0;
+    const activeItem = listPane.querySelector('.upd-item.is-active');
+    if (activeItem && visible.length > 1 && visible[0]?.key !== updatesSelectedKey) {
+      requestAnimationFrame(() => activeItem.scrollIntoView({block: 'nearest'}));
+    }
+    const detailPane = $('#updatesDetailPane');
+    if (detailPane) detailPane.scrollTop = 0;
+  }
 
   $('#updatesBody')?.classList.toggle('is-mobile-detail', updatesMobileDetail && mobileLayout.matches);
   const detail = selected
@@ -5506,6 +5516,32 @@ function renderComparePicker() {
   const frag = document.createDocumentFragment();
   const full = state.compareIds.length >= MAX_COMPARE;
 
+  if (state.license !== 'all' || state.extraFilter) {
+    const note = html('div', null, 'compare-picker-filter-note');
+    const parts = [];
+    if (state.license === 'open') parts.push(t('仅开源', 'Open-weights only'));
+    else if (state.license === 'closed') parts.push(t('仅闭源', 'Proprietary only'));
+    if (state.extraFilter) parts.push(t('专项筛选生效中', 'Active sub-filter'));
+    note.append(html('span', t(`隐藏筛选：${parts.join(' · ')}`, `Hidden filter: ${parts.join(' · ')}`)));
+    const clearBtn = html('button', t('显示全部', 'Show all'));
+    clearBtn.type = 'button';
+    clearBtn.addEventListener('click', () => {
+      state.license = 'all';
+      state.extraFilter = '';
+      state._licCache = null;
+      state._poolCache = null;
+      state._frontierCache = null;
+      state._rankCache = null;
+      renderLegend();
+      syncControls();
+      syncUrlHash();
+      renderComparePicker();
+      updateSummary();
+    });
+    note.append(clearBtn);
+    frag.append(note);
+  }
+
   for (const row of filtered) {
     const picked = state.compareIds.includes(row.id);
     const btn = html('button', null, picked ? 'picker-item is-picked' : 'picker-item');
@@ -7664,8 +7700,8 @@ function draw() {
     item.p.style.visibility = visible ? 'visible' : 'hidden';
   }
 
-  drawAxes(medianX, medianY);
   syncViewportHint();
+  drawAxes(medianX, medianY);
   layoutLabels(champion?.id);
   drawActive(champion);
   updateSummary();
@@ -7708,10 +7744,13 @@ function drawAxes(medianX, medianY) {
   const qx = x(medianX), qy = y(medianY);
   if (frame.width > 360 && qx > frame.left + 70 && qx < frame.right - 70 && qy > frame.top + 26) {
     const medLabel = isTime ? formatTime(medianX * 60) : money(medianX);
+    const hintBtn = $('#viewportHintBtn');
+    const hintBlocked = hintBtn && !hintBtn.hidden && qx > frame.right - Math.max(280, (hintBtn.offsetWidth || 0) + 36);
+    const medY = hintBlocked ? Math.min(frame.bottom - 10, Math.max(frame.top + 46, Math.min(qy - 6, frame.top + 48))) : frame.top + 13;
     axis.append(node('text', {
       class: 'quadrant-note',
       x: qx - 5,
-      y: frame.top + 13,
+      y: medY,
       'text-anchor': 'end'
     }, t(`中位 ${medLabel}`, `Median ${medLabel}`)));
   }
@@ -9865,6 +9904,29 @@ document.addEventListener('pointerdown', event => {
   }
 });
 
+function trapModalFocus(dialogEl, event) {
+  if (!dialogEl || event.key !== 'Tab') return false;
+  const focusables = [...dialogEl.querySelectorAll(
+    'a[href], button:not([disabled]):not([hidden]), input:not([disabled]):not([hidden]), select:not([disabled]):not([hidden]), textarea:not([disabled]):not([hidden]), [tabindex]:not([tabindex="-1"])'
+  )].filter(el => el.offsetParent !== null && !el.closest('[hidden]'));
+  if (!focusables.length) return false;
+  const first = focusables[0];
+  const last = focusables[focusables.length - 1];
+  const active = document.activeElement;
+  if (event.shiftKey) {
+    if (active === first || !dialogEl.contains(active)) {
+      event.preventDefault();
+      last.focus({preventScroll: true});
+      return true;
+    }
+  } else if (active === last || !dialogEl.contains(active)) {
+    event.preventDefault();
+    first.focus({preventScroll: true});
+    return true;
+  }
+  return false;
+}
+
 document.addEventListener('keydown', event => {
   if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === 'k') {
     event.preventDefault();
@@ -9872,14 +9934,18 @@ document.addEventListener('keydown', event => {
     return;
   }
   if (guideOpen) {
-    if (event.key === 'Escape') {
+    if (event.key === 'Tab') {
+      trapModalFocus($('#guideDialog'), event);
+    } else if (event.key === 'Escape') {
       event.preventDefault();
       setGuideOpen(false);
     }
     return;
   }
   if (changelogOpen) {
-    if (event.key === 'Escape') {
+    if (event.key === 'Tab') {
+      trapModalFocus($('#changelogDialog'), event);
+    } else if (event.key === 'Escape') {
       event.preventDefault();
       setChangelogOpen(false);
     } else if (event.key === 'ArrowDown') {
@@ -9892,6 +9958,10 @@ document.addEventListener('keydown', event => {
     return;
   }
   if (cmdOpen) {
+    if (event.key === 'Tab') {
+      trapModalFocus($('#cmdDialog'), event);
+      return;
+    }
     const matches = getCmdMatches();
     if (event.key === 'Escape') {
       event.preventDefault();
@@ -11334,9 +11404,12 @@ function renderOrgBumpChart(container) {
   const maxMapped = Math.max(rankCap, ...series.flatMap(s => orgBoards.map(b => s.rec.ranks[b.id] ? mapRankVal(s.rec.ranks[b.id].rank) : 0)));
 
   const availW = container.clientWidth || 1200;
+  const availH = Math.max(380, (container.clientHeight || 520) - 96);
   const svgW = Math.max(920, Math.min(1360, Math.round(availW - 22)));
-  const svgH = Math.max(486, Math.min(586, 356 + series.length * 15));
-  const padL = 204, padR = 204, padT = 62, padB = 34;
+  const svgH = orgBumpLimit <= 12
+    ? Math.max(400, Math.min(520, availH))
+    : Math.max(468, Math.min(586, 350 + series.length * 14));
+  const padL = 204, padR = 204, padT = 56, padB = 26;
   const innerW = svgW - padL - padR;
   const innerH = svgH - padT - padB;
   const colX = i => padL + (orgBoards.length > 1 ? (i * innerW) / (orgBoards.length - 1) : innerW / 2);
@@ -11368,7 +11441,7 @@ function renderOrgBumpChart(container) {
       node('text', {x: cx, y: 20, 'text-anchor': 'middle', class: 'bump-col-title'}, t(b.pillZh, b.pillEn)),
       node('text', {x: cx, y: 35, 'text-anchor': 'middle', class: 'bump-col-sub'}, t(b.tagZh, b.tagEn))
     );
-    hdr.addEventListener('click', () => {
+    const openBoardDetail = () => {
       runNavAction(() => {
         orgFocus = b.id;
         orgDetailSort = {boardId: b.id, colKey: null, dir: 'desc'};
@@ -11376,6 +11449,13 @@ function renderOrgBumpChart(container) {
         renderOrgLeaderboards();
         updateSummary();
       });
+    };
+    hdr.addEventListener('click', openBoardDetail);
+    hdr.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openBoardDetail();
+      }
     });
     colG.append(hdr);
   });
@@ -12144,6 +12224,10 @@ function renderOrgLeaderboards() {
     pFrag.append(btn);
   }
   selGroup.replaceChildren(pFrag);
+  const activeSelBtn = selGroup.querySelector('button[aria-pressed="true"]');
+  if (activeSelBtn && mobileLayout.matches) {
+    requestAnimationFrame(() => activeSelBtn.scrollIntoView({inline: 'nearest', block: 'nearest'}));
+  }
 
   const matchBtn = $('#orgMatchedToggle');
   matchBtn.hidden = orgFocus === 'bump' || orgFocus === 'divergence';
@@ -12763,6 +12847,8 @@ function setGuideOpen(open, tabName = null, {restoreFocus = true} = {}) {
     if (viewToolsOpen) setViewToolsOpen(false);
     if (comparePickerOpen) setComparePickerOpen(false);
     renderGuideDialog();
+    const gBody = $('#guideBody');
+    if (gBody) gBody.scrollTop = 0;
     requestAnimationFrame(() => $('#guideCloseBtn')?.focus({preventScroll: true}));
   } else if (restoreFocus) {
     (guideTab === 'picker' ? $('#pickerBtn') : $('#guideBtn'))?.focus({preventScroll: true});
@@ -12785,6 +12871,7 @@ function applyPickerContext(recResult, {targetRow = null, targetSlot = null, toC
     state.extraFilter = '';
     state.minScore = 0;
     state.maxCost = 0;
+    state.historyMode = false;
     state.license = license.id;
     if (useCase.scenarioId && useCase.scenarioId !== 'default' && !['coding-agents', 'media'].includes(useCase.tab)) {
       const preset = SCENARIO_PRESETS.find(p => p.id === useCase.scenarioId);
@@ -12825,6 +12912,7 @@ function applyPickerContext(recResult, {targetRow = null, targetSlot = null, toC
     syncControls();
     buildPlot();
     if (targetRow) {
+      pinCollapsed = false;
       const liveRow = state.rows.find(r => r.id === targetRow.id);
       if (liveRow) locateRowInChart(liveRow);
     } else {
@@ -13272,6 +13360,8 @@ for (const btn of document.querySelectorAll('#guideTabs [role=tab]')) {
   btn.addEventListener('click', () => {
     guideTab = btn.dataset.gtab;
     renderGuideDialog();
+    const gBody = $('#guideBody');
+    if (gBody) gBody.scrollTop = 0;
   });
   btn.addEventListener('keydown', event => {
     if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
@@ -13285,6 +13375,8 @@ for (const btn of document.querySelectorAll('#guideTabs [role=tab]')) {
         : (idx + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
     guideTab = tabs[nextIdx].dataset.gtab;
     renderGuideDialog();
+    const gBody = $('#guideBody');
+    if (gBody) gBody.scrollTop = 0;
     tabs[nextIdx].focus();
   });
 }
