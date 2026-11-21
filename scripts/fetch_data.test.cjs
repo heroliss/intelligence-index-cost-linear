@@ -205,9 +205,29 @@ test('unchanged snapshots keep their original timestamp and a failed refresh pre
   const server = http.createServer((request, response) => response.end('<html>source structure changed</html>'));
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   try {
-    const original = { models: [simplifyModel(model)], updatedAt: '2026-01-01T00:00:00Z' };
+    const original = {
+      models: [simplifyModel(model)],
+      humanArenaModels: [{ id: 'a', arenaRaw: { designWebElo: 1300, designWebBattles: 4500, chatVotes: 1200 } }],
+      orgLeaderboards: { designArena: { rows: [{ name: 'A', score: 1300, votes: 4500 }] } },
+      updatedAt: '2026-01-01T00:00:00Z'
+    };
     assert.equal(await writeSnapshot(out, original), true);
     assert.equal(await writeSnapshot(out, { ...original, updatedAt: '2026-02-01T00:00:00Z' }, original), false);
+    // Pure crowd vote/battle count churn without any score/rank shift must not trigger rewrite
+    const voteChurnOnly = {
+      ...original,
+      humanArenaModels: [{ id: 'a', arenaRaw: { designWebElo: 1300, designWebBattles: 4588, chatVotes: 1299 } }],
+      orgLeaderboards: { designArena: { rows: [{ name: 'A', score: 1300, votes: 4588 }] } },
+      updatedAt: '2026-02-02T00:00:00Z'
+    };
+    assert.equal(await writeSnapshot(out, voteChurnOnly, original), false);
+    // Real score change MUST trigger rewrite
+    const realScoreChange = {
+      ...voteChurnOnly,
+      orgLeaderboards: { designArena: { rows: [{ name: 'A', score: 1305, votes: 4588 }] } }
+    };
+    assert.equal(await writeSnapshot(out, realScoreChange, original), true);
+    assert.equal(await writeSnapshot(out, original), true);
     assert.deepEqual(JSON.parse(await fs.readFile(out, 'utf8')), original);
     const url = `http://127.0.0.1:${server.address().port}/`;
     const child = spawn(process.execPath, [path.join(__dirname, 'fetch_data.cjs')], {
@@ -434,15 +454,24 @@ test('new hard benchmarks (MLCR, MMMU-Pro, SRE), 3D/Video/Slop, buildMediaModels
   assert.equal(tts.cost, 0.015);
   assert.equal(tts.mediaRaw.ttfaMs, 218);
 
-  const prevSnap = { models: [{ id: 'a', name: 'Model A', intelligenceIndex: 55, cost: 2.0 }] };
+  const prevSnap = {
+    models: [{ id: 'a', name: 'Model A', intelligenceIndex: 55, cost: 2.0 }],
+    cyberModels: [{ id: 'c1', name: 'Cyber Old', intelligenceIndex: 50, cost: 1.0 }]
+  };
   const nextSnap = {
     models: [
       { id: 'a', name: 'Model A', intelligenceIndex: 56.2, cost: 1.5 },
-      { id: 'b', name: 'Model B', intelligenceIndex: 60.0, cost: 3.0, releaseDate: '2026-11-18' }
+      { id: 'b', name: 'Model B', intelligenceIndex: 60.0, cost: 3.0, releaseDate: '2026-10-07' }
+    ],
+    cyberModels: [
+      { id: 'c1', name: 'Cyber Old', intelligenceIndex: 50, cost: 1.0 },
+      { id: 'c2', name: 'Cyber New', intelligenceIndex: 63.5, cost: 2.4, releaseDate: '2026-11-18' }
     ]
   };
   const diffs = buildSnapshotDiff(nextSnap, prevSnap, '2026-11-18');
-  assert.ok(diffs.some(d => d.id === 'b' && d.kind === 'new'));
+  const newModelEv = diffs.find(d => d.id === 'b' && d.kind === 'new');
+  assert.ok(newModelEv && newModelEv.date === '2026-11-18' && newModelEv.releaseDate === '2026-10-07');
+  assert.ok(diffs.some(d => d.id === 'c2' && d.tab === 'cyber' && d.kind === 'new'));
   assert.ok(diffs.some(d => d.id === 'a' && d.kind === 'price-drop' && d.pct === -25));
   assert.ok(diffs.some(d => d.id === 'a' && d.kind === 'score'));
 });

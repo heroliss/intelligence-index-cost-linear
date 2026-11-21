@@ -98,9 +98,9 @@ export function computeOrgDivergence(orgBoards, orgRankIndex, baseById, filterFn
     const overallPct = Number((allEntries.reduce((s, e) => s + e.pct, 0) / allEntries.length).toFixed(1));
 
     let kind = 'balanced';
-    if (gap >= 10) kind = 'human';
-    else if (gap <= -10) kind = 'auto';
-    else if (autoPct >= 68 && humanPct >= 68 && Math.abs(gap) < 10 && allEntries.length >= 3) kind = 'consensus';
+    if (gap >= 8) kind = 'human';
+    else if (gap <= -8) kind = 'auto';
+    else if (autoPct >= 68 && humanPct >= 68 && Math.abs(gap) < 8 && allEntries.length >= 3) kind = 'consensus';
 
     rows.push({
       modelId: p.modelId,

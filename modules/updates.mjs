@@ -1,5 +1,5 @@
-import {paretoFrontier, breakEvenTasks} from '../chart-math.mjs?v=20261121-03';
-import {getRowCaveats} from './recommend.mjs?v=20261121-03';
+import {paretoFrontier, breakEvenTasks} from '../chart-math.mjs?v=20261122-01';
+import {getRowCaveats} from './recommend.mjs?v=20261122-01';
 
 export const UPDATE_FILTERS = Object.freeze([
   Object.freeze({id: 'all', zh: '全部动态', en: 'All Updates'}),
@@ -461,7 +461,7 @@ export function buildUpdateFeed(snapshot) {
     .filter(item => item && item.title && item.date)
     .map((item, idx) => {
       const norm = normalizeChangelogType(item.type);
-      return {
+      const entry = {
         key: `log:${idx}:${item.date}:${item.type || 'update'}:${item.title}`,
         source: 'official',
         kind: norm.kind,
@@ -472,8 +472,43 @@ export function buildUpdateFeed(snapshot) {
         url: item.url || null,
         meta: item.meta || null,
         raw: item,
+        preview: null,
         _idx: idx
       };
+      if (snapshot) {
+        if (norm.kind === 'model-added') {
+          const hit = findRowForOfficialModel(entry, snapshot);
+          if (hit?.row) {
+            entry.preview = {
+              kind: 'model',
+              creator: hit.row.creator?.name || null,
+              score: hit.row.intelligenceIndex,
+              cost: hit.row.cost
+            };
+          } else if (entry.meta && (entry.meta.creator || Number.isFinite(entry.meta.score))) {
+            entry.preview = {
+              kind: 'meta',
+              creator: entry.meta.creator || null,
+              score: Number.isFinite(entry.meta.score) ? entry.meta.score : null
+            };
+          } else {
+            entry.preview = {kind: 'unpriced'};
+          }
+        } else {
+          const hits = matchMentionedModels(entry.title, entry.url, snapshot);
+          if (hits.length) {
+            const families = new Set(hits.map(h => h.row.family?.slug || h.row.id));
+            entry.preview = {
+              kind: 'article',
+              familyCount: families.size,
+              variantCount: hits.length,
+              topName: hits[0].row.shortName || hits[0].row.name,
+              topScore: hits[0].row.intelligenceIndex
+            };
+          }
+        }
+      }
+      return entry;
     })
     .sort((a, b) => b.date.localeCompare(a.date) || a._idx - b._idx);
 

@@ -412,6 +412,16 @@ test('computeOrgDivergence eliminates board-size bias and surfaces human favorit
   assert.ok(live.topHumanFavorite && live.topHumanFavorite.gap > 10, 'live data surfaces a clear human-favorite sleeper');
   assert.ok(live.topHardSpecialist && live.topHardSpecialist.gap < -10, 'live data surfaces a clear hard-eval specialist');
   assert.ok(live.topConsensus && live.topConsensus.autoPct >= 65 && live.topConsensus.humanPct >= 65, 'live data surfaces a cross-org consensus leader');
+  // Mutual exclusivity: consensus rows never overlap with human (gap >= 8) or auto (gap <= -8)
+  for (const r of live.rows) {
+    if (r.kind === 'consensus') {
+      assert.ok(Math.abs(r.gap) < 8, `consensus row ${r.name} must have |gap| < 8, got ${r.gap}`);
+    }
+    if (r.gap >= 8) assert.equal(r.kind, 'human');
+    if (r.gap <= -8) assert.equal(r.kind, 'auto');
+  }
+  assert.equal(live.counts.human, live.rows.filter(r => r.kind === 'human').length);
+  assert.equal(live.counts.auto, live.rows.filter(r => r.kind === 'auto').length);
 });
 
 test('createNavHistory coalesces nested actions, supports back/forward/popstate, truncates forward tail, and enforces maxStack', () => {
@@ -582,9 +592,14 @@ test('updates module builds chronologically sorted feed, classifies upstream typ
   assert.equal(neonDetail.matchedModels.length, 4, 'matches all 4 Gemini 4 Neon effort tiers');
   assert.equal(neonDetail.articleStats.familyCount, 1);
 
-  // 3) "GPT-6.2 Astra and GPT-6.2 Sol" article matches BOTH families
+  // 3) "GPT-6.2 Astra and GPT-6.2 Sol" article matches BOTH families and carries rich list preview
   const gptArt = feed.officialItems.find(it => it.kind === 'article' && it.title.includes('GPT-6.2 Astra'));
   assert.ok(gptArt, 'found GPT-6.2 Astra & Sol article');
+  assert.equal(gptArt.preview?.kind, 'article');
+  assert.ok(gptArt.preview.familyCount >= 2 && gptArt.preview.variantCount >= 4);
+  const neonModelItem = feed.officialItems.find(it => it.kind === 'model-added' && it.title === 'Gemini 4 Neon (Xhigh)');
+  assert.equal(neonModelItem?.preview?.kind, 'model');
+  assert.ok(neonModelItem.preview.score > 50 && neonModelItem.preview.cost > 0);
   const gptDetail = resolveUpdateDetail(gptArt, snapshot, {feedItems: feed.items});
   assert.ok(gptDetail.articleStats.familyCount >= 2, 'matches both GPT-6.2 Astra and GPT-6.2 Sol families');
 

@@ -1587,7 +1587,8 @@ function buildSnapshotDiff(output, previous, dateStr = new Date().toISOString().
       const dispName = cleanMediaShortName(cur.shortName || cur.name, cur.name, cur.creator?.name || '');
       if (!old) {
         events.push({
-          date: cur.releaseDate || dateStr,
+          date: dateStr,
+          ...(cur.releaseDate ? { releaseDate: cur.releaseDate } : {}),
           kind: 'new',
           tab,
           id: cur.id,
@@ -1640,12 +1641,13 @@ function buildSnapshotDiff(output, previous, dateStr = new Date().toISOString().
   if (previous) {
     compareSuite(output.models, previous.models, 'models');
     compareSuite(output.codingAgents, previous.codingAgents, 'coding-agents');
+    compareSuite(output.cyberModels, previous.cyberModels, 'cyber');
     compareSuite(output.mediaModels, previous.mediaModels, 'media');
   }
 
   const eventPriority = ev => {
     const kindW = ev.kind === 'new' ? 300 : ev.kind === 'price-drop' ? 220 : ev.kind === 'price-up' ? 160 : 80;
-    const tabW = ev.tab === 'models' ? 90 : ev.tab === 'coding-agents' ? 70 : 20;
+    const tabW = ev.tab === 'models' ? 90 : ev.tab === 'coding-agents' ? 70 : ev.tab === 'cyber' ? 55 : 20;
     return kindW + tabW + Math.min(60, ev.score || 0);
   };
   events.sort((a, b) => eventPriority(b) - eventPriority(a));
@@ -1859,9 +1861,11 @@ async function fetchModels(page, sourceUrl, previous, get = getBuffer, { include
   return { models, cyberModels, mediaModels, changelog, manifestPath: modelManifestPath, hostsManifestPath };
 }
 
+const VOLATILE_SNAPSHOT_KEYS = new Set(['designWebBattles', 'chatVotes', 'webdevVotes', 'docVotes', 'votes']);
+
 function comparable(snapshot) {
   const { updatedAt, diffEvents, ...data } = snapshot;
-  return JSON.stringify(data);
+  return JSON.stringify(data, (key, value) => (VOLATILE_SNAPSHOT_KEYS.has(key) ? undefined : value));
 }
 
 async function writeSnapshot(outPath, output, previous) {

@@ -29,23 +29,23 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261121-03';
+} from './chart-math.mjs?v=20261122-01';
 import {
   RECOMMEND_USE_CASES,
   RECOMMEND_BILLING,
   RECOMMEND_LICENSES,
   recommendModels,
   getRowCaveats
-} from './modules/recommend.mjs?v=20261121-03';
-import {computeOrgDivergence} from './modules/divergence.mjs?v=20261121-03';
-import {createNavHistory} from './modules/nav-history.mjs?v=20261121-03';
-import {GUIDE_PROFILE_ORDER, GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261121-03';
+} from './modules/recommend.mjs?v=20261122-01';
+import {computeOrgDivergence} from './modules/divergence.mjs?v=20261122-01';
+import {createNavHistory} from './modules/nav-history.mjs?v=20261122-01';
+import {GUIDE_PROFILE_ORDER, GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261122-01';
 import {
   UPDATE_FILTERS,
   buildUpdateFeed,
   filterUpdateFeed,
   resolveUpdateDetail
-} from './modules/updates.mjs?v=20261121-03';
+} from './modules/updates.mjs?v=20261122-01';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -458,6 +458,16 @@ function starKeyOf(row) {
 
 function isStarred(row) {
   return starredKeys.has(starKeyOf(row));
+}
+
+function isStarredModelId(id, baseRow = null) {
+  if (!id) return false;
+  const row = baseRow
+    || snapshot?.models?.find(m => m.id === id)
+    || snapshot?.cyberModels?.find(m => m.id === id)
+    || snapshot?.codingAgents?.find(m => m.id === id)
+    || snapshot?.mediaModels?.find(m => m.id === id);
+  return row ? isStarred(row) : starredKeys.has(String(id));
 }
 
 function saveStars() {
@@ -907,6 +917,8 @@ function applyRouteParams(target, params) {
     target.mode = 'orgs';
   } else if (['chart', 'table', 'curve', 'sub', 'compare'].includes(view)) {
     target.mode = view;
+  } else {
+    target.mode = 'chart';
   }
   const org = params.get('org');
   if (['all', 'bump', 'divergence', 'aa', 'livebench', 'arenaChat', 'arenaWebdev', 'designArena', 'aaGdpval'].includes(org)) orgFocus = org;
@@ -1292,8 +1304,8 @@ function renderNavButtonsState({stack, index, canBack, canForward, hasHistory}) 
 function restoreNavSnapshot(snap, direction = 'back') {
   if (!snap || !snapshot || !BENCHMARKS[snap.key]) return;
   stopHistoryPlay();
-  if (guideOpen) setGuideOpen(false);
-  if (cmdOpen) setCmdOpen(false);
+  if (guideOpen) setGuideOpen(false, null, {restoreFocus: false});
+  if (cmdOpen) setCmdOpen(false, {restoreFocus: false});
   if (changelogOpen) setChangelogOpen(false, {restoreFocus: false});
   if (scenarioOpen) setScenarioOpen(false);
   if (viewToolsOpen) setViewToolsOpen(false);
@@ -1697,11 +1709,29 @@ function updateItemSubline(entry) {
     }
     return ev.creator || t('点击查看详细变动', 'Click for details');
   }
-  if (entry.meta?.creator && Number.isFinite(entry.meta.score)) {
-    return `${entry.meta.creator} · ${t('智能分', 'Index')} ${format(entry.meta.score, 1)}`;
+  const pv = entry.preview;
+  if (pv?.kind === 'model') {
+    const creator = pv.creator ? `${pv.creator} · ` : '';
+    return `${creator}${format(pv.score, 1)} ${t('分', 'pt')} · ${money(pv.cost)}`;
+  }
+  if (pv?.kind === 'article') {
+    return t(
+      `关联 ${pv.familyCount} 个系列 · ${pv.variantCount} 个在榜档位 · 最高 ${format(pv.topScore, 1)}`,
+      `${pv.familyCount} families · ${pv.variantCount} plotted variants · peak ${format(pv.topScore, 1)}`
+    );
+  }
+  if (pv?.kind === 'meta') {
+    const parts = [];
+    if (pv.creator) parts.push(pv.creator);
+    if (Number.isFinite(pv.score)) parts.push(`${t('智能分', 'Index')} ${format(pv.score, 1)}`);
+    parts.push(t('暂缺 API 计费', 'No API pricing'));
+    return parts.join(' · ');
+  }
+  if (pv?.kind === 'unpriced') {
+    return t('暂缺公开 API 计费 · 点击查看说明', 'No public API pricing yet · click for info');
   }
   return entry.kind === 'article'
-    ? t('官方评测报告 · 点击展开关联模型', 'Official article · click for models')
+    ? t('官方评测报告 · 点击查看详情与原文', 'Official article · click for details')
     : t('官方新收录 · 点击查看详细数据', 'Official release · click for details');
 }
 
@@ -2272,7 +2302,6 @@ function renderUpdatesDetail(detail, visibleItems) {
     starBtn.setAttribute('aria-pressed', String(starred));
     starBtn.addEventListener('click', () => {
       toggleStar(row);
-      renderChangelog({preserveListScroll: true});
     });
     actions.append(starBtn);
   } else if (matchedModels.length >= 2) {
@@ -2473,8 +2502,9 @@ function setChangelogOpen(open, {restoreFocus = true} = {}) {
   backdrop.hidden = !changelogOpen;
   if (changelogOpen) {
     updatesMobileDetail = false;
+    if (mobileLayout.matches && controlsOpen) setControlsOpen(false);
     if (cmdOpen) setCmdOpen(false, {restoreFocus: false});
-    if (guideOpen) setGuideOpen(false);
+    if (guideOpen) setGuideOpen(false, null, {restoreFocus: false});
     if (scenarioOpen) setScenarioOpen(false);
     if (viewToolsOpen) setViewToolsOpen(false);
     if (comparePickerOpen) setComparePickerOpen(false);
@@ -2842,6 +2872,27 @@ function syncStaticText() {
   $('#anatomyHeading').textContent = t('单任务成本结构拆解与耗时剖析', 'Per-Task Cost Anatomy & Latency Profile');
   $('#matrixHeading').textContent = t('核心指标并排对决表', 'Head-to-Head Metrics Matrix');
 
+  document.querySelector('.tabs')?.setAttribute('aria-label', t('选择基准', 'Choose benchmark'));
+  $('#navHistory')?.setAttribute('aria-label', t('站内历史导航', 'In-app navigation history'));
+  $('#viewSwitch')?.setAttribute('aria-label', t('选择视图', 'Choose view'));
+  $('#scenarioPresetGroup')?.setAttribute('aria-label', t('工作流场景预设', 'Workflow scenario presets'));
+  $('#historyPresetGroup')?.setAttribute('aria-label', t('历史时间节点', 'Historical timeline milestones'));
+  $('#xminus')?.parentElement?.setAttribute('aria-label', t('横轴缩放', 'X-axis zoom'));
+  $('#yminus')?.parentElement?.setAttribute('aria-label', t('纵轴缩放', 'Y-axis zoom'));
+  $('#chart')?.setAttribute('aria-label', t(
+    '交互散点图：方向键平移，加减键缩放，Home 重置；也可切换到数据表查看',
+    'Interactive scatter plot: arrow keys pan, +/- zoom, Home resets; switch to Table view for tabular data'
+  ));
+  $('#lassoCancelBtn')?.setAttribute('aria-label', t('取消框选', 'Cancel box selection'));
+  $('#compareChips')?.setAttribute('aria-label', t('已选对比条目', 'Selected models for comparison'));
+  $('#comparePickerList')?.setAttribute('aria-label', t('可选对比条目', 'Available models to compare'));
+  $('#radarSvg')?.setAttribute('aria-label', t('多模型细分能力雷达图', 'Multi-model capability radar chart'));
+  $('#cmdList')?.setAttribute('aria-label', t('速查匹配结果', 'Quick search matches'));
+  $('#guideTabs')?.setAttribute('aria-label', t('导览分区', 'Guide sections'));
+  navHistory.syncButtons();
+  if (guideOpen) renderGuideDialog();
+  if (cmdOpen) renderCmdList();
+
   renderPresets();
   applyThemeText();
   if (state) {
@@ -2967,7 +3018,7 @@ function chooseChart(key, {changeHash = true, routeParams = null} = {}) {
     if (state.starredOnly && !state.rows.some(isStarred)) state.starredOnly = false;
     if (key === 'orgs') {
       state.mode = 'orgs';
-    } else if (!routeParams?.has('view')) {
+    } else if (!routeParams) {
       state.mode = (previousMode && previousMode !== 'orgs') ? previousMode : lastArenaMode;
     }
     $('#loading').hidden = true;
@@ -3006,14 +3057,18 @@ for (const tab of document.querySelectorAll('.tabs [role=tab]')) {
 addEventListener('popstate', event => {
   if (!snapshot) return;
   navHistory.handlePopState(event.state, () => {
+    const prevLang = lang;
     const parsed = parseHash();
+    if (lang !== prevLang) syncStaticText();
     chooseChart(parsed.chart, {changeHash: false, routeParams: parsed.params});
   });
 });
 
 addEventListener('hashchange', () => {
   if (navHistory.ownsCurrentHistory()) return;
+  const prevLang = lang;
   const parsed = parseHash();
+  if (lang !== prevLang) syncStaticText();
   chooseChart(parsed.chart, {changeHash: false, routeParams: parsed.params});
 });
 
@@ -3544,7 +3599,7 @@ function syncControls() {
   $('#keySubWrap').hidden = !(state.subLine && !isTimeAxis);
 
   const isOrgsMode = activeKey === 'orgs' || state.mode === 'orgs';
-  $('#exportPng').hidden = !(state.mode === 'chart' || (isOrgsMode && orgFocus === 'bump'));
+  $('#exportPng').hidden = state.mode !== 'chart';
   $('#exportCsv').hidden = !(state.mode === 'table' || state.mode === 'sub' || isOrgsMode);
 
   $('#labels').setAttribute('aria-pressed', String(state.labels));
@@ -4187,12 +4242,14 @@ function toggleStar(row) {
     } else {
       if (state.mode === 'table') renderTable();
       else if (state.mode === 'sub') renderSubTable();
+      else if (state.mode === 'orgs') renderOrgLeaderboards();
       else if (state.mode === 'chart') scheduleDraw();
       renderPinned();
       updateSummary();
     }
   }
   if (cmdOpen) renderCmdList();
+  if (changelogOpen) renderChangelog({preserveListScroll: true});
 }
 
 function makeStarRowBtn(row) {
@@ -4492,6 +4549,57 @@ function exportCsv() {
     return /[",\n\r]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
   };
   if (activeKey === 'orgs' || state.mode === 'orgs') {
+    if (orgFocus === 'divergence') {
+      const baseById = new Map((snapshot?.models || []).map(m => [m.id, m]));
+      const boardById = new Map(orgBoards.map(b => [b.id, b]));
+      const q = (state?.search || '').trim().toLowerCase();
+      const comp = state?.company || null;
+      const lic = state?.license || 'all';
+      const starOnly = !!state?.starredOnly;
+      const divData = computeOrgDivergence(orgBoards, orgRankIndex, baseById, ({modelId, rec, base}) => {
+        if (comp && rec.creator !== comp) return false;
+        if (lic === 'open' && !base?.isOpenWeights) return false;
+        if (lic === 'closed' && base?.isOpenWeights) return false;
+        if (starOnly && !isStarredModelId(modelId, base)) return false;
+        if (q && !`${rec.name} ${rec.shortName} ${rec.creator}`.toLowerCase().includes(q)) return false;
+        return true;
+      });
+      let shown = divData.rows;
+      if (orgDivFilter === 'human') shown = shown.filter(r => r.gap >= 8).sort((a, b) => b.gap - a.gap);
+      else if (orgDivFilter === 'auto') shown = shown.filter(r => r.gap <= -8).sort((a, b) => a.gap - b.gap);
+      else if (orgDivFilter === 'consensus') shown = shown.filter(r => r.kind === 'consensus').sort((a, b) => b.overallPct - a.overallPct);
+      const fmtList = arr => arr.map(e => `${boardById.get(e.boardId)?.shortTag || e.boardId} #${e.rank}`).join('; ');
+      const headers = ['Model', 'Creator', 'CostUSD', 'License', 'Category', 'HardEvalPct', 'HumanTastePct', 'DivergenceGap', 'OverallPct', 'CoveredBoards', 'BestOrg', 'WorstOrg', 'HardRanks', 'HumanRanks'];
+      const lines = [headers.join(',')];
+      for (const r of shown) {
+        lines.push([
+          r.name,
+          r.creator || '',
+          r.cost != null ? r.cost.toFixed(6) : '',
+          r.isOpenWeights ? 'Open Weights' : 'Proprietary',
+          r.kind,
+          r.autoPct.toFixed(1),
+          r.humanPct.toFixed(1),
+          r.gap.toFixed(1),
+          r.overallPct.toFixed(1),
+          r.coveredCount,
+          r.bestOrg ? `${boardById.get(r.bestOrg.boardId)?.shortTag || r.bestOrg.boardId} #${r.bestOrg.rank}` : '',
+          r.worstOrg ? `${boardById.get(r.worstOrg.boardId)?.shortTag || r.worstOrg.boardId} #${r.worstOrg.rank}` : '',
+          fmtList(r.autoEntries),
+          fmtList(r.humanEntries)
+        ].map(escapeCsv).join(','));
+      }
+      const blob = new Blob(['\uFEFF' + lines.join('\r\n')], {type: 'text/csv;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `intelligence-vs-cost-orgs-divergence${orgDivFilter !== 'all' ? '-' + orgDivFilter : ''}.csv`;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      return;
+    }
     const activeBoard = orgBoards.find(b => b.id === orgFocus) || null;
     const targetBoards = activeBoard ? [activeBoard] : orgBoards;
     const headers = ['Org', 'Board', 'Date', 'Rank', 'Model', 'RawEntry', 'Creator', 'Score', 'CostUSD', 'MatchType', 'MatchedModel'];
@@ -8100,7 +8208,11 @@ function renderPinned() {
           runNavAction(() => {
             chooseChart(tabKey);
             const targetRow = state?.rows.find(r => r.id === row.id);
-            if (targetRow) locateRowInChart(targetRow);
+            if (targetRow) {
+              ensureRowVisibleInState(targetRow);
+              renderLegend();
+              locateRowInChart(targetRow);
+            }
           });
         });
       }
@@ -9592,6 +9704,8 @@ function activateCmdEntry(entry, {toCompare = false} = {}) {
       if (!['coding-agents', 'media'].includes(activeKey)) lastModelCompareIds = [...state.compareIds];
       showView('compare');
     } else {
+      ensureRowVisibleInState(targetRow);
+      renderLegend();
       locateRowInChart(targetRow);
       requestAnimationFrame(() => host.focus({preventScroll: true}));
     }
@@ -9685,7 +9799,12 @@ function setCmdOpen(open, {restoreFocus = true} = {}) {
   cmdOpen = open;
   $('#cmdBackdrop').hidden = !open;
   if (open) {
+    if (mobileLayout.matches && controlsOpen) setControlsOpen(false);
+    if (guideOpen) setGuideOpen(false, null, {restoreFocus: false});
     if (changelogOpen) setChangelogOpen(false, {restoreFocus: false});
+    if (scenarioOpen) setScenarioOpen(false);
+    if (viewToolsOpen) setViewToolsOpen(false);
+    if (comparePickerOpen) setComparePickerOpen(false);
     cmdIndex = 0;
     renderCmdList();
     requestAnimationFrame(() => {
@@ -10470,7 +10589,7 @@ function filterOrgRows(rows) {
     if (comp && r.creator !== comp) return false;
     if (lic === 'open' && r.isOpenWeights !== true) return false;
     if (lic === 'closed' && r.isOpenWeights !== false) return false;
-    if (starOnly && !((r.modelId || r.siblingId) && isStarred({id: r.modelId || r.siblingId, name: r.name, creator: {name: r.creator}}))) return false;
+    if (starOnly && !isStarredModelId(r.modelId || r.siblingId)) return false;
     if (q) {
       const hay = `${r.name} ${r.rawName} ${r.creator}`.toLowerCase();
       if (!hay.includes(q)) return false;
@@ -10498,8 +10617,11 @@ function locateOrgModel(row, board) {
       chooseChart('cyber', {changeHash: false});
       if (!state) return;
       const foundCyber = state.rows.find(r => r.id === row.cyberId);
-      if (foundCyber) locateRowInChart(foundCyber);
-      else showView('chart');
+      if (foundCyber) {
+        ensureRowVisibleInState(foundCyber);
+        renderLegend();
+        locateRowInChart(foundCyber);
+      } else showView('chart');
     });
     return;
   }
@@ -10518,6 +10640,8 @@ function locateOrgModel(row, board) {
     applyYLens(state, canUseLens ? targetLens : '');
     const found = state.rows.find(r => r.id === targetId);
     if (found) {
+      ensureRowVisibleInState(found);
+      renderLegend();
       locateRowInChart(found);
     } else {
       showView('chart');
@@ -11132,7 +11256,7 @@ function renderOrgBumpChart(container) {
     if (comp && rec.creator !== comp) continue;
     if (lic === 'open' && !base?.isOpenWeights) continue;
     if (lic === 'closed' && base?.isOpenWeights) continue;
-    if (starOnly && !isStarred({id: modelId, name: rec.name, creator: {name: rec.creator}})) continue;
+    if (starOnly && !isStarredModelId(modelId, base)) continue;
     if (q && !`${rec.name} ${rec.shortName} ${rec.creator}`.toLowerCase().includes(q)) continue;
 
     const covered = orgBoards.filter(b => rec.ranks[b.id]);
@@ -11722,7 +11846,7 @@ function renderOrgDivergence(container) {
     if (comp && rec.creator !== comp) return false;
     if (lic === 'open' && !base?.isOpenWeights) return false;
     if (lic === 'closed' && base?.isOpenWeights) return false;
-    if (starOnly && !isStarred({id: modelId, name: rec.name, creator: {name: rec.creator}})) return false;
+    if (starOnly && !isStarredModelId(modelId, base)) return false;
     if (q && !`${rec.name} ${rec.shortName} ${rec.creator}`.toLowerCase().includes(q)) return false;
     return true;
   });
@@ -11941,7 +12065,6 @@ function renderOrgDivergence(container) {
 
 function renderOrgLeaderboards() {
   if (!state || !orgBoards.length) return;
-  $('#exportPng').hidden = orgFocus !== 'bump';
   $('#exportCsv').hidden = false;
   const modeSwitch = $('#orgModeSwitch');
   const mFrag = document.createDocumentFragment();
@@ -12609,7 +12732,7 @@ function activateGuideProfileTarget(profileKey) {
   }
 }
 
-function setGuideOpen(open, tabName = null) {
+function setGuideOpen(open, tabName = null, {restoreFocus = true} = {}) {
   if (tabName && ['picker', 'current', 'orgs', 'glossary'].includes(tabName)) guideTab = tabName;
   guideOpen = !!open;
   const backdrop = $('#guideBackdrop');
@@ -12619,13 +12742,15 @@ function setGuideOpen(open, tabName = null) {
   $('#pickerBtn')?.setAttribute('aria-expanded', String(guideOpen && guideTab === 'picker'));
   if (guideOpen) {
     guidePreviewKey = currentGuideProfileKey();
-    if (cmdOpen) setCmdOpen(false);
+    if (mobileLayout.matches && controlsOpen) setControlsOpen(false);
+    if (cmdOpen) setCmdOpen(false, {restoreFocus: false});
     if (changelogOpen) setChangelogOpen(false, {restoreFocus: false});
     if (scenarioOpen) setScenarioOpen(false);
     if (viewToolsOpen) setViewToolsOpen(false);
+    if (comparePickerOpen) setComparePickerOpen(false);
     renderGuideDialog();
     requestAnimationFrame(() => $('#guideCloseBtn')?.focus({preventScroll: true}));
-  } else {
+  } else if (restoreFocus) {
     (guideTab === 'picker' ? $('#pickerBtn') : $('#guideBtn'))?.focus({preventScroll: true});
   }
 }
