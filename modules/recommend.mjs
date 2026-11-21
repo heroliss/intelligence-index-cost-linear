@@ -3,7 +3,8 @@ import {
   valuePerDollar,
   computeScenarioScore,
   SCENARIO_PRESETS
-} from '../chart-math.mjs?v=20261120-07';
+} from '../chart-math.mjs?v=20261121-01';
+import {computeOrgDivergence} from './divergence.mjs?v=20261121-01';
 
 export const RECOMMEND_USE_CASES = [
   {
@@ -172,6 +173,7 @@ function buildEvidenceLookup(snapshot, context = {}) {
   const designRankById = new Map();
   const designRankByFam = new Map();
   const lbRankById = new Map();
+  const lbRankByFam = new Map();
   const lbDesignRankById = new Map();
   const lbDesignRankByFam = new Map();
   const codingRankById = new Map();
@@ -179,6 +181,7 @@ function buildEvidenceLookup(snapshot, context = {}) {
 
   const models = Array.isArray(snapshot?.models) ? snapshot.models : [];
   const famById = new Map(models.map(m => [m.id, m.family?.slug || null]));
+  const effortById = new Map(models.map(m => [m.id, m.effort?.level ?? null]));
   const aaIndexById = new Map(models.map(m => [m.id, m.intelligenceIndex]));
   const modelFamilies = new Set(models.map(m => m.family?.slug).filter(Boolean));
   const sortedModels = [...models].sort((a, b) => b.intelligenceIndex - a.intelligenceIndex);
@@ -196,7 +199,9 @@ function buildEvidenceLookup(snapshot, context = {}) {
     if (r.modelId && !chatRankById.has(r.modelId)) {
       chatRankById.set(r.modelId, rank);
       const fam = famById.get(r.modelId);
-      if (fam && !chatRankByFam.has(fam)) chatRankByFam.set(fam, rank);
+      if (fam && !chatRankByFam.has(fam)) {
+        chatRankByFam.set(fam, {rank, srcLevel: effortById.get(r.modelId) ?? null});
+      }
     }
   });
   (ext.arenaWebdev?.rows || []).forEach((r, i) => {
@@ -217,7 +222,13 @@ function buildEvidenceLookup(snapshot, context = {}) {
   });
   (ext.livebench?.rows || []).forEach((r, i) => {
     const rank = r.rank || (i + 1);
-    if (r.modelId && !lbRankById.has(r.modelId)) lbRankById.set(r.modelId, rank);
+    if (r.modelId && !lbRankById.has(r.modelId)) {
+      lbRankById.set(r.modelId, rank);
+      const fam = famById.get(r.modelId);
+      if (fam && !lbRankByFam.has(fam)) {
+        lbRankByFam.set(fam, {rank, srcLevel: effortById.get(r.modelId) ?? null});
+      }
+    }
   });
   [...(ext.livebench?.rows || [])]
     .filter(r => r.modelId && typeof r.suites?.design === 'number')
@@ -231,26 +242,96 @@ function buildEvidenceLookup(snapshot, context = {}) {
       }
     });
 
-  // Also check orgRankIndex passed by app.js for family fallback chat ranks
+  // Also check orgRankIndex passed by app.js for family fallback ranks when snapshot orgLeaderboards is partial
   const orgRankIndex = context.orgRankIndex instanceof Map ? context.orgRankIndex : null;
   const divById = new Map();
   const divByFam = new Map();
-  if (Array.isArray(context.divergenceRows)) {
-    for (const r of context.divergenceRows) {
+  let divRows = Array.isArray(context.divergenceRows) && context.divergenceRows.length
+    ? context.divergenceRows
+    : null;
+  if (!divRows && models.length) {
+    // Derive exact cohort-normalized org divergence standalone so browser & headless callers stay 100% consistent
+    const baseById = new Map(models.map(m => [m.id, m]));
+    const standBoards = [{id: 'aa', shortTag: 'AA'}];
+    if (ext.livebench?.rows?.length) standBoards.push({id: 'livebench', shortTag: 'LB2'});
+    if (ext.arenaChat?.rows?.length) standBoards.push({id: 'arenaChat', shortTag: 'Chat'});
+    if (ext.arenaWebdev?.rows?.length) standBoards.push({id: 'arenaWebdev', shortTag: 'WebDev'});
+    if (ext.designArena?.rows?.length) standBoards.push({id: 'designArena', shortTag: 'Design'});
+    const gdpModels = models.filter(m => m.expertElo?.gdpval != null).sort((a, b) => b.expertElo.gdpval - a.expertElo.gdpval);
+    if (gdpModels.length) standBoards.push({id: 'aaGdpval', shortTag: 'GDPval'});
+    const standIdx = new Map();
+    const addStandRank = (modelId, boardId, rank, score) => {
+      const m = baseById.get(modelId);
+      if (!m) return;
+      let rec = standIdx.get(modelId);
+      if (!rec) {
+        rec = {
+          name: m.name,
+          shortName: m.shortName || m.name,
+          creator: m.creator?.name || 'Other',
+          creatorColor: m.creator?.color || null,
+          cost: m.cost,
+          familySlug: m.family?.slug || null,
+          ranks: {}
+        };
+        standIdx.set(modelId, rec);
+      }
+      if (!rec.ranks[boardId]) rec.ranks[boardId] = {rank, score, exact: true};
+    };
+    sortedModels.forEach((m, i) => addStandRank(m.id, 'aa', i + 1, m.intelligenceIndex));
+    for (const [bId, key] of [['livebench', 'livebench'], ['arenaChat', 'arenaChat'], ['arenaWebdev', 'arenaWebdev'], ['designArena', 'designArena']]) {
+      (ext[key]?.rows || []).forEach((r, i) => {
+        if (r.modelId) addStandRank(r.modelId, bId, r.rank || (i + 1), r.score);
+      });
+    }
+    gdpModels.forEach((m, i) => addStandRank(m.id, 'aaGdpval', i + 1, m.expertElo.gdpval));
+    divRows = computeOrgDivergence(standBoards, standIdx, baseById).rows;
+  }
+  if (Array.isArray(divRows)) {
+    for (const r of divRows) {
       divById.set(r.modelId, r);
       if (r.familySlug && !divByFam.has(r.familySlug)) divByFam.set(r.familySlug, r);
     }
   }
+  const getDivergence = row => divById.get(row.id) || (row.family?.slug ? divByFam.get(row.family.slug) : null);
+
+  function resolveInheritedRank(row, entry) {
+    if (!entry || entry.rank == null) return null;
+    const rowLevel = row.effort?.level ?? effortById.get(row.id) ?? null;
+    const srcLevel = entry.srcLevel ?? null;
+    if (srcLevel != null && rowLevel != null && rowLevel < srcLevel) {
+      return {rank: entry.rank, exact: false, direction: 'down', levelGap: srcLevel - rowLevel};
+    }
+    return {rank: entry.rank, exact: false, direction: 'up', levelGap: 0};
+  }
 
   function getChatRank(row) {
     const direct = chatRankById.get(row.id);
-    if (direct != null) return {rank: direct, exact: true};
+    if (direct != null) return {rank: direct, exact: true, direction: 'exact', levelGap: 0};
     const canInheritSibling = !row.effort || row.effort.level >= 25;
     if (!canInheritSibling) return null;
-    const rec = orgRankIndex?.get(row.id)?.ranks?.arenaChat;
-    if (rec && (rec.exact || canInheritSibling)) return {rank: rec.rank, exact: !!rec.exact};
     const fam = row.family?.slug;
-    if (fam && chatRankByFam.has(fam)) return {rank: chatRankByFam.get(fam), exact: false};
+    if (fam && chatRankByFam.has(fam)) return resolveInheritedRank(row, chatRankByFam.get(fam));
+    const rec = orgRankIndex?.get(row.id)?.ranks?.arenaChat;
+    if (rec) {
+      if (rec.exact) return {rank: rec.rank, exact: true, direction: 'exact', levelGap: 0};
+      return resolveInheritedRank(row, {rank: rec.rank, srcLevel: rec.modelId ? (effortById.get(rec.modelId) ?? null) : null});
+    }
+    return null;
+  }
+
+  function getLiveBenchRank(row) {
+    const direct = lbRankById.get(row.id) ?? row.livebench?.rank ?? null;
+    if (direct != null) return {rank: direct, exact: true, direction: 'exact', levelGap: 0};
+    const canInheritHigh = !row.effort || row.effort.level >= 40;
+    if (!canInheritHigh) return null;
+    const fam = row.family?.slug;
+    if (fam && lbRankByFam.has(fam)) return resolveInheritedRank(row, lbRankByFam.get(fam));
+    const rec = orgRankIndex?.get(row.id)?.ranks?.livebench;
+    if (rec) {
+      if (rec.exact) return {rank: rec.rank, exact: true, direction: 'exact', levelGap: 0};
+      return resolveInheritedRank(row, {rank: rec.rank, srcLevel: rec.modelId ? (effortById.get(rec.modelId) ?? null) : null});
+    }
     return null;
   }
 
@@ -259,10 +340,10 @@ function buildEvidenceLookup(snapshot, context = {}) {
     if (direct != null) return direct;
     const canInheritHigh = !row.effort || row.effort.level >= 50;
     if (!canInheritHigh) return null;
-    const orgR = orgKey ? orgRankIndex?.get(row.id)?.ranks?.[orgKey]?.rank : null;
-    if (orgR != null) return orgR;
     const fam = row.family?.slug;
     if (fam && famMap.has(fam)) return famMap.get(fam);
+    const orgR = orgKey ? orgRankIndex?.get(row.id)?.ranks?.[orgKey]?.rank : null;
+    if (orgR != null) return orgR;
     return null;
   }
 
@@ -325,7 +406,8 @@ function buildEvidenceLookup(snapshot, context = {}) {
 
     // Standard LLM tabs (models, human-arena)
     const chat = getChatRank(row);
-    const lb = lbRankById.get(row.id) ?? orgRankIndex?.get(row.id)?.ranks?.livebench?.rank ?? null;
+    const lb = getLiveBenchRank(row);
+    const lbCredible = lb && (lb.exact || lb.direction === 'up');
     const lbDes = getBoardRank(row, lbDesignRankById, lbDesignRankByFam, null);
     const des = getBoardRank(row, designRankById, designRankByFam, 'designArena');
     const web = getBoardRank(row, webdevRankById, webdevRankByFam, 'arenaWebdev');
@@ -341,7 +423,7 @@ function buildEvidenceLookup(snapshot, context = {}) {
       if (row.arenaRaw?.slop != null && row.arenaRaw.slop <= 25 && proofs.length < 2) {
         proofs.push({zh: `低 AI 套话 (Slop ${Math.round(row.arenaRaw.slop)}%)`, en: `Low AI-slop (${Math.round(row.arenaRaw.slop)}%)`});
       }
-      if (lb && lb <= 10 && proofs.length < 2) proofs.push({zh: `LB2 防污染 #${lb}`, en: `LiveBench #${lb}`});
+      if (lbCredible && lb.rank <= 10 && proofs.length < 2) proofs.push({zh: `LB2 防污染 ${lb.exact ? '' : '~'}#${lb.rank}`, en: `LiveBench ${lb.exact ? '' : '~'}#${lb.rank}`});
       if (isFrontier && proofs.length < 2) proofs.push({zh: '帕累托前沿', en: 'Pareto frontier'});
     } else {
       if (chat && chat.rank <= 10) proofs.push({zh: `Arena 聊天 ${chat.exact ? '' : '~'}#${chat.rank}`, en: `Arena Chat ${chat.exact ? '' : '~'}#${chat.rank}`});
@@ -349,8 +431,8 @@ function buildEvidenceLookup(snapshot, context = {}) {
         proofs.push({zh: `盲区幻觉仅 ${Math.round(row.subscores.hallucination)}%`, en: `Low hallucination ${Math.round(row.subscores.hallucination)}%`});
       } else if (uc.id === 'coding-api' && web && web <= 10) {
         proofs.push({zh: `WebDev #${web}`, en: `WebDev #${web}`});
-      } else if (lb && lb <= 10) {
-        proofs.push({zh: `LB2 防污染 #${lb}`, en: `LiveBench #${lb}`});
+      } else if (lbCredible && lb.rank <= 10) {
+        proofs.push({zh: `LB2 防污染 ${lb.exact ? '' : '~'}#${lb.rank}`, en: `LiveBench ${lb.exact ? '' : '~'}#${lb.rank}`});
       }
       if (div?.kind === 'consensus' && chat && proofs.length < 2) proofs.push({zh: '全机构共识', en: 'Cross-org consensus'});
       if (chat && chat.rank <= 20 && proofs.length === 0) {
@@ -365,6 +447,8 @@ function buildEvidenceLookup(snapshot, context = {}) {
     const isWeakCore = (aaRank != null && aaRank > 30) || (maxAA > 0 && aaIdx != null && aaIdx < maxAA * 0.72);
     if (row.cost >= 11) {
       caveats.push({zh: '高消耗 · 常规月卡多不含或限流极严', en: 'Very high cost · mostly API-only / tight quota'});
+    } else if (row.cost >= 8.5) {
+      caveats.push({zh: '消耗偏高 · 基础月卡可能不含或限流偏紧', en: 'High burn · often excluded or tight on base plans'});
     }
     if (uc.id === 'design') {
       if (isWeakCore && aaRank != null) {
@@ -407,7 +491,7 @@ function buildEvidenceLookup(snapshot, context = {}) {
     if (uc.id === 'general' && row.subscores?.hallucination != null && row.subscores.hallucination >= 55 && caveats.length < 2) {
       caveats.push({zh: `盲区幻觉率 ${Math.round(row.subscores.hallucination)}%`, en: `${Math.round(row.subscores.hallucination)}% blind-spot hallucination`});
     }
-    if (row.timeSec >= 1800 && ['general', 'coding-api', 'research'].includes(uc.id) && caveats.length < 2) {
+    if (row.timeSec >= 1800 && ['general', 'coding-api', 'research', 'writing'].includes(uc.id) && caveats.length < 2) {
       caveats.push({zh: `复杂任务思考耗时偏长 (${Math.round(row.timeSec / 60)}分)`, en: `Slow on heavy tasks (~${Math.round(row.timeSec / 60)}m)`});
     }
 
@@ -416,6 +500,8 @@ function buildEvidenceLookup(snapshot, context = {}) {
 
   return {
     getChatRank,
+    getLiveBenchRank,
+    getDivergence,
     getSignals,
     getDesignRank: row => getBoardRank(row, designRankById, designRankByFam, 'designArena'),
     getWebdevRank: row => getBoardRank(row, webdevRankById, webdevRankByFam, 'arenaWebdev'),
@@ -499,6 +585,71 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
   const subFriendlyCap = uc.tab === 'coding-agents' ? 12 : uc.tab === 'media' ? Infinity : 10.5;
   const picks = [];
 
+  // Shared transparent scoring helpers (no hardcoded model names; purely telemetry-driven)
+  const chatEvidenceBonus = chat => {
+    if (!chat) return 0;
+    const base = chat.rank <= 3 ? 2.6 : chat.rank <= 5 ? 1.9 : chat.rank <= 10 ? 1.2 : chat.rank <= 15 ? 0.5 : 0;
+    if (!base) return 0;
+    if (chat.exact) return base;
+    if (chat.direction === 'up') return base * 0.85;
+    return base * (chat.levelGap >= 20 ? 0.35 : 0.55);
+  };
+  const liveBenchBonus = lb => {
+    if (!lb || lb.direction === 'down') return 0;
+    const base = lb.rank <= 3 ? 1.4 : lb.rank <= 5 ? 0.9 : lb.rank <= 10 ? 0.4 : 0;
+    return lb.exact ? base : base * 0.5;
+  };
+  const subBurnPenalty = (cost, anchor = 7.0, slope = 0.65, cap = 3.0) => (
+    cost > anchor ? Math.min(cap, (cost - anchor) * slope) : 0
+  );
+  const hallucinationPenalty = (row, ucId) => {
+    const h = row.subscores?.hallucination;
+    if (typeof h !== 'number' || !Number.isFinite(h)) return 0;
+    if (ucId === 'general' && h > 40) return Math.min(1.8, (h - 40) * 0.06);
+    if (ucId === 'research' && h > 45) return Math.min(1.6, (h - 45) * 0.08);
+    return 0;
+  };
+  const researchRigorMult = row => {
+    const h = row.subscores?.hallucination;
+    if (typeof h !== 'number' || !Number.isFinite(h)) return 1;
+    if (uc.id === 'research' && h > 45) return 1 / (1 + (h - 45) * 0.045);
+    if (uc.id === 'general' && h > 70) return 1 / (1 + (h - 70) * 0.015);
+    return 1;
+  };
+  // Cross-org divergence: gently discount hard-exam-heavy / weak-human-vibe specialists on Daily All-Rounder
+  // while giving a modest boost to proven cross-org consensus leaders (high on both automated & human boards).
+  const divergenceAdjust = (row, ucId) => {
+    if (ucId !== 'general') return 0;
+    const div = evidence.getDivergence(row);
+    if (!div) return 0;
+    if (div.kind === 'consensus') return 0.5;
+    if (div.gap <= -12) return -Math.min(1.6, (-div.gap - 12) * 0.06);
+    return 0;
+  };
+  const divergenceMult = (row, ucId) => {
+    if (ucId !== 'general') return 1;
+    const div = evidence.getDivergence(row);
+    if (!div) return 1;
+    if (div.kind === 'consensus') return 1.04;
+    if (div.gap <= -12) return 1 / (1 + Math.min(0.22, (-div.gap - 12) * 0.008));
+    return 1;
+  };
+  // Interactive latency guard: gently penalize ultra-slow thinking models (>30m AA suite) on interactive daily/writing tracks
+  const latencyPenalty = (row, ucId) => {
+    const t = row.timeSec;
+    if (typeof t !== 'number' || !Number.isFinite(t) || t <= 1800) return 0;
+    if (ucId === 'general') return Math.min(1.5, ((t - 1800) / 600) * 0.75);
+    if (ucId === 'writing') return Math.min(1.8, ((t - 1800) / 600) * 0.9);
+    return 0;
+  };
+  const latencyMult = (row, ucId) => {
+    const t = row.timeSec;
+    if (typeof t !== 'number' || !Number.isFinite(t) || t <= 1800) return 1;
+    if (ucId === 'general') return 1 / (1 + Math.min(0.24, ((t - 1800) / 600) * 0.12));
+    if (ucId === 'writing') return 1 / (1 + Math.min(0.32, ((t - 1800) / 600) * 0.16));
+    return 1;
+  };
+
   if (uc.tab === 'models') {
     // 3 DISTINCT ARCHETYPES FOR LLMs:
     // 1. Cross-Org Consensus / Verified Taste (requires genuine Arena.ai Chat blind votes + strong hard-eval standing!)
@@ -510,22 +661,49 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
       return r.intelligenceIndex >= maxScore * (bill.id === 'api-budget' ? 0.62 : 0.78);
     });
     const consensusSortAlpha = bill.id === 'api-budget' ? 1.8 : 4.2;
+    const subConsensusRank = r => (
+      r.intelligenceIndex
+      + chatEvidenceBonus(evidence.getChatRank(r))
+      + liveBenchBonus(evidence.getLiveBenchRank(r))
+      + divergenceAdjust(r, uc.id)
+      - subBurnPenalty(r.cost, 7.0, 0.65, 3.0)
+      - hallucinationPenalty(r, uc.id)
+      - latencyPenalty(r, uc.id)
+    );
     consensusCandidates.sort((a, b) => {
-      const ca = evidence.getChatRank(a), cb = evidence.getChatRank(b);
       if (bill.id === 'sub') {
-        const scoreA = a.intelligenceIndex + (ca?.exact && ca.rank <= 5 ? 2.5 : ca && ca.rank <= 10 ? 1.2 : 0);
-        const scoreB = b.intelligenceIndex + (cb?.exact && cb.rank <= 5 ? 2.5 : cb && cb.rank <= 10 ? 1.2 : 0);
-        return scoreB - scoreA || a.cost - b.cost;
+        return subConsensusRank(b) - subConsensusRank(a) || a.cost - b.cost;
       }
-      const bonusA = (ca?.exact && ca.rank <= 10 ? 1.18 : 1);
-      const bonusB = (cb?.exact && cb.rank <= 10 ? 1.18 : 1);
-      return (scoreVal(b, consensusSortAlpha) * bonusB) - (scoreVal(a, consensusSortAlpha) * bonusA)
+      const chatBonusApi = r => {
+        const c = evidence.getChatRank(r);
+        return (!c || c.direction === 'down') ? 0 : chatEvidenceBonus(c);
+      };
+      const multA = (1 + 0.07 * chatBonusApi(a) + 0.04 * liveBenchBonus(evidence.getLiveBenchRank(a)))
+        * researchRigorMult(a) * divergenceMult(a, uc.id) * latencyMult(a, uc.id);
+      const multB = (1 + 0.07 * chatBonusApi(b) + 0.04 * liveBenchBonus(evidence.getLiveBenchRank(b)))
+        * researchRigorMult(b) * divergenceMult(b, uc.id) * latencyMult(b, uc.id);
+      return (scoreVal(b, consensusSortAlpha) * multB) - (scoreVal(a, consensusSortAlpha) * multA)
         || b.intelligenceIndex - a.intelligenceIndex;
     });
 
-    const slot1 = claim(consensusCandidates[0]) || claim(
-      (bill.id === 'sub' ? sortedByScore.find(r => r.cost <= subFriendlyCap) : null) || sortedByScore[0]
-    );
+    let fallbackSlot1 = null;
+    if (!consensusCandidates.length) {
+      if (bill.id === 'sub') {
+        const subCands = projected.filter(r => r.cost <= subFriendlyCap);
+        const base = subCands.length ? subCands : projected;
+        fallbackSlot1 = [...base].sort((a, b) => subConsensusRank(b) - subConsensusRank(a) || a.cost - b.cost)[0];
+      } else {
+        const fbFloor = maxScore * (bill.id === 'api-budget' ? 0.58 : 0.72);
+        const elig = projected.filter(r => r.intelligenceIndex >= fbFloor);
+        const base = elig.length ? elig : projected;
+        fallbackSlot1 = [...base].sort((a, b) =>
+          (scoreVal(b, bill.alpha) * researchRigorMult(b) * divergenceMult(b, uc.id) * latencyMult(b, uc.id))
+          - (scoreVal(a, bill.alpha) * researchRigorMult(a) * divergenceMult(a, uc.id) * latencyMult(a, uc.id))
+          || b.intelligenceIndex - a.intelligenceIndex
+        )[0];
+      }
+    }
+    const slot1 = claim(consensusCandidates[0]) || claim(fallbackSlot1) || claim(sortedByScore[0]);
 
     if (slot1) {
       const hasConsensus = consensusCandidates.length > 0 && slot1.id === consensusCandidates[0].id;
@@ -549,20 +727,41 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
       });
     }
 
-    // 2. Pure API Cost-Efficiency Frontier Pick (explicitly labeled as paper efficiency — caveats show if chat votes missing!)
+    // 2. Pure API Cost-Efficiency Frontier Pick (protects ceiling for Slot 3, avoids dominated picks, and prefers low-hallucination in research!)
     const effAlpha = bill.id === 'api-budget' ? 1.3 : 3.2;
     const effFloor = maxScore * (bill.id === 'api-budget' ? 0.58 : 0.74);
-    const effCandidates = projected
-      .filter(r => isFresh(r, true) && r.intelligenceIndex >= effFloor)
-      .sort((a, b) => scoreVal(b, effAlpha) - scoreVal(a, effAlpha) || a.cost - b.cost);
-    const slot2 = claim(effCandidates[0]) || claim(projected.find(r => isFresh(r, false)));
+    const effRankVal = r => scoreVal(r, effAlpha) * researchRigorMult(r) * latencyMult(r, uc.id);
+    const reserveCeilingId = (sortedByScore[0] && slot1 && sortedByScore[0].id !== slot1.id && sortedByScore[0].cost > slot1.cost)
+      ? sortedByScore[0].id
+      : null;
+    const notDominatedBySlot1 = r => !slot1 || r.cost < slot1.cost || r.intelligenceIndex > slot1.intelligenceIndex;
+    const isLowHallucResearch = r => uc.id !== 'research' || r.subscores?.hallucination == null || r.subscores.hallucination < 45;
+    const pickEffFrom = (minFloor, {diffFam = true, skipCeiling = true, strictRigor = false, nonDom = true} = {}) => projected
+      .filter(r =>
+        isFresh(r, diffFam)
+        && r.intelligenceIndex >= minFloor
+        && (!skipCeiling || r.id !== reserveCeilingId)
+        && (!strictRigor || isLowHallucResearch(r))
+        && (!nonDom || notDominatedBySlot1(r))
+      )
+      .sort((a, b) => effRankVal(b) - effRankVal(a) || a.cost - b.cost)[0];
+    const slot2 = claim(
+      (uc.id === 'research' ? pickEffFrom(effFloor, {strictRigor: true}) : null)
+      || pickEffFrom(effFloor)
+      || (uc.id === 'research' ? pickEffFrom(maxScore * 0.5, {strictRigor: true}) : null)
+      || pickEffFrom(maxScore * 0.5)
+      || pickEffFrom(0)
+      || pickEffFrom(0, {skipCeiling: false, nonDom: false})
+      || pickEffFrom(0, {diffFam: false, skipCeiling: false, nonDom: false})
+    );
     if (slot2) {
       const saveVs1 = slot1 ? formatPctDelta(slot2.cost, slot1.cost) : 0;
       const keepVs1 = slot1 && slot1.intelligenceIndex > 0 ? Math.round((slot2.intelligenceIndex / slot1.intelligenceIndex) * 100) : 100;
+      const isStepUp = !!(slot1 && slot2.cost > slot1.cost && slot2.intelligenceIndex > slot1.intelligenceIndex + 0.05);
       picks.push({
         slot: 'saving',
-        badgeZh: 'API 效率前沿派',
-        badgeEn: 'API Efficiency',
+        badgeZh: isStepUp ? '高效进阶参照' : 'API 效率前沿派',
+        badgeEn: isStepUp ? 'Efficient Step-Up' : 'API Efficiency',
         row: slot2,
         score: slot2._pickScore,
         isFrontier: frontierIds.has(slot2.id),
@@ -570,23 +769,28 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
         reason: {
           zh: saveVs1 >= 15
             ? `按量 API 成本比口碑款低 ${saveVs1}%，纸面保留约 ${keepVs1}% 能力分，适合高频调用与先小量实测`
-            : `线性美元前沿高效率点位，适合看重按量 API 单次成本的工程流水线`,
+            : isStepUp
+              ? `处于帕累托高效前沿的进阶档位（+${(slot2.intelligenceIndex - slot1.intelligenceIndex).toFixed(1)} 分），适合愿意小幅加预算换更高精度`
+              : `线性美元前沿高效率点位，适合看重按量 API 单次成本的工程流水线`,
           en: saveVs1 >= 15
             ? `${saveVs1}% cheaper per API task than Consensus while keeping ~${keepVs1}% paper score — great to trial for high-volume API calls`
-            : `Strong linear-USD efficiency on the Pareto frontier for pay-as-you-go pipelines`
+            : isStepUp
+              ? `Frontier step-up (+${(slot2.intelligenceIndex - slot1.intelligenceIndex).toFixed(1)} pts) for modest extra API budget`
+              : `Strong linear-USD efficiency on the Pareto frontier for pay-as-you-go pipelines`
         }
       });
     }
 
-    // 3. Top Capability Ceiling Reference (transparently flags $26 API-only cost!)
+    // 3. Top Capability Ceiling Reference (transparently flags $26 API-only cost and stays honest when Slot 1 already tops the pool!)
     const slot3 = claim(sortedByScore.find(r => isFresh(r, true))) || claim(sortedByScore.find(r => isFresh(r, false)));
     if (slot3) {
       const isCeiling = slot3.id === sortedByScore[0].id;
       const gap = slot1 ? slot3.intelligenceIndex - slot1.intelligenceIndex : 0;
+      const isHigher = gap > 0.05;
       picks.push({
         slot: 'flagship',
-        badgeZh: isCeiling ? '能力上限参照' : '高分进阶参照',
-        badgeEn: isCeiling ? 'Capability Ceiling' : 'High-Tier Alt',
+        badgeZh: isCeiling ? '能力上限参照' : isHigher ? '高分进阶参照' : '次高实力备选',
+        badgeEn: isCeiling ? 'Capability Ceiling' : isHigher ? 'High-Tier Alt' : 'Runner-Up Alt',
         row: slot3,
         score: slot3._pickScore,
         isFrontier: frontierIds.has(slot3.id),
@@ -594,10 +798,14 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
         reason: {
           zh: slot3.cost >= 11
             ? `全榜纸面最高梯队（${gap >= 0 ? '+' : ''}${gap.toFixed(1)} 分），但单次 API 昂贵且常规月卡多不含，建议仅作疑难攻坚兜底`
-            : `高分梯队参照（${gap >= 0 ? '+' : ''}${gap.toFixed(1)} 分），可与前两款直接进「剖析对比」看各维分差`,
+            : isHigher
+              ? `高分梯队参照（+${gap.toFixed(1)} 分），可与前两款直接进「剖析对比」看各维分差`
+              : `当前筛选下的不同家族次高分参照（低 ${Math.abs(gap).toFixed(1)} 分），可与首选并排对比分项表现与价格`,
           en: slot3.cost >= 11
             ? `Peak paper score (${gap >= 0 ? '+' : ''}${gap.toFixed(1)} pts), but very expensive and rarely included in flat plans — best reserved as an escalation fallback`
-            : `High-capability reference (${gap >= 0 ? '+' : ''}${gap.toFixed(1)} pts) to compare side-by-side in Compare view`
+            : isHigher
+              ? `High-capability reference (+${gap.toFixed(1)} pts) to compare side-by-side in Compare view`
+              : `Next highest-scoring family in this filter (${Math.abs(gap).toFixed(1)} pts below Pick 1) to contrast strengths & pricing`
         }
       });
     }
@@ -605,7 +813,9 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
     // 3 DISTINCT ARCHETYPES FOR FRONTEND & VISUAL AESTHETICS (with core-intelligence floor on Primary & Ceiling!):
     const poolAAs = projected.map(r => evidence.aaIndexOf(r)).filter(v => typeof v === 'number');
     const maxPoolAA = poolAAs.length ? Math.max(...poolAAs) : 0;
-    const coreFloor = Math.max(evidence.maxAA * 0.76, maxPoolAA * 0.78);
+    const coreFloor = lic.id === 'open'
+      ? maxPoolAA * 0.75
+      : Math.max(evidence.maxAA * 0.74, maxPoolAA * 0.78);
     const hasCoreFloor = r => {
       const aa = evidence.aaIndexOf(r);
       return aa == null || aa >= coreFloor;
@@ -623,8 +833,8 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
       if (bill.id === 'sub') {
         const ca = evidence.getChatRank(a), cb = evidence.getChatRank(b);
         const la = evidence.getLbDesignRank(a), lb = evidence.getLbDesignRank(b);
-        const sa = a.humanScores.webdev + (ca && ca.rank <= 15 ? 2 : 0) + (la && la <= 6 ? 1.5 : 0);
-        const sb = b.humanScores.webdev + (cb && cb.rank <= 15 ? 2 : 0) + (lb && lb <= 6 ? 1.5 : 0);
+        const sa = a.humanScores.webdev + (ca && ca.rank <= 15 ? 2 : 0) + (la && la <= 6 ? 1.5 : 0) - subBurnPenalty(a.cost, 7.5, 0.5, 2.0);
+        const sb = b.humanScores.webdev + (cb && cb.rank <= 15 ? 2 : 0) + (lb && lb <= 6 ? 1.5 : 0) - subBurnPenalty(b.cost, 7.5, 0.5, 2.0);
         return sb - sa || a.cost - b.cost;
       }
       const va = valuePerDollar({intelligenceIndex: a.humanScores.webdev, cost: a.cost}, bill.alpha, 0, 0) ?? -1;
@@ -672,7 +882,7 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
       const vb = valuePerDollar({intelligenceIndex: b.humanScores.designWeb, cost: b.cost}, bill.alpha, 0, 0) ?? -1;
       return vb - va || b.humanScores.designWeb - a.humanScores.designWeb;
     });
-    const slot2 = claim(visSorted[0]) || claim(projected.find(r => isFresh(r, true))) || claim(projected.find(r => isFresh(r, false)));
+    const slot2 = claim(visSorted[0]) || claim(sortedByScore.find(r => isFresh(r, true))) || claim(sortedByScore.find(r => isFresh(r, false)));
     if (slot2) {
       const desRank = evidence.getDesignRank(slot2);
       const aaR = evidence.aaRankById.get(slot2.id);
@@ -734,7 +944,9 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
     // 3 DISTINCT ARCHETYPES FOR WRITING & NATURAL CHAT (prevents high-slop crowd pleasers from dominating without low-slop contrast!):
     const poolAAs = projected.map(r => evidence.aaIndexOf(r)).filter(v => typeof v === 'number');
     const maxPoolAA = poolAAs.length ? Math.max(...poolAAs) : 0;
-    const coreFloor = Math.max(evidence.maxAA * 0.72, maxPoolAA * 0.75);
+    const coreFloor = lic.id === 'open'
+      ? maxPoolAA * 0.70
+      : Math.max(evidence.maxAA * (bill.id === 'api-budget' ? 0.62 : 0.70), maxPoolAA * 0.72);
     const hasCore = r => {
       const aa = evidence.aaIndexOf(r);
       return aa == null || aa >= coreFloor;
@@ -743,14 +955,19 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
 
     // 1. Natural Chat Leader (Arena Chat leader with solid core intelligence & avoiding heavy AI-slop)
     const chatClean = projected.filter(r => hasCore(r) && isLowSlop(r));
-    const chatBase = chatClean.length ? chatClean : projected;
+    const chatBase = chatClean.length ? chatClean : projected.filter(isLowSlop).length ? projected.filter(isLowSlop) : projected;
     const maxChat = Math.max(...chatBase.map(r => r.intelligenceIndex));
     const slot1Pool = (bill.id === 'sub'
       ? (chatBase.filter(r => r.cost <= subFriendlyCap).length ? chatBase.filter(r => r.cost <= subFriendlyCap) : chatBase)
       : chatBase.filter(r => r.intelligenceIndex >= maxChat * (bill.id === 'api-budget' ? 0.65 : 0.78))
     ).sort((a, b) => {
-      if (bill.id === 'sub') return b.intelligenceIndex - a.intelligenceIndex || a.cost - b.cost;
-      return scoreVal(b, bill.alpha) - scoreVal(a, bill.alpha) || b.intelligenceIndex - a.intelligenceIndex;
+      if (bill.id === 'sub') {
+        const sa = a.intelligenceIndex - subBurnPenalty(a.cost, 7.5, 0.45, 2.0) - latencyPenalty(a, 'writing');
+        const sb = b.intelligenceIndex - subBurnPenalty(b.cost, 7.5, 0.45, 2.0) - latencyPenalty(b, 'writing');
+        return sb - sa || a.cost - b.cost;
+      }
+      return (scoreVal(b, bill.alpha) * latencyMult(b, 'writing')) - (scoreVal(a, bill.alpha) * latencyMult(a, 'writing'))
+        || b.intelligenceIndex - a.intelligenceIndex;
     });
     const slot1 = claim(slot1Pool[0]) || claim(sortedByScore[0]);
     if (slot1) {
@@ -787,9 +1004,13 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
       ? (craftBase.filter(r => r.cost <= subFriendlyCap).length ? craftBase.filter(r => r.cost <= subFriendlyCap) : craftBase)
       : craftBase
     ).sort((a, b) => {
-      if (bill.id === 'sub') return craftBlend(b) - craftBlend(a) || a.cost - b.cost;
-      const va = valuePerDollar({intelligenceIndex: craftBlend(a), cost: a.cost}, bill.alpha, 0, 0) ?? -1;
-      const vb = valuePerDollar({intelligenceIndex: craftBlend(b), cost: b.cost}, bill.alpha, 0, 0) ?? -1;
+      if (bill.id === 'sub') {
+        return (craftBlend(b) - subBurnPenalty(b.cost, 7.5, 0.45, 2.0) - latencyPenalty(b, 'writing'))
+          - (craftBlend(a) - subBurnPenalty(a.cost, 7.5, 0.45, 2.0) - latencyPenalty(a, 'writing'))
+          || a.cost - b.cost;
+      }
+      const va = (valuePerDollar({intelligenceIndex: craftBlend(a), cost: a.cost}, bill.alpha, 0, 0) ?? -1) * latencyMult(a, 'writing');
+      const vb = (valuePerDollar({intelligenceIndex: craftBlend(b), cost: b.cost}, bill.alpha, 0, 0) ?? -1) * latencyMult(b, 'writing');
       return vb - va || craftBlend(b) - craftBlend(a);
     });
     const slot2 = claim(craftSorted[0]) || claim(sortedByScore.find(r => isFresh(r, true))) || claim(sortedByScore.find(r => isFresh(r, false)));
@@ -816,10 +1037,18 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
       });
     }
 
-    // 3. Lightweight / Cost-Efficient Writing Alt (transparently flags weak core / slop if applicable)
-    const cheapPool = projected
-      .filter(r => isFresh(r, true) && r.cost < (slot1?.cost || Infinity) * 0.85 && r.intelligenceIndex >= maxScore * 0.6)
-      .sort((a, b) => scoreVal(b, 2.0) - scoreVal(a, 2.0) || a.cost - b.cost);
+    // 3. Lightweight / Cost-Efficient Writing Alt (prefers strong-vibe low-slop cheap candidates over very weak-reasoning outliers!)
+    const cheapBase = projected.filter(r => isFresh(r, true) && r.cost < (slot1?.cost || Infinity) * 0.85 && r.intelligenceIndex >= maxScore * 0.6);
+    const cheapStrong = cheapBase.filter(r => r.intelligenceIndex >= maxScore * 0.72);
+    const cheapStrongClean = cheapStrong.filter(r => r.arenaRaw?.slop == null || r.arenaRaw.slop < 45);
+    const cheapStrongMeasured = cheapStrongClean.filter(r => typeof r.arenaRaw?.slop === 'number' || hasCore(r));
+    const cheapAnyClean = cheapBase.filter(r => r.arenaRaw?.slop == null || r.arenaRaw.slop < 50);
+    const cheapPool = (
+      cheapStrongMeasured.length ? cheapStrongMeasured
+        : cheapStrongClean.length ? cheapStrongClean
+          : cheapAnyClean.length ? cheapAnyClean
+            : cheapBase
+    ).sort((a, b) => (scoreVal(b, 2.4) * latencyMult(b, 'writing')) - (scoreVal(a, 2.4) * latencyMult(a, 'writing')) || a.cost - b.cost);
     const slot3 = claim(cheapPool[0]) || claim(sortedByScore.find(r => isFresh(r, true))) || claim(sortedByScore.find(r => isFresh(r, false)));
     if (slot3) {
       const savePct = slot1 ? formatPctDelta(slot3.cost, slot1.cost) : 0;
@@ -847,17 +1076,29 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
     // Coding Agents and Media (Image / Video / TTS)
     const floorRatio = bill.id === 'api-budget' ? 0.62 : bill.id === 'api-balanced' ? 0.78 : 0.88;
     const minScoreFloor = maxScore * floorRatio;
-    const mediaGenEligible = r => !(uc.mediaTrack === 'image' && r.mediaScores?.t2i == null);
+    const mediaGenEligible = r => {
+      if (uc.mediaTrack === 'image' && r.mediaScores?.t2i == null) return false;
+      if (uc.mediaTrack === 'video' && r.mediaScores?.t2v == null) return false;
+      return true;
+    };
+    const ttsLatencyPenalty = r => (
+      uc.mediaTrack === 'tts' && typeof r.mediaRaw?.ttfaMs === 'number' && r.mediaRaw.ttfaMs >= 3000 ? 2.0 : 0
+    );
+    const subTrackScore = r => (
+      r.intelligenceIndex
+      - (uc.tab === 'coding-agents' ? subBurnPenalty(r.cost, 8.5, 0.5, 2.5) : 0)
+      - ttsLatencyPenalty(r)
+    );
 
     let slot1;
     if (bill.id === 'sub') {
       // Monthly plan / IDE users care about top real-world capability without extreme API-only burn
       const subPool = projected.filter(r => r.cost <= subFriendlyCap && mediaGenEligible(r));
-      const subBest = (subPool.length ? subPool : projected).sort((a, b) => b.intelligenceIndex - a.intelligenceIndex || a.cost - b.cost);
+      const subBest = (subPool.length ? subPool : projected).sort((a, b) => subTrackScore(b) - subTrackScore(a) || a.cost - b.cost);
       slot1 = claim(subBest[0]);
     } else {
       const elig = projected.filter(r => r.intelligenceIndex >= minScoreFloor && mediaGenEligible(r));
-      const cands = (elig.length ? elig : projected).sort((a, b) =>
+      const cands = (elig.length ? elig : projected.filter(mediaGenEligible).length ? projected.filter(mediaGenEligible) : projected).sort((a, b) =>
         scoreVal(b, bill.alpha) - scoreVal(a, bill.alpha)
         || b.intelligenceIndex - a.intelligenceIndex
         || a.cost - b.cost
@@ -865,24 +1106,27 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
       slot1 = claim(cands[0]);
     }
 
-    const topCeiling = sortedByScore[0];
+    const topCeiling = sortedByScore.find(mediaGenEligible) || sortedByScore[0];
     let slot2 = null;
     let slot2IsRunnerUp = false;
     if (topCeiling && isFresh(topCeiling, false)) {
       slot2 = claim(topCeiling);
     } else {
       slot2IsRunnerUp = true;
-      slot2 = claim(sortedByScore.find(r => isFresh(r, true) && mediaGenEligible(r)))
+      const runnerPool = [...projected]
+        .filter(r => isFresh(r, true) && mediaGenEligible(r))
+        .sort((a, b) => (b.intelligenceIndex - ttsLatencyPenalty(b)) - (a.intelligenceIndex - ttsLatencyPenalty(a)) || a.cost - b.cost);
+      slot2 = claim(runnerPool[0])
         || claim(sortedByScore.find(r => isFresh(r, true)))
         || claim(sortedByScore.find(r => isFresh(r, false)));
     }
 
-    // 3rd slot: cheaper Pareto alternative (avoiding edit-only or severely degraded low-score picks on media!)
+    // 3rd slot: cheaper Pareto alternative -> modest step-up -> sorted peer fallback (never unsorted or negative step-up!)
     const saverFloor = Math.max(maxScore * (uc.tab === 'media' ? 0.72 : 0.65), (slot1?.intelligenceIndex || 0) * 0.78);
     const cheaper = projected
       .filter(r => isFresh(r, true) && mediaGenEligible(r) && r.cost < (slot1?.cost || Infinity) * 0.85 && r.intelligenceIndex >= saverFloor)
       .sort((a, b) => scoreVal(b, 1.8) - scoreVal(a, 1.8) || a.cost - b.cost);
-    let slot3IsStepUp = false;
+    let slot3Mode = 'saving';
     let slot3 = claim(cheaper[0]);
     if (!slot3) {
       const cheaperAny = projected
@@ -891,11 +1135,27 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
       slot3 = claim(cheaperAny[0]);
     }
     if (!slot3) {
-      slot3IsStepUp = true;
       const stepUp = projected
-        .filter(r => isFresh(r, true) && mediaGenEligible(r) && r.intelligenceIndex > (slot1?.intelligenceIndex || 0))
+        .filter(r => isFresh(r, true) && mediaGenEligible(r) && r.intelligenceIndex > (slot1?.intelligenceIndex || 0) + 0.05)
         .sort((a, b) => scoreVal(b, 3.2) - scoreVal(a, 3.2) || b.intelligenceIndex - a.intelligenceIndex);
-      slot3 = claim(stepUp[0]) || claim(projected.find(r => isFresh(r, true))) || claim(projected.find(r => isFresh(r, false)));
+      if (stepUp[0]) {
+        slot3Mode = 'stepup';
+        slot3 = claim(stepUp[0]);
+      }
+    }
+    if (!slot3) {
+      const cheaperRelaxed = projected
+        .filter(r => isFresh(r, true) && mediaGenEligible(r) && r.cost < (slot1?.cost || Infinity) * 0.85 && r.intelligenceIndex >= maxScore * 0.45)
+        .sort((a, b) => scoreVal(b, 1.8) - scoreVal(a, 1.8) || a.cost - b.cost);
+      if (cheaperRelaxed[0]) {
+        slot3Mode = 'saving';
+        slot3 = claim(cheaperRelaxed[0]);
+      } else {
+        slot3Mode = 'peer';
+        slot3 = claim(sortedByScore.find(r => isFresh(r, true) && mediaGenEligible(r)))
+          || claim(sortedByScore.find(r => isFresh(r, true)))
+          || claim(sortedByScore.find(r => isFresh(r, false)));
+      }
     }
 
     const refHigh = slot2 && !slot2IsRunnerUp ? slot2 : slot1;
@@ -949,21 +1209,26 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
     if (slot3) {
       const savePct = slot1 ? formatPctDelta(slot3.cost, slot1.cost) : 0;
       const keepPct = slot1 && slot1.intelligenceIndex > 0 ? Math.round((slot3.intelligenceIndex / slot1.intelligenceIndex) * 100) : 100;
+      const delta3 = slot1 ? slot3.intelligenceIndex - slot1.intelligenceIndex : 0;
       picks.push({
         slot: 'saving',
-        badgeZh: slot3IsStepUp ? '进阶参照' : '低价效率参照',
-        badgeEn: slot3IsStepUp ? 'Step-Up Alt' : 'Low-Cost Alt',
+        badgeZh: slot3Mode === 'stepup' ? '进阶参照' : slot3Mode === 'saving' ? '低价效率参照' : '同级备选参照',
+        badgeEn: slot3Mode === 'stepup' ? 'Step-Up Alt' : slot3Mode === 'saving' ? 'Low-Cost Alt' : 'Peer Alt',
         row: slot3,
         score: slot3._pickScore,
         isFrontier: frontierIds.has(slot3.id),
         ...evidence.getSignals(slot3, uc, frontierIds.has(slot3.id)),
         reason: {
-          zh: slot3IsStepUp
-            ? `小幅提高预算可再涨 +${(slot3.intelligenceIndex - (slot1?.intelligenceIndex || 0)).toFixed(1)} 分`
-            : `单次成本再低 ${Math.max(1, savePct)}%，保留约 ${keepPct}% 实测表现，适合轻量日常或批量跑任务`,
-          en: slot3IsStepUp
-            ? `Modest budget step-up adding +${(slot3.intelligenceIndex - (slot1?.intelligenceIndex || 0)).toFixed(1)} pts`
-            : `${Math.max(1, savePct)}% lower unit cost while keeping ~${keepPct}% score for lighter or batch workloads`
+          zh: slot3Mode === 'stepup'
+            ? `小幅提高预算可再涨 +${delta3.toFixed(1)} 分`
+            : slot3Mode === 'saving'
+              ? `单次成本再低 ${Math.max(1, savePct)}%，保留约 ${keepPct}% 实测表现，适合轻量日常或批量跑任务`
+              : `同赛道另一高分备选（分差 ${Math.abs(delta3).toFixed(1)}），建议与前两款直接实测对比效果`,
+          en: slot3Mode === 'stepup'
+            ? `Modest budget step-up adding +${delta3.toFixed(1)} pts`
+            : slot3Mode === 'saving'
+              ? `${Math.max(1, savePct)}% lower unit cost while keeping ~${keepPct}% score for lighter or batch workloads`
+              : `Another high-scoring peer (${Math.abs(delta3).toFixed(1)} pts apart) worth testing side-by-side`
         }
       });
     }

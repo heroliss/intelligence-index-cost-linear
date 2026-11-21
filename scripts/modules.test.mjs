@@ -39,6 +39,7 @@ test('recommendModels returns distinct multi-archetype picks with objective proo
             if (lic.id === 'open') assert.equal(!!p.row.isOpenWeights, true, `open filter respected in ${uc.id}`);
             if (lic.id === 'closed') assert.equal(!!p.row.isOpenWeights, false, `closed filter respected in ${uc.id}`);
             assert.ok(p.reason.zh.length > 4 && p.reason.en.length > 4, 'pick has bilingual rationale');
+            assert.ok(!p.reason.zh.includes('+-') && !p.reason.en.includes('+-'), `malformed signed delta in ${uc.id}/${bill.id}/${lic.id}: ${p.reason.zh}`);
             assert.ok(Array.isArray(p.proofs) && Array.isArray(p.caveats), 'pick exposes proofs & caveats arrays');
           }
         }
@@ -138,6 +139,222 @@ test('recommendModels returns distinct multi-archetype picks with objective proo
   // 4. Legacy `budget` option still maps cleanly to `billing`
   const legacy = recommendModels(snapshot, {useCase: 'general', budget: 'balanced', license: 'all'});
   assert.equal(legacy.billing.id, 'api-balanced');
+
+  // 5. General daily monthly-plan driver balances cross-org consensus, subscription burn & low hallucination,
+  //    keeping the true peak flagship in Slot 3 rather than crowding it out with a high-burn sibling.
+  const genSub = recommendModels(snapshot, {useCase: 'general', billing: 'sub', license: 'all'});
+  assert.equal(genSub.picks.length, 3);
+  assert.ok(genSub.picks[0].row.cost <= 8.0, `general/sub daily driver (${genSub.picks[0].row.name}, $${genSub.picks[0].row.cost}) should stay in mainstream plan burn`);
+  assert.ok((genSub.picks[0].row.subscores?.hallucination ?? 0) < 40, `general/sub daily driver should avoid severe hallucination (${genSub.picks[0].row.subscores?.hallucination}%)`);
+  assert.equal(genSub.picks[2].badgeZh, '能力上限参照', 'general/sub Slot 3 preserves the true capability ceiling');
+
+  // 6. Open-weights shortlists stay above usable efficiency floors and differentiate budget tiers
+  const openSub = recommendModels(snapshot, {useCase: 'general', billing: 'sub', license: 'open'});
+  assert.ok(openSub.picks[1].score >= openSub.picks[0].score * 0.45, `open efficiency pick (${openSub.picks[1].row.name}, ${openSub.picks[1].score}) must not degrade to unsorted junk`);
+  const openBud = recommendModels(snapshot, {useCase: 'general', billing: 'api-budget', license: 'open'});
+  assert.ok(openBud.picks[0].row.cost < openSub.picks[0].row.cost, 'open api-budget primary pick is cheaper than open sub primary pick');
+  const openCodeBal = recommendModels(snapshot, {useCase: 'coding-api', billing: 'api-balanced', license: 'open'});
+  assert.equal(openCodeBal.picks[2].badgeZh, '能力上限参照', 'open coding-api Slot 2 must not steal the expensive ceiling from Slot 3');
+
+  // 7. Research Slot 2 avoids severe-hallucination efficiency traps when low-hallucination options exist
+  assert.ok((res.picks[1].row.subscores?.hallucination ?? 0) < 45, `research/sub efficiency pick (${res.picks[1].row.name}) should avoid >=45% hallucination`);
+
+  // 8. Video picks never surface I2V-only models as general video generation Slot 1, and media step-up badges only appear for strictly higher scores
+  for (const b of RECOMMEND_BILLING) {
+    const vid = recommendModels(snapshot, {useCase: 'video', billing: b.id, license: 'all'});
+    assert.ok(vid.picks[0].row.mediaScores?.t2v != null, `video/${b.id} primary pick (${vid.picks[0].row.name}) must support text-to-video`);
+    for (const track of ['image', 'video', 'tts']) {
+      for (const lic of RECOMMEND_LICENSES) {
+        const m = recommendModels(snapshot, {useCase: track, billing: b.id, license: lic.id});
+        if (m.picks[2]?.badgeZh === '进阶参照') {
+          assert.ok(m.picks[2].score > m.picks[0].score, `${track}/${b.id}/${lic.id} step-up pick must strictly outscore primary`);
+        }
+      }
+    }
+  }
+});
+
+test('recommendModels discounts downward-inherited Max chat ranks, high quota burn & high hallucination in sub mode', () => {
+  const synth = {
+    models: [
+      {
+        id: 'expensive-max',
+        name: 'Expensive Max',
+        shortName: 'Expensive (max)',
+        intelligenceIndex: 65,
+        cost: 26,
+        isOpenWeights: false,
+        creator: {name: 'VendorA'},
+        family: {slug: 'expensive'},
+        effort: {slug: 'max', label: 'max', level: 60},
+        subscores: {hallucination: 58}
+      },
+      {
+        id: 'expensive-high',
+        name: 'Expensive High',
+        shortName: 'Expensive (high)',
+        intelligenceIndex: 61.9,
+        cost: 9.2,
+        isOpenWeights: false,
+        creator: {name: 'VendorA'},
+        family: {slug: 'expensive'},
+        effort: {slug: 'high', label: 'high', level: 40},
+        subscores: {hallucination: 58}
+      },
+      {
+        id: 'balanced-high',
+        name: 'Balanced High',
+        shortName: 'Balanced (high)',
+        intelligenceIndex: 59.5,
+        cost: 3.7,
+        isOpenWeights: false,
+        creator: {name: 'VendorB'},
+        family: {slug: 'balanced'},
+        effort: {slug: 'high', label: 'high', level: 40},
+        subscores: {hallucination: 14}
+      },
+      {
+        id: 'balanced-xhigh',
+        name: 'Balanced XHigh',
+        shortName: 'Balanced (xhigh)',
+        intelligenceIndex: 61.4,
+        cost: 6.4,
+        isOpenWeights: false,
+        creator: {name: 'VendorB'},
+        family: {slug: 'balanced'},
+        effort: {slug: 'xhigh', label: 'xhigh', level: 50},
+        subscores: {hallucination: 14},
+        livebench: {rank: 1, overall: 87}
+      },
+      {
+        id: 'cheap-eff',
+        name: 'Cheap Eff',
+        shortName: 'Cheap (medium)',
+        intelligenceIndex: 52.5,
+        cost: 0.4,
+        isOpenWeights: false,
+        creator: {name: 'VendorC'},
+        family: {slug: 'cheap'},
+        effort: {slug: 'medium', label: 'medium', level: 30},
+        subscores: {hallucination: 42}
+      }
+    ],
+    orgLeaderboards: {
+      arenaChat: {
+        rows: [
+          {rank: 3, modelId: 'balanced-high', score: 1515},
+          {rank: 7, modelId: 'expensive-max', score: 1503}
+        ]
+      },
+      livebench: {
+        rows: [
+          {rank: 1, modelId: 'balanced-xhigh', score: 87},
+          {rank: 2, modelId: 'expensive-max', score: 85}
+        ]
+      }
+    }
+  };
+
+  const subRes = recommendModels(synth, {useCase: 'general', billing: 'sub', license: 'all'});
+  assert.equal(subRes.picks[0].row.id, 'balanced-xhigh', 'upward-inherited Top-3 chat + exact LB2 #1 + lower burn/hallucination beats downward-inherited high-burn sibling');
+  assert.equal(subRes.picks[2].row.id, 'expensive-max', 'true capability ceiling stays in Slot 3');
+
+  const balRes = recommendModels(synth, {useCase: 'general', billing: 'api-balanced', license: 'all'});
+  assert.equal(balRes.picks[0].row.id, 'balanced-high', 'api-balanced prefers exact Arena Chat #3 over downward-inherited siblings');
+});
+
+test('recommendModels penalizes severe cross-org divergence and ultra-slow thinking latency on interactive tracks', () => {
+  const synth = {
+    models: [
+      {
+        id: 'exam-specialist',
+        name: 'Exam Specialist',
+        shortName: 'Exam Specialist',
+        intelligenceIndex: 60.8,
+        cost: 4.0,
+        timeSec: 700,
+        isOpenWeights: false,
+        creator: {name: 'VendorA'},
+        family: {slug: 'exam-spec'},
+        subscores: {hallucination: 20}
+      },
+      {
+        id: 'slow-thinker',
+        name: 'Slow Thinker',
+        shortName: 'Slow Thinker',
+        intelligenceIndex: 60.5,
+        cost: 4.0,
+        timeSec: 2880,
+        isOpenWeights: false,
+        creator: {name: 'VendorB'},
+        family: {slug: 'slow-thinker'},
+        subscores: {hallucination: 20}
+      },
+      {
+        id: 'fast-consensus',
+        name: 'Fast Consensus',
+        shortName: 'Fast Consensus',
+        intelligenceIndex: 60.0,
+        cost: 4.0,
+        timeSec: 720,
+        isOpenWeights: false,
+        creator: {name: 'VendorC'},
+        family: {slug: 'fast-cons'},
+        subscores: {hallucination: 20}
+      }
+    ],
+    humanArenaModels: [
+      {
+        id: 'slow-writer',
+        name: 'Slow Writer',
+        shortName: 'Slow Writer',
+        intelligenceIndex: 78.6,
+        aaIndex: 58,
+        cost: 4.0,
+        timeSec: 2880,
+        isOpenWeights: false,
+        creator: {name: 'VendorA'},
+        family: {slug: 'slow-writer'},
+        humanScores: {chatVibe: 78.6, antiSlop: 80},
+        arenaRaw: {slop: 20}
+      },
+      {
+        id: 'snappy-writer',
+        name: 'Snappy Writer',
+        shortName: 'Snappy Writer',
+        intelligenceIndex: 78.0,
+        aaIndex: 58,
+        cost: 4.0,
+        timeSec: 600,
+        isOpenWeights: false,
+        creator: {name: 'VendorB'},
+        family: {slug: 'snappy-writer'},
+        humanScores: {chatVibe: 78.0, antiSlop: 80},
+        arenaRaw: {slop: 20}
+      }
+    ],
+    orgLeaderboards: {
+      arenaChat: {
+        rows: [
+          {rank: 6, modelId: 'fast-consensus', score: 1505},
+          {rank: 7, modelId: 'slow-thinker', score: 1504},
+          {rank: 8, modelId: 'exam-specialist', score: 1503}
+        ]
+      }
+    }
+  };
+  const divergenceRows = [
+    {modelId: 'exam-specialist', familySlug: 'exam-spec', gap: -35, kind: 'auto'},
+    {modelId: 'slow-thinker', familySlug: 'slow-thinker', gap: 0, kind: 'balanced'},
+    {modelId: 'fast-consensus', familySlug: 'fast-cons', gap: -1, kind: 'consensus'}
+  ];
+
+  const genRes = recommendModels(synth, {useCase: 'general', billing: 'sub', license: 'all'}, {divergenceRows});
+  assert.equal(genRes.picks[0].row.id, 'fast-consensus', 'general/sub prefers fast cross-org consensus over hard-exam specialist and 48m ultra-slow model');
+
+  const wrtRes = recommendModels(synth, {useCase: 'writing', billing: 'sub', license: 'all'});
+  assert.equal(wrtRes.picks[0].row.id, 'snappy-writer', 'writing/sub prefers responsive writer over 48m slow model at near-identical chat score');
+  assert.ok(wrtRes.picks.some(p => p.row.id === 'slow-writer' && p.caveats.some(c => c.zh.includes('耗时偏长'))), 'slow writer surfaces latency caveat');
 });
 
 test('computeOrgDivergence eliminates board-size bias and surfaces human favorites, hard specialists, and consensus leaders', async () => {

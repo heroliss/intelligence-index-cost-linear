@@ -29,17 +29,17 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261120-07';
+} from './chart-math.mjs?v=20261121-01';
 import {
   RECOMMEND_USE_CASES,
   RECOMMEND_BILLING,
   RECOMMEND_LICENSES,
   recommendModels,
   getRowCaveats
-} from './modules/recommend.mjs?v=20261120-07';
-import {computeOrgDivergence} from './modules/divergence.mjs?v=20261120-07';
-import {createNavHistory} from './modules/nav-history.mjs?v=20261120-07';
-import {GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261120-07';
+} from './modules/recommend.mjs?v=20261121-01';
+import {computeOrgDivergence} from './modules/divergence.mjs?v=20261121-01';
+import {createNavHistory} from './modules/nav-history.mjs?v=20261121-01';
+import {GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261121-01';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
