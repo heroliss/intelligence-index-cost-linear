@@ -17,10 +17,15 @@ on:
       - 'scripts/**'
       - '.github/workflows/update-and-deploy.yml'
   workflow_dispatch:
+    inputs:
+      skip_deploy_if_unchanged:
+        description: 'Skip GitHub Pages deploy when fetched benchmark data is unchanged'
+        type: boolean
+        default: false
   schedule:
-    # Every two hours at :17, away from the busiest top-of-hour queue.
-    # UTC+8: 00:17, 02:17, ... 22:17. GitHub may delay scheduled runs.
-    - cron: '17 */2 * * *'
+    # Daily fallback in case the external Cloudflare Workers Cron Trigger is paused.
+    # Primary bi-hourly cadence (17 */2 * * *) runs via Cloudflare Worker -> workflow_dispatch.
+    - cron: '47 2 * * *'
 
 permissions:
   contents: write
@@ -71,11 +76,11 @@ jobs:
           fi
 
       - name: Configure GitHub Pages
-        if: github.event_name != 'schedule' || steps.refresh.outputs.changed == 'true'
+        if: (github.event_name != 'schedule' && github.event.inputs.skip_deploy_if_unchanged != 'true') || steps.refresh.outputs.changed == 'true'
         uses: actions/configure-pages@v5
 
       - name: Stage clean static site bundle
-        if: github.event_name != 'schedule' || steps.refresh.outputs.changed == 'true'
+        if: (github.event_name != 'schedule' && github.event.inputs.skip_deploy_if_unchanged != 'true') || steps.refresh.outputs.changed == 'true'
         run: |
           rm -rf _site
           mkdir -p _site/data _site/modules
@@ -84,12 +89,12 @@ jobs:
           cp data/current.json _site/data/current.json
 
       - name: Upload site artifact
-        if: github.event_name != 'schedule' || steps.refresh.outputs.changed == 'true'
+        if: (github.event_name != 'schedule' && github.event.inputs.skip_deploy_if_unchanged != 'true') || steps.refresh.outputs.changed == 'true'
         uses: actions/upload-pages-artifact@v4
         with:
           path: _site
 
       - name: Deploy to GitHub Pages
-        if: github.event_name != 'schedule' || steps.refresh.outputs.changed == 'true'
+        if: (github.event_name != 'schedule' && github.event.inputs.skip_deploy_if_unchanged != 'true') || steps.refresh.outputs.changed == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
