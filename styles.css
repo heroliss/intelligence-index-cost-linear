@@ -2794,8 +2794,16 @@ tbody tr.is-muted {
 .name-wrap {
   display: flex;
   align-items: center;
-  gap: 7px;
-  flex-wrap: wrap;
+  gap: 6px;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.row-name-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .creator-dot {
@@ -3499,6 +3507,14 @@ tbody tr.is-selected .locate-btn,
 
   .locate-btn {
     opacity: 1;
+  }
+
+  .name-wrap {
+    flex-wrap: wrap;
+  }
+
+  .row-name-text {
+    white-space: normal;
   }
 
   .pinned-card {
@@ -6050,6 +6066,7 @@ tbody tr.is-selected .locate-btn,
 .org-div-table {
   width: 100%;
   min-width: 820px;
+  table-layout: auto;
   border-collapse: collapse;
   font-size: 12px;
 }

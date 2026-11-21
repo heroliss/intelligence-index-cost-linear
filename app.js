@@ -29,23 +29,23 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261122-01';
+} from './chart-math.mjs?v=20261122-02';
 import {
   RECOMMEND_USE_CASES,
   RECOMMEND_BILLING,
   RECOMMEND_LICENSES,
   recommendModels,
   getRowCaveats
-} from './modules/recommend.mjs?v=20261122-01';
-import {computeOrgDivergence} from './modules/divergence.mjs?v=20261122-01';
-import {createNavHistory} from './modules/nav-history.mjs?v=20261122-01';
-import {GUIDE_PROFILE_ORDER, GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261122-01';
+} from './modules/recommend.mjs?v=20261122-02';
+import {computeOrgDivergence} from './modules/divergence.mjs?v=20261122-02';
+import {createNavHistory} from './modules/nav-history.mjs?v=20261122-02';
+import {GUIDE_PROFILE_ORDER, GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261122-02';
 import {
   UPDATE_FILTERS,
   buildUpdateFeed,
   filterUpdateFeed,
   resolveUpdateDetail
-} from './modules/updates.mjs?v=20261122-01';
+} from './modules/updates.mjs?v=20261122-02';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -922,6 +922,8 @@ function applyRouteParams(target, params) {
   }
   const org = params.get('org');
   if (['all', 'bump', 'divergence', 'aa', 'livebench', 'arenaChat', 'arenaWebdev', 'designArena', 'aaGdpval'].includes(org)) orgFocus = org;
+  const odiv = params.get('odiv');
+  if (['all', 'human', 'auto', 'consensus'].includes(odiv)) orgDivFilter = odiv;
   if (params.get('orgm') === '1') orgMatchedOnly = true;
   const bl = Number(params.get('bl'));
   if (bl === 12 || bl === 18) orgBumpLimit = bl;
@@ -1075,6 +1077,7 @@ function buildUrlHash({includeLang = false} = {}) {
   if (state.extraFilter) params.set('xf', state.extraFilter);
   if (state.mode === 'orgs') {
     if (orgFocus && orgFocus !== 'all') params.set('org', orgFocus);
+    if (orgFocus === 'divergence' && orgDivFilter && orgDivFilter !== 'all') params.set('odiv', orgDivFilter);
     if (orgMatchedOnly) params.set('orgm', '1');
     if (orgFocus === 'bump' && orgBumpLimit !== 12) params.set('bl', String(orgBumpLimit));
   }
@@ -4316,7 +4319,9 @@ function renderTable(rows = filteredRows()) {
     const displayColor = color(row.creator?.color);
     dot.style.background = displayColor;
     dot.setAttribute('aria-hidden', 'true');
-    wrap.append(dot, html('span', row.name));
+    const nameSpan = html('span', row.name, 'row-name-text');
+    nameSpan.title = row.name;
+    wrap.append(dot, nameSpan);
 
     if (champion && champion.id === row.id) {
       wrap.append(html('span', '#1', 'row-tag tag-top'));
@@ -4457,7 +4462,9 @@ function renderSubTable(rows = filteredRows()) {
     const dot = html('i', null, 'creator-dot');
     dot.style.background = displayColor;
     dot.setAttribute('aria-hidden', 'true');
-    wrap.append(dot, html('span', row.name));
+    const nameSpan = html('span', row.name, 'row-name-text');
+    nameSpan.title = row.name;
+    wrap.append(dot, nameSpan);
     if (isRecentRelease(row)) wrap.append(html('span', t('新', 'NEW'), 'row-tag tag-new'));
     if (frontierIds.has(row.id)) wrap.append(html('span', t('前沿', 'Frontier'), 'row-tag'));
     if (row.isOpenWeights) wrap.append(html('span', t('开源', 'Open'), 'row-tag tag-open'));
@@ -9185,6 +9192,9 @@ function showView(mode) {
   lastArenaMode = mode;
   valueDetailsOpen = false;
   syncControls();
+  requestAnimationFrame(() => {
+    $('#viewSwitch button[aria-pressed="true"]')?.scrollIntoView({inline: 'nearest', block: 'nearest'});
+  });
   renderStatus();
   syncUrlHash();
   if (mode === 'chart') buildPlot();
@@ -11874,6 +11884,7 @@ function renderOrgDivergence(container) {
     b.addEventListener('click', () => {
       if (orgDivFilter === fid) return;
       orgDivFilter = fid;
+      syncUrlHash();
       renderOrgLeaderboards();
     });
     filterRow.append(b);
@@ -12109,6 +12120,9 @@ function renderOrgLeaderboards() {
     mFrag.append(b);
   }
   modeSwitch.replaceChildren(mFrag);
+  requestAnimationFrame(() => {
+    modeSwitch.querySelector('button[aria-pressed="true"]')?.scrollIntoView({inline: 'nearest', block: 'nearest'});
+  });
 
   const selGroup = $('#orgSelectGroup');
   const pFrag = document.createDocumentFragment();
