@@ -1694,18 +1694,50 @@ function buildSnapshotDiff(output, previous, dateStr = new Date().toISOString().
   return merged;
 }
 
-function simplifyChangelog(items) {
+function simplifyChangelog(items, rawModels = null) {
   if (!Array.isArray(items)) return [];
+  const rawByName = new Map();
+  if (Array.isArray(rawModels)) {
+    for (const m of rawModels) {
+      if (!m) continue;
+      for (const field of [m.name, m.shortName]) {
+        const key = typeof field === 'string' ? field.trim().toLowerCase() : '';
+        if (key && !rawByName.has(key)) rawByName.set(key, m);
+      }
+    }
+  }
   const out = [];
   for (const item of items) {
     if (!item?.title || !item?.dateLa) continue;
-    out.push({
+    const type = typeof item.type === 'string' ? item.type : 'update';
+    const title = String(item.title);
+    const entry = {
       date: String(item.dateLa),
-      type: typeof item.type === 'string' ? item.type : 'update',
-      title: String(item.title),
+      type,
+      title,
       url: typeof item.url === 'string' && item.url.startsWith('/') ? `https://artificialanalysis.ai${item.url}` : null
-    });
-    if (out.length >= 12) break;
+    };
+    if (rawByName.size && (type === 'modelAdded' || type === 'model')) {
+      const hit = rawByName.get(title.trim().toLowerCase());
+      if (hit) {
+        const rawCost = typeof hit.intelligenceIndexCostPerTask === 'object'
+          ? hit.intelligenceIndexCostPerTask?.total
+          : hit.intelligenceIndexCostPerTask;
+        const meta = {
+          ...(hit.id ? { modelId: String(hit.id) } : {}),
+          ...(hit.creator?.name ? { creator: String(hit.creator.name) } : {}),
+          ...(typeof hit.intelligenceIndex === 'number' && Number.isFinite(hit.intelligenceIndex)
+            ? { score: Number(hit.intelligenceIndex.toFixed(2)) }
+            : {}),
+          hasPricing: typeof rawCost === 'number' && Number.isFinite(rawCost) && rawCost > 0,
+          isOpenWeights: Boolean(hit.isOpenWeights),
+          ...(hit.releaseDate ? { releaseDate: String(hit.releaseDate).slice(0, 10) } : {})
+        };
+        entry.meta = meta;
+      }
+    }
+    out.push(entry);
+    if (out.length >= 20) break;
   }
   return out;
 }
@@ -1822,7 +1854,7 @@ async function fetchModels(page, sourceUrl, previous, get = getBuffer, { include
     if (cyberModels.length >= 3) validateRows(cyberModels, 3, 'cyber-model');
     else cyberModels = [];
   }
-  const changelog = simplifyChangelog(modelPayload.changelog);
+  const changelog = simplifyChangelog(modelPayload.changelog, modelPayload.models);
 
   return { models, cyberModels, mediaModels, changelog, manifestPath: modelManifestPath, hostsManifestPath };
 }

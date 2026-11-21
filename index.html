@@ -30,8 +30,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261121-02">
-  <script type="module" src="app.js?v=20261121-02"></script>
+  <link rel="stylesheet" href="styles.css?v=20261121-03">
+  <script type="module" src="app.js?v=20261121-03"></script>
 </head>
 <body>
 <main class="app">
@@ -71,11 +71,7 @@
       </button>
       <button id="cmdPaletteBtn" type="button" class="ghost-btn cmd-trigger-btn" aria-haspopup="dialog" aria-controls="cmdBackdrop">速查 <kbd>Ctrl+K</kbd></button>
       <div class="update-wrap">
-        <button id="updateBadge" type="button" class="update-badge" aria-expanded="false" aria-controls="changelogPopover"><i aria-hidden="true"></i><span id="updateText">最新动态</span></button>
-        <div id="changelogPopover" class="changelog-popover" hidden>
-          <div class="changelog-head"><strong id="changelogTitle">Artificial Analysis 最新动态</strong><span id="changelogTime" class="changelog-time"></span></div>
-          <ul id="changelogList" class="changelog-list"></ul>
-        </div>
+        <button id="updateBadge" type="button" class="update-badge" aria-haspopup="dialog" aria-expanded="false" aria-controls="changelogBackdrop"><i aria-hidden="true"></i><span id="updateText">最新动态</span></button>
       </div>
       <button id="shareBtn" type="button" class="ghost-btn">分享</button>
       <button id="langToggle" type="button" class="ghost-btn" aria-label="Switch language to English">EN</button>
@@ -606,6 +602,26 @@
     <div id="guideFoot" class="guide-foot">
       <span id="guideFootHint" class="guide-foot-hint"></span>
       <a id="guideExtLink" href="https://heroliss.github.io/liss-works/projects/intelligence-index-cost-linear/" target="_blank" rel="noopener">作品简介与入门 · Liss Works ↗</a>
+    </div>
+  </div>
+</div>
+<div id="changelogBackdrop" class="cmd-backdrop updates-backdrop" hidden>
+  <div id="changelogDialog" class="updates-dialog" role="dialog" aria-modal="true" aria-labelledby="changelogTitle">
+    <div class="guide-head updates-head">
+      <div class="guide-head-copy">
+        <h2 id="changelogTitle">最新动态 · 实况变动与官方公告</h2>
+        <span id="changelogTime" class="guide-dialog-sub"></span>
+      </div>
+      <button id="changelogCloseBtn" type="button" class="ghost-btn">Esc</button>
+    </div>
+    <div id="updatesTabs" class="guide-tabs updates-tabs" role="tablist" aria-label="动态分类筛选"></div>
+    <div id="updatesBody" class="updates-body">
+      <div id="updatesListPane" class="updates-list-pane" role="listbox" aria-label="动态列表"></div>
+      <article id="updatesDetailPane" class="updates-detail-pane" aria-live="polite"></article>
+    </div>
+    <div class="guide-foot updates-foot">
+      <span id="updatesFootHint" class="guide-foot-hint"></span>
+      <a id="updatesSourceLink" href="https://artificialanalysis.ai/" target="_blank" rel="noopener">Artificial Analysis 官网 ↗</a>
     </div>
   </div>
 </div>

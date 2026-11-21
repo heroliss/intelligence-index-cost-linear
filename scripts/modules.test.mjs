@@ -11,6 +11,13 @@ import {
 import {computeOrgDivergence} from '../modules/divergence.mjs';
 import {createNavHistory} from '../modules/nav-history.mjs';
 import {GUIDE_PROFILE_ORDER, GUIDE_TAB_META, GUIDE_GLOSSARY} from '../modules/guide-content.mjs';
+import {
+  UPDATE_FILTERS,
+  normalizeChangelogType,
+  buildUpdateFeed,
+  filterUpdateFeed,
+  resolveUpdateDetail
+} from '../modules/updates.mjs';
 
 test('recommendModels returns distinct multi-archetype picks with objective proofs & caveats across all 81 live combinations', async () => {
   const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
@@ -506,4 +513,95 @@ test('guide-content exports complete bilingual metadata, ordered profile chips, 
     assert.ok(appSrc.includes(`'${id}':`), `missing GUIDE_RECIPE_RUNNERS handler for recipe "${id}"`);
   }
   assert.ok(GUIDE_GLOSSARY.length >= 7);
+});
+
+test('updates module builds chronologically sorted feed, classifies upstream types, and resolves rich details for every item', async () => {
+  const snapshot = JSON.parse(await readFile(new URL('../data/current.json', import.meta.url), 'utf8'));
+  const feed = buildUpdateFeed(snapshot);
+
+  assert.equal(UPDATE_FILTERS.length, 4);
+  assert.equal(feed.counts.all, feed.items.length);
+  assert.equal(feed.counts.diff, feed.diffItems.length);
+  assert.equal(feed.counts.official, feed.officialItems.length);
+  assert.equal(feed.counts.diff + feed.counts.official, feed.counts.all);
+
+  // Verify chronological DESC ordering on diffEvents (no out-of-order 10-07 interrupting 11-19 / 11-18)
+  for (let i = 1; i < feed.diffItems.length; i++) {
+    assert.ok(
+      feed.diffItems[i - 1].date >= feed.diffItems[i].date,
+      `diffItems must be sorted by date DESC: ${feed.diffItems[i - 1].date} >= ${feed.diffItems[i].date}`
+    );
+  }
+
+  // Verify upstream type normalization
+  assert.equal(normalizeChangelogType('articlePublished').kind, 'article');
+  assert.equal(normalizeChangelogType('articlePublished').zh, '深度评测');
+  assert.equal(normalizeChangelogType('modelAdded').kind, 'model-added');
+  assert.equal(normalizeChangelogType('modelAdded').zh, '新收录模型');
+  assert.equal(normalizeChangelogType('benchmark').kind, 'benchmark');
+
+  // Verify category filters match counts exactly
+  for (const f of UPDATE_FILTERS) {
+    assert.equal(filterUpdateFeed(feed.items, f.id).length, feed.counts[f.id], `filter ${f.id} count matches`);
+  }
+
+  // Every single item in live current.json resolves cleanly without errors
+  for (const entry of feed.items) {
+    const detail = resolveUpdateDetail(entry, snapshot, {feedItems: feed.items});
+    assert.ok(detail && detail.entry.key === entry.key, `detail resolved for ${entry.key}`);
+    if (entry.source === 'diff') {
+      assert.ok(detail.diffSummary, `diffSummary present for ${entry.key}`);
+      if (entry.kind === 'price-up' || entry.kind === 'price-drop') {
+        assert.ok(detail.diffSummary.oldCost > 0 && detail.diffSummary.newCost > 0);
+        assert.ok(detail.diffSummary.oldBreakeven20 >= 1 && detail.diffSummary.newBreakeven20 >= 1);
+      }
+    }
+  }
+
+  // Specific verification on price-up diff: Gemini 4 Argon (medium) $4.3146 -> $8.6292 (+100%, $20 breakeven 5 -> 3)
+  const argonDiff = feed.diffItems.find(it => it.title.includes('Gemini 4 Argon (medium)'));
+  assert.ok(argonDiff, 'found Gemini 4 Argon (medium) diff event');
+  const argonDetail = resolveUpdateDetail(argonDiff, snapshot, {feedItems: feed.items});
+  assert.equal(argonDetail.diffSummary.oldBreakeven20, 5);
+  assert.equal(argonDetail.diffSummary.newBreakeven20, 3);
+  assert.ok(argonDetail.primaryModel?.scoreRank >= 1 && argonDetail.primaryModel.suiteTotal > 50);
+  assert.ok(argonDetail.primaryModel.siblings.length >= 2, 'resolves sibling effort variants');
+
+  // Specific verification on span-aware article matching:
+  // 1) "Inkling 2 Mini" article must NOT falsely match parent "Inkling" family
+  const inklingArt = feed.officialItems.find(it => it.kind === 'article' && it.title.includes('Inkling 2 Mini'));
+  assert.ok(inklingArt, 'found Inkling 2 Mini article');
+  const inklingDetail = resolveUpdateDetail(inklingArt, snapshot, {feedItems: feed.items});
+  assert.equal(inklingDetail.matchedModels.length, 1, 'matches only Inkling 2 Mini, not shorter Inkling substring');
+  assert.equal(inklingDetail.matchedModels[0].row.name, 'Inkling 2 Mini');
+
+  // 2) "Gemini 4 Neon" article matches all 4 effort tiers
+  const neonArt = feed.officialItems.find(it => it.kind === 'article' && it.title.includes('Gemini 4 Neon'));
+  assert.ok(neonArt, 'found Gemini 4 Neon article');
+  const neonDetail = resolveUpdateDetail(neonArt, snapshot, {feedItems: feed.items});
+  assert.equal(neonDetail.matchedModels.length, 4, 'matches all 4 Gemini 4 Neon effort tiers');
+  assert.equal(neonDetail.articleStats.familyCount, 1);
+
+  // 3) "GPT-6.2 Astra and GPT-6.2 Sol" article matches BOTH families
+  const gptArt = feed.officialItems.find(it => it.kind === 'article' && it.title.includes('GPT-6.2 Astra'));
+  assert.ok(gptArt, 'found GPT-6.2 Astra & Sol article');
+  const gptDetail = resolveUpdateDetail(gptArt, snapshot, {feedItems: feed.items});
+  assert.ok(gptDetail.articleStats.familyCount >= 2, 'matches both GPT-6.2 Astra and GPT-6.2 Sol families');
+
+  // 4) Unpriced modelAdded item (e.g. JoyAI-VL-Preview) returns graceful unplotted metadata + hypothetical rank when enriched
+  const unpricedEntry = {
+    key: 'log:test:unpriced',
+    source: 'official',
+    kind: 'model-added',
+    rawType: 'modelAdded',
+    typeLabel: {zh: '新收录模型', en: 'Model Added'},
+    date: '2026-11-17',
+    title: 'JoyAI-VL-Preview',
+    url: 'https://artificialanalysis.ai/models/joyai-vl',
+    meta: {creator: 'Joy Future Academy', score: 28.04, hasPricing: false, isOpenWeights: false}
+  };
+  const unpricedDetail = resolveUpdateDetail(unpricedEntry, snapshot, {feedItems: feed.items});
+  assert.equal(unpricedDetail.primaryModel, null);
+  assert.ok(unpricedDetail.unplotted && unpricedDetail.unplotted.hypotheticalRank >= 1);
+  assert.ok(unpricedDetail.unplotted.reasonZh.includes('计费数据'));
 });

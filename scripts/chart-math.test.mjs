@@ -568,16 +568,20 @@ test('cache-busting version query strings match across index.html, app.js, and E
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
   const js = await readFile(new URL('../app.js', import.meta.url), 'utf8');
   const rec = await readFile(new URL('../modules/recommend.mjs', import.meta.url), 'utf8');
+  const upd = await readFile(new URL('../modules/updates.mjs', import.meta.url), 'utf8');
   const cssVer = html.match(/styles\.css\?v=([^"']+)/)?.[1];
   const appVer = html.match(/app\.js\?v=([^"']+)/)?.[1];
   assert.ok(cssVer, 'styles.css should have a cache-busting version');
   assert.equal(cssVer, appVer, 'index.html styles.css and app.js versions must match');
   const jsVers = [...js.matchAll(/\.mjs\?v=([^"']+)/g)].map(m => m[1]);
-  assert.ok(jsVers.length >= 5, 'app.js should import chart-math and ES modules with version query strings');
+  assert.ok(jsVers.length >= 6, 'app.js should import chart-math and ES modules with version query strings');
   for (const v of jsVers) assert.equal(v, appVer, `app.js module import version ${v} must match ${appVer}`);
   const recVers = [...rec.matchAll(/\.mjs\?v=([^"']+)/g)].map(m => m[1]);
   assert.ok(recVers.length >= 2, 'modules/recommend.mjs should version its ES module imports');
   for (const v of recVers) assert.equal(v, appVer, `modules/recommend.mjs import version ${v} must match ${appVer}`);
+  const updVers = [...upd.matchAll(/\.mjs\?v=([^"']+)/g)].map(m => m[1]);
+  assert.ok(updVers.length >= 2, 'modules/updates.mjs should version its ES module imports');
+  for (const v of updVers) assert.equal(v, appVer, `modules/updates.mjs import version ${v} must match ${appVer}`);
 });
 
 test('multimodal media tab enforces strictly isolated tracks without a cross-modality All view', async () => {

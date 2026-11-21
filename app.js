@@ -29,17 +29,23 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261121-02';
+} from './chart-math.mjs?v=20261121-03';
 import {
   RECOMMEND_USE_CASES,
   RECOMMEND_BILLING,
   RECOMMEND_LICENSES,
   recommendModels,
   getRowCaveats
-} from './modules/recommend.mjs?v=20261121-02';
-import {computeOrgDivergence} from './modules/divergence.mjs?v=20261121-02';
-import {createNavHistory} from './modules/nav-history.mjs?v=20261121-02';
-import {GUIDE_PROFILE_ORDER, GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261121-02';
+} from './modules/recommend.mjs?v=20261121-03';
+import {computeOrgDivergence} from './modules/divergence.mjs?v=20261121-03';
+import {createNavHistory} from './modules/nav-history.mjs?v=20261121-03';
+import {GUIDE_PROFILE_ORDER, GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261121-03';
+import {
+  UPDATE_FILTERS,
+  buildUpdateFeed,
+  filterUpdateFeed,
+  resolveUpdateDetail
+} from './modules/updates.mjs?v=20261121-03';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -443,7 +449,7 @@ const ONBOARDING_KEY = 'intelligence-cost-onboard-v1';
 let onboardingDismissed = (() => {
   try { return localStorage.getItem(ONBOARDING_KEY) === '1'; } catch { return false; }
 })();
-let controlsOpen = !mobileLayout.matches, controlsTouched = false, valueDetailsOpen = false, changelogOpen = false, scenarioOpen = false, radarInfoOpen = false, comparePickerOpen = false, cmdOpen = false, cmdIndex = 0, guideOpen = false, guideTab = 'current', guidePreviewKey = null, selectionNotice = '', radarCtx = null, shareTimer = 0, copyMdTimer = 0, curveFrame;
+let controlsOpen = !mobileLayout.matches, controlsTouched = false, valueDetailsOpen = false, changelogOpen = false, updatesFilter = 'all', updatesSelectedKey = null, updatesMobileDetail = false, scenarioOpen = false, radarInfoOpen = false, comparePickerOpen = false, cmdOpen = false, cmdIndex = 0, guideOpen = false, guideTab = 'current', guidePreviewKey = null, selectionNotice = '', radarCtx = null, shareTimer = 0, copyMdTimer = 0, curveFrame;
 
 function starKeyOf(row) {
   if (!row) return '';
@@ -1288,7 +1294,7 @@ function restoreNavSnapshot(snap, direction = 'back') {
   stopHistoryPlay();
   if (guideOpen) setGuideOpen(false);
   if (cmdOpen) setCmdOpen(false);
-  if (changelogOpen) setChangelogOpen(false);
+  if (changelogOpen) setChangelogOpen(false, {restoreFocus: false});
   if (scenarioOpen) setScenarioOpen(false);
   if (viewToolsOpen) setViewToolsOpen(false);
   if (comparePickerOpen) setComparePickerOpen(false);
@@ -1529,84 +1535,923 @@ function isRecentRelease(row) {
   return Number.isFinite(latestMs) && Number.isFinite(rowMs) && (latestMs - rowMs) >= 0 && (latestMs - rowMs) <= 14 * 86400 * 1000;
 }
 
-function renderChangelog() {
-  $('#changelogTitle').textContent = t('实况变动与上游动态', 'Live Snapshot Diff & Updates');
-  $('#changelogTime').textContent = t('每 2 小时检查', '2h auto-sync');
-  const list = $('#changelogList');
-  const frag = document.createDocumentFragment();
-  const diffs = Array.isArray(snapshot?.diffEvents) ? snapshot.diffEvents : [];
-  if (diffs.length) {
-    frag.append(html('li', t('⚡ 自动监测：新上榜 / 价格调整 / 跑分刷新', '⚡ Live Tracker: New Arrivals & Price Shifts'), 'diff-section-label'));
-    for (const ev of diffs.slice(0, 8)) {
-      const li = html('li', null, 'changelog-item');
-      const btn = html('button', null, 'diff-jump-btn');
-      btn.type = 'button';
-      const tabTag = ev.tab === 'coding-agents'
-        ? t('智能体', 'Agent')
-        : ev.tab === 'media'
-          ? (ev.mediaKind === 'image' ? t('图像', 'Image') : ev.mediaKind === 'video' ? t('视频', 'Video') : 'TTS')
-          : t('大模型', 'LLM');
-      const creatorBit = ev.creator ? `${ev.creator} · ` : '';
-      const left = html('span', `${ev.date.slice(5)} · [${tabTag}] ${creatorBit}${ev.name}`, 'diff-jump-name');
-      let badgeTxt = '', badgeCls = 'diff-badge is-good';
-      if (ev.kind === 'new') {
-        badgeTxt = `${t('新上榜', 'NEW')} ${ev.score}`;
-      } else if (ev.kind === 'price-drop') {
-        badgeTxt = `${t('降价', 'Drop')} ${ev.pct}%`;
-      } else if (ev.kind === 'price-up') {
-        badgeTxt = `${t('调价', 'Price')} +${ev.pct}%`;
-        badgeCls = 'diff-badge is-warn';
-      } else {
-        badgeTxt = `${ev.delta > 0 ? '+' : ''}${ev.delta} ${t('分', 'pt')}`;
+function syncUpdateBadgeTooltip() {
+  const badge = $('#updateBadge');
+  if (!badge) return;
+  if (!snapshot) {
+    badge.title = t('查看实况变动与上游公告详情', 'View live snapshot diffs & official updates');
+    return;
+  }
+  const feed = buildUpdateFeed(snapshot);
+  const dt = new Date(snapshot.updatedAt);
+  const ts = Number.isFinite(dt.getTime())
+    ? dt.toLocaleString(lang === 'en' ? 'en-US' : 'zh-CN', {hour12: false})
+    : '';
+  badge.title = t(
+    `实况监测 ${feed.counts.diff} 条 · 官方公告 ${feed.counts.official} 条${ts ? ` · 快照 ${ts}` : ''}（点击查看每项详情）`,
+    `${feed.counts.diff} live diffs · ${feed.counts.official} official updates${ts ? ` · Snapshot ${ts}` : ''} (click for details)`
+  );
+}
+
+function ensureRowVisibleInState(row) {
+  if (!state || !row) return;
+  let cleared = false;
+  if (state.search && state.search.trim()) {
+    const tokens = state.search.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+    const blob = rowSearchBlob(row);
+    if (!tokens.every(tk => blob.includes(tk))) {
+      state.search = '';
+      if ($('#search')) $('#search').value = '';
+      cleared = true;
+    }
+  }
+  if ((state.license === 'open' && !row.isOpenWeights) || (state.license === 'closed' && row.isOpenWeights)) {
+    state.license = 'all';
+    cleared = true;
+  }
+  if (state.starredOnly && !isStarred(row)) {
+    state.starredOnly = false;
+    cleared = true;
+  }
+  if (state.company && (row.creator?.name || 'Other') !== state.company) {
+    state.company = null;
+    cleared = true;
+  }
+  if (isFutureHidden(row)) {
+    stopHistoryPlay();
+    state.historyMode = false;
+    cleared = true;
+  }
+  if (state.extraFilter) {
+    state._licCache = null;
+    if (!licenseFilteredRows(state.rows).some(r => r.id === row.id)) {
+      state.extraFilter = '';
+      cleared = true;
+    }
+  }
+  state._licCache = null;
+  state._poolCache = null;
+  state._frontierCache = null;
+  state._rankCache = null;
+  if (state.frontierOnly && !activeFrontierSet().idSet.has(row.id)) {
+    state.frontierOnly = false;
+    cleared = true;
+  }
+  pinCollapsed = false;
+  if (cleared) {
+    state._licCache = null;
+    state._poolCache = null;
+    state._frontierCache = null;
+    state._rankCache = null;
+  }
+}
+
+function jumpToModelFromUpdates(row, targetTab = 'models', mediaKind = null) {
+  if (!row) return;
+  setChangelogOpen(false, {restoreFocus: false});
+  runNavAction(() => {
+    const safeTab = BENCHMARKS[targetTab] ? targetTab : 'models';
+    chooseChart(safeTab, {changeHash: false});
+    if (safeTab === 'media' && state) {
+      const targetTrack = mediaKind || row.mediaKind || state.baseRows.find(r => r.id === row.id)?.mediaKind;
+      if (targetTrack && state.mediaTrack !== targetTrack) {
+        setMediaTrack(targetTrack, {reRender: false, updateUrl: false});
       }
-      btn.append(left, html('span', badgeTxt, badgeCls));
-      btn.addEventListener('click', () => {
-        setChangelogOpen(false);
+    }
+    const liveRow = state?.rows.find(r => r.id === row.id);
+    if (liveRow) {
+      ensureRowVisibleInState(liveRow);
+      renderLegend();
+      locateRowInChart(liveRow);
+      selectionNotice = t(
+        `已定位至 ${liveRow.name}（点左上 ‹ 返回可退回原视野）`,
+        `Located ${liveRow.name} (use ‹ Back to return)`
+      );
+      updateSummary();
+    }
+  });
+}
+
+function compareModelsFromUpdates(rows, targetTab = 'models', mediaKind = null, noticeText = '') {
+  if (!Array.isArray(rows) || !rows.length) return;
+  setChangelogOpen(false, {restoreFocus: false});
+  runNavAction(() => {
+    const safeTab = BENCHMARKS[targetTab] ? targetTab : 'models';
+    chooseChart(safeTab, {changeHash: false});
+    if (safeTab === 'media' && state) {
+      const targetTrack = mediaKind || rows[0]?.mediaKind || state.baseRows.find(r => r.id === rows[0]?.id)?.mediaKind;
+      if (targetTrack && state.mediaTrack !== targetTrack) {
+        setMediaTrack(targetTrack, {reRender: false, updateUrl: false});
+      }
+    }
+    if (!state) return;
+    const validIds = new Set(state.rows.map(r => r.id));
+    let ids = [...new Set(rows.map(r => r.id).filter(id => validIds.has(id)))].slice(0, MAX_COMPARE);
+    if (ids.length === 1) {
+      const extras = state.compareIds.filter(id => id !== ids[0] && validIds.has(id)).slice(0, 2);
+      ids = [...ids, ...extras];
+    }
+    if (ids.length) {
+      state.compareIds = ids;
+      if (!['coding-agents', 'media'].includes(activeKey)) lastModelCompareIds = [...ids];
+    }
+    renderLegend();
+    showView('compare');
+    selectionNotice = noticeText || t(
+      `已载入 ${ids.length} 款动态关联模型进入剖析对比（点左上 ‹ 返回可退回）`,
+      `Loaded ${ids.length} models from Updates into Compare view`
+    );
+    updateSummary();
+  });
+}
+
+function updateItemBadge(entry) {
+  if (entry.source === 'diff') {
+    const ev = entry.event;
+    if (ev.kind === 'new') return {text: `${t('新上榜', 'NEW')} ${format(ev.score, 1)}`, cls: 'diff-badge is-good'};
+    if (ev.kind === 'price-drop') return {text: `${t('降价', 'Drop')} ${ev.pct}%`, cls: 'diff-badge is-good'};
+    if (ev.kind === 'price-up') return {text: `${t('涨价', 'Up')} +${ev.pct}%`, cls: 'diff-badge is-warn'};
+    const sign = ev.delta > 0 ? '+' : '';
+    return {text: `${t('跑分', 'Score')} ${sign}${ev.delta}`, cls: ev.delta >= 0 ? 'diff-badge is-good' : 'diff-badge is-warn'};
+  }
+  const cls = entry.kind === 'article'
+    ? 'diff-badge is-good'
+    : entry.kind === 'model-added'
+      ? 'diff-badge is-neutral'
+      : 'diff-badge is-neutral';
+  return {text: t(entry.typeLabel.zh, entry.typeLabel.en), cls};
+}
+
+function updateItemSubline(entry) {
+  if (entry.source === 'diff') {
+    const ev = entry.event;
+    const creator = ev.creator ? `${ev.creator} · ` : '';
+    if ((ev.kind === 'price-drop' || ev.kind === 'price-up') && Number.isFinite(ev.oldCost) && Number.isFinite(ev.cost)) {
+      return `${creator}${money(ev.oldCost)} → ${money(ev.cost)}`;
+    }
+    if (ev.kind === 'score' && Number.isFinite(ev.oldScore) && Number.isFinite(ev.score)) {
+      return `${creator}${format(ev.oldScore, 1)} → ${format(ev.score, 1)}`;
+    }
+    if (Number.isFinite(ev.cost)) {
+      return `${creator}${t('单次成本', 'Cost')} ${money(ev.cost)}`;
+    }
+    return ev.creator || t('点击查看详细变动', 'Click for details');
+  }
+  if (entry.meta?.creator && Number.isFinite(entry.meta.score)) {
+    return `${entry.meta.creator} · ${t('智能分', 'Index')} ${format(entry.meta.score, 1)}`;
+  }
+  return entry.kind === 'article'
+    ? t('官方评测报告 · 点击展开关联模型', 'Official article · click for models')
+    : t('官方新收录 · 点击查看详细数据', 'Official release · click for details');
+}
+
+function renderModelTelemetryBlocks(frag, ctx, {showSiblings = true} = {}) {
+  const {row, tab, scoreRank, suiteTotal, isPareto, medianCost, costVsMedian} = ctx;
+
+  // 1. 4-Cell KPI Grid
+  const kpiGrid = html('div', null, 'upd-kpi-grid');
+  const scoreLabel = tab === 'coding-agents'
+    ? t('智能体指数', 'Agent Index')
+    : tab === 'media'
+      ? t('质量得分', 'Quality')
+      : t('综合智能分', 'Intel Index');
+  const costLabel = tab === 'media'
+    ? (row.mediaKind === 'image' ? t('单张成本', 'Cost / img') : row.mediaKind === 'video' ? t('单段 5s 成本', 'Cost / 5s') : t('千字成本', 'Cost / 1k ch'))
+    : t('单任务成本', 'Cost / task');
+
+  const kpiCard = (lbl, val, sub) => {
+    const card = html('div', null, 'upd-kpi');
+    card.append(html('span', lbl, 'upd-kpi-label'), html('strong', val, 'upd-kpi-val'));
+    if (sub) card.append(html('span', sub, 'upd-kpi-sub'));
+    return card;
+  };
+
+  let costSub = '';
+  if (costVsMedian != null && medianCost > 0) {
+    costSub = costVsMedian <= 1
+      ? t(`低于中位 ${Math.round((1 - costVsMedian) * 100)}%`, `${Math.round((1 - costVsMedian) * 100)}% below median`)
+      : t(`为中位价 ${format(costVsMedian, 1)}×`, `${format(costVsMedian, 1)}× median`);
+  }
+  const statusVal = isPareto
+    ? t('帕累托前沿', 'Pareto')
+    : row.livebench
+      ? `LB2 #${row.livebench.rank}`
+      : row.isOpenWeights
+        ? t('开源权重', 'Open')
+        : t('常规在榜', 'Listed');
+  const statusSub = isPareto
+    ? t('同价位最高智能', 'Best score at price')
+    : row.livebench
+      ? `LiveBench ${format(row.livebench.overall, 1)}`
+      : (row.releaseDate ? t(`发布 ${row.releaseDate}`, `Rel ${row.releaseDate}`) : t('当前在榜', 'In leaderboard'));
+
+  const be20 = row.cost > 0 ? breakEvenTasks(row.cost, 20) : null;
+  const timeSub = row.mediaRaw?.unitZh
+    ? t(row.mediaRaw.unitZh, row.mediaRaw.unitEn)
+    : be20 != null
+      ? t(`$20 回本 ~${be20 >= 100 ? Math.round(be20) : format(be20, 1)} 次`, `$20 ~${be20 >= 100 ? Math.round(be20) : format(be20, 1)}×`)
+      : '';
+
+  kpiGrid.append(
+    kpiCard(scoreLabel, format(row.intelligenceIndex, 2), scoreRank ? t(`本榜 #${scoreRank} / ${suiteTotal}`, `Rank #${scoreRank} / ${suiteTotal}`) : ''),
+    kpiCard(costLabel, money(row.cost), costSub),
+    kpiCard(t('平均耗时', 'Latency'), formatTime(row.timeSec), timeSub),
+    kpiCard(t('格局定位', 'Standing'), statusVal, statusSub)
+  );
+  frag.append(kpiGrid);
+
+  // 2. Unified Caveats
+  if (ctx.caveats?.length) {
+    const cavWrap = html('div', null, 'upd-caveats');
+    for (const cv of ctx.caveats) {
+      cavWrap.append(html('span', `△ ${t(cv.zh, cv.en)}`, 'picker-sig is-warn'));
+    }
+    frag.append(cavWrap);
+  }
+
+  // 3. Cross-Leaderboard Standings
+  const crossDefs = [
+    ['models', '综合智能', 'Intelligence'],
+    ['frontier', '前沿极限', 'Frontier'],
+    ['human-arena', '人类审美', 'Human Arena'],
+    ['cyber', '网络安全', 'Cyber']
+  ];
+  const crossEntries = ctx.crossInfo
+    ? crossDefs.filter(([k]) => ctx.crossInfo[k] && !$(`#tab-${k}`)?.hidden)
+    : [];
+  if (crossEntries.length >= 2 || ctx.hasOrgRanks) {
+    const sec = html('section', null, 'upd-section');
+    sec.append(html('h4', t('跨榜实测排名（点击直达）', 'Cross-Leaderboard Standings (click to jump)'), 'upd-section-title'));
+    const pills = html('div', null, 'upd-cross-pills');
+    for (const [tabKey, zhLbl, enLbl] of crossEntries) {
+      const info = ctx.crossInfo[tabKey];
+      const pill = html('button', `${t(zhLbl, enLbl)} ${format(info.score, 1)} (#${info.rank})`, 'cross-tab-pill');
+      pill.type = 'button';
+      if (tabKey === tab) pill.classList.add('is-current');
+      pill.addEventListener('click', () => jumpToModelFromUpdates(row, tabKey));
+      pills.append(pill);
+    }
+    if (row.livebench) {
+      const lbBtn = html('button', `LiveBench 2.0: ${format(row.livebench.overall, 1)} (#${row.livebench.rank})`, 'cross-tab-pill');
+      lbBtn.type = 'button';
+      lbBtn.addEventListener('click', () => {
+        setChangelogOpen(false, {restoreFocus: false});
         runNavAction(() => {
-          const targetTab = BENCHMARKS[ev.tab] ? ev.tab : 'models';
-          chooseChart(targetTab);
-          if (targetTab === 'media' && state) {
-            const targetTrack = ev.mediaKind || state.baseRows.find(r => r.id === ev.id)?.mediaKind;
-            if (targetTrack && state.mediaTrack !== targetTrack) setMediaTrack(targetTrack);
-          }
-          const found = state?.rows.find(r => r.id === ev.id);
-          if (found) locateRowInChart(found);
+          orgFocus = 'livebench';
+          orgPinnedKey = row.id;
+          orgSpotlightKey = row.id;
+          chooseChart('orgs');
         });
       });
-      li.append(btn);
-      frag.append(li);
+      pills.append(lbBtn);
+    }
+    if (orgRankIndex.has(row.id)) {
+      const orgBtn = html('button', t('6 家机构原榜对照 →', '6 Org Boards →'), 'cross-tab-pill');
+      orgBtn.type = 'button';
+      orgBtn.addEventListener('click', () => {
+        setChangelogOpen(false, {restoreFocus: false});
+        runNavAction(() => {
+          orgFocus = 'all';
+          orgPinnedKey = row.id;
+          orgSpotlightKey = row.id;
+          chooseChart('orgs');
+        });
+      });
+      pills.append(orgBtn);
+    }
+    sec.append(pills);
+    frag.append(sec);
+  }
+
+  // 4. Subscore Highlights
+  if (ctx.subscoreHighlights?.length) {
+    const sec = html('section', null, 'upd-section');
+    sec.append(html('h4', t('核心分项实测明细', 'Key Benchmark Breakdown'), 'upd-section-title'));
+    const grid = html('div', null, 'upd-bar-grid');
+    for (const item of ctx.subscoreHighlights) {
+      const r = html('div', null, 'upd-bar-row');
+      const head = html('div', null, 'upd-bar-head');
+      head.append(
+        html('span', t(item.zh, item.en), 'upd-bar-name'),
+        html('span', `${format(item.value, 1)}${item.unit || ''}`, 'upd-bar-val')
+      );
+      const track = html('div', null, 'upd-bar-track');
+      const fill = html('div', null, 'upd-bar-fill');
+      const pct = Math.max(0, Math.min(100, (item.value / (item.max || 100)) * 100));
+      fill.style.width = `${pct.toFixed(1)}%`;
+      if (item.lowerIsBetter && item.value >= 45) fill.classList.add('is-warn');
+      track.append(fill);
+      r.append(head, track);
+      grid.append(r);
+    }
+    sec.append(grid);
+    frag.append(sec);
+  }
+
+  // 5. Media or Coding-Agent Telemetry Facts
+  if (ctx.mediaMetrics?.facts?.length) {
+    const sec = html('section', null, 'upd-section');
+    sec.append(html('h4', t('多模态实测参数与单价口径', 'Multimodal Telemetry & Pricing'), 'upd-section-title'));
+    const grid = html('div', null, 'upd-facts-grid');
+    for (const f of ctx.mediaMetrics.facts) {
+      const chip = html('div', null, 'upd-fact-chip');
+      chip.append(html('span', t(f.zh, f.en)), html('strong', f.text));
+      grid.append(chip);
+    }
+    sec.append(grid);
+    frag.append(sec);
+  } else if (ctx.agentMetrics?.length) {
+    const sec = html('section', null, 'upd-section');
+    sec.append(html('h4', t('智能体执行画像', 'Coding Agent Execution Profile'), 'upd-section-title'));
+    const grid = html('div', null, 'upd-facts-grid');
+    for (const f of ctx.agentMetrics) {
+      const chip = html('div', null, 'upd-fact-chip');
+      chip.append(html('span', t(f.zh, f.en)), html('strong', f.text));
+      grid.append(chip);
+    }
+    sec.append(grid);
+    frag.append(sec);
+  }
+
+  // 6. Cost Anatomy (LLM Breakdown or Agent Percentiles)
+  if (ctx.costAnatomy?.kind === 'breakdown') {
+    const sec = html('section', null, 'upd-section');
+    sec.append(html('h4', t('单任务成本结构拆解', 'Per-Task Cost Breakdown'), 'upd-section-title'));
+    const card = html('div', null, 'upd-anatomy-card');
+    const bar = html('div', null, 'upd-anatomy-bar');
+    const leg = html('div', null, 'upd-anatomy-legend');
+    for (const seg of ctx.costAnatomy.segments) {
+      const sEl = html('div', null, `upd-anatomy-seg is-${seg.key}`);
+      sEl.style.width = `${seg.pct.toFixed(1)}%`;
+      bar.append(sEl);
+      const lEl = html('span');
+      lEl.append(
+        html('i', null, `upd-anatomy-dot is-${seg.key}`),
+        document.createTextNode(`${t(seg.zh, seg.en)} ${money(seg.cost)} (${Math.round(seg.pct)}%)`)
+      );
+      leg.append(lEl);
+    }
+    card.append(bar, leg);
+    sec.append(card);
+    frag.append(sec);
+  } else if (ctx.costAnatomy?.kind === 'percentiles') {
+    const p = ctx.costAnatomy;
+    const sec = html('section', null, 'upd-section');
+    sec.append(html('h4', t('任务成本分位数分布（越右越贵）', 'Task Cost Percentiles'), 'upd-section-title'));
+    const grid = html('div', null, 'upd-facts-grid');
+    const defs = [
+      ['P25 轻任务', 'P25 Light', p.p25],
+      ['P50 中位任务', 'P50 Median', p.p50],
+      ['P95 重任务', 'P95 Heavy', p.p95]
+    ];
+    for (const [zh, en, val] of defs) {
+      if (!Number.isFinite(val)) continue;
+      const chip = html('div', null, 'upd-fact-chip');
+      chip.append(html('span', t(zh, en)), html('strong', money(val)));
+      grid.append(chip);
+    }
+    if (grid.childNodes.length) {
+      sec.append(grid);
+      frag.append(sec);
     }
   }
-  const items = Array.isArray(snapshot?.changelog) ? snapshot.changelog : [];
-  const typeLabelOf = raw => {
-    if (raw === 'model') return t('新模型', 'Model');
-    if (raw === 'benchmark' || raw === 'index') return t('基准更新', 'Benchmark');
-    if (raw === 'agent') return t('智能体', 'Agent');
-    return t('动态', 'Update');
-  };
-  if (items.length) {
-    if (diffs.length) {
-      frag.append(html('li', t('📰 Artificial Analysis 官方评测公告', '📰 Official Artificial Analysis Announcements'), 'diff-section-label'));
+
+  // 7. Multi-Cloud Providers
+  if (row.providers?.length >= 2) {
+    const sec = html('section', null, 'upd-section');
+    sec.append(html('h4', t(`多云推理比价（共 ${row.providers.length} 家主机）`, `Cloud Provider Pricing (${row.providers.length} hosts)`), 'upd-section-title'));
+    const grid = html('div', null, 'upd-facts-grid');
+    for (const pr of row.providers.slice(0, 3)) {
+      const chip = html('div', null, 'upd-fact-chip');
+      chip.append(
+        html('span', pr.host),
+        html('strong', `${money(pr.cost)}${pr.timeSec > 0 ? ` · ${formatTime(pr.timeSec)}` : ''}`)
+      );
+      grid.append(chip);
     }
-    for (const item of items.slice(0, 8)) {
-      const li = html('li', null, 'changelog-item');
-      const meta = html('div', null, 'changelog-meta');
-      meta.append(html('span', item.date), html('span', typeLabelOf(item.type), 'row-tag'));
-      if (item.url) {
-        const link = html('a', item.title);
-        link.href = item.url;
-        link.target = '_blank';
-        link.rel = 'noopener';
-        li.append(meta, link);
-      } else {
-        li.append(meta, html('span', item.title));
+    sec.append(grid);
+    frag.append(sec);
+  }
+
+  // 8. Sibling Effort Variants
+  if (showSiblings && ctx.siblings?.length >= 2) {
+    const sec = html('section', null, 'upd-section');
+    sec.append(html('h4', t(`同系列推理档位对照（${ctx.siblings.length} 档）`, `Family Effort Tiers (${ctx.siblings.length})`), 'upd-section-title'));
+    const list = html('div', null, 'upd-rel-list');
+    for (const sib of ctx.siblings) {
+      const isCur = sib.id === row.id;
+      const rEl = html('div', null, `upd-rel-row${isCur ? ' is-current' : ''}`);
+      const info = html('div', null, 'upd-rel-info');
+      const nm = html('div', null, 'upd-rel-name');
+      nm.append(document.createTextNode(sib.name));
+      if (isCur) nm.append(html('span', t('当前项', 'Current'), 'upd-tag is-accent'));
+      info.append(
+        nm,
+        html('div', `${t('得分', 'Score')} ${format(sib.intelligenceIndex, 2)} · ${t('成本', 'Cost')} ${money(sib.cost)} · ${t('耗时', 'Time')} ${formatTime(sib.timeSec)}`, 'upd-rel-meta')
+      );
+      const btns = html('div', null, 'upd-rel-btns');
+      const locBtn = html('button', t('定位', 'Locate'), 'locate-btn');
+      locBtn.type = 'button';
+      locBtn.addEventListener('click', () => jumpToModelFromUpdates(sib, tab, sib.mediaKind));
+      btns.append(locBtn);
+      rEl.append(info, btns);
+      list.append(rEl);
+    }
+    sec.append(list);
+    frag.append(sec);
+  }
+}
+
+function renderUpdatesDetail(detail, visibleItems) {
+  const pane = $('#updatesDetailPane');
+  if (!pane) return;
+  if (!detail) {
+    pane.replaceChildren(html('div', t('选择左侧任意动态条目查看完整实况与数据拆解。', 'Select any item on the left to inspect full details and telemetry.'), 'upd-empty'));
+    return;
+  }
+
+  const {entry, diffSummary, primaryModel, matchedModels, articleStats, relatedFeed, unplotted} = detail;
+  const frag = document.createDocumentFragment();
+  const curIdx = visibleItems.findIndex(it => it.key === entry.key);
+
+  // Mobile Drill-Down Back & Step Bar
+  const mobileNav = html('div', null, 'upd-mobile-nav');
+  const backBtn = html('button', t('‹ 返回动态列表', '‹ Back to list'), 'upd-mobile-back');
+  backBtn.type = 'button';
+  backBtn.addEventListener('click', () => {
+    updatesMobileDetail = false;
+    $('#updatesBody')?.classList.remove('is-mobile-detail');
+  });
+  const stepBox = html('div', null, 'upd-mobile-step');
+  const prevBtn = html('button', '‹');
+  prevBtn.type = 'button';
+  prevBtn.setAttribute('aria-label', t('上一条动态', 'Previous update'));
+  prevBtn.disabled = curIdx <= 0;
+  prevBtn.addEventListener('click', () => stepUpdateSelection(-1));
+  const nextBtn = html('button', '›');
+  nextBtn.type = 'button';
+  nextBtn.setAttribute('aria-label', t('下一条动态', 'Next update'));
+  nextBtn.disabled = curIdx < 0 || curIdx >= visibleItems.length - 1;
+  nextBtn.addEventListener('click', () => stepUpdateSelection(1));
+  stepBox.append(prevBtn, html('span', `${curIdx + 1} / ${visibleItems.length}`), nextBtn);
+  mobileNav.append(backBtn, stepBox);
+  frag.append(mobileNav);
+
+  // Hero Section
+  const hero = html('div', null, 'upd-hero');
+  const tags = html('div', null, 'upd-hero-tags');
+  const badgeInfo = updateItemBadge(entry);
+  tags.append(html('span', badgeInfo.text, badgeInfo.cls));
+  if (entry.source === 'diff' && entry.tabTag) {
+    tags.append(html('span', t(entry.tabTag.zh, entry.tabTag.en), 'upd-tag'));
+  } else {
+    tags.append(html('span', t('Artificial Analysis 官方', 'Artificial Analysis Official'), 'upd-tag'));
+  }
+  if (primaryModel?.row?.isOpenWeights) {
+    const pTxt = primaryModel.row.parametersB ? `${t('开源', 'Open')} ${primaryModel.row.parametersB}B` : t('开源权重', 'Open Weights');
+    tags.append(html('span', pTxt, 'upd-tag is-accent'));
+  }
+  if (primaryModel?.isPareto) {
+    tags.append(html('span', t('帕累托前沿', 'Pareto Frontier'), 'upd-tag is-accent'));
+  }
+  if (entry.date) tags.append(html('span', entry.date, 'upd-date-pill'));
+  hero.append(tags);
+
+  const titleEl = html('h3', null, 'upd-hero-title');
+  if (primaryModel?.row?.creator?.color) {
+    const dot = html('i', null, 'creator-dot');
+    dot.style.background = color(primaryModel.row.creator.color);
+    titleEl.append(dot);
+  }
+  titleEl.append(document.createTextNode(primaryModel?.row?.name || entry.title));
+  hero.append(titleEl);
+
+  const metaBits = [];
+  const creatorName = primaryModel?.row?.creator?.name || entry.creator || unplotted?.meta?.creator;
+  if (creatorName) metaBits.push(creatorName);
+  if (primaryModel?.row?.effort?.label) metaBits.push(`${t('推理档位', 'Effort')}: ${primaryModel.row.effort.label}`);
+  if (primaryModel?.row?.modalities?.length) metaBits.push(modalitySummary(primaryModel.row));
+  if (primaryModel?.row?.refusalRate != null) metaBits.push(t(`安全拒答率 ${format(primaryModel.row.refusalRate, 1)}%`, `Refusal ${format(primaryModel.row.refusalRate, 1)}%`));
+  if (primaryModel?.row?.releaseDate) metaBits.push(t(`发布日期 ${primaryModel.row.releaseDate}`, `Released ${primaryModel.row.releaseDate}`));
+  if (metaBits.length) hero.append(html('div', metaBits.join(' · '), 'upd-hero-meta'));
+  frag.append(hero);
+
+  // Diff Before -> After Banner (for price / score / new diff events)
+  if (diffSummary && (diffSummary.kind === 'price-drop' || diffSummary.kind === 'price-up')) {
+    const isDrop = diffSummary.kind === 'price-drop';
+    const banner = html('div', null, `upd-diff-banner ${isDrop ? 'is-good' : 'is-warn'}`);
+    const mainRow = html('div', null, 'upd-diff-main');
+    const nums = html('div', null, 'upd-diff-numbers');
+    if (diffSummary.oldCost != null) nums.append(html('span', money(diffSummary.oldCost), 'upd-diff-old'));
+    nums.append(html('span', '→', 'upd-diff-arrow'));
+    if (diffSummary.newCost != null) nums.append(html('span', money(diffSummary.newCost), 'upd-diff-new'));
+    const pctTxt = diffSummary.pct != null ? `${diffSummary.pct > 0 ? '+' : ''}${diffSummary.pct}%` : '';
+    mainRow.append(nums, html('span', `${isDrop ? t('单任务降价', 'Price Drop') : t('单任务涨价', 'Price Increase')} ${pctTxt}`, `diff-badge ${isDrop ? 'is-good' : 'is-warn'}`));
+    banner.append(mainRow);
+
+    const subLines = [];
+    if (diffSummary.costDelta != null) {
+      const signedDelta = `${diffSummary.costDelta < 0 ? '-' : '+'}${money(Math.abs(diffSummary.costDelta))}`;
+      subLines.push(t(
+        `每次基准任务费用变动 ${signedDelta}。`,
+        `Per-task cost shifted by ${signedDelta}.`
+      ));
+    }
+    if (diffSummary.oldBreakeven20 && diffSummary.newBreakeven20 && diffSummary.oldBreakeven20 !== diffSummary.newBreakeven20) {
+      subLines.push(t(
+        `按 $20/月订阅折算，月度回本任务数由约 ${diffSummary.oldBreakeven20} 次变为约 ${diffSummary.newBreakeven20} 次。`,
+        `Against a $20/mo plan, monthly break-even shifts from ~${diffSummary.oldBreakeven20} to ~${diffSummary.newBreakeven20} tasks.`
+      ));
+    }
+    if (diffSummary.cheaperHost) {
+      subLines.push(t(
+        `多云省钱提示：当前 ${diffSummary.cheaperHost.host} 实测低至 ${money(diffSummary.cheaperHost.cost)}。`,
+        `Cloud savings: ${diffSummary.cheaperHost.host} currently runs at ${money(diffSummary.cheaperHost.cost)}.`
+      ));
+    }
+    if (subLines.length) banner.append(html('div', subLines.join(' '), 'upd-diff-sub'));
+    frag.append(banner);
+  } else if (diffSummary && diffSummary.kind === 'score') {
+    const isUp = (diffSummary.delta ?? 0) >= 0;
+    const banner = html('div', null, `upd-diff-banner ${isUp ? 'is-good' : 'is-warn'}`);
+    const mainRow = html('div', null, 'upd-diff-main');
+    const nums = html('div', null, 'upd-diff-numbers');
+    if (diffSummary.oldScore != null) nums.append(html('span', format(diffSummary.oldScore, 1), 'upd-diff-old'));
+    nums.append(html('span', '→', 'upd-diff-arrow'));
+    if (diffSummary.newScore != null) nums.append(html('span', format(diffSummary.newScore, 2), 'upd-diff-new'));
+    mainRow.append(nums, html('span', `${t('跑分刷新', 'Score Shift')} ${isUp ? '+' : ''}${diffSummary.delta}`, `diff-badge ${isUp ? 'is-good' : 'is-warn'}`));
+    banner.append(mainRow);
+    banner.append(html('div', t('上游基准测评刷新导致得分变化，下方可查看最新各分项实测与多榜位次。', 'Upstream evaluation refresh updated the benchmark score. See full breakdown below.'), 'upd-diff-sub'));
+    frag.append(banner);
+  }
+
+  // Primary Model Full Telemetry (for Diffs, matched Model Added, or single-model Articles)
+  if (primaryModel) {
+    renderModelTelemetryBlocks(frag, primaryModel, {showSiblings: true});
+  }
+
+  // Multi-Model Article Summary & Interactive Matched Models List
+  if (detail.detailKind === 'official-article') {
+    if (articleStats && matchedModels.length >= 2) {
+      const summaryCard = html('div', null, 'upd-diff-banner is-good');
+      summaryCard.append(
+        html('div', t(
+          `本站已收录文中提及的 ${articleStats.familyCount} 个模型系列（共 ${articleStats.variantCount} 个在榜档位）`,
+          `Matched ${articleStats.familyCount} model families (${articleStats.variantCount} plotted variants) from this article`
+        ), 'upd-diff-sub'),
+        html('div', t(
+          `最高综合智能 ${format(articleStats.topRow.intelligenceIndex, 2)}（${articleStats.topRow.name}，本榜 #${articleStats.topRank} / ${articleStats.topSuiteTotal}）${articleStats.minCost != null ? ` · 单任务成本区间 ${money(articleStats.minCost)} – ${money(articleStats.maxCost)}` : ''}`,
+          `Peak score ${format(articleStats.topRow.intelligenceIndex, 2)} (${articleStats.topRow.name}, #${articleStats.topRank}/${articleStats.topSuiteTotal})${articleStats.minCost != null ? ` · Cost range ${money(articleStats.minCost)}–${money(articleStats.maxCost)}` : ''}`
+        ), 'upd-diff-sub')
+      );
+      frag.append(summaryCard);
+
+      const sec = html('section', null, 'upd-section');
+      sec.append(html('h4', t(`文中关联模型实测一览（${matchedModels.length} 项）`, `Mentioned Models in Live Leaderboard (${matchedModels.length})`), 'upd-section-title'));
+      const list = html('div', null, 'upd-rel-list');
+      for (const mCtx of matchedModels) {
+        const r = mCtx.row;
+        const rEl = html('div', null, 'upd-rel-row');
+        const info = html('div', null, 'upd-rel-info');
+        const nm = html('div', null, 'upd-rel-name');
+        if (r.creator?.color) {
+          const dot = html('i', null, 'creator-dot');
+          dot.style.background = color(r.creator.color);
+          nm.append(dot);
+        }
+        nm.append(document.createTextNode(r.name));
+        if (mCtx.isPareto) nm.append(html('span', t('前沿', 'Pareto'), 'upd-tag is-accent'));
+        info.append(
+          nm,
+          html('div', `${t('综合分', 'Score')} ${format(r.intelligenceIndex, 2)} (#${mCtx.scoreRank}) · ${t('成本', 'Cost')} ${money(r.cost)} · ${t('耗时', 'Time')} ${formatTime(r.timeSec)}`, 'upd-rel-meta')
+        );
+        const btns = html('div', null, 'upd-rel-btns');
+        const locBtn = html('button', t('定位', 'Locate'), 'locate-btn');
+        locBtn.type = 'button';
+        locBtn.addEventListener('click', () => jumpToModelFromUpdates(r, mCtx.tab, r.mediaKind));
+        const cmpBtn = html('button', t('对比', 'Compare'), 'locate-btn');
+        cmpBtn.type = 'button';
+        cmpBtn.addEventListener('click', () => compareModelsFromUpdates([r], mCtx.tab, r.mediaKind));
+        btns.append(locBtn, cmpBtn);
+        rEl.append(info, btns);
+        list.append(rEl);
       }
-      frag.append(li);
+      sec.append(list);
+      frag.append(sec);
+    } else if (!matchedModels.length) {
+      const card = html('div', null, 'upd-notice-card');
+      card.append(
+        html('strong', t('Artificial Analysis 官方深度文章 / 基准公告', 'Official Artificial Analysis Article / Announcement')),
+        html('span', t('该篇公告暂未直接关联到本站单款在榜模型数据，可点击下方按钮前往 Artificial Analysis 官网阅读完整评测报告。', 'This announcement does not directly map to a single plotted model entry. Click below to read the full upstream report on Artificial Analysis.'))
+      );
+      frag.append(card);
     }
-  } else if (!diffs.length) {
-    frag.append(html('li', t('每 2 小时自动检查 Artificial Analysis 上游榜单更新。', 'Checked every 2 hours against upstream Artificial Analysis releases.'), 'changelog-item'));
   }
-  list.replaceChildren(frag);
+
+  // Unplotted / Unpriced Official Model or Archived Diff Fallback
+  if (unplotted) {
+    const card = html('div', null, 'upd-notice-card');
+    card.append(html('strong', t('暂未绘入成本散点图说明', 'Why This Entry Is Not Plotted')));
+    card.append(html('span', t(unplotted.reasonZh, unplotted.reasonEn)));
+    if (unplotted.meta) {
+      const m = unplotted.meta;
+      const metaGrid = html('div', null, 'upd-facts-grid');
+      if (Number.isFinite(m.score)) {
+        const chip = html('div', null, 'upd-fact-chip');
+        chip.append(
+          html('span', t('上游综合智能分', 'Upstream Intel Index')),
+          html('strong', `${format(m.score, 2)}${unplotted.hypotheticalRank ? t(`（约第 ${unplotted.hypotheticalRank} 名）`, ` (~#${unplotted.hypotheticalRank})`) : ''}`)
+        );
+        metaGrid.append(chip);
+      }
+      if (m.creator) {
+        const chip = html('div', null, 'upd-fact-chip');
+        chip.append(html('span', t('开发厂商', 'Creator')), html('strong', m.creator));
+        metaGrid.append(chip);
+      }
+      const licChip = html('div', null, 'upd-fact-chip');
+      licChip.append(
+        html('span', t('权重许可', 'Weights')),
+        html('strong', m.isOpenWeights ? t('开源权重', 'Open Weights') : t('闭源商用', 'Proprietary'))
+      );
+      metaGrid.append(licChip);
+      card.append(metaGrid);
+    } else if (entry.source === 'diff' && diffSummary) {
+      const metaGrid = html('div', null, 'upd-facts-grid');
+      if (Number.isFinite(diffSummary.score)) {
+        const c = html('div', null, 'upd-fact-chip');
+        c.append(html('span', t('记录得分', 'Recorded Score')), html('strong', format(diffSummary.score, 1)));
+        metaGrid.append(c);
+      }
+      if (Number.isFinite(diffSummary.cost)) {
+        const c = html('div', null, 'upd-fact-chip');
+        c.append(html('span', t('记录成本', 'Recorded Cost')), html('strong', money(diffSummary.cost)));
+        metaGrid.append(c);
+      }
+      if (metaGrid.childNodes.length) card.append(metaGrid);
+    }
+    frag.append(card);
+
+    if (unplotted.sameCreatorPeers?.length) {
+      const sec = html('section', null, 'upd-section');
+      sec.append(html('h4', t('同厂商当前在榜模型', 'Same-Creator Plotted Models'), 'upd-section-title'));
+      const list = html('div', null, 'upd-rel-list');
+      for (const peer of unplotted.sameCreatorPeers) {
+        const r = peer.row;
+        const rEl = html('div', null, 'upd-rel-row');
+        const info = html('div', null, 'upd-rel-info');
+        info.append(
+          html('div', r.name, 'upd-rel-name'),
+          html('div', `${t('综合分', 'Score')} ${format(r.intelligenceIndex, 2)} · ${t('成本', 'Cost')} ${money(r.cost)}`, 'upd-rel-meta')
+        );
+        const btns = html('div', null, 'upd-rel-btns');
+        const locBtn = html('button', t('定位', 'Locate'), 'locate-btn');
+        locBtn.type = 'button';
+        locBtn.addEventListener('click', () => jumpToModelFromUpdates(r, peer.tab));
+        btns.append(locBtn);
+        rEl.append(info, btns);
+        list.append(rEl);
+      }
+      sec.append(list);
+      frag.append(sec);
+    }
+  }
+
+  // Related Feed Cross-Links (between Diffs and Official Announcements)
+  if (relatedFeed?.length) {
+    const sec = html('section', null, 'upd-section');
+    sec.append(html('h4', t('相关联动态（点击切换详情）', 'Related Updates (click to inspect)'), 'upd-section-title'));
+    const list = html('div', null, 'upd-crosslink-list');
+    for (const rel of relatedFeed) {
+      const btn = html('button', null, 'upd-crosslink-btn');
+      btn.type = 'button';
+      const relBadge = updateItemBadge(rel);
+      const txt = html('span', `${rel.date} · ${rel.title}`, 'upd-item-sub-text');
+      btn.append(txt, html('span', relBadge.text, relBadge.cls));
+      btn.addEventListener('click', () => {
+        if (updatesFilter !== 'all' && !filterUpdateFeed([rel], updatesFilter).length) {
+          updatesFilter = 'all';
+        }
+        selectUpdateItem(rel.key, {openMobileDetail: true, fullRender: true});
+      });
+      list.append(btn);
+    }
+    sec.append(list);
+    frag.append(sec);
+  }
+
+  // Action Bar
+  const actions = html('div', null, 'upd-actions');
+  if (primaryModel) {
+    const row = primaryModel.row;
+    const locBtn = html('button', t('在散点图中定位', 'Locate on Chart'), 'upd-btn-primary');
+    locBtn.type = 'button';
+    locBtn.addEventListener('click', () => jumpToModelFromUpdates(row, primaryModel.tab, primaryModel.mediaKind));
+    actions.append(locBtn);
+
+    const sameTabContext = state && activeKey === primaryModel.tab && (primaryModel.tab !== 'media' || state.mediaTrack === primaryModel.mediaKind);
+    const inCmp = sameTabContext && state.compareIds.includes(row.id);
+    const cmpBtn = html('button', sameTabContext
+      ? (inCmp ? t('已加入对比 ✓', 'In Compare ✓') : t('+ 加入对比', '+ Compare'))
+      : t('剖析对比 →', 'Compare →'), 'upd-btn-secondary');
+    cmpBtn.type = 'button';
+    if (sameTabContext) cmpBtn.setAttribute('aria-pressed', String(inCmp));
+    cmpBtn.addEventListener('click', () => {
+      if (sameTabContext) {
+        toggleCompareId(row.id);
+        renderChangelog({preserveListScroll: true});
+      } else {
+        compareModelsFromUpdates([row], primaryModel.tab, primaryModel.mediaKind);
+      }
+    });
+    actions.append(cmpBtn);
+
+    const starred = isStarred(row);
+    const starBtn = html('button', starred ? t('★ 已关注', '★ Starred') : t('☆ 关注', '☆ Star'), 'upd-btn-secondary');
+    starBtn.type = 'button';
+    starBtn.setAttribute('aria-pressed', String(starred));
+    starBtn.addEventListener('click', () => {
+      toggleStar(row);
+      renderChangelog({preserveListScroll: true});
+    });
+    actions.append(starBtn);
+  } else if (matchedModels.length >= 2) {
+    const cmpCount = Math.min(matchedModels.length, MAX_COMPARE);
+    const cmpAllBtn = html('button', t(`一键对比文中模型 (${cmpCount})`, `Compare Mentioned Models (${cmpCount})`), 'upd-btn-primary');
+    cmpAllBtn.type = 'button';
+    cmpAllBtn.addEventListener('click', () => {
+      compareModelsFromUpdates(
+        matchedModels.map(m => m.row),
+        articleStats?.tab || 'models',
+        matchedModels[0]?.mediaKind,
+        t(`已载入公告关联的 ${cmpCount} 款模型进入剖析对比`, `Loaded ${cmpCount} models from official announcement into Compare view`)
+      );
+    });
+    actions.append(cmpAllBtn);
+  }
+
+  if (entry.url) {
+    const ext = html('a', entry.kind === 'article'
+      ? t('阅读 Artificial Analysis 原文 ↗', 'Read Official Article ↗')
+      : t('查看 Artificial Analysis 官方页 ↗', 'View on Artificial Analysis ↗'), primaryModel || matchedModels.length >= 2 ? 'upd-btn-secondary' : 'upd-btn-primary');
+    ext.href = entry.url;
+    ext.target = '_blank';
+    ext.rel = 'noopener';
+    actions.append(ext);
+  }
+
+  if (actions.childNodes.length) frag.append(actions);
+  pane.replaceChildren(frag);
+  pane.scrollTop = 0;
+}
+
+function selectUpdateItem(key, {openMobileDetail = false, fullRender = false} = {}) {
+  updatesSelectedKey = key;
+  if (openMobileDetail && mobileLayout.matches) {
+    updatesMobileDetail = true;
+  }
+  if (fullRender) {
+    renderChangelog({preserveListScroll: true});
+    return;
+  }
+  const feed = buildUpdateFeed(snapshot);
+  const visible = filterUpdateFeed(feed.items, updatesFilter);
+  const selected = visible.find(it => it.key === updatesSelectedKey) || visible[0] || null;
+  if (selected) updatesSelectedKey = selected.key;
+
+  const listPane = $('#updatesListPane');
+  if (listPane) {
+    for (const btn of listPane.querySelectorAll('.upd-item')) {
+      const active = btn.dataset.key === updatesSelectedKey;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-selected', String(active));
+    }
+  }
+  $('#updatesBody')?.classList.toggle('is-mobile-detail', updatesMobileDetail && mobileLayout.matches);
+  const detail = selected
+    ? resolveUpdateDetail(selected, snapshot, {crossTabIndex, orgRankIndex, feedItems: feed.items})
+    : null;
+  renderUpdatesDetail(detail, visible);
+}
+
+function stepUpdateSelection(delta) {
+  if (!snapshot) return;
+  const feed = buildUpdateFeed(snapshot);
+  const visible = filterUpdateFeed(feed.items, updatesFilter);
+  if (!visible.length) return;
+  const curIdx = visible.findIndex(it => it.key === updatesSelectedKey);
+  const nextIdx = curIdx === -1
+    ? 0
+    : Math.max(0, Math.min(visible.length - 1, curIdx + delta));
+  const next = visible[nextIdx];
+  if (!next) return;
+  selectUpdateItem(next.key, {openMobileDetail: updatesMobileDetail});
+  const activeBtn = $('#updatesListPane')?.querySelector('.upd-item.is-active');
+  activeBtn?.scrollIntoView({block: 'nearest'});
+}
+
+function renderChangelog({preserveListScroll = false} = {}) {
+  $('#changelogTitle').textContent = t('最新动态 · 实况变动与官方公告', 'Latest Updates · Live Diffs & Official Feed');
+  const feed = buildUpdateFeed(snapshot);
+  const dt = snapshot?.updatedAt ? new Date(snapshot.updatedAt) : null;
+  const ts = dt && Number.isFinite(dt.getTime())
+    ? dt.toLocaleString(lang === 'en' ? 'en-US' : 'zh-CN', {hour12: false})
+    : '';
+  $('#changelogTime').textContent = t(
+    `${ts ? `快照同步：${ts} · ` : ''}每 2 小时自动监测 · 实况变动 ${feed.counts.diff} 条 · 官方公告 ${feed.counts.official} 条`,
+    `${ts ? `Synced ${ts} · ` : ''}2h auto-check · ${feed.counts.diff} live diffs · ${feed.counts.official} official updates`
+  );
+  $('#updatesFootHint').textContent = mobileLayout.matches
+    ? t('点击任意条目查看完整数据拆解与多榜对照', 'Tap any item for full telemetry & cross-board standings')
+    : t(
+      '点击左侧任意条目查看完整数据拆解与多榜对照 · ↑↓ 切换 · Esc 关闭',
+      'Click any item for full telemetry & cross-board standings · ↑↓ navigate · Esc close'
+    );
+  $('#updatesSourceLink').textContent = t('Artificial Analysis 官网 ↗', 'Artificial Analysis ↗');
+
+  // Render Filter Tabs
+  const tabsEl = $('#updatesTabs');
+  tabsEl.setAttribute('aria-label', t('动态分类筛选', 'Filter update categories'));
+  const tabFrag = document.createDocumentFragment();
+  for (const f of UPDATE_FILTERS) {
+    const btn = html('button', null);
+    btn.type = 'button';
+    btn.setAttribute('role', 'tab');
+    btn.setAttribute('aria-selected', String(updatesFilter === f.id));
+    btn.append(
+      document.createTextNode(t(f.zh, f.en)),
+      html('span', String(feed.counts[f.id] ?? 0), 'upd-tab-count')
+    );
+    btn.addEventListener('click', () => {
+      updatesFilter = f.id;
+      updatesMobileDetail = false;
+      renderChangelog();
+    });
+    tabFrag.append(btn);
+  }
+  tabsEl.replaceChildren(tabFrag);
+
+  // Filter & Resolve Selection
+  const visible = filterUpdateFeed(feed.items, updatesFilter);
+  const selected = visible.find(it => it.key === updatesSelectedKey) || visible[0] || null;
+  updatesSelectedKey = selected?.key || null;
+
+  const listPane = $('#updatesListPane');
+  const prevScroll = preserveListScroll && listPane ? listPane.scrollTop : 0;
+  listPane.setAttribute('aria-label', t('动态列表', 'Updates list'));
+  const listFrag = document.createDocumentFragment();
+
+  if (!visible.length) {
+    listFrag.append(html('div', t('当前分类暂无动态记录；每 2 小时自动监测 Artificial Analysis 上游更新。', 'No updates in this category yet. Upstream releases are checked every 2 hours.'), 'upd-empty'));
+  } else {
+    let lastSection = null;
+    for (const entry of visible) {
+      if (updatesFilter === 'all' && entry.source !== lastSection) {
+        lastSection = entry.source;
+        listFrag.append(html(
+          'div',
+          entry.source === 'diff'
+            ? t('⚡ 自动监测：新上榜 / 价格调整 / 跑分刷新', '⚡ Live Tracker: New Arrivals, Price & Score Shifts')
+            : t('📰 Artificial Analysis 官方评测与收录公告', '📰 Official Artificial Analysis Releases & Articles'),
+          'diff-section-label'
+        ));
+      }
+      const isActive = entry.key === updatesSelectedKey;
+      const btn = html('button', null, `upd-item${isActive ? ' is-active' : ''}`);
+      btn.type = 'button';
+      btn.dataset.key = entry.key;
+      btn.setAttribute('role', 'option');
+      btn.setAttribute('aria-selected', String(isActive));
+
+      const top = html('div', null, 'upd-item-top');
+      const meta = html('span', null, 'upd-item-meta');
+      meta.append(html('span', entry.date ? entry.date.slice(5) : '—'));
+      if (entry.source === 'diff' && entry.tabTag) {
+        meta.append(html('span', t(entry.tabTag.zh, entry.tabTag.en), 'row-tag'));
+      }
+      const badge = updateItemBadge(entry);
+      top.append(meta, html('span', badge.text, badge.cls));
+
+      const title = html('div', entry.title, 'upd-item-title');
+      const sub = html('div', null, 'upd-item-sub');
+      sub.append(
+        html('span', updateItemSubline(entry), 'upd-item-sub-text'),
+        html('span', '›', 'upd-item-chev')
+      );
+
+      btn.append(top, title, sub);
+      btn.addEventListener('click', () => selectUpdateItem(entry.key, {openMobileDetail: true}));
+      listFrag.append(btn);
+    }
+  }
+  listPane.replaceChildren(listFrag);
+  if (preserveListScroll) listPane.scrollTop = prevScroll;
+
+  $('#updatesBody')?.classList.toggle('is-mobile-detail', updatesMobileDetail && mobileLayout.matches);
+  const detail = selected
+    ? resolveUpdateDetail(selected, snapshot, {crossTabIndex, orgRankIndex, feedItems: feed.items})
+    : null;
+  renderUpdatesDetail(detail, visible);
 }
 
 function clampAnchoredPopover(popover, anchor, maxWidth = 360) {
@@ -1620,13 +2465,23 @@ function clampAnchoredPopover(popover, anchor, maxWidth = 360) {
   popover.style.right = 'auto';
 }
 
-function setChangelogOpen(open) {
-  changelogOpen = open;
-  $('#updateBadge').setAttribute('aria-expanded', String(open));
-  $('#changelogPopover').hidden = !open;
-  if (open) {
+function setChangelogOpen(open, {restoreFocus = true} = {}) {
+  changelogOpen = !!open;
+  $('#updateBadge')?.setAttribute('aria-expanded', String(changelogOpen));
+  const backdrop = $('#changelogBackdrop');
+  if (!backdrop) return;
+  backdrop.hidden = !changelogOpen;
+  if (changelogOpen) {
+    updatesMobileDetail = false;
+    if (cmdOpen) setCmdOpen(false, {restoreFocus: false});
+    if (guideOpen) setGuideOpen(false);
+    if (scenarioOpen) setScenarioOpen(false);
+    if (viewToolsOpen) setViewToolsOpen(false);
+    if (comparePickerOpen) setComparePickerOpen(false);
     renderChangelog();
-    clampAnchoredPopover($('#changelogPopover'), $('#updateBadge'), 340);
+    requestAnimationFrame(() => $('#changelogCloseBtn')?.focus({preventScroll: true}));
+  } else if (restoreFocus) {
+    $('#updateBadge')?.focus({preventScroll: true});
   }
 }
 
@@ -1772,7 +2627,8 @@ function syncStaticText() {
     html('span', t('↑↓ 选择 · Enter 跳转定位 · Shift+Enter 加入剖析对比 · ★ 收藏关注', '↑↓ Navigate · Enter locate · Shift+Enter compare · ★ Star'))
   );
   $('#updateText').textContent = t('最新动态', 'Updates');
-  if (changelogOpen) renderChangelog();
+  syncUpdateBadgeTooltip();
+  if (changelogOpen) renderChangelog({preserveListScroll: true});
   if (!shareTimer) $('#shareBtn').textContent = t('分享', 'Share');
   $('#shareBtn').setAttribute('aria-label', t('复制当前视图分享链接', 'Copy shareable view URL'));
   $('#langToggle').textContent = lang === 'en' ? '中文' : 'EN';
@@ -2031,6 +2887,10 @@ $('#langToggle').addEventListener('click', () => {
 
 $('#updateBadge').addEventListener('click', () => {
   setChangelogOpen(!changelogOpen);
+});
+$('#changelogCloseBtn').addEventListener('click', () => setChangelogOpen(false));
+$('#changelogBackdrop').addEventListener('click', event => {
+  if (event.target === $('#changelogBackdrop')) setChangelogOpen(false);
 });
 
 $('#shareBtn').addEventListener('click', async () => {
@@ -8825,6 +9685,7 @@ function setCmdOpen(open, {restoreFocus = true} = {}) {
   cmdOpen = open;
   $('#cmdBackdrop').hidden = !open;
   if (open) {
+    if (changelogOpen) setChangelogOpen(false, {restoreFocus: false});
     cmdIndex = 0;
     renderCmdList();
     requestAnimationFrame(() => {
@@ -8854,9 +9715,6 @@ $('#cmdInput').addEventListener('input', () => {
 
 // Close floating popovers on outside click or Escape
 document.addEventListener('pointerdown', event => {
-  if (changelogOpen && !event.target.closest('.update-wrap')) {
-    setChangelogOpen(false);
-  }
   if (scenarioOpen && !event.target.closest('.scenario-wrap')) {
     setScenarioOpen(false);
   }
@@ -8888,6 +9746,19 @@ document.addEventListener('keydown', event => {
     if (event.key === 'Escape') {
       event.preventDefault();
       setGuideOpen(false);
+    }
+    return;
+  }
+  if (changelogOpen) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      setChangelogOpen(false);
+    } else if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      stepUpdateSelection(1);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      stepUpdateSelection(-1);
     }
     return;
   }
@@ -9001,10 +9872,7 @@ document.addEventListener('keydown', event => {
     renderComparePicker();
     return;
   }
-  if (changelogOpen) {
-    setChangelogOpen(false);
-    $('#updateBadge').focus({preventScroll: true});
-  } else if (scenarioOpen) {
+  if (scenarioOpen) {
     setScenarioOpen(false);
     $('#scenarioBtn').focus({preventScroll: true});
   } else if (viewToolsOpen) {
@@ -9046,7 +9914,9 @@ document.addEventListener('keydown', event => {
 
 addEventListener('resize', () => {
   syncLegendNav();
-  if (changelogOpen) clampAnchoredPopover($('#changelogPopover'), $('#updateBadge'), 340);
+  if (changelogOpen) {
+    $('#updatesBody')?.classList.toggle('is-mobile-detail', updatesMobileDetail && mobileLayout.matches);
+  }
   if (scenarioOpen) clampAnchoredPopover($('#scenarioPopover'), $('#scenarioBtn'), 340);
   if (viewToolsOpen) clampAnchoredPopover($('#viewToolsPopover'), $('#viewToolsBtn'), 360);
   if (comparePickerOpen) clampAnchoredPopover($('#comparePickerPopover'), $('#compareAddBtn'), 360);
@@ -11255,6 +12125,7 @@ async function loadData() {
     $('#tab-cyber').hidden = !hasCyber;
     $('#tab-media').hidden = !hasMedia;
     $('#tab-orgs').hidden = !orgBoards.length;
+    syncUpdateBadgeTooltip();
     if (changelogOpen) renderChangelog();
     if (cmdOpen) renderCmdList();
     const parsed = parseHash();
@@ -11749,7 +12620,7 @@ function setGuideOpen(open, tabName = null) {
   if (guideOpen) {
     guidePreviewKey = currentGuideProfileKey();
     if (cmdOpen) setCmdOpen(false);
-    if (changelogOpen) setChangelogOpen(false);
+    if (changelogOpen) setChangelogOpen(false, {restoreFocus: false});
     if (scenarioOpen) setScenarioOpen(false);
     if (viewToolsOpen) setViewToolsOpen(false);
     renderGuideDialog();

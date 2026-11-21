@@ -134,6 +134,23 @@ test('enriched model and coding-agent telemetry preserves open weights, subscore
     title: 'Added Example Model',
     url: 'https://artificialanalysis.ai/models/example'
   }]);
+
+  const enrichedLog = simplifyChangelog([
+    { dateLa: '2026-11-17', type: 'modelAdded', title: 'JoyAI-VL-Preview', url: '/models/joyai-vl' },
+    { dateLa: '2026-11-18', type: 'articlePublished', title: 'Release blog', url: '/articles/release' }
+  ], [
+    { id: 'joy-1', name: 'JoyAI-VL-Preview', intelligenceIndex: 28.036, isOpenWeights: false, creator: { name: 'Joy Future Academy' }, releaseDate: '2026-11-17' }
+  ]);
+  assert.equal(enrichedLog.length, 2);
+  assert.deepEqual(enrichedLog[0].meta, {
+    modelId: 'joy-1',
+    creator: 'Joy Future Academy',
+    score: 28.04,
+    hasPricing: false,
+    isOpenWeights: false,
+    releaseDate: '2026-11-17'
+  });
+  assert.equal(enrichedLog[1].meta, undefined);
 });
 
 test('Flight rows resolve highlighted-row references across split chunks and multi-push script tags', () => {
