@@ -30,8 +30,8 @@
     } catch {}
     document.documentElement.dataset.mobile = matchMedia('(max-width:760px), (max-height:500px)').matches ? 'true' : 'false';
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261122-03">
-  <script type="module" src="app.js?v=20261122-03"></script>
+  <link rel="stylesheet" href="styles.css?v=20261122-04">
+  <script type="module" src="app.js?v=20261122-04"></script>
 </head>
 <body>
 <main class="app">
@@ -298,8 +298,10 @@
           <label for="minScore" id="minScoreLabel" class="control-label">最低门槛</label>
           <input id="minScore" type="range" min="0" max="60" step="1" value="0">
           <output id="minScoreValue" class="floor-output">不限</output>
-          <label for="maxCostSelect" id="maxCostLabel" class="control-label budget-cap-label">预算上限</label>
-          <select id="maxCostSelect"><option value="0">不限</option></select>
+          <span class="budget-cap-group">
+            <label for="maxCostSelect" id="maxCostLabel" class="control-label budget-cap-label">预算上限</label>
+            <select id="maxCostSelect"><option value="0">不限</option></select>
+          </span>
         </div>
 
         <button id="resetValueInline" type="button" hidden>重置参数</button>

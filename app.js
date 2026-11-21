@@ -29,23 +29,23 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261122-03';
+} from './chart-math.mjs?v=20261122-04';
 import {
   RECOMMEND_USE_CASES,
   RECOMMEND_BILLING,
   RECOMMEND_LICENSES,
   recommendModels,
   getRowCaveats
-} from './modules/recommend.mjs?v=20261122-03';
-import {computeOrgDivergence} from './modules/divergence.mjs?v=20261122-03';
-import {createNavHistory} from './modules/nav-history.mjs?v=20261122-03';
-import {GUIDE_PROFILE_ORDER, GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261122-03';
+} from './modules/recommend.mjs?v=20261122-04';
+import {computeOrgDivergence} from './modules/divergence.mjs?v=20261122-04';
+import {createNavHistory} from './modules/nav-history.mjs?v=20261122-04';
+import {GUIDE_PROFILE_ORDER, GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261122-04';
 import {
   UPDATE_FILTERS,
   buildUpdateFeed,
   filterUpdateFeed,
   resolveUpdateDetail
-} from './modules/updates.mjs?v=20261122-03';
+} from './modules/updates.mjs?v=20261122-04';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -225,7 +225,8 @@ const MEDIA_TRACKS = {
     enMatrixCost: 'API Cost / Image',
     sourceName: 'AA Image Arena',
     sourceUrl: 'https://artificialanalysis.ai/image',
-    defaultX: 0.23
+    defaultX: 0.23,
+    defaultTasks: 400
   },
   video: {
     id: 'video',
@@ -259,7 +260,8 @@ const MEDIA_TRACKS = {
     enMatrixCost: 'API Cost / 5s Clip',
     sourceName: 'AA Video Arena',
     sourceUrl: 'https://artificialanalysis.ai/video',
-    defaultX: 1.9
+    defaultX: 1.9,
+    defaultTasks: 40
   },
   tts: {
     id: 'tts',
@@ -293,7 +295,8 @@ const MEDIA_TRACKS = {
     enMatrixCost: 'API Cost / 1k Chars',
     sourceName: 'AA Speech TTS',
     sourceUrl: 'https://artificialanalysis.ai/text-to-speech',
-    defaultX: 0.15
+    defaultX: 0.15,
+    defaultTasks: 400
   }
 };
 
@@ -780,7 +783,13 @@ function setMediaTrack(nextTrack, {reRender = true, updateUrl = true} = {}) {
   if (state.mediaTrack && state.compareIds?.length) {
     state.mediaCompareByTrack[state.mediaTrack] = [...state.compareIds];
   }
+  const prevDefaultTasks = state.defaultTasks;
   state.mediaTrack = nextTrack;
+  const nextDefaultTasks = mediaTrackMeta(nextTrack).defaultTasks || MONTHLY_USAGE.defaultModelTasks;
+  state.defaultTasks = nextDefaultTasks;
+  if (state.monthlyTasks === prevDefaultTasks) {
+    state.monthlyTasks = nextDefaultTasks;
+  }
   state.yLens = '';
   state.extraFilter = '';
   state.company = null;
@@ -814,7 +823,11 @@ function makeState(key, routeParams = null) {
     ? (MEDIA_TRACK_ORDER.find(mk => baseRows.some(r => r.mediaKind === mk)) || 'image')
     : null;
   const initialRows = key === 'media' ? baseRows.filter(r => r.mediaKind === defaultMediaTrack) : baseRows;
-  const defaultTasks = key === 'coding-agents' ? MONTHLY_USAGE.defaultAgentTasks : MONTHLY_USAGE.defaultModelTasks;
+  const defaultTasks = key === 'coding-agents'
+    ? MONTHLY_USAGE.defaultAgentTasks
+    : key === 'media'
+      ? (mediaTrackMeta(defaultMediaTrack).defaultTasks || MONTHLY_USAGE.defaultModelTasks)
+      : MONTHLY_USAGE.defaultModelTasks;
   const defaultCmp = defaultCompareIds(initialRows);
   const defaultFast = sortRows(initialRows, 'valuePerDollar', 'desc', 2, 25)[0] || initialRows[0];
   const defaultStrong = sortRows(initialRows, 'intelligenceIndex', 'desc')[0] || initialRows.at(-1);
@@ -2609,6 +2622,7 @@ function tierBreakevenText(cost, row = null) {
 
 function syncStaticText() {
   document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
+  document.title = t('智能水平与任务成本 · Intelligence vs. Cost', 'Intelligence vs. Cost · Linear AI Benchmark Explorer');
   $('#appTitle').textContent = t('智能水平与任务成本', 'Intelligence vs. Cost');
   $('#appSubtitle').textContent = t('Intelligence vs. Cost · 线性成本基准', 'Linear-cost AI benchmark explorer');
   $('#tab-models').textContent = t('综合智能', 'Intelligence');
@@ -2733,6 +2747,12 @@ function syncStaticText() {
   $('#yminus').setAttribute('aria-label', t('缩小纵轴', 'Zoom Y out'));
   $('#yplus').setAttribute('aria-label', t('放大纵轴', 'Zoom Y in'));
 
+  $('#yLensSr').textContent = t('切换纵轴评估子项', 'Select Y-axis benchmark lens');
+  $('#costProfileSr').textContent = t('切换单次成本业务形态', 'Select workload cost profile');
+  $('#cmdDialogTitle').textContent = t('全局模型与生成引擎速查', 'Quick Model & Engine Search');
+  $('#onboardingStrip')?.setAttribute('aria-label', t('新手读图提示', 'Quick chart guide'));
+  $('#navBackBtn')?.setAttribute('aria-label', t('返回上一步', 'Go back'));
+  $('#navForwardBtn')?.setAttribute('aria-label', t('前进到下一步', 'Go forward'));
   $('#searchSr').textContent = t('查找模型或厂商', 'Search models or creators');
   $('#search').placeholder = t('查找模型或厂商…', 'Search models or creators…');
   $('#licenseGroup').setAttribute('aria-label', t('开源与闭源筛选', 'Open vs proprietary filter'));
@@ -2800,7 +2820,8 @@ function syncStaticText() {
   $('#pinGoCompareBtn').textContent = t('去剖析 →', 'Analyze →');
   $('#pinCollapseBtn').textContent = pinCollapsed ? t('展开', 'Expand') : t('收起', 'Compact');
   $('#pinCollapseBtn').setAttribute('aria-expanded', String(!pinCollapsed));
-  $('#unpin').textContent = t('取消 · Esc', 'Unpin · Esc');
+  $('#unpin').textContent = t('取消 · Esc', 'Esc ×');
+  $('#unpin').setAttribute('aria-label', t('取消锁定 (Esc)', 'Unpin (Esc)'));
   $('#pinScoreLabel').textContent = t('指数', 'Index');
   $('#pinCostLabel').textContent = t('单次成本', 'Cost / task');
   $('#pinTimeLabel').textContent = t('平均耗时', 'Mean time');
@@ -3686,8 +3707,8 @@ function syncControls() {
   const hasScenario = !!(state.scenarioId && state.scenarioId !== 'default');
   const hasCostProf = !!(state.costProfile && state.costProfile !== 'benchmark');
   const hasFocus = !!(state.company || state.license !== 'all' || state.yLens || hasScenario || hasCostProf || state.extraFilter || state.search || state.starredOnly || state.frontierOnly || state.minScore > 0 || state.maxCost > 0);
-  $('#clearFilters').hidden = false;
-  $('#clearFilters').style.visibility = hasFocus ? 'visible' : 'hidden';
+  $('#clearFilters').hidden = !hasFocus;
+  $('#clearFilters').style.visibility = '';
   $('#clearFilters').disabled = !hasFocus;
   syncPanelControls();
 }
@@ -3695,6 +3716,7 @@ function syncControls() {
 function syncPanelControls() {
   const emptyDesktopPanel = !mobileLayout.matches && !!state && (state.mode === 'curve' || state.mode === 'compare');
   document.documentElement.dataset.mobile = String(mobileLayout.matches);
+  document.documentElement.dataset.viewMode = state?.mode || 'chart';
   document.documentElement.dataset.panelCollapsed = String(!controlsOpen || emptyDesktopPanel);
   $('#controlsToggle').hidden = emptyDesktopPanel;
   $('#controlPanel').hidden = !controlsOpen || emptyDesktopPanel;
@@ -4866,7 +4888,8 @@ function exportChartPng(kind = state?.mode) {
     .bump-dot { stroke-width: 1.8; }
     .bump-series.is-pinned-spot .bump-dot { stroke: ${v('--amber')}; stroke-width: 2.5; }
     .bump-dot.is-family { stroke-dasharray: 2.5 2; }
-    .bump-dot-num { fill: ${v('--chart')}; font-size: 9.5px; font-weight: 700; }
+    .bump-dot-num { font-size: 9.5px; font-weight: 700; }
+    .bump-dot-num:not(.is-family) { fill: ${v('--chart')}; }
     .bump-dot-num.is-family { font-weight: 600; }
     .bump-lbl-leader { stroke-width: 1; opacity: 0.45; stroke-dasharray: 2 2; }
     .bump-end-lbl { font-size: 11.5px; font-weight: 500; }
@@ -6911,7 +6934,7 @@ function renderCompare() {
     const maxDollar = Math.max(1, ...selectedRows.map(r => Math.max(r.costPercentiles?.p95 || 0, r.cost))) * 1.06;
     const rowStep = selectedRows.length > 5 ? 32 : 38;
     const svgH = 30 + selectedRows.length * rowStep;
-    const x0 = 136, x1 = 446;
+    const x0 = 166, x1 = 448;
     const mapX = v => x0 + (Math.max(0, v) / maxDollar) * (x1 - x0);
     const wSvg = node('svg', {class: 'whisker-svg', viewBox: `0 0 460 ${svgH}`, role: 'img', 'aria-label': t('单任务成本分位数箱线图', 'Cost percentiles box-and-whisker chart')});
 
@@ -6926,9 +6949,15 @@ function renderCompare() {
     selectedRows.forEach((row, idx) => {
       const sc = compareColor(idx);
       const cy = 20 + idx * rowStep;
-      const short = (row.shortName || row.name).slice(0, 20);
+      const rawName = (row.shortName || row.name)
+        .replace(/^Antigravity CLI\s*-\s*/i, 'Antigravity · ')
+        .replace(/^Kimi Code CLI\s*-\s*/i, 'Kimi CLI · ')
+        .replace(/^Devin Fusion CLI\s*-\s*/i, 'Devin CLI · ')
+        .replace(/^DeepSeek Harness\s*-\s*/i, 'DS Harness · ')
+        .replace(/\s*-\s*/, ' · ');
+      const short = rawName.length > 24 ? `${rawName.slice(0, 23).trimEnd()}…` : rawName;
       const g = node('g');
-      g.append(node('text', {x: x0 - 8, y: cy + 4, 'text-anchor': 'end', fill: 'var(--ink)', 'font-size': '11.5'}, short));
+      g.append(node('text', {x: x0 - 8, y: cy + 4, 'text-anchor': 'end', fill: 'var(--ink)', 'font-size': '11'}, short));
       const pct = row.costPercentiles;
       if (pct) {
         const xp05 = mapX(pct.p05 ?? 0), xp25 = mapX(pct.p25 ?? 0), xp50 = mapX(pct.p50 ?? 0), xp75 = mapX(pct.p75 ?? 0), xp95 = mapX(pct.p95 ?? 0);

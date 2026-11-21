@@ -1,5 +1,5 @@
-import {paretoFrontier, breakEvenTasks} from '../chart-math.mjs?v=20261122-03';
-import {getRowCaveats} from './recommend.mjs?v=20261122-03';
+import {paretoFrontier, breakEvenTasks} from '../chart-math.mjs?v=20261122-04';
+import {getRowCaveats} from './recommend.mjs?v=20261122-04';
 
 export const UPDATE_FILTERS = Object.freeze([
   Object.freeze({id: 'all', zh: '全部动态', en: 'All Updates'}),
