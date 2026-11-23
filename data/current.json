@@ -4,7 +4,7 @@
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
   "hostsManifestPath": "/data/324ed05c14a0dc8b.txt",
-  "updatedAt": "2026-11-23T11:16:57.850Z",
+  "updatedAt": "2026-11-23T12:17:19.434Z",
   "updateIntervalHours": 2,
   "changelog": [
     {
@@ -32719,7 +32719,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 11.29,
+      "timeSec": 13.01,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -32735,7 +32735,7 @@
         "ttsElo": 1059.5,
         "pricePer1mChars": 0.65,
         "ttfaMs": 1601,
-        "cps": 192
+        "cps": 237.3
       },
       "releaseDate": "2025-01-27"
     },
@@ -32753,7 +32753,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 0.14,
+      "timeSec": 0.16,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -32769,7 +32769,7 @@
         "ttsElo": 887.1,
         "pricePer1mChars": 2.82,
         "ttfaMs": null,
-        "cps": 2
+        "cps": 2.3
       },
       "releaseDate": "2023-06-13"
     },
@@ -32880,7 +32880,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 27.8,
+      "timeSec": 27.65,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -32896,7 +32896,7 @@
         "ttsElo": 916.1,
         "pricePer1mChars": 4,
         "ttfaMs": 682,
-        "cps": 479.5
+        "cps": 470.5
       },
       "releaseDate": "2016-09-08"
     },
@@ -32930,7 +32930,7 @@
         "ttsElo": 883.7,
         "pricePer1mChars": 4,
         "ttfaMs": 641,
-        "cps": 439.5
+        "cps": 415.1
       },
       "releaseDate": "2018-08-28"
     },
@@ -33153,7 +33153,7 @@
         "ttsElo": 1292.9,
         "pricePer1mChars": 6.58,
         "ttfaMs": 95,
-        "cps": 199.2
+        "cps": 189.9
       },
       "releaseDate": "2026-11-03"
     },
@@ -33171,7 +33171,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.1,
+      "timeSec": 7.33,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -33187,7 +33187,7 @@
         "ttsElo": 1251,
         "pricePer1mChars": 6.58,
         "ttfaMs": 97,
-        "cps": 122.9
+        "cps": 123.7
       },
       "releaseDate": "2026-07-01"
     },
@@ -33205,7 +33205,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 9.08,
+      "timeSec": 9.03,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -33221,7 +33221,7 @@
         "ttsElo": 1111.7,
         "pricePer1mChars": 6.58,
         "ttfaMs": 115,
-        "cps": 153.3
+        "cps": 150.9
       },
       "releaseDate": "2026-02-19"
     },
@@ -33526,7 +33526,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.76,
+      "timeSec": 6.65,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -33542,7 +33542,7 @@
         "ttsElo": 1155.9,
         "pricePer1mChars": 10,
         "ttfaMs": 130,
-        "cps": 116.4
+        "cps": 111
       },
       "releaseDate": "2026-07-21"
     },
@@ -33560,7 +33560,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.57,
+      "timeSec": 6.65,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -33718,7 +33718,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 5.16,
+      "timeSec": 6.99,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -33734,7 +33734,7 @@
         "ttsElo": 1138.5,
         "pricePer1mChars": 10.1,
         "ttfaMs": 481,
-        "cps": 83.4
+        "cps": 110.3
       },
       "releaseDate": "2026-05-25"
     },
@@ -33752,7 +33752,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 9.17,
+      "timeSec": 8.46,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -33768,7 +33768,7 @@
         "ttsElo": 1045.1,
         "pricePer1mChars": 10.1,
         "ttfaMs": 416,
-        "cps": 148.1
+        "cps": 135.7
       },
       "releaseDate": "2025-07-08"
     },
@@ -33979,7 +33979,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 3.43,
+      "timeSec": 3.42,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -34044,7 +34044,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.65,
+      "timeSec": 6.72,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -34060,7 +34060,7 @@
         "ttsElo": 1211.4,
         "pricePer1mChars": 13,
         "ttfaMs": 448,
-        "cps": 102.5
+        "cps": 104.8
       },
       "releaseDate": "2026-10-20"
     },
@@ -34111,7 +34111,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 2.41,
+      "timeSec": 2.49,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -34127,7 +34127,7 @@
         "ttsElo": 1306.5,
         "pricePer1mChars": 14,
         "ttfaMs": 5337,
-        "cps": 40.6
+        "cps": 41.5
       },
       "releaseDate": "2026-11-19"
     },
@@ -34192,7 +34192,7 @@
         "ttsElo": 1179.3,
         "pricePer1mChars": 14.23,
         "ttfaMs": 290,
-        "cps": 18
+        "cps": 17.9
       },
       "releaseDate": "2026-08-12"
     },
@@ -34244,7 +34244,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 4.32,
+      "timeSec": 4.12,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -34260,7 +34260,7 @@
         "ttsElo": 1237,
         "pricePer1mChars": 15,
         "ttfaMs": 246,
-        "cps": 73
+        "cps": 68.7
       },
       "releaseDate": "2026-10-14"
     },
@@ -34380,7 +34380,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 10.08,
+      "timeSec": 10.12,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -34396,7 +34396,7 @@
         "ttsElo": 1160.1,
         "pricePer1mChars": 15,
         "ttfaMs": 277,
-        "cps": 175.5
+        "cps": 177.9
       },
       "releaseDate": "2026-03-16"
     },
@@ -34445,7 +34445,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 7.73,
+      "timeSec": 7.59,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -34609,7 +34609,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 2.65,
+      "timeSec": 2.5,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -34625,7 +34625,7 @@
         "ttsElo": 1034.6,
         "pricePer1mChars": 15,
         "ttfaMs": null,
-        "cps": 38.4
+        "cps": 35.4
       },
       "releaseDate": "2026-06-04"
     },
@@ -34724,7 +34724,7 @@
         "ttsElo": 1094.2,
         "pricePer1mChars": 16,
         "ttfaMs": 592,
-        "cps": 119.3
+        "cps": 119.6
       },
       "releaseDate": "2026-03-26"
     },
@@ -34776,7 +34776,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 39.75,
+      "timeSec": 38.64,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -34792,7 +34792,7 @@
         "ttsElo": 890.9,
         "pricePer1mChars": 16,
         "ttfaMs": 487,
-        "cps": 673.2
+        "cps": 666.9
       },
       "releaseDate": "2022-06-27"
     },
@@ -34826,7 +34826,7 @@
         "ttsElo": 1281.9,
         "pricePer1mChars": 16.49,
         "ttfaMs": 824,
-        "cps": 63.1
+        "cps": 62.2
       },
       "releaseDate": "2026-09-23"
     },
@@ -34940,7 +34940,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 1.45,
+      "timeSec": 1.44,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -34956,7 +34956,7 @@
         "ttsElo": 1037.7,
         "pricePer1mChars": 18.31,
         "ttfaMs": 7993,
-        "cps": 20.5
+        "cps": 19.9
       },
       "releaseDate": "2025-12-10"
     },
@@ -35166,7 +35166,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 8.35,
+      "timeSec": 8.26,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -35423,7 +35423,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 5.05,
+      "timeSec": 5.16,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -35439,7 +35439,7 @@
         "ttsElo": 1269.3,
         "pricePer1mChars": 20.83,
         "ttfaMs": 181,
-        "cps": 81.1
+        "cps": 82.2
       },
       "releaseDate": "2026-08-31"
     },
@@ -35504,7 +35504,7 @@
         "ttsElo": 1149,
         "pricePer1mChars": 22,
         "ttfaMs": 171,
-        "cps": 80.1
+        "cps": 81.9
       },
       "releaseDate": "2026-03-30"
     },
@@ -35569,7 +35569,7 @@
         "ttsElo": 1025.1,
         "pricePer1mChars": 25,
         "ttfaMs": 393,
-        "cps": 78
+        "cps": 76
       },
       "releaseDate": "2026-03-24"
     },
@@ -36088,7 +36088,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.45,
+      "timeSec": 6.48,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36104,7 +36104,7 @@
         "ttsElo": 1060.5,
         "pricePer1mChars": 30,
         "ttfaMs": 239,
-        "cps": 113.8
+        "cps": 111.7
       },
       "releaseDate": "2024-05-08"
     },
@@ -36122,7 +36122,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.35,
+      "timeSec": 7.24,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36138,7 +36138,7 @@
         "ttsElo": 1060,
         "pricePer1mChars": 30,
         "ttfaMs": 1837,
-        "cps": 130
+        "cps": 126.8
       },
       "releaseDate": "2025-03-12"
     },
@@ -36249,7 +36249,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.87,
+      "timeSec": 7.03,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36265,7 +36265,7 @@
         "ttsElo": 1023.9,
         "pricePer1mChars": 30,
         "ttfaMs": 583,
-        "cps": 108.2
+        "cps": 108.5
       },
       "releaseDate": "2025-01-20"
     },
@@ -36613,7 +36613,7 @@
         "ttsElo": 1228.4,
         "pricePer1mChars": 34,
         "ttfaMs": 336,
-        "cps": 48.1
+        "cps": 48
       },
       "releaseDate": "2026-08-23"
     },
@@ -36945,7 +36945,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 2.41,
+      "timeSec": 2.44,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36961,7 +36961,7 @@
         "ttsElo": 1136,
         "pricePer1mChars": 40,
         "ttfaMs": 4459,
-        "cps": 35.9
+        "cps": 36.3
       },
       "releaseDate": "2026-02-12"
     },
@@ -37309,7 +37309,7 @@
         "ttsElo": 914.4,
         "pricePer1mChars": 40.44,
         "ttfaMs": null,
-        "cps": 33.9
+        "cps": 33.8
       },
       "releaseDate": "2023-11-08"
     },
@@ -37361,7 +37361,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 4,
+      "timeSec": 3.94,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37377,7 +37377,7 @@
         "ttsElo": 1172,
         "pricePer1mChars": 47.78,
         "ttfaMs": 72,
-        "cps": 60.5
+        "cps": 60.1
       },
       "releaseDate": "2026-09-22"
     },
@@ -37395,7 +37395,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 3.9,
+      "timeSec": 3.93,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37411,7 +37411,7 @@
         "ttsElo": 1171.5,
         "pricePer1mChars": 47.78,
         "ttfaMs": 70,
-        "cps": 60.9
+        "cps": 61.9
       },
       "releaseDate": "2026-09-30"
     },
@@ -37525,7 +37525,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 9.66,
+      "timeSec": 9.81,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37559,7 +37559,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 8.33,
+      "timeSec": 8.31,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37593,7 +37593,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.43,
+      "timeSec": 6.47,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37609,7 +37609,7 @@
         "ttsElo": 1062,
         "pricePer1mChars": 49,
         "ttfaMs": 389,
-        "cps": 115.9
+        "cps": 118.5
       },
       "releaseDate": "2025-10-29"
     },
@@ -37791,7 +37791,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.58,
+      "timeSec": 6.68,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37807,7 +37807,7 @@
         "ttsElo": 1072.1,
         "pricePer1mChars": 50,
         "ttfaMs": 647,
-        "cps": 102.5
+        "cps": 104.3
       },
       "releaseDate": "2025-01-15"
     },
@@ -37922,7 +37922,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.13,
+      "timeSec": 7.32,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37938,7 +37938,7 @@
         "ttsElo": 1150.4,
         "pricePer1mChars": 60,
         "ttfaMs": 428,
-        "cps": 107.9
+        "cps": 111.8
       },
       "releaseDate": "2026-02-14"
     },
@@ -37987,7 +37987,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.65,
+      "timeSec": 7.67,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -38647,7 +38647,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 2.57,
+      "timeSec": 2.56,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -38663,7 +38663,7 @@
         "ttsElo": 1214.3,
         "pricePer1mChars": 85,
         "ttfaMs": 4456,
-        "cps": 45.3
+        "cps": 45.1
       },
       "releaseDate": "2026-08-26"
     },
@@ -38681,7 +38681,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 2.51,
+      "timeSec": 2.49,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -38908,7 +38908,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.82,
+      "timeSec": 7.02,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -38924,7 +38924,7 @@
         "ttsElo": 1172.7,
         "pricePer1mChars": 100,
         "ttfaMs": 448,
-        "cps": 104.4
+        "cps": 107.5
       },
       "releaseDate": "2026-02-14"
     },
@@ -39020,7 +39020,7 @@
         "ttsElo": 1123.7,
         "pricePer1mChars": 100,
         "ttfaMs": 443,
-        "cps": 114.9
+        "cps": 112
       },
       "releaseDate": "2025-10-30"
     },
@@ -39069,7 +39069,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.87,
+      "timeSec": 6.98,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39085,7 +39085,7 @@
         "ttsElo": 1103.6,
         "pricePer1mChars": 100,
         "ttfaMs": 396,
-        "cps": 112.4
+        "cps": 114.4
       },
       "releaseDate": "2025-03-31"
     },
@@ -39136,7 +39136,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 3.75,
+      "timeSec": 4.18,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39152,7 +39152,7 @@
         "ttsElo": 1027.9,
         "pricePer1mChars": 100,
         "ttfaMs": 1784,
-        "cps": 56.6
+        "cps": 63.6
       },
       "releaseDate": "2023-11-16"
     },
@@ -39266,7 +39266,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 0.07,
+      "timeSec": 0.05,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39282,7 +39282,7 @@
         "ttsElo": 844.9,
         "pricePer1mChars": 123.97,
         "ttfaMs": null,
-        "cps": 3.2
+        "cps": 2.4
       },
       "releaseDate": "2024-02-06"
     },
@@ -39424,7 +39424,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 17,
+      "timeSec": 17.01,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39440,7 +39440,7 @@
         "ttsElo": 1073.5,
         "pricePer1mChars": 160,
         "ttfaMs": 1563,
-        "cps": 282.7
+        "cps": 281.7
       },
       "releaseDate": "2023-02-08"
     },
@@ -39458,7 +39458,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 4.31,
+      "timeSec": 4.28,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39474,7 +39474,7 @@
         "ttsElo": 1067.1,
         "pricePer1mChars": 160,
         "ttfaMs": 2048,
-        "cps": 77.4
+        "cps": 74.9
       },
       "releaseDate": "2023-12-23"
     },
@@ -39556,7 +39556,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 4.38,
+      "timeSec": 4.34,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39572,7 +39572,7 @@
         "ttsElo": 1070,
         "pricePer1mChars": 191.56,
         "ttfaMs": 608,
-        "cps": 66.1
+        "cps": 65.2
       },
       "releaseDate": "2026-05-07"
     },
