@@ -4,7 +4,7 @@
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
   "hostsManifestPath": "/data/324ed05c14a0dc8b.txt",
-  "updatedAt": "2026-11-23T09:15:23.754Z",
+  "updatedAt": "2026-11-23T10:17:18.220Z",
   "updateIntervalHours": 2,
   "changelog": [
     {
@@ -1603,7 +1603,7 @@
         "healthPro": 61.89
       },
       "expertElo": {
-        "gdpval": 1443.3,
+        "gdpval": 1443.1,
         "briefcase": 1336,
         "aa3d": 1000,
         "code2video": 1029.7
@@ -2577,7 +2577,7 @@
         "healthPro": null
       },
       "expertElo": {
-        "gdpval": 1692.1,
+        "gdpval": 1691.4,
         "briefcase": 1511.2,
         "aa3d": 982.9,
         "code2video": 1051.5
@@ -3556,7 +3556,7 @@
         "healthPro": 58.36
       },
       "expertElo": {
-        "gdpval": 1629,
+        "gdpval": 1629.3,
         "briefcase": 1571.3,
         "aa3d": 998.1,
         "code2video": 1192.3
@@ -5975,7 +5975,7 @@
         "healthPro": null
       },
       "expertElo": {
-        "gdpval": 1475.8,
+        "gdpval": 1474.9,
         "briefcase": 1399.3,
         "aa3d": null,
         "code2video": null
@@ -6637,7 +6637,7 @@
         "healthPro": 65.09
       },
       "expertElo": {
-        "gdpval": 1607.5,
+        "gdpval": 1607.4,
         "briefcase": 1556.6,
         "aa3d": 1121.1,
         "code2video": 1369.3
@@ -9476,8 +9476,8 @@
         "healthPro": null
       },
       "expertElo": {
-        "gdpval": 1808.7,
-        "briefcase": 1686.1,
+        "gdpval": 1808.9,
+        "briefcase": 1685.1,
         "aa3d": null,
         "code2video": null
       },
@@ -9885,8 +9885,8 @@
         "healthPro": null
       },
       "expertElo": {
-        "gdpval": 1860.6,
-        "briefcase": 1673.6,
+        "gdpval": 1855.8,
+        "briefcase": 1672.5,
         "aa3d": 1112.1,
         "code2video": null
       },
@@ -10953,7 +10953,7 @@
         "healthPro": 52.8
       },
       "expertElo": {
-        "gdpval": 1654.8,
+        "gdpval": 1654.2,
         "briefcase": 1499.1,
         "aa3d": 793.8,
         "code2video": 1033.5
@@ -12194,7 +12194,7 @@
         "healthPro": 55.78
       },
       "expertElo": {
-        "gdpval": 1716.8,
+        "gdpval": 1717.1,
         "briefcase": 1634.4,
         "aa3d": 992.4,
         "code2video": 1126.6
@@ -30577,7 +30577,7 @@
         "economics": 34.54
       },
       "expertElo": {
-        "gdpval": 1443.3,
+        "gdpval": 1443.1,
         "briefcase": 1336,
         "aa3d": 1000,
         "code2video": 1029.7
@@ -30665,7 +30665,7 @@
         "economics": 36.06
       },
       "expertElo": {
-        "gdpval": 1692.1,
+        "gdpval": 1691.4,
         "briefcase": 1511.2,
         "aa3d": 982.9,
         "code2video": 1051.5
@@ -31773,7 +31773,7 @@
         "economics": 37.31
       },
       "expertElo": {
-        "gdpval": 1654.8,
+        "gdpval": 1654.2,
         "briefcase": 1499.1,
         "aa3d": 793.8,
         "code2video": 1033.5
@@ -32091,8 +32091,8 @@
         "economics": 49.94
       },
       "expertElo": {
-        "gdpval": 1860.6,
-        "briefcase": 1673.6,
+        "gdpval": 1855.8,
+        "briefcase": 1672.5,
         "aa3d": 1112.1,
         "code2video": null
       },
@@ -32695,7 +32695,7 @@
         "economics": 45.69
       },
       "expertElo": {
-        "gdpval": 1716.8,
+        "gdpval": 1717.1,
         "briefcase": 1634.4,
         "aa3d": 992.4,
         "code2video": 1126.6
