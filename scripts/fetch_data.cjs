@@ -1182,6 +1182,24 @@ async function fetchLiveBench(models, previous, get = getBuffer) {
       releaseId,
       models
     });
+    if (!costRes && parsed.board && previous?.orgLeaderboards?.livebench?.releaseId === parsed.board.releaseId) {
+      const prevCostByRaw = new Map(
+        (previous.orgLeaderboards.livebench.rows || [])
+          .filter(r => r?.rawName && typeof r.lbCost === 'number')
+          .map(r => [r.rawName, r.lbCost])
+      );
+      if (prevCostByRaw.size) {
+        for (const row of parsed.board.rows) {
+          const prevLbCost = prevCostByRaw.get(row.rawName);
+          if (row.lbCost == null && prevLbCost != null) {
+            row.lbCost = prevLbCost;
+            if (row.modelId && parsed.byModelId.has(row.modelId)) {
+              parsed.byModelId.get(row.modelId).lbCost = prevLbCost;
+            }
+          }
+        }
+      }
+    }
     if (parsed.board && parsed.board.rows.length >= 10) return parsed;
   } catch (error) {
     console.warn(`LiveBench 2.0 refresh degraded gracefully: ${error.message}`);
@@ -1310,33 +1328,130 @@ function buildOrgArenaBoards(models, { chatRows = [], webdevRows = [], designByC
   };
 }
 
+function fallbackHumanArenas(models, previous) {
+  const byId = new Map((models || []).filter(m => m?.id).map(m => [m.id, m]));
+  const prevHuman = Array.isArray(previous?.humanArenaModels)
+    ? previous.humanArenaModels.map(h => {
+        const live = h?.id ? byId.get(h.id) : null;
+        if (!live || !Number.isFinite(h.humanIndex)) return h;
+        const aaIndex = Number(live.intelligenceIndex.toFixed(2));
+        return {
+          ...h,
+          cost: live.cost,
+          aaIndex,
+          indexDelta: Number((h.humanIndex - aaIndex).toFixed(2)),
+          deprecated: !!live.deprecated,
+          ...(live.timeSec ? { timeSec: live.timeSec } : {})
+        };
+      })
+    : [];
+  if (prevHuman.length && prevHuman.every(r => r?.id && Number.isFinite(r.cost) && Number.isFinite(r.intelligenceIndex))) {
+    validateRows(prevHuman, 1, 'human-arena-model');
+  }
+  const syncBoard = board => (board && Array.isArray(board.rows))
+    ? {
+        ...board,
+        rows: board.rows.map(r => {
+          const live = r?.modelId ? byId.get(r.modelId) : null;
+          return live ? { ...r, cost: live.cost } : r;
+        })
+      }
+    : null;
+  const arenaChat = syncBoard(previous?.orgLeaderboards?.arenaChat);
+  const arenaWebdev = syncBoard(previous?.orgLeaderboards?.arenaWebdev);
+  const designArena = syncBoard(previous?.orgLeaderboards?.designArena);
+  return {
+    humanArenaModels: prevHuman,
+    lmArenaPublishDate: previous?.lmArenaPublishDate || null,
+    arenaBoards: {
+      ...(arenaChat ? { arenaChat } : {}),
+      ...(arenaWebdev ? { arenaWebdev } : {}),
+      ...(designArena ? { designArena } : {})
+    }
+  };
+}
+
 async function fetchHumanArenas(models, previous, get = getBuffer) {
+  const hasPrev = Array.isArray(previous?.humanArenaModels) && previous.humanArenaModels.length > 0;
   try {
-    const [chat0, chat1, chat2, web0, doc0, ...designResults] = await Promise.allSettled([
-      fetchLmArenaSlice('text_style_control', 0, get),
-      fetchLmArenaSlice('text_style_control', 100, get),
-      fetchLmArenaSlice('text_style_control', 200, get),
-      fetchLmArenaSlice('webdev', 0, get),
-      fetchLmArenaSlice('document_style_control', 0, get),
-      ...DESIGN_ARENA_CATEGORIES.map(cat => fetchDesignArenaCategory(cat, get))
+    const lmSpecs = [
+      ['chat0', 'text_style_control', 0],
+      ['chat1', 'text_style_control', 100],
+      ['chat2', 'text_style_control', 200],
+      ['web0', 'webdev', 0],
+      ['doc0', 'document_style_control', 0]
+    ];
+    // Query HuggingFace Datasets Server sequentially to avoid burst 500/502 gateway errors,
+    // while fetching Design Arena categories in parallel on their separate origin.
+    const fetchLmSequential = async () => {
+      const out = {};
+      for (const [key, cfg, offset] of lmSpecs) {
+        try {
+          out[key] = { status: 'fulfilled', value: await fetchLmArenaSlice(cfg, offset, get) };
+        } catch (reason) {
+          out[key] = { status: 'rejected', reason };
+          if (hasPrev) break;
+        }
+      }
+      return out;
+    };
+    const [lmRes, designResults] = await Promise.all([
+      fetchLmSequential(),
+      Promise.allSettled(DESIGN_ARENA_CATEGORIES.map(cat => fetchDesignArenaCategory(cat, get)))
     ]);
 
+    if (hasPrev) {
+      const failed = [];
+      for (const [key] of lmSpecs) {
+        if (lmRes[key]?.status !== 'fulfilled') failed.push(`lmarena:${key}`);
+      }
+      DESIGN_ARENA_CATEGORIES.forEach((cat, idx) => {
+        if (designResults[idx]?.status !== 'fulfilled') failed.push(`design:${cat}`);
+      });
+      if (failed.length) {
+        throw new Error(`Incomplete external arena sub-sources (${failed.join(', ')})`);
+      }
+    }
+
+    const { chat0, chat1, chat2, web0, doc0 } = lmRes;
     const chatRows = [
-      ...(chat0.status === 'fulfilled' ? chat0.value.rows : []),
-      ...(chat1.status === 'fulfilled' ? chat1.value.rows : []),
-      ...(chat2.status === 'fulfilled' ? chat2.value.rows : [])
+      ...(chat0?.status === 'fulfilled' ? chat0.value.rows : []),
+      ...(chat1?.status === 'fulfilled' ? chat1.value.rows : []),
+      ...(chat2?.status === 'fulfilled' ? chat2.value.rows : [])
     ];
-    const webdevRows = web0.status === 'fulfilled' ? web0.value.rows : [];
-    const docRows = doc0.status === 'fulfilled' ? doc0.value.rows : [];
+    const webdevRows = web0?.status === 'fulfilled' ? web0.value.rows : [];
+    const docRows = doc0?.status === 'fulfilled' ? doc0.value.rows : [];
     const designByCat = {};
     DESIGN_ARENA_CATEGORIES.forEach((cat, idx) => {
       const res = designResults[idx];
-      if (res.status === 'fulfilled') designByCat[cat] = res.value;
+      if (res?.status === 'fulfilled') designByCat[cat] = res.value;
     });
 
-    const lmArenaPublishDate = (chat0.status === 'fulfilled' && chat0.value.date) || (web0.status === 'fulfilled' && web0.value.date) || null;
+    if (hasPrev) {
+      if (chatRows.length < 10 || webdevRows.length < 5 || docRows.length < 5 || (designByCat.website?.length || 0) < 10) {
+        throw new Error(
+          `Unexpectedly empty arena sub-leaderboard (chat=${chatRows.length}, webdev=${webdevRows.length}, doc=${docRows.length}, designWeb=${designByCat.website?.length || 0})`
+        );
+      }
+    }
+
+    const lmArenaPublishDate = (chat0?.status === 'fulfilled' && chat0.value.date) || (web0?.status === 'fulfilled' && web0.value.date) || previous?.lmArenaPublishDate || null;
     const humanArenaModels = buildHumanArenaModels(models, { chatRows, webdevRows, docRows, designByCat });
     const arenaBoards = buildOrgArenaBoards(models, { chatRows, webdevRows, designByCat, lmArenaPublishDate });
+
+    if (hasPrev) {
+      for (const boardKey of ['arenaChat', 'arenaWebdev', 'designArena']) {
+        const prevLen = previous?.orgLeaderboards?.[boardKey]?.rows?.length || 0;
+        const nextLen = arenaBoards?.[boardKey]?.rows?.length || 0;
+        if (prevLen >= 10 && nextLen < Math.max(5, Math.floor(prevLen * 0.5))) {
+          throw new Error(`Degraded ${boardKey} board (${nextLen} rows vs previous ${prevLen})`);
+        }
+      }
+      if (previous.humanArenaModels.length >= 20 && humanArenaModels.length < Math.floor(previous.humanArenaModels.length * 0.7)) {
+        throw new Error(`Degraded humanArenaModels count (${humanArenaModels.length} vs previous ${previous.humanArenaModels.length})`);
+      }
+    }
+
     if (humanArenaModels.length >= 10) {
       validateRows(humanArenaModels, 10, 'human-arena-model');
       return {
@@ -1349,15 +1464,7 @@ async function fetchHumanArenas(models, previous, get = getBuffer) {
   } catch (error) {
     console.warn(`External human arena refresh degraded gracefully: ${error.message}`);
   }
-  return {
-    humanArenaModels: Array.isArray(previous?.humanArenaModels) ? previous.humanArenaModels : [],
-    lmArenaPublishDate: previous?.lmArenaPublishDate || null,
-    arenaBoards: {
-      ...(previous?.orgLeaderboards?.arenaChat ? { arenaChat: previous.orgLeaderboards.arenaChat } : {}),
-      ...(previous?.orgLeaderboards?.arenaWebdev ? { arenaWebdev: previous.orgLeaderboards.arenaWebdev } : {}),
-      ...(previous?.orgLeaderboards?.designArena ? { designArena: previous.orgLeaderboards.designArena } : {})
-    }
-  };
+  return fallbackHumanArenas(models, previous);
 }
 
 function readTtsHostRows(pageHtml) {
@@ -1816,8 +1923,27 @@ async function fetchModels(page, sourceUrl, previous, get = getBuffer, { include
     try {
       mediaModels = buildMediaModels({ imagePayload, videoPayload, ttsRows });
     } catch { mediaModels = []; }
-    if (mediaModels.length < 10 && Array.isArray(previous?.mediaModels)) {
-      mediaModels = previous.mediaModels;
+    if (Array.isArray(previous?.mediaModels) && previous.mediaModels.length) {
+      const restored = [...mediaModels];
+      let didRestore = false;
+      for (const kind of ['image', 'video', 'tts']) {
+        const curKindCount = restored.filter(m => m.mediaKind === kind).length;
+        const prevKindRows = previous.mediaModels.filter(m => m.mediaKind === kind);
+        if (prevKindRows.length >= 5 && curKindCount < Math.max(3, Math.floor(prevKindRows.length * 0.5))) {
+          console.warn(`Media modality "${kind}" degraded (${curKindCount} vs previous ${prevKindRows.length}); preserving previous ${kind} rows.`);
+          for (let i = restored.length - 1; i >= 0; i--) {
+            if (restored[i].mediaKind === kind) restored.splice(i, 1);
+          }
+          restored.push(...prevKindRows);
+          didRestore = true;
+        }
+      }
+      if (didRestore) {
+        if (restored.length) validateRows(restored, 1, 'media-model');
+        mediaModels = restored;
+      } else if (mediaModels.length < 10) {
+        mediaModels = previous.mediaModels;
+      }
     }
   }
 
@@ -1829,6 +1955,18 @@ async function fetchModels(page, sourceUrl, previous, get = getBuffer, { include
   }
 
   const models = modelPayload.models.map(m => simplifyModel(m, capMap, hostMap)).filter(Boolean);
+  if (includeHosts && !hostMap && Array.isArray(previous?.models)) {
+    const prevProvidersById = new Map(
+      previous.models.filter(m => m?.id && Array.isArray(m.providers) && m.providers.length >= 2).map(m => [m.id, m.providers])
+    );
+    if (prevProvidersById.size) {
+      for (const m of models) {
+        const prevProv = prevProvidersById.get(m.id);
+        if (!m.providers && prevProv) m.providers = prevProv;
+      }
+      hostsManifestPath = previous?.hostsManifestPath || null;
+    }
+  }
   validateRows(models, 50, 'model');
 
   const byId = new Map(models.map(m => [m.id, m]));
@@ -1856,12 +1994,24 @@ async function fetchModels(page, sourceUrl, previous, get = getBuffer, { include
     if (cyberModels.length >= 3) validateRows(cyberModels, 3, 'cyber-model');
     else cyberModels = [];
   }
+  if (cyberModels.length < 3 && Array.isArray(previous?.cyberModels) && previous.cyberModels.length >= 3) {
+    cyberModels = previous.cyberModels;
+  }
   const changelog = simplifyChangelog(modelPayload.changelog, modelPayload.models);
 
   return { models, cyberModels, mediaModels, changelog, manifestPath: modelManifestPath, hostsManifestPath };
 }
 
-const VOLATILE_SNAPSHOT_KEYS = new Set(['designWebBattles', 'chatVotes', 'webdevVotes', 'docVotes', 'votes']);
+const VOLATILE_SNAPSHOT_KEYS = new Set([
+  'designWebBattles',
+  'designUiBattles',
+  'designAvgCostUsd',
+  'battles',
+  'chatVotes',
+  'webdevVotes',
+  'docVotes',
+  'votes'
+]);
 
 function comparable(snapshot) {
   const { updatedAt, diffEvents, ...data } = snapshot;

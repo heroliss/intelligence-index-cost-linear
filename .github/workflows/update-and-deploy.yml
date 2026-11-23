@@ -55,13 +55,13 @@ jobs:
         with:
           node-version: 24
 
-      - name: Verify chart math, data normalization and failure handling
-        run: node --test scripts/*.test.*
-
       - name: Fetch latest Artificial Analysis data
         id: refresh
         if: github.event_name != 'push'
         run: node scripts/fetch_data.cjs
+
+      - name: Verify chart math, data normalization and snapshot integrity
+        run: node --test scripts/*.test.*
 
       - name: Commit refreshed data
         if: github.event_name != 'push' && steps.refresh.outputs.changed == 'true'

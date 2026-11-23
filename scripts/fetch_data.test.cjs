@@ -207,8 +207,8 @@ test('unchanged snapshots keep their original timestamp and a failed refresh pre
   try {
     const original = {
       models: [simplifyModel(model)],
-      humanArenaModels: [{ id: 'a', arenaRaw: { designWebElo: 1300, designWebBattles: 4500, chatVotes: 1200 } }],
-      orgLeaderboards: { designArena: { rows: [{ name: 'A', score: 1300, votes: 4500 }] } },
+      humanArenaModels: [{ id: 'a', arenaRaw: { designWebElo: 1300, designWebBattles: 4500, designUiBattles: 800, designAvgCostUsd: 0.41, chatVotes: 1200 } }],
+      orgLeaderboards: { designArena: { rows: [{ name: 'A', score: 1300, votes: 4500, battles: 4500 }] } },
       updatedAt: '2026-01-01T00:00:00Z'
     };
     assert.equal(await writeSnapshot(out, original), true);
@@ -216,8 +216,8 @@ test('unchanged snapshots keep their original timestamp and a failed refresh pre
     // Pure crowd vote/battle count churn without any score/rank shift must not trigger rewrite
     const voteChurnOnly = {
       ...original,
-      humanArenaModels: [{ id: 'a', arenaRaw: { designWebElo: 1300, designWebBattles: 4588, chatVotes: 1299 } }],
-      orgLeaderboards: { designArena: { rows: [{ name: 'A', score: 1300, votes: 4588 }] } },
+      humanArenaModels: [{ id: 'a', arenaRaw: { designWebElo: 1300, designWebBattles: 4588, designUiBattles: 812, designAvgCostUsd: 0.42, chatVotes: 1299 } }],
+      orgLeaderboards: { designArena: { rows: [{ name: 'A', score: 1300, votes: 4588, battles: 4588 }] } },
       updatedAt: '2026-02-02T00:00:00Z'
     };
     assert.equal(await writeSnapshot(out, voteChurnOnly, original), false);
@@ -399,10 +399,86 @@ test('buildHumanArenaModels matches effort-aware variants without cloning onto l
   );
 
   // Fault tolerance: network error falls back cleanly to previous snapshot
-  const fallbackPrev = { humanArenaModels: arenaRows, lmArenaPublishDate: '2026-11-11' };
+  const fallbackPrev = {
+    humanArenaModels: arenaRows,
+    lmArenaPublishDate: '2026-11-11',
+    orgLeaderboards: {
+      arenaChat: { rows: [{ rank: 1, modelId: 'mw-max', score: 1510.9, cost: 6.95 }] },
+      arenaWebdev: { rows: [{ rank: 1, modelId: 'mw-max', score: 1723.9, cost: 6.95 }] },
+      designArena: { rows: [{ rank: 1, modelId: 'mw-max', score: 1375, cost: 6.95 }] }
+    }
+  };
   const degraded = await fetchHumanArenas([museMax], fallbackPrev, async () => { throw new Error('offline'); });
   assert.equal(degraded.humanArenaModels.length, 2);
   assert.equal(degraded.lmArenaPublishDate, '2026-11-11');
+
+  // Partial outage guard: if HuggingFace LMArena 500s while Design Arena succeeds with >= 10 models,
+  // fetchHumanArenas must NOT overwrite previous arenaChat/arenaWebdev with half-empty data, and must sync AA prices!
+  const manyDesignModels = Array.from({ length: 15 }, (_, idx) => simplifyModel({
+    id: `dm-${idx}`, slug: `design-m-${idx}`, name: `Design M ${idx}`, shortName: `Design M ${idx}`,
+    intelligenceIndex: 55, intelligenceIndexCostPerTask: { total: 2 + idx * 0.1 }
+  }));
+  const repricedMuse = { ...museMax, cost: 3.5, intelligenceIndex: 45.0 };
+  const partialDegraded = await fetchHumanArenas(
+    [repricedMuse, ...manyDesignModels],
+    fallbackPrev,
+    async url => {
+      if (url.includes('huggingface.co')) throw new Error('500 Internal Server Error');
+      return Buffer.from(JSON.stringify({
+        data: manyDesignModels.map((m, i) => ({ modelId: m.slug, elo: 1380 - i * 5, battles: 500 }))
+      }));
+    }
+  );
+  assert.equal(partialDegraded.humanArenaModels.length, 2, 'partial LMArena outage preserves previous humanArenaModels');
+  assert.equal(partialDegraded.arenaBoards.arenaChat?.rows?.length, 1, 'arenaChat leaderboard preserved on partial outage');
+  assert.equal(partialDegraded.arenaBoards.arenaWebdev?.rows?.length, 1, 'arenaWebdev leaderboard preserved on partial outage');
+  const syncedMw = partialDegraded.humanArenaModels.find(r => r.id === 'mw-max');
+  assert.equal(syncedMw.cost, 3.5, 'fallback humanArenaModels syncs updated AA cost');
+  assert.equal(syncedMw.aaIndex, 45.0, 'fallback humanArenaModels syncs updated AA intelligenceIndex');
+  assert.equal(partialDegraded.arenaBoards.arenaChat.rows[0].cost, 3.5, 'fallback arenaChat board syncs updated AA cost');
+});
+
+test('fetchModels preserves per-modality media tracks and provider pricing when optional sub-manifests fail', async () => {
+  const key = 'cd'.repeat(32);
+  const html = flight({
+    '1': { manifest: { path: '/data/models.txt', key } },
+    '2': { manifest: { path: '/data/image.txt', key } },
+    '3': { manifest: { path: '/data/video.txt', key } },
+    '4': { manifest: { path: '/data/hosts.txt', key } }
+  });
+  const models = Array.from({ length: 50 }, (_, i) => ({ ...model, id: `m-${i}`, slug: `s-${i}` }));
+  const imgItems = Array.from({ length: 6 }, (_, i) => ({
+    id: `img-${i}`, slug: `img-${i}`, name: `Img ${i}`, elo: 1200 - i * 5, price: 30, creator: { name: 'BFL', color: '#112233' }
+  }));
+  const vidItems = Array.from({ length: 6 }, (_, i) => ({
+    id: `vid-${i}`, slug: `vid-${i}`, name: `Vid ${i}`, elo: 1180 - i * 5, price: 12, creator: { name: 'Wan', color: '#223344' }
+  }));
+  const prevTts = Array.from({ length: 6 }, (_, i) => ({
+    id: `tts:t-${i}`, slug: `t-${i}`, name: `TTS ${i}`, shortName: `TTS ${i}`, mediaKind: 'tts',
+    intelligenceIndex: 75 - i, cost: 0.015, creator: { name: 'OpenAI', color: '#10a37f' },
+    isReasoning: false, isOpenWeights: false,
+    mediaScores: { t2i: null, imgEdit: null, t2v: null, i2v: null, vidEdit: null, tts: 75 - i },
+    mediaRaw: { kind: 'tts', unitZh: '每千字语音', unitEn: '/ 1k chars', ttsElo: 1200, pricePer1mChars: 15 }
+  }));
+  const prevProviders = [{ host: 'CloudA', cost: 0.35, timeSec: 50 }, { host: 'CloudB', cost: 0.45, timeSec: 60 }];
+  const previous = {
+    manifestPath: '/data/models.txt',
+    hostsManifestPath: '/data/hosts.txt',
+    models: [{ id: 'm-0', providers: prevProviders }],
+    mediaModels: prevTts
+  };
+
+  const res = await fetchModels(html, 'https://example.test/', previous, async url => {
+    if (url.endsWith('/data/models.txt')) return encryptedPayload({ models }, key);
+    if (url.endsWith('/data/image.txt')) return encryptedPayload({ media: { textToImage: imgItems } }, key);
+    if (url.endsWith('/data/video.txt')) return encryptedPayload({ media: { textToVideo: vidItems } }, key);
+    throw new Error('503 Service Unavailable'); // both /data/hosts.txt and /text-to-speech fail!
+  }, { includeHosts: true, includeMedia: true });
+
+  assert.equal(res.mediaModels.filter(m => m.mediaKind === 'image').length, 6);
+  assert.equal(res.mediaModels.filter(m => m.mediaKind === 'video').length, 6);
+  assert.equal(res.mediaModels.filter(m => m.mediaKind === 'tts').length, 6, 'previous TTS rows preserved even though image+video >= 10');
+  assert.deepEqual(res.models.find(m => m.id === 'm-0').providers, prevProviders, 'previous providers preserved when hosts manifest fails');
 });
 
 test('new hard benchmarks (MLCR, MMMU-Pro, SRE), 3D/Video/Slop, buildMediaModels, and buildSnapshotDiff work accurately', () => {

@@ -590,8 +590,13 @@ test('multimodal media tab enforces strictly isolated tracks without a cross-mod
   assert.deepEqual(mkindValues, ['image', 'video', 'tts']);
 });
 
-test('GitHub Pages deploy workflow stages modules/ directory and watches modules/** changes', async () => {
+test('GitHub Pages deploy workflow stages modules/ directory and gates commits behind post-fetch tests', async () => {
   const yml = await readFile(new URL('../.github/workflows/update-and-deploy.yml', import.meta.url), 'utf8');
   assert.match(yml, /'modules\/\*\*'/);
   assert.match(yml, /cp modules\/\*\.mjs _site\/modules\//);
+  const fetchIdx = yml.indexOf('node scripts/fetch_data.cjs');
+  const verifyIdx = yml.indexOf('node --test scripts/*.test.*');
+  const commitIdx = yml.indexOf('git commit -m');
+  assert.ok(fetchIdx !== -1 && verifyIdx !== -1 && commitIdx !== -1, 'workflow contains fetch, verify, and commit steps');
+  assert.ok(fetchIdx < verifyIdx && verifyIdx < commitIdx, 'post-fetch verification must run after fetch_data.cjs and before git commit');
 });
