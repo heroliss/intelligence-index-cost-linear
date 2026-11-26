@@ -7,7 +7,7 @@ const crypto = require('node:crypto');
 const zlib = require('node:zlib');
 const http = require('node:http');
 const { spawn } = require('node:child_process');
-const { getBuffer, readCodingRows, readManifests, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildModelArenaIndex, buildHumanArenaModels, fetchHumanArenas, parseSimpleCsv, parseLiveBenchData, fetchLiveBench, buildOrgArenaBoards, cleanMediaShortName, buildMediaModels, buildSnapshotDiff, expectedCodingComponents, simplifyCodingAgent, fetchModels, validateRows, writeSnapshot } = require('./fetch_data.cjs');
+const { getBuffer, readCodingRows, readManifests, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildModelArenaIndex, buildHumanArenaModels, fetchHumanArenas, parseSimpleCsv, parseLiveBenchData, fetchLiveBench, buildOrgArenaBoards, cleanMediaShortName, buildMediaModels, buildSnapshotDiff, expectedCodingComponents, simplifyCodingAgent, canonicalizeCodingAgents, fetchModels, validateRows, writeSnapshot } = require('./fetch_data.cjs');
 
 const model = { id: 'model-1', slug: 'example-model', name: 'Example Model', intelligenceIndex: 50, intelligenceIndexCostPerTask: { total: 0.5 } };
 const agent = { id: 'agent-1', displayLabel: 'Example Agent - Model', indexScore: 0.53, mean: { costUsd: 7.6 }, indexComponentCount: 3, modelCreators: [{ name: 'Example', color: '#123456' }] };
@@ -678,4 +678,67 @@ test('buildModelArenaIndex, simplifyCyberModel, and cleanMediaShortName guard ag
   assert.equal(waveDiffs.filter(d => d.kind === 'score').length, 0);
   assert.ok(waveDiffs.some(d => d.id === 'm-new' && d.kind === 'new'));
   assert.ok(waveDiffs.some(d => d.id === 'prev-1' && d.kind === 'new'));
+
+  // Coding-agent harness canonicalization merges inconsistent upstream casings/aliases by agentSlug
+  const canonAgents = canonicalizeCodingAgents([
+    { id: '1', agentSlug: 'opencode', agentName: 'OpenCode', family: { slug: 'OpenCode:m1', name: 'OpenCode - M1' } },
+    { id: '2', agentSlug: 'opencode', agentName: 'Opencode', family: { slug: 'Opencode:m2', name: 'OpenCode - M2' } },
+    { id: '3', agentSlug: 'copilot-cli', agentName: 'GitHub Copilot CLI', family: { slug: 'GitHub Copilot CLI:m1', name: 'Copilot - M1' } },
+    { id: '4', agentSlug: 'copilot-cli', agentName: 'Copilot CLI', family: { slug: 'Copilot CLI:m2', name: 'Copilot - M2' } },
+    { id: '5', agentSlug: 'devin-cli', agentName: 'Devin CLI', family: { slug: 'Devin CLI:m1', name: 'Devin - M1' } },
+    { id: '6', agentSlug: 'devin-fusion-cli', agentName: 'Devin Fusion CLI', family: { slug: 'Devin Fusion CLI:m1', name: 'Devin Fusion - M1' } }
+  ]);
+  assert.deepEqual(canonAgents.map(a => a.agentName), [
+    'OpenCode', 'OpenCode', 'GitHub Copilot CLI', 'GitHub Copilot CLI', 'Devin CLI', 'Devin Fusion CLI'
+  ]);
+  assert.equal(canonAgents[1].family.slug, 'OpenCode:m2');
+  assert.equal(canonAgents[3].family.slug, 'GitHub Copilot CLI:m2');
+
+  // Media shortName collision disambiguation (distinct full names + slug qualifier fallback)
+  const dupMedia = buildMediaModels({
+    ttsRows: [
+      { isRepresentative: true, pricePer1mCharacters: 60, model: { id: 't-turbo', slug: 'speech-02-turbo', name: 'Speech-02-Turbo', shortName: 'Speech-02-HD', qualityElo: 1120, creator: { name: 'MiniMax' } } },
+      { isRepresentative: true, pricePer1mCharacters: 100, model: { id: 't-hd', slug: 'speech-02-hd', name: 'Speech-02-HD', shortName: 'Speech-02-HD', qualityElo: 1130, creator: { name: 'MiniMax' } } },
+      { isRepresentative: true, pricePer1mCharacters: 20, model: { id: 't-q1', slug: 'qwen-tts-plus', name: 'Qwen TTS Plus', shortName: 'Qwen TTS Plus', qualityElo: 1200, creator: { name: 'Alibaba' } } },
+      { isRepresentative: true, pricePer1mCharacters: 20, model: { id: 't-q2', slug: 'qwen-tts-plus-controlled-voice', name: 'Qwen TTS Plus', shortName: 'Qwen TTS Plus', qualityElo: 1190, creator: { name: 'Alibaba' } } }
+    ]
+  });
+  const shortById = new Map(dupMedia.map(m => [m.id, m.shortName]));
+  assert.equal(shortById.get('tts:t-turbo'), 'Speech-02-Turbo');
+  assert.equal(shortById.get('tts:t-hd'), 'Speech-02-HD');
+  assert.equal(shortById.get('tts:t-q1'), 'Qwen TTS Plus');
+  assert.equal(shortById.get('tts:t-q2'), 'Qwen TTS Plus (controlled voice)');
+
+  // Multi-harness coding-agent launch wave collapses per underlying model so prior diffs & price shifts are never wiped out
+  const existingCa = [{ id: 'ca-old', name: 'Claude Code - Old', modelName: 'Old Model', intelligenceIndex: 55, cost: 4 }];
+  const floodCa = [
+    ...existingCa,
+    ...Array.from({ length: 13 }, (_, i) => ({ id: `ca-glm-${i}`, name: `Harness${i} - GLM-5.3-Flash`, modelName: 'GLM-5.3-Flash (Max)', intelligenceIndex: 30 + i, cost: 1.5 })),
+    ...Array.from({ length: 12 }, (_, i) => ({ id: `ca-luna-${i}`, name: `Harness${i} - GPT-6 Luna`, modelName: 'GPT-6 Luna (Max)', intelligenceIndex: 18 + i, cost: 1.0 }))
+  ];
+  const floodDiffs = buildSnapshotDiff(
+    { codingAgents: floodCa },
+    {
+      codingAgents: existingCa,
+      diffEvents: [
+        { date: '2026-11-21', kind: 'price-up', tab: 'models', id: 'm-price', name: 'Price Model', oldCost: 4, cost: 8, pct: 100 },
+        { date: '2026-10-07', kind: 'new', tab: 'media', id: 'm-old', name: 'Older Media', score: 70, cost: 0.05 },
+        { date: '2026-11-19', kind: 'new', tab: 'models', id: 'm-mid', name: 'Mid Model', score: 60, cost: 2 }
+      ]
+    },
+    '2026-11-26'
+  );
+  assert.equal(floodDiffs.filter(d => d.tab === 'coding-agents' && d.kind === 'new').length, 2, 'collapses 25 harness rows into top 1 per underlying model');
+  assert.ok(floodDiffs.some(d => d.id === 'ca-glm-12'), 'keeps highest-scoring harness for GLM-5.3-Flash');
+  assert.ok(floodDiffs.some(d => d.id === 'm-price' && d.kind === 'price-up'), 'preserves prior price events');
+  for (let i = 1; i < floodDiffs.length; i++) {
+    assert.ok(floodDiffs[i - 1].date >= floodDiffs[i].date, 'merged diffEvents stay chronologically sorted DESC');
+  }
+
+  // simplifyChangelog recognizes nested intelligenceIndexCostPerTask.cost.total format
+  const nestedCostLog = simplifyChangelog(
+    [{ dateLa: '2026-11-25', type: 'modelAdded', title: 'Nested Cost Model', url: '/models/nested' }],
+    [{ id: 'nc-1', name: 'Nested Cost Model', intelligenceIndex: 51.2, intelligenceIndexCostPerTask: { cost: { total: 1.25 } } }]
+  );
+  assert.equal(nestedCostLog[0].meta.hasPricing, true);
 });

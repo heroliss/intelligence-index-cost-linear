@@ -281,7 +281,7 @@ function simplifyModel(model, capMap = null, hostMap = null) {
     const dedup = new Map();
     const baseShort = (entry.shortName || '').toLowerCase();
     for (const h of rawHosts) {
-      const hCost = h?.intelligenceIndexCostPerTask?.total;
+      const hCost = (h?.intelligenceIndexCostPerTask?.cost ?? h?.intelligenceIndexCostPerTask)?.total;
       if (!Number.isFinite(hCost) || hCost <= 0 || !h?.host?.name) continue;
       let label = h.host.name;
       const prefix = String(h.shortName || h.name || '').split(',')[0].trim();
@@ -403,6 +403,36 @@ function simplifyCodingAgent(row, requiredComponents = 3, openFamilyNames = null
   return entry;
 }
 
+function canonicalizeCodingAgents(rows) {
+  if (!Array.isArray(rows) || !rows.length) return rows;
+  const canonicalNameBySlug = new Map();
+  const upperCount = s => (String(s).match(/[A-Z]/g) || []).length;
+  for (const r of rows) {
+    const slug = typeof r?.agentSlug === 'string' ? r.agentSlug.trim().toLowerCase() : '';
+    const name = typeof r?.agentName === 'string' ? r.agentName.trim() : '';
+    if (!slug || !name) continue;
+    const prev = canonicalNameBySlug.get(slug);
+    if (
+      !prev
+      || name.length > prev.length
+      || (name.length === prev.length && upperCount(name) > upperCount(prev))
+    ) {
+      canonicalNameBySlug.set(slug, name);
+    }
+  }
+  for (const r of rows) {
+    const slug = typeof r?.agentSlug === 'string' ? r.agentSlug.trim().toLowerCase() : '';
+    const canon = canonicalNameBySlug.get(slug);
+    if (!canon || !r.agentName || r.agentName === canon) continue;
+    const oldName = r.agentName;
+    r.agentName = canon;
+    if (r.family?.slug && r.family.slug.startsWith(`${oldName}:`)) {
+      r.family = { ...r.family, slug: `${canon}:${r.family.slug.slice(oldName.length + 1)}` };
+    }
+  }
+  return rows;
+}
+
 const CYBER_EFFORT_LEVELS = { minimal: 10, low: 20, medium: 30, high: 40, xhigh: 50, max: 60 };
 
 function inferEffortFromName(name = '', slug = '') {
@@ -439,6 +469,7 @@ function simplifyCyberModel(item, byId = null, bySlug = null, byFamily = null) {
       ? !!base.isReasoning
       : !!(inferredEff || /\(reasoning\)/i.test(item.name) || famBase?.isReasoning);
 
+  const rawCreator = item.creator || (Array.isArray(item.modelCreators) ? item.modelCreators[0] : item.modelCreators);
   const entry = {
     id: item.id,
     slug: item.slug,
@@ -447,7 +478,7 @@ function simplifyCyberModel(item, byId = null, bySlug = null, byFamily = null) {
     cyberIndex: score,
     intelligenceIndex: score,
     cost,
-    creator: creator(item.creator || base?.creator || famBase?.creator),
+    creator: creator(rawCreator || base?.creator || famBase?.creator),
     isReasoning,
     isOpenWeights: isOpen,
     refusalRate: pctOrNull(item.refusalRate),
@@ -1675,8 +1706,54 @@ function buildMediaModels({ imagePayload = null, videoPayload = null, ttsRows = 
     }
   }
 
+  // Disambiguate duplicate shortNames within the same modality so chart/table labels stay unique.
+  const shortBuckets = new Map();
+  for (const entry of out) {
+    const key = `${entry.mediaKind}::${String(entry.shortName || '').trim().toLowerCase()}`;
+    if (!shortBuckets.has(key)) shortBuckets.set(key, []);
+    shortBuckets.get(key).push(entry);
+  }
+  for (const group of shortBuckets.values()) {
+    if (group.length < 2) continue;
+    const distinctNames = new Set(group.map(e => String(e.name || '').trim().toLowerCase()));
+    if (distinctNames.size > 1) {
+      for (const e of group) {
+        if (e.name && e.name.trim()) e.shortName = e.name.trim();
+      }
+    }
+    const stillDup = new Map();
+    for (const e of group) {
+      const k = String(e.shortName || '').trim().toLowerCase();
+      if (!stillDup.has(k)) stillDup.set(k, []);
+      stillDup.get(k).push(e);
+    }
+    for (const sub of stillDup.values()) {
+      if (sub.length < 2) continue;
+      const slugs = sub.map(e => String(e.slug || ''));
+      const shortestSlug = slugs.reduce((a, b) => (a.length <= b.length ? a : b));
+      for (const e of sub) {
+        const slug = String(e.slug || '');
+        if (slug.length > shortestSlug.length && slug.startsWith(`${shortestSlug}-`)) {
+          const qual = slug.slice(shortestSlug.length + 1).replace(/[-_]+/g, ' ').trim();
+          if (qual) e.shortName = `${e.shortName} (${qual})`;
+        }
+      }
+    }
+  }
+
   if (out.length) validateRows(out, 1, 'media-model');
   return out;
+}
+
+function diffGroupKey(cur, tab) {
+  if (tab === 'coding-agents') {
+    const raw = cur.modelName || cur.family?.slug?.split(':')[1] || cur.id;
+    return String(raw).replace(/\s*\([^)]*\)\s*$/, '').trim().toLowerCase() || cur.id;
+  }
+  if (tab === 'models' || tab === 'cyber') {
+    return cur.family?.slug || cur.id;
+  }
+  return cur.id;
 }
 
 function buildSnapshotDiff(output, previous, dateStr = new Date().toISOString().slice(0, 10)) {
@@ -1688,12 +1765,16 @@ function buildSnapshotDiff(output, previous, dateStr = new Date().toISOString().
   const compareSuite = (nextArr, prevArr, tab) => {
     if (!Array.isArray(nextArr) || !Array.isArray(prevArr) || !prevArr.length) return;
     const prevMap = new Map(prevArr.map(r => [r.id, r]));
+    const suiteNewEvents = [];
+    const suitePriceEvents = [];
     const suiteScoreEvents = [];
     for (const cur of nextArr) {
       const old = prevMap.get(cur.id);
       const dispName = cleanMediaShortName(cur.shortName || cur.name, cur.name, cur.creator?.name || '');
+      const groupKey = diffGroupKey(cur, tab);
       if (!old) {
-        events.push({
+        suiteNewEvents.push({
+          _groupKey: groupKey,
           date: dateStr,
           ...(cur.releaseDate ? { releaseDate: cur.releaseDate } : {}),
           kind: 'new',
@@ -1709,7 +1790,9 @@ function buildSnapshotDiff(output, previous, dateStr = new Date().toISOString().
       if (old.cost > 0) {
         const relCost = (cur.cost - old.cost) / old.cost;
         if (Math.abs(relCost) >= 0.03 && Math.abs(cur.cost - old.cost) >= 0.0005) {
-          events.push({
+          suitePriceEvents.push({
+            _groupKey: groupKey,
+            _score: cur.intelligenceIndex,
             date: dateStr,
             kind: relCost < 0 ? 'price-drop' : 'price-up',
             tab,
@@ -1738,7 +1821,37 @@ function buildSnapshotDiff(output, previous, dateStr = new Date().toISOString().
         });
       }
     }
+    if (suiteNewEvents.length) {
+      // Prevent multi-harness coding-agent waves or multi-effort launches from flooding all 20 diff slots.
+      suiteNewEvents.sort((a, b) => (b.score || 0) - (a.score || 0) || (a.cost || 0) - (b.cost || 0) || a.id.localeCompare(b.id));
+      const seenGroups = new Set();
+      const dedupedNew = [];
+      for (const item of suiteNewEvents) {
+        if (seenGroups.has(item._groupKey)) continue;
+        seenGroups.add(item._groupKey);
+        const { _groupKey, ...clean } = item;
+        dedupedNew.push(clean);
+        if (dedupedNew.length >= 6) break;
+      }
+      events.push(...dedupedNew);
+    }
     const massRescaleThreshold = Math.max(8, Math.floor(prevArr.length * 0.25));
+    if (suitePriceEvents.length) {
+      suitePriceEvents.sort((a, b) => Math.abs(b.pct || 0) - Math.abs(a.pct || 0) || (b._score || 0) - (a._score || 0) || a.id.localeCompare(b.id));
+      const groupCounts = new Map();
+      const maxPerGroup = suitePriceEvents.length > massRescaleThreshold ? 1 : 2;
+      const cap = suitePriceEvents.length > massRescaleThreshold ? 4 : 6;
+      const keptPrice = [];
+      for (const item of suitePriceEvents) {
+        const cnt = groupCounts.get(item._groupKey) || 0;
+        if (cnt >= maxPerGroup) continue;
+        groupCounts.set(item._groupKey, cnt + 1);
+        const { _groupKey, _score, ...clean } = item;
+        keptPrice.push(clean);
+        if (keptPrice.length >= cap) break;
+      }
+      events.push(...keptPrice);
+    }
     if (suiteScoreEvents.length <= massRescaleThreshold) {
       suiteScoreEvents.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta) || (b.score || 0) - (a.score || 0));
       events.push(...suiteScoreEvents.slice(0, 4));
@@ -1760,16 +1873,17 @@ function buildSnapshotDiff(output, previous, dateStr = new Date().toISOString().
   events.sort((a, b) => eventPriority(b) - eventPriority(a));
 
   const priorEvents = Array.isArray(previous?.diffEvents) ? previous.diffEvents : [];
-  const merged = [];
+  const deduped = [];
   const seen = new Set();
   for (const ev of [...events, ...priorEvents]) {
     if (!ev?.id || !ev?.kind) continue;
     const key = `${ev.date}:${ev.tab}:${ev.id}:${ev.kind}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    merged.push(ev);
-    if (merged.length >= 20) break;
+    deduped.push(ev);
   }
+  deduped.sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || eventPriority(b) - eventPriority(a));
+  const merged = deduped.slice(0, 20);
 
   if (merged.length < 5 && Array.isArray(output.models) && output.models.length) {
     const dated = output.models.filter(m => m.releaseDate).sort((a, b) => b.releaseDate.localeCompare(a.releaseDate) || b.intelligenceIndex - a.intelligenceIndex);
@@ -1829,9 +1943,8 @@ function simplifyChangelog(items, rawModels = null) {
     if (rawByName.size && (type === 'modelAdded' || type === 'model')) {
       const hit = rawByName.get(title.trim().toLowerCase());
       if (hit) {
-        const rawCost = typeof hit.intelligenceIndexCostPerTask === 'object'
-          ? hit.intelligenceIndexCostPerTask?.total
-          : hit.intelligenceIndexCostPerTask;
+        const rawCostObj = hit.intelligenceIndexCostPerTask?.cost ?? hit.intelligenceIndexCostPerTask;
+        const rawCost = typeof rawCostObj === 'object' ? rawCostObj?.total : rawCostObj;
         const meta = {
           ...(hit.id ? { modelId: String(hit.id) } : {}),
           ...(hit.creator?.name ? { creator: String(hit.creator.name) } : {}),
@@ -2077,7 +2190,9 @@ async function main() {
     models.filter(m => m.isOpenWeights && m.family?.name).map(m => m.family.name.toLowerCase())
   );
   const requiredComponents = expectedCodingComponents(rawCodingRows);
-  const codingAgents = rawCodingRows.map(row => simplifyCodingAgent(row, requiredComponents, openFamilyNames)).filter(Boolean);
+  const codingAgents = canonicalizeCodingAgents(
+    rawCodingRows.map(row => simplifyCodingAgent(row, requiredComponents, openFamilyNames)).filter(Boolean)
+  );
   validateRows(codingAgents, 5, 'coding-agent');
   const output = {
     schemaVersion: 2, source: 'Artificial Analysis', sourceUrl, manifestPath,
@@ -2125,5 +2240,5 @@ async function main() {
     `### Multi-source benchmark data check\n- Checked: ${new Date().toISOString()}\n- Models: ${models.length}\n- Frontier hard-eval models: ${frontierModels.length}\n- Human & Aesthetic Arena models: ${humanArenaModels.length}\n- LiveBench 2.0 models: ${livebenchBoard?.rows?.length || 0} (matched ${livebenchBoard?.matchedCount || 0})\n- Coding-agent variants: ${codingAgents.length}\n- Cyber-index models: ${cyberModels.length}\n- Multimodal generation models (Image/Video/TTS): ${mediaModels.length}\n- Excluded coding-agent rows without comparable score/cost: ${output.codingAgentExcludedCount}\n- Snapshot changed: ${changed}\n`);
 }
 
-module.exports = { getBuffer, readFlightRecords, readManifests, decryptPayload, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildModelArenaIndex, buildHumanArenaModels, fetchHumanArenas, parseSimpleCsv, parseLiveBenchData, fetchLiveBench, buildOrgArenaBoards, readTtsHostRows, cleanMediaShortName, buildMediaModels, buildSnapshotDiff, resolveFlightReference, readCodingRows, expectedCodingComponents, simplifyCodingAgent, validateRows, fetchModels, writeSnapshot };
+module.exports = { getBuffer, readFlightRecords, readManifests, decryptPayload, simplifyModel, simplifyCyberModel, simplifyChangelog, buildFrontierModels, eloToWinPct, buildModelArenaIndex, buildHumanArenaModels, fetchHumanArenas, parseSimpleCsv, parseLiveBenchData, fetchLiveBench, buildOrgArenaBoards, readTtsHostRows, cleanMediaShortName, buildMediaModels, buildSnapshotDiff, resolveFlightReference, readCodingRows, expectedCodingComponents, simplifyCodingAgent, canonicalizeCodingAgents, validateRows, fetchModels, writeSnapshot };
 if (require.main === module) main().catch(error => { console.error(error.stack || error); process.exitCode = 1; });

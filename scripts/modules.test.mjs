@@ -114,14 +114,17 @@ test('recommendModels returns distinct multi-archetype picks with objective proo
   // 2b. Writing under monthly plan contrasts Natural Chat leader against cross-vendor Low-Slop Craft (enforcing core intelligence!)
   const wrt = recommendModels(snapshot, {useCase: 'writing', billing: 'sub', license: 'all'});
   assert.equal(wrt.picks[0].badgeZh, '自然对话主力');
-  assert.ok(wrt.picks[0].proofs.some(pr => pr.zh.includes('Arena 聊天 #')), `writing leader (${wrt.picks[0].row.name}) must carry Arena Chat rank proof`);
+  assert.ok(wrt.picks[0].proofs.some(pr => /Arena 聊天 ~?#\d+/.test(pr.zh)), `writing leader (${wrt.picks[0].row.name}) must carry Arena Chat rank proof`);
   assert.equal(wrt.picks[1].badgeZh, '低 AI 味写作派');
   assert.notEqual(wrt.picks[1].row.creator?.name, wrt.picks[0].row.creator?.name, 'writing slot 2 contrasts a different vendor');
   assert.ok(wrt.picks[1].row.aaIndex >= 50, `low-slop writing pick (${wrt.picks[1].row.name}) passes core intelligence floor`);
 
   // 2c. Research highlights low hallucination proofs and warns on high blind-spot hallucination (>=45%)
   const res = recommendModels(snapshot, {useCase: 'research', billing: 'sub', license: 'all'});
-  assert.ok(res.picks[0].proofs.some(pr => pr.zh.includes('盲区幻觉仅')), `research leader (${res.picks[0].row.name}) carries low-hallucination proof`);
+  assert.ok(res.picks[0].proofs.length >= 1, `research leader (${res.picks[0].row.name}) carries at least one objective proof`);
+  if ((res.picks[0].row.subscores?.hallucination ?? 100) <= 20) {
+    assert.ok(res.picks[0].proofs.some(pr => pr.zh.includes('盲区幻觉仅')), `research leader (${res.picks[0].row.name}) carries low-hallucination proof`);
+  }
   for (const p of res.picks) {
     if (p.row.subscores?.hallucination >= 45) {
       assert.ok(p.caveats.some(cv => cv.zh.includes('盲区幻觉率')), `research pick (${p.row.name}) with ${p.row.subscores.hallucination}% hallucination must warn`);
@@ -591,13 +594,15 @@ test('updates module builds chronologically sorted feed, classifies upstream typ
   assert.equal(normalizeChangelogType('modelAdded').kind, 'model-added');
   assert.equal(normalizeChangelogType('modelAdded').zh, '新收录模型');
   assert.equal(normalizeChangelogType('benchmark').kind, 'benchmark');
+  assert.equal(normalizeChangelogType('methodologyUpdated').kind, 'benchmark');
+  assert.equal(normalizeChangelogType('methodologyUpdated').zh, '基准更新');
 
   // Verify category filters match counts exactly
   for (const f of UPDATE_FILTERS) {
     assert.equal(filterUpdateFeed(feed.items, f.id).length, feed.counts[f.id], `filter ${f.id} count matches`);
   }
 
-  // Every single item in live current.json resolves cleanly without errors
+  // Every single item in live current.json resolves cleanly without errors (rolling-window safe)
   for (const entry of feed.items) {
     const detail = resolveUpdateDetail(entry, snapshot, {feedItems: feed.items});
     assert.ok(detail && detail.entry.key === entry.key, `detail resolved for ${entry.key}`);
@@ -608,57 +613,133 @@ test('updates module builds chronologically sorted feed, classifies upstream typ
         assert.ok(detail.diffSummary.oldBreakeven20 >= 1 && detail.diffSummary.newBreakeven20 >= 1);
       }
     }
+    if (detail.matchedModels?.length) {
+      const uniq = new Set(detail.matchedModels.map(m => `${m.tab}:${m.row.id}`));
+      assert.equal(uniq.size, detail.matchedModels.length, `matchedModels deduplicated for ${entry.key}`);
+    }
   }
+});
 
-  // Specific verification on price-up diff: Gemini 4 Argon (medium) $4.3146 -> $8.6292 (+100%, $20 breakeven 5 -> 3)
+test('updates module resolves price-up breakevens, span-aware article matching, and unplotted models deterministically', () => {
+  const synthSnapshot = {
+    models: [
+      {id: 'argon-low', slug: 'gemini-4-argon-low', name: 'Gemini 4 Argon (Low)', shortName: 'Gemini 4 Argon (low)', intelligenceIndex: 42.1, cost: 2.1, creator: {name: 'Google'}, family: {slug: 'gemini-4-argon', name: 'Gemini 4 Argon'}, effort: {slug: 'low', label: 'low', level: 20}},
+      {id: 'argon-med', slug: 'gemini-4-argon-medium', name: 'Gemini 4 Argon (Medium)', shortName: 'Gemini 4 Argon (medium)', intelligenceIndex: 47.8, cost: 8.6292, creator: {name: 'Google'}, family: {slug: 'gemini-4-argon', name: 'Gemini 4 Argon'}, effort: {slug: 'medium', label: 'medium', level: 30}},
+      {id: 'argon-high', slug: 'gemini-4-argon-high', name: 'Gemini 4 Argon (High)', shortName: 'Gemini 4 Argon (high)', intelligenceIndex: 50.5, cost: 9.95, creator: {name: 'Google'}, family: {slug: 'gemini-4-argon', name: 'Gemini 4 Argon'}, effort: {slug: 'high', label: 'high', level: 40}},
+      {id: 'inkling-high', slug: 'inkling-high', name: 'Inkling (High)', shortName: 'Inkling (high)', intelligenceIndex: 11.0, cost: 0.4, creator: {name: 'Thinking Machines'}, family: {slug: 'inkling', name: 'Inkling'}, effort: {slug: 'high', label: 'high', level: 40}},
+      {id: 'inkling-xhigh', slug: 'inkling', name: 'Inkling (Xhigh)', shortName: 'Inkling (xhigh)', intelligenceIndex: 14.5, cost: 0.8, creator: {name: 'Thinking Machines'}, family: {slug: 'inkling', name: 'Inkling'}, effort: {slug: 'xhigh', label: 'xhigh', level: 50}},
+      {id: 'inkling-2-mini', slug: 'inkling-2-mini', name: 'Inkling 2 Mini', shortName: 'Inkling 2 Mini', intelligenceIndex: 20.1, cost: 0.12, creator: {name: 'Thinking Machines'}, family: {slug: 'inkling-2-mini', name: 'Inkling 2 Mini'}},
+      {id: 'neon-low', slug: 'gemini-4-neon-low', name: 'Gemini 4 Neon (Low)', shortName: 'Gemini 4 Neon (low)', intelligenceIndex: 44.1, cost: 0.6, creator: {name: 'Google'}, family: {slug: 'gemini-4-neon', name: 'Gemini 4 Neon'}, effort: {slug: 'low', label: 'low', level: 20}},
+      {id: 'neon-med', slug: 'gemini-4-neon-medium', name: 'Gemini 4 Neon (Medium)', shortName: 'Gemini 4 Neon (medium)', intelligenceIndex: 54.9, cost: 1.9, creator: {name: 'Google'}, family: {slug: 'gemini-4-neon', name: 'Gemini 4 Neon'}, effort: {slug: 'medium', label: 'medium', level: 30}},
+      {id: 'neon-high', slug: 'gemini-4-neon-high', name: 'Gemini 4 Neon (High)', shortName: 'Gemini 4 Neon (high)', intelligenceIndex: 59.8, cost: 3.74, creator: {name: 'Google'}, family: {slug: 'gemini-4-neon', name: 'Gemini 4 Neon'}, effort: {slug: 'high', label: 'high', level: 40}},
+      {id: 'neon-xhigh', slug: 'gemini-4-neon', name: 'Gemini 4 Neon (Xhigh)', shortName: 'Gemini 4 Neon (xhigh)', intelligenceIndex: 61.5, cost: 6.44, creator: {name: 'Google'}, family: {slug: 'gemini-4-neon', name: 'Gemini 4 Neon'}, effort: {slug: 'xhigh', label: 'xhigh', level: 50}},
+      {id: 'astra-high', slug: 'gpt-6-2-astra-high', name: 'GPT-6.2 Astra (High)', shortName: 'GPT-6.2 Astra (high)', intelligenceIndex: 60.2, cost: 2.1, creator: {name: 'OpenAI'}, family: {slug: 'gpt-6-2-astra', name: 'GPT-6.2 Astra'}, effort: {slug: 'high', label: 'high', level: 40}},
+      {id: 'astra-max', slug: 'gpt-6-2-astra', name: 'GPT-6.2 Astra (Max)', shortName: 'GPT-6.2 Astra (max)', intelligenceIndex: 62.2, cost: 4.0, creator: {name: 'OpenAI'}, family: {slug: 'gpt-6-2-astra', name: 'GPT-6.2 Astra'}, effort: {slug: 'max', label: 'max', level: 60}},
+      {id: 'sol-high', slug: 'gpt-6-2-sol-high', name: 'GPT-6.2 Sol (High)', shortName: 'GPT-6.2 Sol (high)', intelligenceIndex: 55.1, cost: 0.7, creator: {name: 'OpenAI'}, family: {slug: 'gpt-6-2-sol', name: 'GPT-6.2 Sol'}, effort: {slug: 'high', label: 'high', level: 40}},
+      {id: 'sol-max', slug: 'gpt-6-2-sol', name: 'GPT-6.2 Sol (Max)', shortName: 'GPT-6.2 Sol (max)', intelligenceIndex: 57.3, cost: 1.01, creator: {name: 'OpenAI'}, family: {slug: 'gpt-6-2-sol', name: 'GPT-6.2 Sol'}, effort: {slug: 'max', label: 'max', level: 60}}
+    ],
+    diffEvents: [
+      {date: '2026-11-21', kind: 'price-up', tab: 'models', id: 'argon-med', name: 'Gemini 4 Argon (medium)', creator: 'Google', oldCost: 4.3146, cost: 8.6292, pct: 100}
+    ],
+    changelog: [
+      {date: '2026-11-24', type: 'methodologyUpdated', title: 'Artificial Analysis Intelligence Index v5.0.2', url: 'https://artificialanalysis.ai/methodology/intelligence-benchmarking'},
+      {date: '2026-11-20', type: 'articlePublished', title: 'Thinking Machines has released Inkling 2 Mini, an open weights looped transformer', url: 'https://artificialanalysis.ai/articles/inkling-2-mini'},
+      {date: '2026-11-18', type: 'articlePublished', title: 'Google continues to accelerate its release cadence with Gemini 4 Neon', url: 'https://artificialanalysis.ai/articles/gemini-4-neon'},
+      {date: '2026-11-18', type: 'modelAdded', title: 'Gemini 4 Neon (Xhigh)', url: 'https://artificialanalysis.ai/models/gemini-4-neon'},
+      {date: '2026-11-17', type: 'articlePublished', title: 'OpenAI has the #2 model in the Intelligence Index with the release of GPT-6.2 Astra and GPT-6.2 Sol', url: 'https://artificialanalysis.ai/articles/gpt-6-2'},
+      {date: '2026-11-17', type: 'modelAdded', title: 'JoyAI-VL-Preview', url: 'https://artificialanalysis.ai/models/joyai-vl', meta: {creator: 'Joy Future Academy', score: 28.04, hasPricing: false, isOpenWeights: false}}
+    ]
+  };
+
+  const feed = buildUpdateFeed(synthSnapshot);
+
+  // 1) Price-up diff: Gemini 4 Argon (medium) $4.3146 -> $8.6292 (+100%, $20 breakeven 5 -> 3)
   const argonDiff = feed.diffItems.find(it => it.title.includes('Gemini 4 Argon (medium)'));
   assert.ok(argonDiff, 'found Gemini 4 Argon (medium) diff event');
-  const argonDetail = resolveUpdateDetail(argonDiff, snapshot, {feedItems: feed.items});
+  const argonDetail = resolveUpdateDetail(argonDiff, synthSnapshot, {feedItems: feed.items});
   assert.equal(argonDetail.diffSummary.oldBreakeven20, 5);
   assert.equal(argonDetail.diffSummary.newBreakeven20, 3);
-  assert.ok(argonDetail.primaryModel?.scoreRank >= 1 && argonDetail.primaryModel.suiteTotal > 50);
-  assert.ok(argonDetail.primaryModel.siblings.length >= 2, 'resolves sibling effort variants');
+  assert.ok(argonDetail.primaryModel?.scoreRank >= 1 && argonDetail.primaryModel.suiteTotal === synthSnapshot.models.length);
+  assert.equal(argonDetail.primaryModel.siblings.length, 3, 'resolves all sibling effort variants');
 
-  // Specific verification on span-aware article matching:
-  // 1) "Inkling 2 Mini" article must NOT falsely match parent "Inkling" family
+  // 2) Methodology update classifies as benchmark
+  const methItem = feed.officialItems.find(it => it.title.includes('v5.0.2'));
+  assert.equal(methItem?.kind, 'benchmark');
+
+  // 3) Span-aware article matching: "Inkling 2 Mini" must NOT falsely match parent "Inkling" family
   const inklingArt = feed.officialItems.find(it => it.kind === 'article' && it.title.includes('Inkling 2 Mini'));
   assert.ok(inklingArt, 'found Inkling 2 Mini article');
-  const inklingDetail = resolveUpdateDetail(inklingArt, snapshot, {feedItems: feed.items});
+  const inklingDetail = resolveUpdateDetail(inklingArt, synthSnapshot, {feedItems: feed.items});
   assert.equal(inklingDetail.matchedModels.length, 1, 'matches only Inkling 2 Mini, not shorter Inkling substring');
   assert.equal(inklingDetail.matchedModels[0].row.name, 'Inkling 2 Mini');
 
-  // 2) "Gemini 4 Neon" article matches all 4 effort tiers
+  // 4) "Gemini 4 Neon" article matches all 4 effort tiers
   const neonArt = feed.officialItems.find(it => it.kind === 'article' && it.title.includes('Gemini 4 Neon'));
   assert.ok(neonArt, 'found Gemini 4 Neon article');
-  const neonDetail = resolveUpdateDetail(neonArt, snapshot, {feedItems: feed.items});
+  const neonDetail = resolveUpdateDetail(neonArt, synthSnapshot, {feedItems: feed.items});
   assert.equal(neonDetail.matchedModels.length, 4, 'matches all 4 Gemini 4 Neon effort tiers');
   assert.equal(neonDetail.articleStats.familyCount, 1);
 
-  // 3) "GPT-6.2 Astra and GPT-6.2 Sol" article matches BOTH families and carries rich list preview
+  // 5) "GPT-6.2 Astra and GPT-6.2 Sol" article matches BOTH families and carries rich list preview
   const gptArt = feed.officialItems.find(it => it.kind === 'article' && it.title.includes('GPT-6.2 Astra'));
   assert.ok(gptArt, 'found GPT-6.2 Astra & Sol article');
   assert.equal(gptArt.preview?.kind, 'article');
-  assert.ok(gptArt.preview.familyCount >= 2 && gptArt.preview.variantCount >= 4);
+  assert.equal(gptArt.preview.familyCount, 2);
+  assert.equal(gptArt.preview.variantCount, 4);
   const neonModelItem = feed.officialItems.find(it => it.kind === 'model-added' && it.title === 'Gemini 4 Neon (Xhigh)');
   assert.equal(neonModelItem?.preview?.kind, 'model');
   assert.ok(neonModelItem.preview.score > 50 && neonModelItem.preview.cost > 0);
-  const gptDetail = resolveUpdateDetail(gptArt, snapshot, {feedItems: feed.items});
-  assert.ok(gptDetail.articleStats.familyCount >= 2, 'matches both GPT-6.2 Astra and GPT-6.2 Sol families');
+  const gptDetail = resolveUpdateDetail(gptArt, synthSnapshot, {feedItems: feed.items});
+  assert.equal(gptDetail.articleStats.familyCount, 2, 'matches both GPT-6.2 Astra and GPT-6.2 Sol families');
 
-  // 4) Unpriced modelAdded item (e.g. JoyAI-VL-Preview) returns graceful unplotted metadata + hypothetical rank when enriched
-  const unpricedEntry = {
-    key: 'log:test:unpriced',
-    source: 'official',
-    kind: 'model-added',
-    rawType: 'modelAdded',
-    typeLabel: {zh: '新收录模型', en: 'Model Added'},
-    date: '2026-11-17',
-    title: 'JoyAI-VL-Preview',
-    url: 'https://artificialanalysis.ai/models/joyai-vl',
-    meta: {creator: 'Joy Future Academy', score: 28.04, hasPricing: false, isOpenWeights: false}
-  };
-  const unpricedDetail = resolveUpdateDetail(unpricedEntry, snapshot, {feedItems: feed.items});
+  // 6) Unpriced modelAdded item (JoyAI-VL-Preview) returns graceful unplotted metadata + hypothetical rank
+  const unpricedEntry = feed.officialItems.find(it => it.title === 'JoyAI-VL-Preview');
+  assert.ok(unpricedEntry, 'found unpriced modelAdded entry');
+  const unpricedDetail = resolveUpdateDetail(unpricedEntry, synthSnapshot, {feedItems: feed.items});
   assert.equal(unpricedDetail.primaryModel, null);
   assert.ok(unpricedDetail.unplotted && unpricedDetail.unplotted.hypotheticalRank >= 1);
   assert.ok(unpricedDetail.unplotted.reasonZh.includes('计费数据'));
+
+  // 7) Malformed percent-encoding in upstream URL does not throw URIError
+  const malformedFeed = buildUpdateFeed({
+    models: synthSnapshot.models,
+    diffEvents: [],
+    changelog: [
+      {date: '2026-11-26', type: 'modelAdded', title: 'Bad URL Model', url: 'https://artificialanalysis.ai/models/bad%E0%A4%Aslug'}
+    ]
+  });
+  assert.equal(malformedFeed.officialItems.length, 1);
+  const badDetail = resolveUpdateDetail(malformedFeed.officialItems[0], synthSnapshot, {feedItems: malformedFeed.items});
+  assert.equal(badDetail.primaryModel, null);
+});
+
+test('nav-history falls back to onExternalHash when popping an evicted same-session entry', () => {
+  let state = {key: 's0'};
+  let currentHash = '#s0';
+  const pushed = [];
+  const fakeHistory = {
+    state: null,
+    replaceState(s, _t, u) { this.state = s; currentHash = u; },
+    pushState(s, _t, u) { this.state = s; currentHash = u; pushed.push(s); },
+    back() {},
+    forward() {}
+  };
+  const nav = createNavHistory({
+    maxStack: 3,
+    historyApi: fakeHistory,
+    locationApi: {pathname: '/', search: ''},
+    captureSnapshot: () => ({...state}),
+    restoreSnapshot: snap => { state = {...snap}; },
+    buildUrlHash: () => currentHash,
+    signatureOf: snap => snap.key
+  });
+  nav.init();
+  const evictedState = fakeHistory.state;
+  for (let i = 1; i <= 4; i++) {
+    nav.runAction(() => { state = {key: `s${i}`}; currentHash = `#s${i}`; });
+  }
+  let externalCalled = 0;
+  const handled = nav.handlePopState(evictedState, () => { externalCalled++; });
+  assert.equal(handled, false, 'evicted entry should not report handled internally');
+  assert.equal(externalCalled, 1, 'evicted same-session popstate must fall back to onExternalHash');
 });

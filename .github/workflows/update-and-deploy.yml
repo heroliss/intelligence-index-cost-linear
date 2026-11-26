@@ -36,22 +36,18 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
-  update-and-deploy:
+  update-and-build:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      should_deploy: ${{ steps.deploy_gate.outputs.should_deploy }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
 
@@ -75,12 +71,25 @@ jobs:
             git push
           fi
 
+      - name: Determine deploy gate
+        id: deploy_gate
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          SKIP_IF_UNCHANGED: ${{ github.event.inputs.skip_deploy_if_unchanged }}
+          DATA_CHANGED: ${{ steps.refresh.outputs.changed }}
+        run: |
+          if [ "$DATA_CHANGED" = "true" ] || { [ "$EVENT_NAME" != "schedule" ] && [ "$SKIP_IF_UNCHANGED" != "true" ]; }; then
+            echo "should_deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_deploy=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Configure GitHub Pages
-        if: (github.event_name != 'schedule' && github.event.inputs.skip_deploy_if_unchanged != 'true') || steps.refresh.outputs.changed == 'true'
-        uses: actions/configure-pages@v5
+        if: steps.deploy_gate.outputs.should_deploy == 'true'
+        uses: actions/configure-pages@v6
 
       - name: Stage clean static site bundle
-        if: (github.event_name != 'schedule' && github.event.inputs.skip_deploy_if_unchanged != 'true') || steps.refresh.outputs.changed == 'true'
+        if: steps.deploy_gate.outputs.should_deploy == 'true'
         run: |
           rm -rf _site
           mkdir -p _site/data _site/modules
@@ -89,12 +98,20 @@ jobs:
           cp data/current.json _site/data/current.json
 
       - name: Upload site artifact
-        if: (github.event_name != 'schedule' && github.event.inputs.skip_deploy_if_unchanged != 'true') || steps.refresh.outputs.changed == 'true'
-        uses: actions/upload-pages-artifact@v4
+        if: steps.deploy_gate.outputs.should_deploy == 'true'
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
+  deploy:
+    needs: update-and-build
+    if: needs.update-and-build.outputs.should_deploy == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
-        if: (github.event_name != 'schedule' && github.event.inputs.skip_deploy_if_unchanged != 'true') || steps.refresh.outputs.changed == 'true'
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

@@ -117,20 +117,22 @@ export function createNavHistory({
   function handlePopState(eventState, onExternalHash) {
     if (eventState && eventState.__navSession === sessionId) {
       const targetIdx = stack.findIndex(item => item.uid === eventState.navUid);
-      if (targetIdx !== -1 && targetIdx !== index) {
-        const curSnap = captureSnapshot();
-        if (curSnap && stack[index]) stack[index].snap = curSnap;
-        const dir = targetIdx < index ? 'back' : 'forward';
-        restoring = true;
-        index = targetIdx;
-        try {
-          restoreSnapshot(stack[targetIdx].snap, dir);
-        } finally {
-          restoring = false;
+      if (targetIdx !== -1) {
+        if (targetIdx !== index) {
+          const curSnap = captureSnapshot();
+          if (curSnap && stack[index]) stack[index].snap = curSnap;
+          const dir = targetIdx < index ? 'back' : 'forward';
+          restoring = true;
+          index = targetIdx;
+          try {
+            restoreSnapshot(stack[targetIdx].snap, dir);
+          } finally {
+            restoring = false;
+          }
         }
+        syncButtons();
+        return true;
       }
-      syncButtons();
-      return true;
     }
     onExternalHash?.();
     const snap = captureSnapshot();

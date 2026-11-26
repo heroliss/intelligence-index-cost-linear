@@ -29,23 +29,23 @@ import {
   SUBSCRIPTION_TIERS,
   MONTHLY_USAGE,
   TASK_VOLUME_PRESETS
-} from './chart-math.mjs?v=20261122-04';
+} from './chart-math.mjs?v=20261126-01';
 import {
   RECOMMEND_USE_CASES,
   RECOMMEND_BILLING,
   RECOMMEND_LICENSES,
   recommendModels,
   getRowCaveats
-} from './modules/recommend.mjs?v=20261122-04';
-import {computeOrgDivergence} from './modules/divergence.mjs?v=20261122-04';
-import {createNavHistory} from './modules/nav-history.mjs?v=20261122-04';
-import {GUIDE_PROFILE_ORDER, GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261122-04';
+} from './modules/recommend.mjs?v=20261126-01';
+import {computeOrgDivergence} from './modules/divergence.mjs?v=20261126-01';
+import {createNavHistory} from './modules/nav-history.mjs?v=20261126-01';
+import {GUIDE_PROFILE_ORDER, GUIDE_TAB_META, GUIDE_GLOSSARY} from './modules/guide-content.mjs?v=20261126-01';
 import {
   UPDATE_FILTERS,
   buildUpdateFeed,
   filterUpdateFeed,
   resolveUpdateDetail
-} from './modules/updates.mjs?v=20261122-04';
+} from './modules/updates.mjs?v=20261126-01';
 
 const $ = selector => document.querySelector(selector);
 const svg = $('#svg'), host = $('#chart'), tip = $('#tip');
@@ -491,6 +491,23 @@ function html(tag, content, className) {
   return element;
 }
 
+function safeHttpUrl(raw) {
+  if (typeof raw !== 'string' || !raw.trim()) return null;
+  try {
+    const parsed = new URL(raw, location.href);
+    return (parsed.protocol === 'https:' || parsed.protocol === 'http:') ? parsed.href : null;
+  } catch {
+    return null;
+  }
+}
+
+function focusTriggerOrFallback(primary, fallback = $('#controlsToggle')) {
+  const target = primary && primary.isConnected && primary.offsetParent !== null && !primary.closest('[hidden]')
+    ? primary
+    : fallback;
+  target?.focus?.({preventScroll: true});
+}
+
 function hexToRgb(hex) {
   let v = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(hex || '') ? hex.toLowerCase() : '#64748b';
   if (v.length === 4) v = '#' + [...v.slice(1)].map(x => x + x).join('');
@@ -642,6 +659,20 @@ function rowSearchBlob(row) {
   const blob = `${raw} ${extra.join(' ')}`.toLocaleLowerCase();
   try { Object.defineProperty(row, '_searchBlob', {value: blob, enumerable: false}); } catch {}
   return blob;
+}
+
+function matchesSearchQuery(rawText, query) {
+  const q = String(query || '').trim().toLocaleLowerCase();
+  if (!q) return true;
+  const tokens = q.split(/\s+/).filter(Boolean);
+  if (!tokens.length) return true;
+  const base = String(rawText || '');
+  const extra = [];
+  for (const [re, words] of CREATOR_ZH_ALIASES) {
+    if (re.test(base)) extra.push(words);
+  }
+  const hay = extra.length ? `${base} ${extra.join(' ')}`.toLocaleLowerCase() : base.toLocaleLowerCase();
+  return tokens.every(tk => hay.includes(tk));
 }
 
 function defaultCompareIds(rows) {
@@ -810,10 +841,8 @@ function setMediaTrack(nextTrack, {reRender = true, updateUrl = true} = {}) {
 
 function applyYLens(target, lensId = '') {
   target.yLens = lensId;
-  if (lensId) {
-    target.scenarioId = 'default';
-    target.scenarioWeights = null;
-  }
+  target.scenarioId = 'default';
+  target.scenarioWeights = null;
   reprojectRows(target);
 }
 
@@ -928,6 +957,10 @@ function applyRouteParams(target, params) {
   const view = params.get('view');
   if (target.benchKey === 'orgs') {
     target.mode = 'orgs';
+    orgFocus = 'all';
+    orgDivFilter = 'all';
+    orgMatchedOnly = false;
+    orgBumpLimit = 12;
   } else if (['chart', 'table', 'curve', 'sub', 'compare'].includes(view)) {
     target.mode = view;
   } else {
@@ -983,6 +1016,9 @@ function applyRouteParams(target, params) {
   }
   if (needsReproject) reprojectRows(target);
   if (trackChanged) {
+    const nextDefaultTasks = mediaTrackMeta(target.mediaTrack).defaultTasks || MONTHLY_USAGE.defaultModelTasks;
+    target.defaultTasks = nextDefaultTasks;
+    if (!params.has('tasks')) target.monthlyTasks = nextDefaultTasks;
     target.historyIndex = Math.max(0, target.releaseDates.length - 1);
     syncMediaTrackDerived(target);
   }
@@ -1071,7 +1107,9 @@ function applyRouteParams(target, params) {
 function buildUrlHash({includeLang = false} = {}) {
   if (!state) return location.hash || '';
   const params = new URLSearchParams();
-  if (includeLang && lang === 'en') params.set('lang', 'en');
+  if (lang === 'en' && (includeLang || new URLSearchParams((location.hash || '').split('?')[1] || '').get('lang') === 'en')) {
+    params.set('lang', 'en');
+  }
   if (activeKey === 'media' && state.mediaTrack && state.mediaTrack !== 'image') params.set('track', state.mediaTrack);
   if (activeKey !== 'orgs' && state.mode !== 'chart') params.set('view', state.mode);
   if (state.scenarioId && state.scenarioId !== 'default') {
@@ -1154,11 +1192,17 @@ function buildUrlHash({includeLang = false} = {}) {
 }
 
 function syncUrlHash({includeLang = false} = {}) {
+  if (pendingUrlTimer) {
+    clearTimeout(pendingUrlTimer);
+    pendingUrlTimer = 0;
+  }
   if (!state || navHistory.isSuppressingUrl()) return;
   const nextHash = buildUrlHash({includeLang});
   const current = location.hash || '';
   if (current !== nextHash) {
-    history.replaceState(history.state, '', nextHash || location.pathname + location.search);
+    try {
+      history.replaceState(history.state, '', nextHash || location.pathname + location.search);
+    } catch {}
   }
 }
 
@@ -1220,7 +1264,9 @@ function navSignature(snap) {
     snap.historyMode,
     snap.routerOpen,
     snap.selected,
+    snap.compareIds,
     snap.orgFocus,
+    snap.orgDivFilter,
     snap.orgPinnedKey,
     snap.orgMatchedOnly
   ]);
@@ -1355,6 +1401,7 @@ function restoreNavSnapshot(snap, direction = 'back') {
   state = states.get(key);
   if (key === 'media' && snap.mediaTrack && MEDIA_TRACKS[snap.mediaTrack]) {
     state.mediaTrack = snap.mediaTrack;
+    state.defaultTasks = mediaTrackMeta(snap.mediaTrack).defaultTasks || MONTHLY_USAGE.defaultModelTasks;
   }
   state.yLens = snap.yLens || '';
   state.scenarioId = snap.scenarioId || 'default';
@@ -1364,7 +1411,6 @@ function restoreNavSnapshot(snap, direction = 'back') {
   state.extraFilter = snap.extraFilter || '';
   state.company = snap.company || null;
   state.search = snap.search || '';
-  state.starredOnly = !!snap.starredOnly && state.baseRows.some(isStarred);
   state.frontierOnly = !!snap.frontierOnly;
   state.effortCurves = !!snap.effortCurves;
   state.isoCurve = !!snap.isoCurve;
@@ -1377,6 +1423,10 @@ function restoreNavSnapshot(snap, direction = 'back') {
   if (state.mode !== 'orgs') lastArenaMode = state.mode;
 
   reprojectRows(state);
+  if (key === 'media') {
+    state.defaultCompareKey = defaultCompareIds(state.rows).join(',');
+  }
+  state.starredOnly = !!snap.starredOnly && state.rows.some(isStarred);
   if (typeof snap.historyIndex === 'number' && state.releaseDates.length) {
     state.historyIndex = Math.max(0, Math.min(state.releaseDates.length - 1, snap.historyIndex));
   }
@@ -1634,6 +1684,19 @@ function ensureRowVisibleInState(row) {
   }
 }
 
+function ensureRowProjectedInState(rowId) {
+  if (!state || !rowId) return null;
+  let liveRow = state.rows.find(r => r.id === rowId);
+  if (!liveRow && state.baseRows.some(r => r.id === rowId)) {
+    state.yLens = '';
+    state.scenarioId = 'default';
+    state.scenarioWeights = null;
+    reprojectRows(state);
+    liveRow = state.rows.find(r => r.id === rowId);
+  }
+  return liveRow || null;
+}
+
 function jumpToModelFromUpdates(row, targetTab = 'models', mediaKind = null) {
   if (!row) return;
   setChangelogOpen(false, {restoreFocus: false});
@@ -1646,10 +1709,11 @@ function jumpToModelFromUpdates(row, targetTab = 'models', mediaKind = null) {
         setMediaTrack(targetTrack, {reRender: false, updateUrl: false});
       }
     }
-    const liveRow = state?.rows.find(r => r.id === row.id);
+    const liveRow = ensureRowProjectedInState(row.id);
     if (liveRow) {
       ensureRowVisibleInState(liveRow);
       renderLegend();
+      renderStatus();
       locateRowInChart(liveRow);
       selectionNotice = t(
         `已定位至 ${liveRow.name}（点左上 ‹ 返回可退回原视野）`,
@@ -1673,6 +1737,12 @@ function compareModelsFromUpdates(rows, targetTab = 'models', mediaKind = null, 
       }
     }
     if (!state) return;
+    if (rows.some(r => !state.rows.some(x => x.id === r.id) && state.baseRows.some(x => x.id === r.id))) {
+      state.yLens = '';
+      state.scenarioId = 'default';
+      state.scenarioWeights = null;
+      reprojectRows(state);
+    }
     const validIds = new Set(state.rows.map(r => r.id));
     let ids = [...new Set(rows.map(r => r.id).filter(id => validIds.has(id)))].slice(0, MAX_COMPARE);
     if (ids.length === 1) {
@@ -1684,6 +1754,7 @@ function compareModelsFromUpdates(rows, targetTab = 'models', mediaKind = null, 
       if (!['coding-agents', 'media'].includes(activeKey)) lastModelCompareIds = [...ids];
     }
     renderLegend();
+    renderStatus();
     showView('compare');
     selectionNotice = noticeText || t(
       `已载入 ${ids.length} 款动态关联模型进入剖析对比（点左上 ‹ 返回可退回）`,
@@ -1746,6 +1817,9 @@ function updateItemSubline(entry) {
   if (pv?.kind === 'unpriced') {
     return t('暂缺公开 API 计费 · 点击查看说明', 'No public API pricing yet · click for info');
   }
+  if (entry.kind === 'benchmark') {
+    return t('基准方法论更新 · 点击查看详情与原文', 'Methodology / benchmark update · click for details');
+  }
   return entry.kind === 'article'
     ? t('官方评测报告 · 点击查看详情与原文', 'Official article · click for details')
     : t('官方新收录 · 点击查看详细数据', 'Official release · click for details');
@@ -1760,7 +1834,9 @@ function renderModelTelemetryBlocks(frag, ctx, {showSiblings = true} = {}) {
     ? t('智能体指数', 'Agent Index')
     : tab === 'media'
       ? t('质量得分', 'Quality')
-      : t('综合智能分', 'Intel Index');
+      : tab === 'cyber'
+        ? t('网络安全指数', 'Cyber Index')
+        : t('综合智能分', 'Intel Index');
   const costLabel = tab === 'media'
     ? (row.mediaKind === 'image' ? t('单张成本', 'Cost / img') : row.mediaKind === 'video' ? t('单段 5s 成本', 'Cost / 5s') : t('千字成本', 'Cost / 1k ch'))
     : t('单任务成本', 'Cost / task');
@@ -1847,6 +1923,7 @@ function renderModelTelemetryBlocks(frag, ctx, {showSiblings = true} = {}) {
           orgPinnedKey = row.id;
           orgSpotlightKey = row.id;
           chooseChart('orgs');
+          applyOrgSpotlight(null, null, {scrollPinned: true});
         });
       });
       pills.append(lbBtn);
@@ -1861,6 +1938,7 @@ function renderModelTelemetryBlocks(frag, ctx, {showSiblings = true} = {}) {
           orgPinnedKey = row.id;
           orgSpotlightKey = row.id;
           chooseChart('orgs');
+          applyOrgSpotlight(null, null, {scrollPinned: true});
         });
       });
       pills.append(orgBtn);
@@ -2335,11 +2413,12 @@ function renderUpdatesDetail(detail, visibleItems) {
     actions.append(cmpAllBtn);
   }
 
-  if (entry.url) {
+  const safeEntryUrl = safeHttpUrl(entry.url);
+  if (safeEntryUrl) {
     const ext = html('a', entry.kind === 'article'
       ? t('阅读 Artificial Analysis 原文 ↗', 'Read Official Article ↗')
       : t('查看 Artificial Analysis 官方页 ↗', 'View on Artificial Analysis ↗'), primaryModel || matchedModels.length >= 2 ? 'upd-btn-secondary' : 'upd-btn-primary');
-    ext.href = entry.url;
+    ext.href = safeEntryUrl;
     ext.target = '_blank';
     ext.rel = 'noopener';
     actions.append(ext);
@@ -2421,8 +2500,11 @@ function renderChangelog({preserveListScroll = false} = {}) {
   for (const f of UPDATE_FILTERS) {
     const btn = html('button', null);
     btn.type = 'button';
+    btn.dataset.ufilter = f.id;
     btn.setAttribute('role', 'tab');
-    btn.setAttribute('aria-selected', String(updatesFilter === f.id));
+    const selected = updatesFilter === f.id;
+    btn.setAttribute('aria-selected', String(selected));
+    btn.tabIndex = selected ? 0 : -1;
     btn.append(
       document.createTextNode(t(f.zh, f.en)),
       html('span', String(feed.counts[f.id] ?? 0), 'upd-tab-count')
@@ -2431,6 +2513,20 @@ function renderChangelog({preserveListScroll = false} = {}) {
       updatesFilter = f.id;
       updatesMobileDetail = false;
       renderChangelog();
+    });
+    btn.addEventListener('keydown', event => {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      const idx = Math.max(0, UPDATE_FILTERS.findIndex(item => item.id === f.id));
+      const nextIdx = event.key === 'Home'
+        ? 0
+        : event.key === 'End'
+          ? UPDATE_FILTERS.length - 1
+          : (idx + (event.key === 'ArrowRight' ? 1 : -1) + UPDATE_FILTERS.length) % UPDATE_FILTERS.length;
+      updatesFilter = UPDATE_FILTERS[nextIdx].id;
+      updatesMobileDetail = false;
+      renderChangelog();
+      tabsEl.querySelector(`[data-ufilter="${updatesFilter}"]`)?.focus();
     });
     tabFrag.append(btn);
   }
@@ -2537,7 +2633,7 @@ function setChangelogOpen(open, {restoreFocus = true} = {}) {
     renderChangelog();
     requestAnimationFrame(() => $('#changelogCloseBtn')?.focus({preventScroll: true}));
   } else if (restoreFocus) {
-    $('#updateBadge')?.focus({preventScroll: true});
+    focusTriggerOrFallback($('#updateBadge'));
   }
 }
 
@@ -2968,6 +3064,7 @@ $('#langToggle').addEventListener('click', () => {
   lang = lang === 'en' ? 'zh' : 'en';
   try { localStorage.setItem('intelligence-cost-lang', lang); } catch {}
   syncStaticText();
+  syncUrlHash({includeLang: true});
 });
 
 $('#updateBadge').addEventListener('click', () => {
@@ -3046,8 +3143,7 @@ function chooseChart(key, {changeHash = true, routeParams = null} = {}) {
   syncOnboardingStrip();
   if (!snapshot) return;
   try {
-    if (!states.has(key)) states.set(key, makeState(key, routeParams));
-    else if (routeParams) applyRouteParams(states.get(key), routeParams);
+    if (!states.has(key) || routeParams) states.set(key, makeState(key, routeParams));
     state = states.get(key);
     if (state.starredOnly && !state.rows.some(isStarred)) state.starredOnly = false;
     if (key === 'orgs') {
@@ -3099,7 +3195,7 @@ addEventListener('popstate', event => {
 });
 
 addEventListener('hashchange', () => {
-  if (navHistory.ownsCurrentHistory()) return;
+  if (!snapshot || navHistory.ownsCurrentHistory()) return;
   const prevLang = lang;
   const parsed = parseHash();
   if (lang !== prevLang) syncStaticText();
@@ -3299,7 +3395,7 @@ function syncScenarioControls() {
       state.selected = null;
       reprojectRows(state);
       syncYLensOptions();
-      syncUrlHash();
+      scheduleUrlSync();
       buildPlot();
       btn.classList.add('is-active');
       btn.textContent = t('自定义配方 ✓', 'Custom ✓');
@@ -3370,10 +3466,17 @@ function setScenarioOpen(open) {
   scenarioOpen = open;
   if (open && viewToolsOpen) setViewToolsOpen(false);
   $('#scenarioBtn').setAttribute('aria-expanded', String(open));
-  $('#scenarioPopover').hidden = !open;
+  const pop = $('#scenarioPopover');
+  pop.hidden = !open;
   if (open) {
     syncScenarioControls();
-    clampAnchoredPopover($('#scenarioPopover'), $('#scenarioBtn'), 340);
+    if (mobileLayout.matches) {
+      pop.style.left = '';
+      pop.style.right = '';
+      pop.style.width = '';
+    } else {
+      clampAnchoredPopover(pop, $('#scenarioBtn'), 340);
+    }
   }
 }
 
@@ -3911,7 +4014,7 @@ function syncRouterControls() {
   const pool = licenseFilteredRows(state.rows);
   const sourceRows = pool.length ? pool : state.rows;
   const sorted = sortRows(sourceRows, 'intelligenceIndex', 'desc');
-  const routerCacheKey = `${activeKey}|${state.mediaTrack || ''}|${lang}|${state.yLens}|${state.scenarioId}|${state.costProfile}|${state.license}|${state.extraFilter}`;
+  const routerCacheKey = `${activeKey}|${state.mediaTrack || ''}|${lang}|${state.yLens}|${state.scenarioId}|${state.scenarioWeights ? JSON.stringify(state.scenarioWeights) : ''}|${state.costProfile}|${state.license}|${state.extraFilter}`;
   for (const [selId, key] of [['#routerFastSelect', 'routerFastId'], ['#routerStrongSelect', 'routerStrongId']]) {
     const sel = $(selId);
     if (sel.dataset.cacheKey !== routerCacheKey || sel.options.length !== sorted.length) {
@@ -4027,8 +4130,10 @@ function renderStatus() {
   }
 
   const makeLink = (txt, href) => {
+    const safeHref = safeHttpUrl(href);
+    if (!safeHref) return html('span', txt);
     const a = html('a', txt);
-    a.href = href;
+    a.href = safeHref;
     a.target = '_blank';
     a.rel = 'noopener';
     return a;
@@ -4213,6 +4318,7 @@ function locateRowInChart(row) {
   state.mode = 'chart';
   valueDetailsOpen = false;
   syncControls();
+  renderStatus();
   buildPlot();
   const rect = host.getBoundingClientRect();
   const rx = xValOf(row, state.xMetric) ?? row.cost;
@@ -4420,6 +4526,7 @@ function renderTable(rows = filteredRows()) {
 
     tr.addEventListener('click', () => {
       state.selected = state.selected === row.id ? null : row.id;
+      syncUrlHash();
       renderTable(rows);
       updateSummary();
     });
@@ -4557,6 +4664,7 @@ function renderSubTable(rows = filteredRows()) {
 
     tr.addEventListener('click', () => {
       state.selected = state.selected === row.id ? null : row.id;
+      syncUrlHash();
       renderSubTable(rows);
       updateSummary();
     });
@@ -4600,7 +4708,7 @@ function exportCsv() {
         if (lic === 'open' && !base?.isOpenWeights) return false;
         if (lic === 'closed' && base?.isOpenWeights) return false;
         if (starOnly && !isStarredModelId(modelId, base)) return false;
-        if (q && !`${rec.name} ${rec.shortName} ${rec.creator}`.toLowerCase().includes(q)) return false;
+        if (q && !matchesSearchQuery(`${rec.name} ${rec.shortName} ${rec.creator}`, q)) return false;
         return true;
       });
       let shown = divData.rows;
@@ -4948,7 +5056,11 @@ function exportChartPng(kind = state?.mode) {
     ctx.font = '600 16px "IBM Plex Sans", "Segoe UI", sans-serif';
     const titleStr = isBump
       ? t('跨测评机构独立排名轨迹图（Bump Chart）', 'Cross-Organization Official Rank Trajectory')
-      : kind === 'compare' ? $('#radarHeading').textContent : $('#chartTitle').textContent;
+      : kind === 'compare'
+        ? $('#radarHeading').textContent
+        : kind === 'curve'
+          ? $('#curveTitle').textContent
+          : $('#chartTitle').textContent;
     ctx.fillText(titleStr, padX, 28, maxTextW);
 
     ctx.fillStyle = v('--muted');
@@ -5302,7 +5414,7 @@ function showMetricTip(metric, event, focusSeriesIdx = null, clusterCount = 0) {
     const line = html('div', null, 'tip-value');
     const left = html('span');
     const dot = html('i', null, 'creator-dot');
-    dot.style.background = compareColor(idx);
+    dot.style.background = COMPARE_PALETTE.dark[idx % COMPARE_PALETTE.dark.length];
     dot.style.marginRight = '6px';
     left.append(dot, document.createTextNode(row.shortName || row.name));
     if (idx === focusSeriesIdx) left.style.fontWeight = '600';
@@ -5320,7 +5432,7 @@ function showMetricTip(metric, event, focusSeriesIdx = null, clusterCount = 0) {
     }
     const right = html('b', textVal);
     if (val !== null && bestVal !== null && selectedRows.length > 1 && Math.abs(val - bestVal) < 1e-6) {
-      right.style.color = 'var(--accent)';
+      right.style.color = 'var(--tip-accent)';
     }
     line.append(left, right);
     tip.append(line);
@@ -5344,8 +5456,10 @@ function renderRadarInfo() {
   if (!radarInfoOpen) return;
 
   const extLink = (label, href) => {
+    const safeHref = safeHttpUrl(href);
+    if (!safeHref) return html('span', label);
     const a = html('a', label);
-    a.href = href;
+    a.href = safeHref;
     a.target = '_blank';
     a.rel = 'noopener';
     return a;
@@ -6369,9 +6483,9 @@ function renderCompare() {
       if (!valid.length) return null;
       if (refRow) {
         const rv = ax.get(refRow);
-        if (rv !== null) return rv;
+        if (rv !== null) return {val: rv, isRef: true};
       }
-      return valid.reduce((s, v) => s + v, 0) / valid.length;
+      return {val: valid.reduce((s, v) => s + v, 0) / valid.length, isRef: false};
     });
 
     const barSeriesIndices = refIdx >= 0 && selectedRows.length >= 2
@@ -6381,10 +6495,10 @@ function renderCompare() {
     const allDeltas = [];
     axes.forEach((ax, aIdx) => {
       const bv = baseVals[aIdx];
-      if (bv === null) return;
+      if (!bv) return;
       for (const sIdx of barSeriesIndices) {
         const v = ax.get(selectedRows[sIdx]);
-        if (v !== null) allDeltas.push(ax.lowerBetter ? bv - v : v - bv);
+        if (v !== null) allDeltas.push(ax.lowerBetter ? bv.val - v : v - bv.val);
       }
     });
     const maxAbs = Math.max(2, ...allDeltas.map(d => Math.abs(d))) * 1.22;
@@ -6437,13 +6551,16 @@ function renderCompare() {
 
       const u = ax?.unit !== undefined ? ax.unit : '%';
       const bv = baseVals[aIdx];
+      const baseLbl = !bv
+        ? '—'
+        : `${refRow ? (bv.isRef ? t('基准', 'Ref') : t('均值(缺基准)', 'Mean (no ref)')) : t('均值', 'Mean')} ${format(bv.val, 1)}${u}`;
       radarSvg.append(node('text', {
         class: 'radar-axis-sub',
         x: 18,
         y: ly + Math.min(41, laneH * 0.44 + 16)
-      }, bv !== null ? `${refRow ? t('基准', 'Ref') : t('均值', 'Mean')} ${format(bv, 1)}${u}` : '—'));
+      }, baseLbl));
 
-      if (refIdx >= 0 && bv !== null && ax.get(selectedRows[refIdx]) !== null) {
+      if (refIdx >= 0 && bv?.isRef) {
         const refCy = ly + laneH / 2;
         seriesGroups[refIdx].append(node('polygon', {
           points: `${zeroX},${refCy - 5} ${zeroX + 5},${refCy} ${zeroX},${refCy + 5} ${zeroX - 5},${refCy}`,
@@ -6457,8 +6574,8 @@ function renderCompare() {
       barSeriesIndices.forEach((sIdx, rPos) => {
         const ry = startY + rPos * rowStep;
         const val = ax.get(selectedRows[sIdx]);
-        if (val === null || bv === null) return;
-        const delta = ax.lowerBetter ? bv - val : val - bv;
+        if (val === null || !bv) return;
+        const delta = ax.lowerBetter ? bv.val - val : val - bv.val;
         const dx = (delta / maxAbs) * halfW;
         const sc = compareColor(sIdx);
         const barX = dx >= 0 ? zeroX : zeroX + dx;
@@ -7437,12 +7554,15 @@ function drawCurve() {
 
   if (state.curveLogY) {
     const maxPow = Math.ceil(Math.log10(Math.max(10, maxUtilityRaw)));
-    for (let p = 0; p <= maxPow; p++) {
+    const maxTicks = Math.max(4, Math.floor((bottom - top) / 36));
+    const powStep = Math.max(1, Math.ceil(maxPow / maxTicks));
+    for (let p = 0; p <= maxPow; p += powStep) {
       const val = 10 ** p;
       if (val > maxUtilityRaw * 1.05) break;
       const py = mapY(val);
+      const tickLabel = p >= 6 ? `1e${p}` : valueLabel(val);
       grid.append(node('line', {x1: left, x2: right, y1: py, y2: py}));
-      axis.append(node('text', {x: left - 8, y: py + 4, 'text-anchor': 'end'}, valueLabel(val)));
+      axis.append(node('text', {x: left - 8, y: py + 4, 'text-anchor': 'end'}, tickLabel));
     }
   } else {
     for (const value of ticks(0, maxUtilityRaw, 5)) {
@@ -7674,7 +7794,7 @@ function draw() {
   if (state.effortCurves) {
     const visibleIds = new Set(nodes.map(n => n.row.id));
     for (const traj of effortTrajectories(pool, xOf)) {
-      const pts = traj.points.filter(r => visibleIds.has(r.id));
+      const pts = traj.points.filter(r => visibleIds.has(r.id) && !isFutureHidden(r));
       if (pts.length < 2) continue;
       const muted = state.company && traj.creator?.name !== state.company;
       const path = node('path', {
@@ -7937,6 +8057,7 @@ function syncViewportHint() {
 
 function layoutLabels(championId) {
   const placed = [], visible = nodes.filter(item => inView(item.row) && !isFutureHidden(item.row));
+  const visibleCoords = visible.map(item => ({item, x: xCoord(item.row), y: y(item.row.intelligenceIndex)}));
   const pool = activePool();
   const inHist = canHistoryMode() && state.historyMode;
   const fSet = activeFrontierSet();
@@ -8022,8 +8143,14 @@ function layoutLabels(championId) {
 
         let labelCollision = 0, pointCollision = 0;
         for (const previous of placed) labelCollision += overlapArea(candidate, previous);
-        for (const other of visible) {
-          if (other !== item) pointCollision += overlapArea(candidate, {x: xCoord(other.row) - 4.5, y: y(other.row.intelligenceIndex) - 4.5, w: 9, h: 9});
+        const cx1 = candidate.x, cy1 = candidate.y, cx2 = cx1 + w, cy2 = cy1 + h;
+        for (const other of visibleCoords) {
+          if (other.item === item) continue;
+          const ox = Math.min(cx2, other.x + 4.5) - Math.max(cx1, other.x - 4.5);
+          if (ox > 0) {
+            const oy = Math.min(cy2, other.y + 4.5) - Math.max(cy1, other.y - 4.5);
+            if (oy > 0) pointCollision += ox * oy;
+          }
         }
         const linePen = paretoSegs.length ? rectSegmentPenalty(candidate, paretoSegs) : 0;
         const score = radius * 0.12 + labelCollision * 6 + pointCollision * 2.2 + linePen;
@@ -8062,7 +8189,7 @@ function layoutLabels(championId) {
   }
 }
 
-function drawActive(champion) {
+function drawActive(champion, {skipPinned = false} = {}) {
   const layer = svg.querySelector('.active-layer');
   const companies = svg.querySelector('.company-layer');
   const glows = svg.querySelector('.glow-layer');
@@ -8107,14 +8234,16 @@ function drawActive(champion) {
   const selected = nodes.find(item => item.row.id === state.selected);
   const focusItem = hovered || selected;
   if (activeEffortLayer && focusItem?.row.family?.slug) {
+    const visibleIds = new Set(nodes.map(n => n.row.id));
     const traj = effortTrajectories(activePool(), currentXOf()).find(tr => tr.slug === focusItem.row.family.slug);
-    if (traj && traj.points.length >= 2) {
+    const pts = traj ? traj.points.filter(r => visibleIds.has(r.id) && !isFutureHidden(r)) : [];
+    if (pts.length >= 2) {
       activeEffortLayer.append(node('path', {
         class: 'effort-line is-highlighted',
         stroke: focusItem.color,
-        d: traj.points.map((r, i) => `${i ? 'L' : 'M'}${xCoord(r)},${y(r.intelligenceIndex)}`).join(' ')
+        d: pts.map((r, i) => `${i ? 'L' : 'M'}${xCoord(r)},${y(r.intelligenceIndex)}`).join(' ')
       }));
-      for (const sibling of traj.points) {
+      for (const sibling of pts) {
         if (sibling.id === focusItem.row.id || !inView(sibling)) continue;
         activeEffortLayer.append(node('circle', {
           cx: xCoord(sibling),
@@ -8154,7 +8283,7 @@ function drawActive(champion) {
       emphasisCopy(hovered, 6, 'hovered')
     );
   }
-  renderPinned();
+  if (!skipPinned) renderPinned();
 }
 
 function emphasisCopy(item, radius, kind) {
@@ -8282,10 +8411,11 @@ function renderPinned() {
         pill.addEventListener('click', () => {
           runNavAction(() => {
             chooseChart(tabKey);
-            const targetRow = state?.rows.find(r => r.id === row.id);
+            const targetRow = ensureRowProjectedInState(row.id);
             if (targetRow) {
               ensureRowVisibleInState(targetRow);
               renderLegend();
+              renderStatus();
               locateRowInChart(targetRow);
             }
           });
@@ -8303,6 +8433,7 @@ function renderPinned() {
           orgPinnedKey = row.id;
           orgSpotlightKey = row.id;
           chooseChart('orgs');
+          applyOrgSpotlight(null, null, {scrollPinned: true});
         });
       });
       cFrag.append(lbPill);
@@ -8317,6 +8448,7 @@ function renderPinned() {
           orgPinnedKey = row.id;
           orgSpotlightKey = row.id;
           chooseChart('orgs');
+          applyOrgSpotlight(null, null, {scrollPinned: true});
         });
       });
       cFrag.append(orgPill);
@@ -8423,7 +8555,7 @@ function showHover(item, event) {
   if (!inView(item.row)) return;
   hovered = item;
   const {champion, rankMap, qualifiedCount} = computeRankings();
-  drawActive(champion);
+  drawActive(champion, {skipPinned: true});
 
   const row = item.row;
   const {idSet: frontierIds} = activeFrontierSet();
@@ -8536,7 +8668,7 @@ function clearHover() {
   tip.hidden = true;
   if (state && state.mode === 'chart') {
     const {champion} = computeRankings();
-    drawActive(champion);
+    drawActive(champion, {skipPinned: true});
   }
 }
 
@@ -8805,7 +8937,7 @@ $('#search').addEventListener('input', () => {
   state.search = $('#search').value;
   state.selected = null;
   syncControls();
-  syncUrlHash();
+  scheduleUrlSync();
   buildPlot();
 });
 
@@ -8924,7 +9056,7 @@ $('#historySlider').addEventListener('input', () => {
   stopHistoryPlay();
   state.historyIndex = Number($('#historySlider').value);
   syncHistoryControls();
-  syncUrlHash();
+  scheduleUrlSync();
   scheduleDraw();
 });
 
@@ -8945,7 +9077,7 @@ $('#historyPlayBtn').addEventListener('click', () => {
     if (state.historyIndex < state.releaseDates.length - 1) {
       state.historyIndex++;
       syncHistoryControls();
-      syncUrlHash();
+      scheduleUrlSync();
       scheduleDraw();
     } else {
       stopHistoryPlay();
@@ -9282,7 +9414,7 @@ function scheduleValueRefresh() {
     pendingValueFrame = requestAnimationFrame(() => {
       pendingValueFrame = 0;
       if (!state) return;
-      syncUrlHash();
+      scheduleUrlSync();
       if (state.mode === 'table') renderTable();
       else if (state.mode === 'curve') drawCurve();
       else if (state.mode === 'compare') renderCompare();
@@ -9349,7 +9481,7 @@ $('#resetValueInline').addEventListener('click', resetValuePreferences);
 function refreshSubView() {
   if (!state) return;
   syncSubControls();
-  syncUrlHash();
+  scheduleUrlSync();
   if (state.mode === 'sub') renderSubTable();
   else if (state.mode === 'chart') draw();
   updateSummary();
@@ -9668,9 +9800,6 @@ host.addEventListener('keydown', event => {
     event.preventDefault();
     changeView({...state.defaultView});
     return;
-  } else if (event.key === 'Escape') {
-    clearPin();
-    return;
   } else return;
   event.preventDefault();
   changeView(v);
@@ -9760,6 +9889,8 @@ function activateCmdEntry(entry, {toCompare = false} = {}) {
     let targetRow = state.rows.find(r => r.id === entry.row.id);
     if (!targetRow || !filteredRows().some(r => r.id === entry.row.id)) {
       state.yLens = '';
+      state.scenarioId = 'default';
+      state.scenarioWeights = null;
       state.search = '';
       state.license = 'all';
       state.extraFilter = '';
@@ -9769,6 +9900,7 @@ function activateCmdEntry(entry, {toCompare = false} = {}) {
       reprojectRows(state);
       syncControls();
       renderLegend();
+      renderStatus();
       buildPlot();
       targetRow = state.rows.find(r => r.id === entry.row.id);
     }
@@ -9893,7 +10025,7 @@ function setCmdOpen(open, {restoreFocus = true} = {}) {
     const target = cmdPrevFocus && cmdPrevFocus.isConnected && !$('#cmdBackdrop').contains(cmdPrevFocus)
       ? cmdPrevFocus
       : $('#cmdPaletteBtn');
-    target.focus({preventScroll: true});
+    focusTriggerOrFallback(target);
     cmdPrevFocus = null;
   } else {
     cmdPrevFocus = null;
@@ -10005,7 +10137,7 @@ document.addEventListener('keydown', event => {
       cmdIndex = (cmdIndex - 1 + matches.length) % matches.length;
       renderCmdList();
       $('#cmdList').children[cmdIndex]?.scrollIntoView({block: 'nearest'});
-    } else if (event.key === 'Enter' && matches[cmdIndex]) {
+    } else if (event.key === 'Enter' && matches[cmdIndex] && !event.target?.closest?.('button')) {
       event.preventDefault();
       activateCmdEntry(matches[cmdIndex], {toCompare: event.shiftKey});
     }
@@ -10072,7 +10204,8 @@ document.addEventListener('keydown', event => {
       return;
     }
     if ((event.key === '[' || event.key === ']') && state && state.mode === 'chart') {
-      const {list: frontier} = activeFrontierSet();
+      const visibleIds = new Set(filteredRows().map(r => r.id));
+      const frontier = activeFrontierSet().list.filter(r => visibleIds.has(r.id) && !isFutureHidden(r));
       if (frontier.length) {
         event.preventDefault();
         const curIdx = frontier.findIndex(r => r.id === state.selected);
@@ -10698,11 +10831,8 @@ function filterOrgRows(rows) {
     if (comp && r.creator !== comp) return false;
     if (lic === 'open' && r.isOpenWeights !== true) return false;
     if (lic === 'closed' && r.isOpenWeights !== false) return false;
-    if (starOnly && !isStarredModelId(r.modelId || r.siblingId)) return false;
-    if (q) {
-      const hay = `${r.name} ${r.rawName} ${r.creator}`.toLowerCase();
-      if (!hay.includes(q)) return false;
-    }
+    if (starOnly && !isStarredModelId(r.modelId || r.siblingId || r.cyberId)) return false;
+    if (q && !matchesSearchQuery(`${r.name} ${r.rawName} ${r.creator}`, q)) return false;
     return true;
   });
 }
@@ -10758,14 +10888,19 @@ function locateOrgModel(row, board) {
   });
 }
 
-function toggleOrgCompare(row, board, openCompare = false) {
-  if (!row?.modelId) return;
+function resolveOrgCompareTab(modelId, board) {
   const preferredTab = !['coding-agents', 'media', 'orgs'].includes(activeKey)
     ? activeKey
     : (board?.scatterTarget?.tab || 'models');
   const preferredArr = snapshot?.[BENCHMARKS[preferredTab]?.key] || [];
-  const targetTab = preferredArr.some(m => m.id === row.modelId) ? preferredTab : 'models';
-  if (!states.has(targetTab)) states.set(targetTab, makeState(targetTab));
+  return preferredArr.some(m => m.id === modelId) ? preferredTab : 'models';
+}
+
+function toggleOrgCompare(row, board, openCompare = false) {
+  if (!row?.modelId) return;
+  const targetTab = resolveOrgCompareTab(row.modelId, board);
+  const wasNew = !states.has(targetTab);
+  if (wasNew) states.set(targetTab, makeState(targetTab));
   const targetState = states.get(targetTab);
   const idx = targetState.compareIds.indexOf(row.modelId);
   if (openCompare) {
@@ -10780,9 +10915,9 @@ function toggleOrgCompare(row, board, openCompare = false) {
     });
     return;
   }
-  if (idx !== -1) {
+  if (!wasNew && idx !== -1) {
     if (targetState.compareIds.length > 1) targetState.compareIds.splice(idx, 1);
-  } else {
+  } else if (idx === -1) {
     if (targetState.compareIds.length >= MAX_COMPARE) targetState.compareIds.shift();
     targetState.compareIds.push(row.modelId);
   }
@@ -10791,11 +10926,11 @@ function toggleOrgCompare(row, board, openCompare = false) {
   renderOrgLeaderboards();
 }
 
-function isInCompareAnyModelTab(modelId) {
+function isInCompareForOrgBoard(modelId, board) {
   if (!modelId) return false;
-  if (state && !['coding-agents', 'media', 'orgs'].includes(activeKey) && state.compareIds.includes(modelId)) return true;
-  const ms = states.get('models');
-  return !!(ms && ms.compareIds.includes(modelId));
+  const targetTab = resolveOrgCompareTab(modelId, board);
+  const targetState = states.get(targetTab);
+  return !!(targetState && targetState.compareIds.includes(modelId));
 }
 
 const orgRowByEl = new WeakMap();
@@ -11160,11 +11295,16 @@ function renderOrgSideBySide(container) {
     const head = html('header', null, 'org-card-head');
     const titleWrap = html('div', null, 'org-card-titles');
     const topLine = html('div', null, 'org-card-topline');
-    const ext = html('a', `${t(board.orgZh, board.orgEn)} ↗`, 'org-ext-link');
-    ext.href = board.sourceUrl;
-    ext.target = '_blank';
-    ext.rel = 'noopener';
-    ext.title = t('打开该机构官方原榜', 'Open official organization leaderboard');
+    const safeBoardUrl = safeHttpUrl(board.sourceUrl);
+    const ext = safeBoardUrl
+      ? html('a', `${t(board.orgZh, board.orgEn)} ↗`, 'org-ext-link')
+      : html('span', t(board.orgZh, board.orgEn), 'org-ext-link');
+    if (safeBoardUrl) {
+      ext.href = safeBoardUrl;
+      ext.target = '_blank';
+      ext.rel = 'noopener';
+      ext.title = t('打开该机构官方原榜', 'Open official organization leaderboard');
+    }
     const badge = html('span', t(board.tagZh, board.tagEn), 'org-tag-pill');
     const matchBadge = html('span', '', 'org-card-match');
     matchBadge.hidden = true;
@@ -11267,7 +11407,7 @@ function renderOrgSideBySide(container) {
             e.stopPropagation();
             locateOrgModel(row, board);
           });
-          const inCmp = isInCompareAnyModelTab(row.modelId);
+          const inCmp = isInCompareForOrgBoard(row.modelId, board);
           const cmp = html('button', inCmp ? t('已选', 'In') : t('+对比', '+Cmp'), `org-micro-btn${inCmp ? ' is-in' : ''}`);
           cmp.type = 'button';
           cmp.title = inCmp ? t('已在剖析对比组中（点击移除）', 'In comparison (click to remove)') : t('加入剖析对比组', 'Add to comparison');
@@ -11366,7 +11506,7 @@ function renderOrgBumpChart(container) {
     if (lic === 'open' && !base?.isOpenWeights) continue;
     if (lic === 'closed' && base?.isOpenWeights) continue;
     if (starOnly && !isStarredModelId(modelId, base)) continue;
-    if (q && !`${rec.name} ${rec.shortName} ${rec.creator}`.toLowerCase().includes(q)) continue;
+    if (q && !matchesSearchQuery(`${rec.name} ${rec.shortName} ${rec.creator}`, q)) continue;
 
     const covered = orgBoards.filter(b => rec.ranks[b.id]);
     if (covered.length < 3) continue;
@@ -11697,10 +11837,15 @@ function renderOrgDetailTable(container, board) {
 
   const banner = html('div', null, 'org-detail-banner');
   const bLeft = html('div', null, 'org-detail-head-copy');
-  const ext = html('a', `${t(board.orgZh, board.orgEn)} · ${t(board.titleZh, board.titleEn)} ↗`, 'org-ext-link');
-  ext.href = board.sourceUrl;
-  ext.target = '_blank';
-  ext.rel = 'noopener';
+  const safeBoardUrl = safeHttpUrl(board.sourceUrl);
+  const ext = safeBoardUrl
+    ? html('a', `${t(board.orgZh, board.orgEn)} · ${t(board.titleZh, board.titleEn)} ↗`, 'org-ext-link')
+    : html('span', `${t(board.orgZh, board.orgEn)} · ${t(board.titleZh, board.titleEn)}`, 'org-ext-link');
+  if (safeBoardUrl) {
+    ext.href = safeBoardUrl;
+    ext.target = '_blank';
+    ext.rel = 'noopener';
+  }
   const metaTxt = `${baseRows.length}/${board.rows.length} ${t('款上榜模型', 'ranked models')}${board.date ? ' · ' + t('原榜日期 ', 'Official date ') + board.date : ''}`;
   bLeft.append(ext, html('span', metaTxt, 'org-meta-count'));
 
@@ -11906,7 +12051,7 @@ function renderOrgDetailTable(container, board) {
           e.stopPropagation();
           locateOrgModel(row, board);
         });
-        const inCmp = isInCompareAnyModelTab(row.modelId);
+        const inCmp = isInCompareForOrgBoard(row.modelId, board);
         const cmp = html('button', inCmp ? t('已对比 ✓', 'In ✓') : t('+ 对比', '+ Cmp'), `org-micro-btn${inCmp ? ' is-in' : ''}`);
         cmp.type = 'button';
         cmp.addEventListener('click', e => {
@@ -11966,7 +12111,7 @@ function renderOrgDivergence(container) {
     if (lic === 'open' && !base?.isOpenWeights) return false;
     if (lic === 'closed' && base?.isOpenWeights) return false;
     if (starOnly && !isStarredModelId(modelId, base)) return false;
-    if (q && !`${rec.name} ${rec.shortName} ${rec.creator}`.toLowerCase().includes(q)) return false;
+    if (q && !matchesSearchQuery(`${rec.name} ${rec.shortName} ${rec.creator}`, q)) return false;
     return true;
   });
 
@@ -12019,6 +12164,11 @@ function renderOrgDivergence(container) {
     return `${tag} ${e.exact ? '' : '~'}#${e.rank}`;
   }).join(' · ');
 
+  let shown = divData.rows;
+  if (orgDivFilter === 'human') shown = shown.filter(r => r.gap >= 8).sort((a, b) => b.gap - a.gap);
+  else if (orgDivFilter === 'auto') shown = shown.filter(r => r.gap <= -8).sort((a, b) => a.gap - b.gap);
+  else if (orgDivFilter === 'consensus') shown = shown.filter(r => r.kind === 'consensus').sort((a, b) => b.overallPct - a.overallPct);
+
   // 3-column insight highlight strip
   const kpis = html('div', null, 'org-div-kpis');
   const makeKpi = (cls, labelZh, labelEn, item, detailTxt) => {
@@ -12039,6 +12189,11 @@ function renderOrgDivergence(container) {
     btn.addEventListener('click', () => {
       orgPinnedKey = item.modelId;
       lastOrgBarSig = '';
+      if (!shown.some(r => r.modelId === item.modelId) && orgDivFilter !== 'all') {
+        orgDivFilter = 'all';
+        syncUrlHash();
+        renderOrgLeaderboards();
+      }
       applyOrgSpotlight(null, null, {scrollPinned: true});
     });
     return btn;
@@ -12073,11 +12228,6 @@ function renderOrgDivergence(container) {
     )
   );
   wrap.append(kpis);
-
-  let shown = divData.rows;
-  if (orgDivFilter === 'human') shown = shown.filter(r => r.gap >= 8).sort((a, b) => b.gap - a.gap);
-  else if (orgDivFilter === 'auto') shown = shown.filter(r => r.gap <= -8).sort((a, b) => a.gap - b.gap);
-  else if (orgDivFilter === 'consensus') shown = shown.filter(r => r.kind === 'consensus').sort((a, b) => b.overallPct - a.overallPct);
 
   const maxAbsGap = Math.max(25, ...divData.rows.map(r => r.absGap));
   const scroller = html('div', null, 'org-div-scroll');
@@ -12163,7 +12313,7 @@ function renderOrgDivergence(container) {
         e.stopPropagation();
         locateOrgModel({modelId: r.modelId}, orgBoards[0]);
       });
-      const inCmp = isInCompareAnyModelTab(r.modelId);
+      const inCmp = isInCompareForOrgBoard(r.modelId, orgBoards[0]);
       const cmp = html('button', inCmp ? t('已选', 'In') : t('+对比', '+Cmp'), `org-micro-btn${inCmp ? ' is-in' : ''}`);
       cmp.type = 'button';
       cmp.setAttribute('aria-label', inCmp ? t(`从对比移除 ${r.shortName}`, `Remove ${r.shortName}`) : t(`将 ${r.shortName} 加入剖析对比`, `Add ${r.shortName} to compare`));
@@ -12352,12 +12502,13 @@ $('#orgJumpScatterBtn').addEventListener('click', () => {
 
 async function loadData() {
   loadController?.abort();
-  loadController = new AbortController();
+  const controller = new AbortController();
+  loadController = controller;
   const generation = ++loadGeneration;
-  const timeout = setTimeout(() => loadController.abort(), 20000);
+  const timeout = setTimeout(() => controller.abort(), 20000);
   host.setAttribute('aria-busy', 'true');
   try {
-    const response = await fetch('data/current.json', {cache: 'no-cache', signal: loadController.signal});
+    const response = await fetch('data/current.json', {cache: 'no-cache', signal: controller.signal});
     if (!response.ok) throw new Error(t(`数据请求失败 (${response.status})`, `Request failed (${response.status})`));
     const next = hydrateDerivedModels(await response.json());
     if (generation !== loadGeneration) return;
@@ -12880,13 +13031,13 @@ function setGuideOpen(open, tabName = null, {restoreFocus = true} = {}) {
     if (gBody) gBody.scrollTop = 0;
     requestAnimationFrame(() => $('#guideCloseBtn')?.focus({preventScroll: true}));
   } else if (restoreFocus) {
-    (guideTab === 'picker' ? $('#pickerBtn') : $('#guideBtn'))?.focus({preventScroll: true});
+    focusTriggerOrFallback(guideTab === 'picker' ? $('#pickerBtn') : $('#guideBtn'));
   }
 }
 
 function applyPickerContext(recResult, {targetRow = null, targetSlot = null, toCompare = false} = {}) {
   const {useCase, license, picks} = recResult;
-  setGuideOpen(false);
+  setGuideOpen(false, null, {restoreFocus: false});
   runNavAction(() => {
     chooseChart(useCase.tab, {changeHash: false});
     if (!state) return;
@@ -13091,7 +13242,7 @@ function renderPickerTab(frag) {
     const divBtn = html('button', t('去争议分歧榜核验', 'Check Divergence'), 'org-mini-btn');
     divBtn.type = 'button';
     divBtn.addEventListener('click', () => {
-      setGuideOpen(false);
+      setGuideOpen(false, null, {restoreFocus: false});
       runNavAction(() => {
         chooseChart('orgs', {changeHash: false});
         orgFocus = 'divergence';
@@ -13231,7 +13382,7 @@ function renderGuideDialog() {
       const btn = html('button', isOtherTab ? t('切榜体验 →', 'Switch & Try →') : t('立即体验 →', 'Try now →'), 'guide-try-btn');
       btn.type = 'button';
       btn.addEventListener('click', () => {
-        setGuideOpen(false);
+        setGuideOpen(false, null, {restoreFocus: false});
         const runner = GUIDE_RECIPE_RUNNERS[rec.id];
         if (runner) {
           runNavAction(() => {
@@ -13298,7 +13449,7 @@ function renderGuideDialog() {
         const inspectBtn = html('button', t('看机构原榜', 'Org board'), 'org-mini-btn');
         inspectBtn.type = 'button';
         inspectBtn.addEventListener('click', () => {
-          setGuideOpen(false);
+          setGuideOpen(false, null, {restoreFocus: false});
           runNavAction(() => {
             orgFocus = ag.board.id;
             orgDetailSort = {boardId: ag.board.id, colKey: null, dir: 'desc'};
@@ -13313,7 +13464,7 @@ function renderGuideDialog() {
         const scatterBtn = html('button', t('看成本散点 ↗', 'Scatter ↗'), 'org-mini-btn');
         scatterBtn.type = 'button';
         scatterBtn.addEventListener('click', () => {
-          setGuideOpen(false);
+          setGuideOpen(false, null, {restoreFocus: false});
           runNavAction(() => {
             jumpToOrgScatter(ag.board);
             selectionNotice = t(
@@ -13328,7 +13479,7 @@ function renderGuideDialog() {
         const mediaBtn = html('button', t('去多模态赛道 →', 'Open Media Arena →'), 'org-mini-btn');
         mediaBtn.type = 'button';
         mediaBtn.addEventListener('click', () => {
-          setGuideOpen(false);
+          setGuideOpen(false, null, {restoreFocus: false});
           runNavAction(() => chooseChart('media'));
         });
         acts.append(mediaBtn);

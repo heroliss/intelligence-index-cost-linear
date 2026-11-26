@@ -3,8 +3,8 @@ import {
   valuePerDollar,
   computeScenarioScore,
   SCENARIO_PRESETS
-} from '../chart-math.mjs?v=20261122-04';
-import {computeOrgDivergence} from './divergence.mjs?v=20261122-04';
+} from '../chart-math.mjs?v=20261126-01';
+import {computeOrgDivergence} from './divergence.mjs?v=20261126-01';
 
 export const RECOMMEND_USE_CASES = [
   {
@@ -424,6 +424,9 @@ function buildEvidenceLookup(snapshot, context = {}) {
         proofs.push({zh: `低 AI 套话 (Slop ${Math.round(row.arenaRaw.slop)}%)`, en: `Low AI-slop (${Math.round(row.arenaRaw.slop)}%)`});
       }
       if (lbCredible && lb.rank <= 10 && proofs.length < 2) proofs.push({zh: `LB2 防污染 ${lb.exact ? '' : '~'}#${lb.rank}`, en: `LiveBench ${lb.exact ? '' : '~'}#${lb.rank}`});
+      if (chat && chat.rank <= 30 && proofs.length === 0) {
+        proofs.push({zh: `Arena 聊天 ${chat.exact ? '' : '~'}#${chat.rank}`, en: `Arena Chat ${chat.exact ? '' : '~'}#${chat.rank}`});
+      }
       if (isFrontier && proofs.length < 2) proofs.push({zh: '帕累托前沿', en: 'Pareto frontier'});
     } else {
       if (chat && chat.rank <= 10) proofs.push({zh: `Arena 聊天 ${chat.exact ? '' : '~'}#${chat.rank}`, en: `Arena Chat ${chat.exact ? '' : '~'}#${chat.rank}`});
@@ -1041,13 +1044,15 @@ export function recommendModels(snapshot, {useCase = 'general', billing = null, 
     const cheapBase = projected.filter(r => isFresh(r, true) && r.cost < (slot1?.cost || Infinity) * 0.85 && r.intelligenceIndex >= maxScore * 0.6);
     const cheapStrong = cheapBase.filter(r => r.intelligenceIndex >= maxScore * 0.72);
     const cheapStrongClean = cheapStrong.filter(r => r.arenaRaw?.slop == null || r.arenaRaw.slop < 45);
+    const cheapCoreClean = cheapStrongClean.filter(hasCore);
     const cheapStrongMeasured = cheapStrongClean.filter(r => typeof r.arenaRaw?.slop === 'number' || hasCore(r));
     const cheapAnyClean = cheapBase.filter(r => r.arenaRaw?.slop == null || r.arenaRaw.slop < 50);
     const cheapPool = (
-      cheapStrongMeasured.length ? cheapStrongMeasured
-        : cheapStrongClean.length ? cheapStrongClean
-          : cheapAnyClean.length ? cheapAnyClean
-            : cheapBase
+      cheapCoreClean.length ? cheapCoreClean
+        : cheapStrongMeasured.length ? cheapStrongMeasured
+          : cheapStrongClean.length ? cheapStrongClean
+            : cheapAnyClean.length ? cheapAnyClean
+              : cheapBase
     ).sort((a, b) => (scoreVal(b, 2.4) * latencyMult(b, 'writing')) - (scoreVal(a, 2.4) * latencyMult(a, 'writing')) || a.cost - b.cost);
     const slot3 = claim(cheapPool[0]) || claim(sortedByScore.find(r => isFresh(r, true))) || claim(sortedByScore.find(r => isFresh(r, false)));
     if (slot3) {

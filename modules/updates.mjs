@@ -1,5 +1,5 @@
-import {paretoFrontier, breakEvenTasks} from '../chart-math.mjs?v=20261122-04';
-import {getRowCaveats} from './recommend.mjs?v=20261122-04';
+import {paretoFrontier, breakEvenTasks} from '../chart-math.mjs?v=20261126-01';
+import {getRowCaveats} from './recommend.mjs?v=20261126-01';
 
 export const UPDATE_FILTERS = Object.freeze([
   Object.freeze({id: 'all', zh: '全部动态', en: 'All Updates'}),
@@ -41,7 +41,7 @@ export function normalizeChangelogType(raw) {
   if (low === 'modeladded' || low === 'model') {
     return {kind: 'model-added', zh: '新收录模型', en: 'Model Added'};
   }
-  if (low === 'benchmark' || low === 'index') {
+  if (low === 'benchmark' || low === 'index' || low === 'methodologyupdated' || low === 'methodology') {
     return {kind: 'benchmark', zh: '基准更新', en: 'Benchmark'};
   }
   if (low === 'agent' || low === 'codingagent') {
@@ -77,7 +77,12 @@ function diffPriority(ev) {
 function extractUrlSlug(url) {
   if (typeof url !== 'string' || !url) return null;
   const m = url.match(/\/(?:models|articles)\/([^/?#]+)/i);
-  return m ? decodeURIComponent(m[1]).toLowerCase() : null;
+  if (!m) return null;
+  try {
+    return decodeURIComponent(m[1]).toLowerCase();
+  } catch {
+    return m[1].toLowerCase();
+  }
 }
 
 function medianOf(nums) {
