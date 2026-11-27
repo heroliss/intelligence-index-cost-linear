@@ -4,7 +4,7 @@
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
   "hostsManifestPath": "/data/324ed05c14a0dc8b.txt",
-  "updatedAt": "2026-11-27T14:17:28.505Z",
+  "updatedAt": "2026-11-27T16:17:15.354Z",
   "updateIntervalHours": 2,
   "changelog": [
     {
@@ -21424,7 +21424,7 @@
         "webdev": 36.29,
         "designWeb": 62.84,
         "designUi": 40.13,
-        "creativeCraft": 45.13,
+        "creativeCraft": 45.12,
         "deliverable": 29.82,
         "pureVisual": 54.07,
         "spatialMotion": 46.73,
@@ -21434,7 +21434,7 @@
         "website": 62.84,
         "uicomponent": 46.02,
         "dataviz": 34.23,
-        "gamedev": 34.93,
+        "gamedev": 34.92,
         "svg": 55.32
       },
       "arenaRaw": {
@@ -21446,7 +21446,7 @@
         "webdevVotes": 32623,
         "designWebElo": 1316,
         "designWebWinRate": 48.9,
-        "designWebBattles": 4734,
+        "designWebBattles": 4735,
         "designAvgCostUsd": 0.007,
         "designUiElo": 1284,
         "designUiWinRate": 52.9,
@@ -21652,26 +21652,26 @@
         "level": 40
       },
       "timeSec": 50.1,
-      "humanIndex": 18.14,
-      "intelligenceIndex": 18.14,
+      "humanIndex": 18.15,
+      "intelligenceIndex": 18.15,
       "aaIndex": 6.16,
-      "indexDelta": 11.98,
+      "indexDelta": 11.99,
       "humanScores": {
         "chatVibe": 44.08,
         "rawChatVibe": 44.08,
         "docCraft": null,
         "webdev": null,
         "designWeb": 6.04,
-        "designUi": 5.31,
+        "designUi": 5.33,
         "creativeCraft": 10.5,
         "deliverable": 0.1,
-        "pureVisual": 6.37,
+        "pureVisual": 6.38,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
         "website": 6.04,
-        "uicomponent": 3.78,
+        "uicomponent": 3.82,
         "dataviz": 6.84,
         "gamedev": 6.93,
         "svg": 14.08
@@ -21687,7 +21687,7 @@
         "designWebWinRate": 36.6,
         "designWebBattles": 13701,
         "designAvgCostUsd": null,
-        "designUiElo": 1054,
+        "designUiElo": 1055,
         "designUiWinRate": 37.7,
         "designUiBattles": 1516,
         "designDatavizElo": 1038,
@@ -21845,7 +21845,7 @@
         "webdevVotes": 12115,
         "designWebElo": 1296,
         "designWebWinRate": 48.9,
-        "designWebBattles": 13061,
+        "designWebBattles": 13063,
         "designAvgCostUsd": 0.0091,
         "designUiElo": 1233,
         "designUiWinRate": 47.9,
@@ -22138,28 +22138,28 @@
         "level": 40
       },
       "timeSec": 229.04,
-      "humanIndex": 22.17,
-      "intelligenceIndex": 22.17,
+      "humanIndex": 22.22,
+      "intelligenceIndex": 22.22,
       "aaIndex": 13.62,
-      "indexDelta": 8.55,
+      "indexDelta": 8.6,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
         "webdev": null,
-        "designWeb": 20.95,
+        "designWeb": 21.23,
         "designUi": 17.07,
-        "creativeCraft": 11.95,
+        "creativeCraft": 12.02,
         "deliverable": 6.92,
-        "pureVisual": 18.51,
+        "pureVisual": 18.68,
         "spatialMotion": null,
         "antiSlop": 33.5
       },
       "designSub": {
-        "website": 20.95,
+        "website": 21.23,
         "uicomponent": 13.44,
         "dataviz": 20.7,
-        "gamedev": 11.95,
+        "gamedev": 12.02,
         "svg": null
       },
       "arenaRaw": {
@@ -22169,15 +22169,15 @@
         "docVotes": null,
         "webdevElo": null,
         "webdevVotes": null,
-        "designWebElo": 1206,
+        "designWebElo": 1207,
         "designWebWinRate": 34.6,
-        "designWebBattles": 2710,
+        "designWebBattles": 2712,
         "designAvgCostUsd": 0.0073,
         "designUiElo": 1142,
         "designUiWinRate": 32.7,
         "designUiBattles": 312,
         "designDatavizElo": 1097,
-        "designGameElo": 1064,
+        "designGameElo": 1065,
         "designSvgElo": null,
         "gdpvalElo": 1162.4,
         "briefcaseElo": 998.8,
@@ -22375,10 +22375,10 @@
         "name": "Inkling 2 Mini"
       },
       "timeSec": 870.23,
-      "humanIndex": 33.84,
-      "intelligenceIndex": 33.84,
+      "humanIndex": 33.83,
+      "intelligenceIndex": 33.83,
       "aaIndex": 20.13,
-      "indexDelta": 13.71,
+      "indexDelta": 13.7,
       "humanScores": {
         "chatVibe": 19.36,
         "rawChatVibe": 19.36,
@@ -22386,9 +22386,9 @@
         "webdev": 33.46,
         "designWeb": 65.65,
         "designUi": 38.88,
-        "creativeCraft": 46.55,
+        "creativeCraft": 46.35,
         "deliverable": 19.53,
-        "pureVisual": 55.59,
+        "pureVisual": 55.57,
         "spatialMotion": 32.83,
         "antiSlop": 50.3
       },
@@ -22396,7 +22396,7 @@
         "website": 65.65,
         "uicomponent": 39.16,
         "dataviz": 38.61,
-        "gamedev": 46.55,
+        "gamedev": 46.35,
         "svg": null
       },
       "arenaRaw": {
@@ -22407,14 +22407,14 @@
         "webdevElo": 1559.8,
         "webdevVotes": 1312,
         "designWebElo": 1324,
-        "designWebWinRate": 50.2,
-        "designWebBattles": 1193,
+        "designWebWinRate": 50.3,
+        "designWebBattles": 1198,
         "designAvgCostUsd": 0.0319,
         "designUiElo": 1263,
         "designUiWinRate": 47.7,
         "designUiBattles": 455,
         "designDatavizElo": 1218,
-        "designGameElo": 1288,
+        "designGameElo": 1287,
         "designSvgElo": null,
         "gdpvalElo": 1318.5,
         "briefcaseElo": 1263.4,
@@ -22458,10 +22458,10 @@
         "level": 60
       },
       "timeSec": 774.86,
-      "humanIndex": 60.27,
-      "intelligenceIndex": 60.27,
+      "humanIndex": 60.28,
+      "intelligenceIndex": 60.28,
       "aaIndex": 32.4,
-      "indexDelta": 27.87,
+      "indexDelta": 27.88,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
@@ -22469,9 +22469,9 @@
         "webdev": 54.25,
         "designWeb": 73.85,
         "designUi": 52.48,
-        "creativeCraft": 53.22,
+        "creativeCraft": 53.33,
         "deliverable": 66.11,
-        "pureVisual": 64.08,
+        "pureVisual": 64.1,
         "spatialMotion": null,
         "antiSlop": 53.3
       },
@@ -22480,7 +22480,7 @@
         "uicomponent": 50,
         "dataviz": 54.95,
         "gamedev": 50.44,
-        "svg": 55.99
+        "svg": 56.23
       },
       "arenaRaw": {
         "chatElo": null,
@@ -22498,7 +22498,7 @@
         "designUiBattles": 1091,
         "designDatavizElo": 1281,
         "designGameElo": 1307,
-        "designSvgElo": 1289,
+        "designSvgElo": 1290,
         "gdpvalElo": 1745.8,
         "briefcaseElo": 1570.4,
         "aa3dElo": null,
@@ -22781,28 +22781,28 @@
         "level": 60
       },
       "timeSec": 682.8,
-      "humanIndex": 71.43,
-      "intelligenceIndex": 71.43,
+      "humanIndex": 71.45,
+      "intelligenceIndex": 71.45,
       "aaIndex": 57.26,
-      "indexDelta": 14.17,
+      "indexDelta": 14.19,
       "humanScores": {
         "chatVibe": 59.05,
         "rawChatVibe": 59.05,
         "docCraft": null,
         "webdev": 73.32,
-        "designWeb": 87.77,
+        "designWeb": 87.94,
         "designUi": 60.69,
-        "creativeCraft": 75.43,
+        "creativeCraft": 75.3,
         "deliverable": 64.82,
-        "pureVisual": 80.06,
+        "pureVisual": 80.16,
         "spatialMotion": 80.05,
         "antiSlop": 89.9
       },
       "designSub": {
-        "website": 87.77,
+        "website": 87.94,
         "uicomponent": 60.69,
         "dataviz": null,
-        "gamedev": 75.43,
+        "gamedev": 75.3,
         "svg": null
       },
       "arenaRaw": {
@@ -22812,15 +22812,15 @@
         "docVotes": null,
         "webdevElo": 1754.8,
         "webdevVotes": 2336,
-        "designWebElo": 1410,
-        "designWebWinRate": 61.9,
-        "designWebBattles": 696,
-        "designAvgCostUsd": 0.1854,
+        "designWebElo": 1411,
+        "designWebWinRate": 62,
+        "designWebBattles": 703,
+        "designAvgCostUsd": 0.1849,
         "designUiElo": 1334,
         "designUiWinRate": 58.2,
         "designUiBattles": 110,
         "designDatavizElo": null,
-        "designGameElo": 1443,
+        "designGameElo": 1442,
         "designSvgElo": null,
         "gdpvalElo": null,
         "briefcaseElo": 1611.5,
@@ -22870,9 +22870,9 @@
         "webdev": 52.25,
         "designWeb": 57.11,
         "designUi": 32.47,
-        "creativeCraft": 37.37,
+        "creativeCraft": 37.56,
         "deliverable": 42.5,
-        "pureVisual": 46.51,
+        "pureVisual": 46.53,
         "spatialMotion": null,
         "antiSlop": null
       },
@@ -22880,7 +22880,7 @@
         "website": 57.11,
         "uicomponent": 23.12,
         "dataviz": 41.82,
-        "gamedev": 37.37,
+        "gamedev": 37.56,
         "svg": null
       },
       "arenaRaw": {
@@ -22892,13 +22892,13 @@
         "webdevVotes": 2909,
         "designWebElo": 1302,
         "designWebWinRate": 47.7,
-        "designWebBattles": 2344,
+        "designWebBattles": 2348,
         "designAvgCostUsd": 0.058,
         "designUiElo": 1192,
         "designUiWinRate": 39,
         "designUiBattles": 177,
         "designDatavizElo": 1226,
-        "designGameElo": 1243,
+        "designGameElo": 1244,
         "designSvgElo": null,
         "gdpvalElo": null,
         "briefcaseElo": 1444.9,
@@ -23185,9 +23185,9 @@
         "webdev": 72.1,
         "designWeb": 79.45,
         "designUi": 61,
-        "creativeCraft": 72.78,
+        "creativeCraft": 72.7,
         "deliverable": 55.85,
-        "pureVisual": 73.97,
+        "pureVisual": 73.96,
         "spatialMotion": 70.75,
         "antiSlop": 74.6
       },
@@ -23196,7 +23196,7 @@
         "uicomponent": 69.55,
         "dataviz": 52.46,
         "gamedev": 66.96,
-        "svg": 78.6
+        "svg": 78.45
       },
       "arenaRaw": {
         "chatElo": 1481.9,
@@ -23207,14 +23207,14 @@
         "webdevVotes": 6737,
         "designWebElo": 1365,
         "designWebWinRate": 54.1,
-        "designWebBattles": 4324,
-        "designAvgCostUsd": 0.1633,
+        "designWebBattles": 4336,
+        "designAvgCostUsd": 0.1635,
         "designUiElo": 1355,
         "designUiWinRate": 58.8,
         "designUiBattles": 498,
         "designDatavizElo": 1275,
         "designGameElo": 1386,
-        "designSvgElo": 1400,
+        "designSvgElo": 1399,
         "gdpvalElo": 1607.4,
         "briefcaseElo": 1556.3,
         "aa3dElo": 1121.1,
@@ -23285,12 +23285,12 @@
         "webdevElo": 1484.2,
         "webdevVotes": 20926,
         "designWebElo": 1297,
-        "designWebWinRate": 51.5,
-        "designWebBattles": 16531,
+        "designWebWinRate": 51.4,
+        "designWebBattles": 16537,
         "designAvgCostUsd": 0.0167,
         "designUiElo": 1227,
         "designUiWinRate": 49.9,
-        "designUiBattles": 1955,
+        "designUiBattles": 1958,
         "designDatavizElo": 1224,
         "designGameElo": 1180,
         "designSvgElo": 1195,
@@ -23409,25 +23409,25 @@
         "level": 50
       },
       "timeSec": 517.85,
-      "humanIndex": 26.03,
-      "intelligenceIndex": 26.03,
+      "humanIndex": 26.08,
+      "intelligenceIndex": 26.08,
       "aaIndex": 12.53,
-      "indexDelta": 13.5,
+      "indexDelta": 13.55,
       "humanScores": {
         "chatVibe": 49.2,
         "rawChatVibe": 49.2,
         "docCraft": null,
         "webdev": null,
-        "designWeb": 40.35,
+        "designWeb": 40.76,
         "designUi": 18.86,
         "creativeCraft": 21.02,
         "deliverable": 3.75,
-        "pureVisual": 30.77,
+        "pureVisual": 30.99,
         "spatialMotion": 7.77,
         "antiSlop": 45.7
       },
       "designSub": {
-        "website": 40.35,
+        "website": 40.76,
         "uicomponent": 16.54,
         "dataviz": 21.17,
         "gamedev": 18.35,
@@ -23440,9 +23440,9 @@
         "docVotes": null,
         "webdevElo": null,
         "webdevVotes": null,
-        "designWebElo": 1262,
+        "designWebElo": 1263,
         "designWebWinRate": 44.1,
-        "designWebBattles": 10633,
+        "designWebBattles": 10636,
         "designAvgCostUsd": 0.0398,
         "designUiElo": 1182,
         "designUiWinRate": 40.1,
@@ -23574,25 +23574,25 @@
         "level": 50
       },
       "timeSec": 361.01,
-      "humanIndex": 37.26,
-      "intelligenceIndex": 37.26,
+      "humanIndex": 37.2,
+      "intelligenceIndex": 37.2,
       "aaIndex": 24.88,
-      "indexDelta": 12.38,
+      "indexDelta": 12.32,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
         "webdev": 27.11,
-        "designWeb": 75.95,
+        "designWeb": 75.64,
         "designUi": 57.84,
         "creativeCraft": 36.05,
         "deliverable": 24.46,
-        "pureVisual": 65.71,
+        "pureVisual": 65.52,
         "spatialMotion": null,
         "antiSlop": 15.2
       },
       "designSub": {
-        "website": 75.95,
+        "website": 75.64,
         "uicomponent": 48.94,
         "dataviz": 66.75,
         "gamedev": 36.05,
@@ -23605,10 +23605,10 @@
         "docVotes": null,
         "webdevElo": 1527,
         "webdevVotes": 2038,
-        "designWebElo": 1353,
+        "designWebElo": 1352,
         "designWebWinRate": 51.6,
-        "designWebBattles": 4370,
-        "designAvgCostUsd": 0.0812,
+        "designWebBattles": 4376,
+        "designAvgCostUsd": 0.0811,
         "designUiElo": 1292,
         "designUiWinRate": 48.9,
         "designUiBattles": 707,
@@ -23852,7 +23852,7 @@
         "webdevVotes": 13627,
         "designWebElo": 1409,
         "designWebWinRate": 59.3,
-        "designWebBattles": 24234,
+        "designWebBattles": 24237,
         "designAvgCostUsd": 0.1495,
         "designUiElo": 1340,
         "designUiWinRate": 58,
@@ -23900,28 +23900,28 @@
         "level": 60
       },
       "timeSec": 471.18,
-      "humanIndex": 56.87,
-      "intelligenceIndex": 56.87,
+      "humanIndex": 56.91,
+      "intelligenceIndex": 56.91,
       "aaIndex": 44.1,
-      "indexDelta": 12.77,
+      "indexDelta": 12.81,
       "humanScores": {
         "chatVibe": 56.39,
         "rawChatVibe": 56.39,
         "docCraft": null,
         "webdev": 57.8,
-        "designWeb": 70.67,
+        "designWeb": 71.02,
         "designUi": 47.82,
-        "creativeCraft": 57.86,
+        "creativeCraft": 57.97,
         "deliverable": 43.26,
-        "pureVisual": 61.72,
+        "pureVisual": 61.93,
         "spatialMotion": 64.88,
         "antiSlop": 83.8
       },
       "designSub": {
-        "website": 70.67,
+        "website": 71.02,
         "uicomponent": 45.35,
         "dataviz": 50.29,
-        "gamedev": 45.67,
+        "gamedev": 45.89,
         "svg": 70.05
       },
       "arenaRaw": {
@@ -23931,15 +23931,15 @@
         "docVotes": null,
         "webdevElo": 1674.5,
         "webdevVotes": 8574,
-        "designWebElo": 1337,
+        "designWebElo": 1338,
         "designWebWinRate": 52.6,
-        "designWebBattles": 3851,
-        "designAvgCostUsd": 0.1534,
+        "designWebBattles": 3853,
+        "designAvgCostUsd": 0.1533,
         "designUiElo": 1282,
-        "designUiWinRate": 51.9,
-        "designUiBattles": 1017,
+        "designUiWinRate": 52,
+        "designUiBattles": 1019,
         "designDatavizElo": 1266,
-        "designGameElo": 1285,
+        "designGameElo": 1286,
         "designSvgElo": 1349,
         "gdpvalElo": 1513.7,
         "briefcaseElo": 1472.1,
@@ -24008,7 +24008,7 @@
         "webdevVotes": null,
         "designWebElo": 1180,
         "designWebWinRate": 34.4,
-        "designWebBattles": 13194,
+        "designWebBattles": 13196,
         "designAvgCostUsd": 0.0823,
         "designUiElo": 1121,
         "designUiWinRate": 35.3,
@@ -24057,28 +24057,28 @@
         "level": 40
       },
       "timeSec": 935.23,
-      "humanIndex": 44.24,
-      "intelligenceIndex": 44.24,
+      "humanIndex": 44.26,
+      "intelligenceIndex": 44.26,
       "aaIndex": 30.7,
-      "indexDelta": 13.54,
+      "indexDelta": 13.56,
       "humanScores": {
         "chatVibe": 70.52,
         "rawChatVibe": 74.25,
         "docCraft": 61.81,
         "webdev": 37.52,
         "designWeb": 71.84,
-        "designUi": 51.11,
-        "creativeCraft": 56.29,
+        "designUi": 51.3,
+        "creativeCraft": 56.4,
         "deliverable": 23.68,
-        "pureVisual": 63.3,
+        "pureVisual": 63.39,
         "spatialMotion": 38.53,
         "antiSlop": 21.3
       },
       "designSub": {
         "website": 71.84,
-        "uicomponent": 50.73,
+        "uicomponent": 51.09,
         "dataviz": 51.5,
-        "gamedev": 44.08,
+        "gamedev": 44.3,
         "svg": 68.5
       },
       "arenaRaw": {
@@ -24092,11 +24092,11 @@
         "designWebWinRate": 49.5,
         "designWebBattles": 25488,
         "designAvgCostUsd": 0.0856,
-        "designUiElo": 1297,
+        "designUiElo": 1298,
         "designUiWinRate": 52.4,
         "designUiBattles": 2238,
         "designDatavizElo": 1270,
-        "designGameElo": 1278,
+        "designGameElo": 1279,
         "designSvgElo": 1339,
         "gdpvalElo": 1442.8,
         "briefcaseElo": 1205.1,
@@ -24140,26 +24140,26 @@
         "level": 50
       },
       "timeSec": 874.69,
-      "humanIndex": 64.08,
-      "intelligenceIndex": 64.08,
+      "humanIndex": 64.05,
+      "intelligenceIndex": 64.05,
       "aaIndex": 54.07,
-      "indexDelta": 10.01,
+      "indexDelta": 9.98,
       "humanScores": {
         "chatVibe": 70.64,
         "rawChatVibe": 70.64,
         "docCraft": null,
         "webdev": 63.18,
         "designWeb": 81.65,
-        "designUi": 58.59,
+        "designUi": 58.27,
         "creativeCraft": 56.84,
         "deliverable": 59.19,
-        "pureVisual": 72.54,
+        "pureVisual": 72.41,
         "spatialMotion": 73.22,
         "antiSlop": 35
       },
       "designSub": {
         "website": 81.65,
-        "uicomponent": 61.27,
+        "uicomponent": 60.64,
         "dataviz": 55.9,
         "gamedev": 56.84,
         "svg": null
@@ -24175,9 +24175,9 @@
         "designWebWinRate": 58.2,
         "designWebBattles": 1544,
         "designAvgCostUsd": 0.1644,
-        "designUiElo": 1329,
-        "designUiWinRate": 53.8,
-        "designUiBattles": 357,
+        "designUiElo": 1327,
+        "designUiWinRate": 53.6,
+        "designUiBattles": 362,
         "designDatavizElo": 1292,
         "designGameElo": 1337,
         "designSvgElo": null,
@@ -24501,7 +24501,7 @@
         "webdevVotes": 15347,
         "designWebElo": 1309,
         "designWebWinRate": 51.8,
-        "designWebBattles": 32841,
+        "designWebBattles": 32848,
         "designAvgCostUsd": 0.108,
         "designUiElo": 1243,
         "designUiWinRate": 50.9,
@@ -24637,7 +24637,7 @@
         "webdev": 74.23,
         "designWeb": 83.67,
         "designUi": 59.48,
-        "creativeCraft": 82.76,
+        "creativeCraft": 82.68,
         "deliverable": 68.57,
         "pureVisual": 77.75,
         "spatialMotion": 85.1,
@@ -24647,7 +24647,7 @@
         "website": 83.67,
         "uicomponent": 59.48,
         "dataviz": null,
-        "gamedev": 82.76,
+        "gamedev": 82.68,
         "svg": null
       },
       "arenaRaw": {
@@ -24659,13 +24659,13 @@
         "webdevVotes": 2170,
         "designWebElo": 1385,
         "designWebWinRate": 58.5,
-        "designWebBattles": 1051,
-        "designAvgCostUsd": 0.912,
+        "designWebBattles": 1055,
+        "designAvgCostUsd": 0.911,
         "designUiElo": 1326,
         "designUiWinRate": 55.8,
         "designUiBattles": 181,
         "designDatavizElo": null,
-        "designGameElo": 1502,
+        "designGameElo": 1501,
         "designSvgElo": null,
         "gdpvalElo": null,
         "briefcaseElo": 1642.3,
@@ -24899,8 +24899,8 @@
         "webdevVotes": 9541,
         "designWebElo": 1389,
         "designWebWinRate": 58.6,
-        "designWebBattles": 6030,
-        "designAvgCostUsd": 1.5728,
+        "designWebBattles": 6038,
+        "designAvgCostUsd": 1.5735,
         "designUiElo": 1385,
         "designUiWinRate": 65.8,
         "designUiBattles": 678,
@@ -24949,28 +24949,28 @@
         "level": 50
       },
       "timeSec": 1664.18,
-      "humanIndex": 72.62,
-      "intelligenceIndex": 72.62,
+      "humanIndex": 72.56,
+      "intelligenceIndex": 72.56,
       "aaIndex": 61.55,
-      "indexDelta": 11.07,
+      "indexDelta": 11.01,
       "humanScores": {
         "chatVibe": 78.73,
         "rawChatVibe": 78.73,
         "docCraft": null,
         "webdev": 75.05,
-        "designWeb": 83.49,
-        "designUi": 62.06,
-        "creativeCraft": 68.57,
+        "designWeb": 83.29,
+        "designUi": 61.79,
+        "creativeCraft": 68.41,
         "deliverable": 74.78,
-        "pureVisual": 75.69,
+        "pureVisual": 75.43,
         "spatialMotion": 78.78,
         "antiSlop": 32
       },
       "designSub": {
-        "website": 83.49,
-        "uicomponent": 64.13,
+        "website": 83.29,
+        "uicomponent": 63.59,
         "dataviz": 59.99,
-        "gamedev": 68.57,
+        "gamedev": 68.41,
         "svg": null
       },
       "arenaRaw": {
@@ -24980,15 +24980,15 @@
         "docVotes": null,
         "webdevElo": 1765.3,
         "webdevVotes": 2308,
-        "designWebElo": 1384,
-        "designWebWinRate": 58.4,
-        "designWebBattles": 1102,
-        "designAvgCostUsd": 0.3988,
-        "designUiElo": 1342,
-        "designUiWinRate": 58.8,
-        "designUiBattles": 187,
+        "designWebElo": 1383,
+        "designWebWinRate": 58.1,
+        "designWebBattles": 1116,
+        "designAvgCostUsd": 0.4009,
+        "designUiElo": 1340,
+        "designUiWinRate": 58.5,
+        "designUiBattles": 188,
         "designDatavizElo": 1313,
-        "designGameElo": 1400,
+        "designGameElo": 1399,
         "designSvgElo": null,
         "gdpvalElo": null,
         "briefcaseElo": 1698.3,
@@ -25146,7 +25146,7 @@
         "webdevVotes": 6227,
         "designWebElo": 1366,
         "designWebWinRate": 55.6,
-        "designWebBattles": 8946,
+        "designWebBattles": 8950,
         "designAvgCostUsd": 0.2352,
         "designUiElo": 1324,
         "designUiWinRate": 56.9,
@@ -25207,9 +25207,9 @@
         "webdev": 75.54,
         "designWeb": 83.07,
         "designUi": 69.72,
-        "creativeCraft": 77.7,
+        "creativeCraft": 77.62,
         "deliverable": 67.92,
-        "pureVisual": 78.54,
+        "pureVisual": 78.53,
         "spatialMotion": 73.73,
         "antiSlop": 28.9
       },
@@ -25218,7 +25218,7 @@
         "uicomponent": 71.56,
         "dataviz": 67.87,
         "gamedev": 69.44,
-        "svg": 85.97
+        "svg": 85.79
       },
       "arenaRaw": {
         "chatElo": 1526.5,
@@ -25229,14 +25229,14 @@
         "webdevVotes": 2091,
         "designWebElo": 1381,
         "designWebWinRate": 58.2,
-        "designWebBattles": 1518,
-        "designAvgCostUsd": 0.2214,
+        "designWebBattles": 1521,
+        "designAvgCostUsd": 0.2213,
         "designUiElo": 1367,
         "designUiWinRate": 63.2,
         "designUiBattles": 261,
         "designDatavizElo": 1359,
         "designGameElo": 1405,
-        "designSvgElo": 1463,
+        "designSvgElo": 1461,
         "gdpvalElo": 1732.7,
         "briefcaseElo": 1610.6,
         "aa3dElo": 1200.3,
@@ -25358,29 +25358,29 @@
         "level": 60
       },
       "timeSec": 1857.72,
-      "humanIndex": 75.13,
-      "intelligenceIndex": 75.13,
+      "humanIndex": 75.16,
+      "intelligenceIndex": 75.16,
       "aaIndex": 54.73,
-      "indexDelta": 20.4,
+      "indexDelta": 20.43,
       "humanScores": {
         "chatVibe": 63.57,
         "rawChatVibe": 63.57,
         "docCraft": null,
         "webdev": 76.88,
-        "designWeb": 77.7,
+        "designWeb": 77.99,
         "designUi": 73.13,
-        "creativeCraft": 71.68,
+        "creativeCraft": 71.69,
         "deliverable": 83.41,
-        "pureVisual": 75.63,
+        "pureVisual": 75.79,
         "spatialMotion": 78.39,
         "antiSlop": 70.1
       },
       "designSub": {
-        "website": 77.7,
+        "website": 77.99,
         "uicomponent": 75.13,
         "dataviz": 71.14,
         "gamedev": 74.17,
-        "svg": 69.19
+        "svg": 69.2
       },
       "arenaRaw": {
         "chatElo": 1473,
@@ -25389,13 +25389,13 @@
         "docVotes": null,
         "webdevElo": 1772.6,
         "webdevVotes": 6973,
-        "designWebElo": 1359,
+        "designWebElo": 1360,
         "designWebWinRate": 53.7,
-        "designWebBattles": 3461,
+        "designWebBattles": 3467,
         "designAvgCostUsd": 0.4104,
         "designUiElo": 1374,
-        "designUiWinRate": 62,
-        "designUiBattles": 701,
+        "designUiWinRate": 62.2,
+        "designUiBattles": 703,
         "designDatavizElo": 1357,
         "designGameElo": 1427,
         "designSvgElo": 1347,
@@ -25472,7 +25472,7 @@
         "webdevVotes": 26061,
         "designWebElo": 1317,
         "designWebWinRate": 50.8,
-        "designWebBattles": 6214,
+        "designWebBattles": 6215,
         "designAvgCostUsd": 0.206,
         "designUiElo": 1323,
         "designUiWinRate": 56.3,
@@ -25553,8 +25553,8 @@
         "webdevVotes": 5121,
         "designWebElo": 1376,
         "designWebWinRate": 55.8,
-        "designWebBattles": 4213,
-        "designAvgCostUsd": 0.6924,
+        "designWebBattles": 4217,
+        "designAvgCostUsd": 0.6929,
         "designUiElo": 1367,
         "designUiWinRate": 62.6,
         "designUiBattles": 498,
@@ -25633,8 +25633,8 @@
         "webdevElo": 1691.6,
         "webdevVotes": 19435,
         "designWebElo": 1352,
-        "designWebWinRate": 56,
-        "designWebBattles": 10093,
+        "designWebWinRate": 55.9,
+        "designWebBattles": 10094,
         "designAvgCostUsd": 0.7707,
         "designUiElo": 1332,
         "designUiWinRate": 60.5,
@@ -27742,13 +27742,13 @@
           "creator": "OpenAI",
           "modelId": "a1a84b18-e8c9-48fb-8e04-6003bd9f6ff4",
           "cost": 1.014379970300768,
-          "score": 1410,
-          "winRate": 61.9,
-          "battles": 696,
+          "score": 1411,
+          "winRate": 62,
+          "battles": 703,
           "suites": {
-            "website": 1410,
+            "website": 1411,
             "uicomponent": 1334,
-            "gamedev": 1443
+            "gamedev": 1442
           }
         },
         {
@@ -27760,7 +27760,7 @@
           "cost": 2.3857813858107244,
           "score": 1409,
           "winRate": 59.3,
-          "battles": 24234,
+          "battles": 24237,
           "suites": {
             "website": 1409,
             "uicomponent": 1337,
@@ -27794,7 +27794,7 @@
           "cost": 2.3857813858107244,
           "score": 1401,
           "winRate": 57.9,
-          "battles": 21376,
+          "battles": 21380,
           "suites": {
             "website": 1401,
             "uicomponent": 1340,
@@ -27812,7 +27812,7 @@
           "cost": 6.244666943602518,
           "score": 1389,
           "winRate": 58.6,
-          "battles": 6030,
+          "battles": 6038,
           "suites": {
             "website": 1389,
             "uicomponent": 1385,
@@ -27827,10 +27827,10 @@
           "name": "kimi-k3",
           "score": 1389,
           "winRate": 59.8,
-          "battles": 5052,
+          "battles": 5059,
           "suites": {
             "website": 1389,
-            "uicomponent": 1339,
+            "uicomponent": 1340,
             "dataviz": 1346,
             "gamedev": 1342,
             "svg": 1350
@@ -27845,13 +27845,13 @@
           "cost": 6.244666943602518,
           "score": 1388,
           "winRate": 59,
-          "battles": 2792,
+          "battles": 2794,
           "suites": {
             "website": 1388,
             "uicomponent": 1360,
             "dataviz": 1331,
             "gamedev": 1462,
-            "svg": 1458
+            "svg": 1456
           }
         },
         {
@@ -27875,11 +27875,11 @@
           "cost": 3.9979061566801852,
           "score": 1385,
           "winRate": 58.5,
-          "battles": 1051,
+          "battles": 1055,
           "suites": {
             "website": 1385,
             "uicomponent": 1326,
-            "gamedev": 1502
+            "gamedev": 1501
           }
         },
         {
@@ -27889,14 +27889,14 @@
           "creator": "Google",
           "modelId": "7c667f2d-0149-4eb1-864c-7e66c166ad88",
           "cost": 6.444838101104699,
-          "score": 1384,
-          "winRate": 58.4,
-          "battles": 1102,
+          "score": 1383,
+          "winRate": 58.1,
+          "battles": 1116,
           "suites": {
-            "website": 1384,
-            "uicomponent": 1342,
+            "website": 1383,
+            "uicomponent": 1340,
             "dataviz": 1313,
-            "gamedev": 1400
+            "gamedev": 1399
           }
         },
         {
@@ -27908,13 +27908,13 @@
           "cost": 7.755545745286556,
           "score": 1381,
           "winRate": 58.2,
-          "battles": 1518,
+          "battles": 1521,
           "suites": {
             "website": 1381,
             "uicomponent": 1367,
             "dataviz": 1359,
             "gamedev": 1405,
-            "svg": 1463
+            "svg": 1461
           }
         },
         {
@@ -27928,7 +27928,7 @@
             "website": 1379,
             "uicomponent": 1303,
             "dataviz": 1313,
-            "gamedev": 1313
+            "gamedev": 1314
           }
         },
         {
@@ -27940,7 +27940,7 @@
           "cost": 10.036409719512749,
           "score": 1376,
           "winRate": 55.8,
-          "battles": 4213,
+          "battles": 4217,
           "suites": {
             "website": 1376,
             "uicomponent": 1367,
@@ -27961,7 +27961,7 @@
           "battles": 1544,
           "suites": {
             "website": 1375,
-            "uicomponent": 1329,
+            "uicomponent": 1327,
             "dataviz": 1292,
             "gamedev": 1337
           }
@@ -27972,13 +27972,13 @@
           "name": "gpt-5.6-sol-xhigh",
           "score": 1367,
           "winRate": 56.8,
-          "battles": 7010,
+          "battles": 7011,
           "suites": {
             "website": 1367,
             "uicomponent": 1325,
             "dataviz": 1317,
             "gamedev": 1349,
-            "svg": 1355
+            "svg": 1356
           }
         },
         {
@@ -28008,7 +28008,7 @@
           "cost": 7.061649020760525,
           "score": 1366,
           "winRate": 55.6,
-          "battles": 8946,
+          "battles": 8950,
           "suites": {
             "website": 1366,
             "uicomponent": 1324,
@@ -28026,22 +28026,40 @@
           "cost": 1.2720632679446995,
           "score": 1365,
           "winRate": 54.1,
-          "battles": 4324,
+          "battles": 4336,
           "suites": {
             "website": 1365,
             "uicomponent": 1355,
             "dataviz": 1275,
             "gamedev": 1386,
-            "svg": 1400
+            "svg": 1399
           }
         },
         {
           "rank": 20,
+          "rawName": "claude-sonnet-5-5",
+          "name": "Claude Sonnet 5.5 (max)",
+          "creator": "Anthropic",
+          "modelId": "b171d979-5ec1-45de-b8b9-db1ee65e77ec",
+          "cost": 10.020621343395753,
+          "score": 1360,
+          "winRate": 53.7,
+          "battles": 3467,
+          "suites": {
+            "website": 1360,
+            "uicomponent": 1374,
+            "dataviz": 1357,
+            "gamedev": 1427,
+            "svg": 1347
+          }
+        },
+        {
+          "rank": 21,
           "rawName": "hampshire",
           "name": "hampshire",
           "score": 1359,
           "winRate": 51.8,
-          "battles": 18285,
+          "battles": 18288,
           "suites": {
             "website": 1359,
             "uicomponent": 1327,
@@ -28051,30 +28069,12 @@
           }
         },
         {
-          "rank": 21,
-          "rawName": "claude-sonnet-5-5",
-          "name": "Claude Sonnet 5.5 (max)",
-          "creator": "Anthropic",
-          "modelId": "b171d979-5ec1-45de-b8b9-db1ee65e77ec",
-          "cost": 10.020621343395753,
-          "score": 1359,
-          "winRate": 53.7,
-          "battles": 3461,
-          "suites": {
-            "website": 1359,
-            "uicomponent": 1374,
-            "dataviz": 1357,
-            "gamedev": 1427,
-            "svg": 1347
-          }
-        },
-        {
           "rank": 22,
           "rawName": "muse-spark-1.2",
           "name": "muse-spark-1.2",
           "score": 1358,
           "winRate": 52.6,
-          "battles": 28575,
+          "battles": 28582,
           "suites": {
             "website": 1358,
             "uicomponent": 1290,
@@ -28087,11 +28087,11 @@
           "rank": 23,
           "rawName": "gpt-5.6-sol",
           "name": "gpt-5.6-sol",
-          "score": 1353,
+          "score": 1354,
           "winRate": 56.4,
-          "battles": 13073,
+          "battles": 13084,
           "suites": {
-            "website": 1353,
+            "website": 1354,
             "uicomponent": 1306,
             "dataviz": 1286,
             "gamedev": 1296,
@@ -28100,23 +28100,6 @@
         },
         {
           "rank": 24,
-          "rawName": "muse-spark-open",
-          "name": "Muse Spark Open (xhigh)",
-          "creator": "Meta",
-          "modelId": "3661c8fb-caf7-4118-aa18-65b84fea8e44",
-          "cost": 1.7656761794720652,
-          "score": 1353,
-          "winRate": 51.6,
-          "battles": 4370,
-          "suites": {
-            "website": 1353,
-            "uicomponent": 1292,
-            "dataviz": 1351,
-            "gamedev": 1237
-          }
-        },
-        {
-          "rank": 25,
           "rawName": "claude-fable-5-1",
           "name": "Claude Fable 5.1 (max)",
           "creator": "Anthropic",
@@ -28134,21 +28117,38 @@
           }
         },
         {
-          "rank": 26,
+          "rank": 25,
           "rawName": "claude-opus-5",
           "name": "Claude Opus 5 (max)",
           "creator": "Anthropic",
           "modelId": "b8fc61f7-5e9a-49e6-8547-6ac56db24627",
           "cost": 11.821495652976125,
           "score": 1352,
-          "winRate": 56,
-          "battles": 10093,
+          "winRate": 55.9,
+          "battles": 10094,
           "suites": {
             "website": 1352,
             "uicomponent": 1332,
             "dataviz": 1321,
             "gamedev": 1316,
             "svg": 1354
+          }
+        },
+        {
+          "rank": 26,
+          "rawName": "muse-spark-open",
+          "name": "Muse Spark Open (xhigh)",
+          "creator": "Meta",
+          "modelId": "3661c8fb-caf7-4118-aa18-65b84fea8e44",
+          "cost": 1.7656761794720652,
+          "score": 1352,
+          "winRate": 51.6,
+          "battles": 4376,
+          "suites": {
+            "website": 1352,
+            "uicomponent": 1292,
+            "dataviz": 1351,
+            "gamedev": 1237
           }
         },
         {
@@ -28175,11 +28175,11 @@
           "name": "gemini-3.7-flash",
           "score": 1344,
           "winRate": 53.6,
-          "battles": 47054,
+          "battles": 47059,
           "suites": {
             "website": 1344,
             "uicomponent": 1281,
-            "dataviz": 1305,
+            "dataviz": 1304,
             "gamedev": 1294,
             "svg": 1327
           }
@@ -28193,13 +28193,13 @@
           "cost": 0.60210514783598,
           "score": 1342,
           "winRate": 51.6,
-          "battles": 3511,
+          "battles": 3516,
           "suites": {
             "website": 1342,
             "uicomponent": 1268,
             "dataviz": 1275,
-            "gamedev": 1244,
-            "svg": 1289
+            "gamedev": 1243,
+            "svg": 1290
           }
         },
         {
@@ -28222,8 +28222,8 @@
           "rawName": "gemini-3.6-flash",
           "name": "gemini-3.6-flash",
           "score": 1340,
-          "winRate": 54.2,
-          "battles": 17549,
+          "winRate": 54.1,
+          "battles": 17554,
           "suites": {
             "website": 1340,
             "uicomponent": 1281,
@@ -28243,9 +28243,9 @@
           "battles": 25488,
           "suites": {
             "website": 1340,
-            "uicomponent": 1297,
+            "uicomponent": 1298,
             "dataviz": 1270,
-            "gamedev": 1278,
+            "gamedev": 1279,
             "svg": 1339
           }
         },
@@ -28256,14 +28256,14 @@
           "creator": "OpenAI",
           "modelId": "c50ea08c-88c0-4eb7-85b8-27f2bbf6d527",
           "cost": 2.465800491412395,
-          "score": 1337,
+          "score": 1338,
           "winRate": 52.6,
-          "battles": 3851,
+          "battles": 3853,
           "suites": {
-            "website": 1337,
+            "website": 1338,
             "uicomponent": 1282,
             "dataviz": 1266,
-            "gamedev": 1285,
+            "gamedev": 1286,
             "svg": 1349
           }
         },
@@ -28339,7 +28339,7 @@
           "battles": 10912,
           "suites": {
             "website": 1327,
-            "uicomponent": 1277,
+            "uicomponent": 1278,
             "dataviz": 1244,
             "gamedev": 1270,
             "svg": 1292
@@ -28347,6 +28347,21 @@
         },
         {
           "rank": 39,
+          "rawName": "grogu",
+          "name": "grogu",
+          "score": 1326,
+          "winRate": 51.4,
+          "battles": 12600,
+          "suites": {
+            "website": 1326,
+            "uicomponent": 1276,
+            "dataviz": 1277,
+            "gamedev": 1262,
+            "svg": 1270
+          }
+        },
+        {
+          "rank": 40,
           "rawName": "snowhare",
           "name": "snowhare",
           "score": 1326,
@@ -28361,7 +28376,7 @@
           }
         },
         {
-          "rank": 40,
+          "rank": 41,
           "rawName": "deca-2.5-mini",
           "name": "deca-2.5-mini",
           "score": 1326,
@@ -28370,12 +28385,12 @@
           "suites": {
             "website": 1326,
             "uicomponent": 1255,
-            "dataviz": 1222,
+            "dataviz": 1221,
             "gamedev": 1226
           }
         },
         {
-          "rank": 41,
+          "rank": 42,
           "rawName": "claude-sonnet-4-6",
           "name": "claude-sonnet-4-6",
           "score": 1325,
@@ -28390,7 +28405,7 @@
           }
         },
         {
-          "rank": 42,
+          "rank": 43,
           "rawName": "glm-5.2",
           "name": "glm-5.2",
           "score": 1325,
@@ -28405,21 +28420,6 @@
           }
         },
         {
-          "rank": 43,
-          "rawName": "grogu",
-          "name": "grogu",
-          "score": 1325,
-          "winRate": 51.4,
-          "battles": 12594,
-          "suites": {
-            "website": 1325,
-            "uicomponent": 1276,
-            "dataviz": 1277,
-            "gamedev": 1262,
-            "svg": 1269
-          }
-        },
-        {
           "rank": 44,
           "rawName": "inkling-2-mini",
           "name": "Inkling 2 Mini",
@@ -28427,13 +28427,13 @@
           "modelId": "da3ba2f4-f4f1-43b6-95dc-8e9fa2a48402",
           "cost": 0.5865441229709887,
           "score": 1324,
-          "winRate": 50.2,
-          "battles": 1193,
+          "winRate": 50.3,
+          "battles": 1198,
           "suites": {
             "website": 1324,
             "uicomponent": 1263,
             "dataviz": 1218,
-            "gamedev": 1288
+            "gamedev": 1287
           }
         },
         {
@@ -28442,7 +28442,7 @@
           "name": "yoda",
           "score": 1322,
           "winRate": 52.3,
-          "battles": 15827,
+          "battles": 15832,
           "suites": {
             "website": 1322,
             "uicomponent": 1263,
@@ -28461,7 +28461,7 @@
           "suites": {
             "website": 1321,
             "uicomponent": 1243,
-            "gamedev": 1233
+            "gamedev": 1234
           }
         },
         {
@@ -28470,7 +28470,7 @@
           "name": "claude-sonnet-5",
           "score": 1317,
           "winRate": 52.5,
-          "battles": 13546,
+          "battles": 13547,
           "suites": {
             "website": 1317,
             "uicomponent": 1260,
@@ -28488,7 +28488,7 @@
           "cost": 10.028465334776769,
           "score": 1317,
           "winRate": 50.8,
-          "battles": 6214,
+          "battles": 6215,
           "suites": {
             "website": 1317,
             "uicomponent": 1323,
@@ -28502,7 +28502,7 @@
           "name": "qwen3.7-max",
           "score": 1316,
           "winRate": 54.5,
-          "battles": 18369,
+          "battles": 18379,
           "suites": {
             "website": 1316,
             "uicomponent": 1256,
@@ -28520,7 +28520,7 @@
           "cost": 0.15195575732105837,
           "score": 1316,
           "winRate": 48.9,
-          "battles": 4734,
+          "battles": 4735,
           "suites": {
             "website": 1316,
             "uicomponent": 1284,
@@ -28584,7 +28584,7 @@
             "website": 1311,
             "uicomponent": 1239,
             "dataviz": 1253,
-            "gamedev": 1248,
+            "gamedev": 1249,
             "svg": 1235
           }
         },
@@ -28594,7 +28594,7 @@
           "name": "qwen3.7-plus",
           "score": 1310,
           "winRate": 50.2,
-          "battles": 10014,
+          "battles": 10017,
           "suites": {
             "website": 1310,
             "uicomponent": 1246,
@@ -28609,12 +28609,12 @@
           "name": "coconut",
           "score": 1309,
           "winRate": 52.4,
-          "battles": 14212,
+          "battles": 14214,
           "suites": {
             "website": 1309,
             "uicomponent": 1252,
             "dataviz": 1254,
-            "gamedev": 1238,
+            "gamedev": 1239,
             "svg": 1258
           }
         },
@@ -28624,7 +28624,7 @@
           "name": "gemini-3.5-flash",
           "score": 1309,
           "winRate": 53.8,
-          "battles": 20648,
+          "battles": 20653,
           "suites": {
             "website": 1309,
             "uicomponent": 1259,
@@ -28657,7 +28657,7 @@
           "cost": 3.734901899414753,
           "score": 1309,
           "winRate": 51.8,
-          "battles": 32841,
+          "battles": 32848,
           "suites": {
             "website": 1309,
             "uicomponent": 1243,
