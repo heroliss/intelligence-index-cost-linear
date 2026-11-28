@@ -4,7 +4,7 @@
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
   "hostsManifestPath": "/data/324ed05c14a0dc8b.txt",
-  "updatedAt": "2026-11-27T22:17:12.243Z",
+  "updatedAt": "2026-11-28T00:17:09.315Z",
   "updateIntervalHours": 2,
   "changelog": [
     {
@@ -284,7 +284,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 31.55,
+      "timeSec": 31.64,
       "costBreakdown": {
         "input": 0.00347,
         "nonCacheInput": 0.00082,
@@ -364,7 +364,7 @@
         "slug": "mistral-small-4",
         "name": "Mistral Small 4"
       },
-      "timeSec": 94.75,
+      "timeSec": 93.96,
       "costBreakdown": {
         "input": 0.03127,
         "nonCacheInput": 0.00011,
@@ -447,7 +447,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 171.44,
+      "timeSec": 172.74,
       "costBreakdown": {
         "input": 0.03229,
         "nonCacheInput": 0.00082,
@@ -530,7 +530,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 128.79,
+      "timeSec": 129.44,
       "costBreakdown": {
         "input": 0.02968,
         "nonCacheInput": 0.00089,
@@ -699,7 +699,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 77.98,
+      "timeSec": 77.87,
       "costBreakdown": {
         "input": 0.04923,
         "nonCacheInput": 0.00815,
@@ -777,7 +777,7 @@
         "slug": "gpt-6-luna",
         "name": "GPT-6 Luna"
       },
-      "timeSec": 98.49,
+      "timeSec": 98.59,
       "costBreakdown": {
         "input": 0.06639,
         "nonCacheInput": 0.00082,
@@ -836,12 +836,12 @@
         {
           "host": "OpenAI",
           "cost": 0.07142,
-          "timeSec": 98.5
+          "timeSec": 98.6
         },
         {
           "host": "Microsoft Azure",
           "cost": 0.07697,
-          "timeSec": 131.8
+          "timeSec": 132.4
         }
       ]
     },
@@ -872,7 +872,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 266.92,
+      "timeSec": 271.38,
       "costBreakdown": {
         "input": 0.05653,
         "nonCacheInput": 0.00082,
@@ -955,7 +955,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 239.87,
+      "timeSec": 241.99,
       "costBreakdown": {
         "input": 0.0651,
         "nonCacheInput": 0.00089,
@@ -1038,7 +1038,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 358.81,
+      "timeSec": 358.49,
       "costBreakdown": {
         "input": 0.08215,
         "nonCacheInput": 0.00082,
@@ -1121,7 +1121,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 188.83,
+      "timeSec": 189.64,
       "costBreakdown": {
         "input": 0.08005,
         "nonCacheInput": 0.00063,
@@ -1202,7 +1202,7 @@
         "slug": "lfm3-vl-2b",
         "name": "LFM3-VL-2B"
       },
-      "timeSec": 121.58,
+      "timeSec": 121.27,
       "costBreakdown": {
         "input": 0.10329,
         "nonCacheInput": 0.00019,
@@ -1276,7 +1276,7 @@
         "slug": "mimo-v2-6-flash",
         "name": "MiMo-V2.6-Flash"
       },
-      "timeSec": 3491.48,
+      "timeSec": 3511.24,
       "costBreakdown": {
         "input": 0.09162,
         "nonCacheInput": 0.00094,
@@ -1341,22 +1341,22 @@
         {
           "host": "GMI (BF16)",
           "cost": 0.10603,
-          "timeSec": 1651.2
+          "timeSec": 1634.3
         },
         {
           "host": "DeepInfra",
           "cost": 0.12728,
-          "timeSec": 1206.1
+          "timeSec": 1220.6
         },
         {
           "host": "Xiaomi",
           "cost": 0.12853,
-          "timeSec": 3491.5
+          "timeSec": 3511.2
         },
         {
           "host": "Makora",
           "cost": 0.44219,
-          "timeSec": 711.5
+          "timeSec": 728.3
         }
       ]
     },
@@ -1385,7 +1385,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1113.24,
+      "timeSec": 1047.49,
       "costBreakdown": {
         "input": 0.08518,
         "nonCacheInput": 0.00022,
@@ -1468,7 +1468,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 229.44,
+      "timeSec": 229.93,
       "costBreakdown": {
         "input": 0.09369,
         "nonCacheInput": 0.00063,
@@ -1553,7 +1553,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 290.57,
+      "timeSec": 291.11,
       "costBreakdown": {
         "input": 0.11813,
         "nonCacheInput": 0.00086,
@@ -1618,17 +1618,17 @@
         {
           "host": "DeepInfra",
           "cost": 0.13291,
-          "timeSec": 232.5
+          "timeSec": 242.3
         },
         {
           "host": "Together AI",
           "cost": 0.16295,
-          "timeSec": 290.6
+          "timeSec": 291.1
         },
         {
           "host": "Modular",
           "cost": 0.37156,
-          "timeSec": 303.8
+          "timeSec": 304.3
         }
       ]
     },
@@ -1659,7 +1659,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 579.68,
+      "timeSec": 585.42,
       "costBreakdown": {
         "input": 0.11431,
         "nonCacheInput": 0.00081,
@@ -1724,17 +1724,17 @@
         {
           "host": "OpenAI (Flex)",
           "cost": 0.07598,
-          "timeSec": 2376.7
+          "timeSec": 2374.6
         },
         {
           "host": "OpenAI",
           "cost": 0.15196,
-          "timeSec": 579.7
+          "timeSec": 585.4
         },
         {
           "host": "Microsoft Azure",
           "cost": 0.16077,
-          "timeSec": 854.9
+          "timeSec": 847.2
         }
       ],
       "livebench": {
@@ -1777,7 +1777,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 382.98,
+      "timeSec": 386.61,
       "costBreakdown": {
         "input": 0.11453,
         "nonCacheInput": 0.00089,
@@ -1943,7 +1943,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 187.26,
+      "timeSec": 186.64,
       "costBreakdown": {
         "input": 0.11443,
         "nonCacheInput": 0.00815,
@@ -2020,7 +2020,7 @@
         "slug": "lfm3-1-7b",
         "name": "LFM3-1.7B"
       },
-      "timeSec": 295.11,
+      "timeSec": 294,
       "costBreakdown": {
         "input": 0.15366,
         "nonCacheInput": 0.00014,
@@ -2103,7 +2103,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 110.57,
+      "timeSec": 111.14,
       "costBreakdown": {
         "input": 0.12379,
         "nonCacheInput": 0.0163,
@@ -2190,7 +2190,7 @@
         "slug": "gemma-4-26b-a4b",
         "name": "Gemma 4 26B A4B"
       },
-      "timeSec": 1321.31,
+      "timeSec": 1311.89,
       "costBreakdown": {
         "input": 0.15624,
         "nonCacheInput": 0.00021,
@@ -2255,22 +2255,22 @@
         {
           "host": "CoreWeave",
           "cost": 0.15266,
-          "timeSec": 1100.5
+          "timeSec": 1081.7
         },
         {
           "host": "Makora",
           "cost": 0.15397,
-          "timeSec": 461.6
+          "timeSec": 457.1
         },
         {
           "host": "DeepInfra (FP8)",
           "cost": 0.17571,
-          "timeSec": 1652.9
+          "timeSec": 1666.6
         },
         {
           "host": "Parasail",
           "cost": 0.18551,
-          "timeSec": 968.3
+          "timeSec": 977.9
         },
         {
           "host": "Novita",
@@ -2479,7 +2479,7 @@
         "slug": "gpt-6-1-terra",
         "name": "GPT-6.1 Terra"
       },
-      "timeSec": 164.93,
+      "timeSec": 164.72,
       "costBreakdown": {
         "input": 0.17846,
         "nonCacheInput": 0.00815,
@@ -2556,7 +2556,7 @@
         "slug": "nemotron-3-5-lightning",
         "name": "Nemotron 3.5 Lightning"
       },
-      "timeSec": 209.98,
+      "timeSec": 211.01,
       "costBreakdown": {
         "input": 0.22472,
         "nonCacheInput": 0.00012,
@@ -2615,32 +2615,32 @@
         {
           "host": "Modular",
           "cost": 0.16527,
-          "timeSec": 105.9
+          "timeSec": 105.3
         },
         {
           "host": "Crusoe (BF16)",
           "cost": 0.17683,
-          "timeSec": 255.5
+          "timeSec": 255.4
         },
         {
           "host": "CoreWeave (BF16)",
           "cost": 0.23969,
-          "timeSec": 221.9
+          "timeSec": 222.8
         },
         {
           "host": "DeepInfra (NVFP4)",
           "cost": 0.31185,
-          "timeSec": 199.3
+          "timeSec": 200.4
         },
         {
           "host": "Nebius (BF16)",
           "cost": 0.31705,
-          "timeSec": 350.9
+          "timeSec": 351
         },
         {
           "host": "PrimaLabs (NVFP4)",
           "cost": 0.54954,
-          "timeSec": 148
+          "timeSec": 148.4
         }
       ]
     },
@@ -2671,7 +2671,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 579.28,
+      "timeSec": 582.73,
       "costBreakdown": {
         "input": 0.18027,
         "nonCacheInput": 0.00089,
@@ -2753,7 +2753,7 @@
         "slug": "mimo-v2-6-pro",
         "name": "MiMo-V2.6-Pro"
       },
-      "timeSec": 2855.48,
+      "timeSec": 2883.8,
       "costBreakdown": {
         "input": 0.15185,
         "nonCacheInput": 0.00083,
@@ -2818,22 +2818,22 @@
         {
           "host": "GMI (BF16)",
           "cost": 0.18829,
-          "timeSec": 2596.9
+          "timeSec": 2643
         },
         {
           "host": "DeepInfra",
           "cost": 0.23481,
-          "timeSec": 1422
+          "timeSec": 1446.5
         },
         {
           "host": "Xiaomi",
           "cost": 0.25718,
-          "timeSec": 2855.5
+          "timeSec": 2883.8
         },
         {
           "host": "PrimaLabs",
           "cost": 2.56149,
-          "timeSec": 627.1
+          "timeSec": 624.6
         }
       ],
       "livebench": {
@@ -2876,7 +2876,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 280.3,
+      "timeSec": 280.9,
       "costBreakdown": {
         "input": 0.17555,
         "nonCacheInput": 0.00815,
@@ -2953,7 +2953,7 @@
         "slug": "reflection-beam",
         "name": "Beam 1.0"
       },
-      "timeSec": 88.51,
+      "timeSec": 88.48,
       "costBreakdown": {
         "input": 0.24332,
         "nonCacheInput": 0.00076,
@@ -3018,27 +3018,27 @@
         {
           "host": "CoreWeave (NVFP4)",
           "cost": 0.26546,
-          "timeSec": 88.4
+          "timeSec": 88.5
         },
         {
           "host": "DigitalOcean",
           "cost": 0.27761,
-          "timeSec": 177.7
+          "timeSec": 177.9
         },
         {
           "host": "Together AI (NVFP4)",
           "cost": 0.28441,
-          "timeSec": 106.1
+          "timeSec": 106.6
         },
         {
           "host": "Baseten (NVFP4)",
           "cost": 0.44863,
-          "timeSec": 71.8
+          "timeSec": 72
         },
         {
           "host": "Nebius (NVFP4)",
           "cost": 0.46244,
-          "timeSec": 88.5
+          "timeSec": 88.2
         }
       ]
     },
@@ -3163,7 +3163,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 358.94,
+      "timeSec": 357.04,
       "costBreakdown": {
         "input": 0.30127,
         "nonCacheInput": 0.00024,
@@ -3222,12 +3222,12 @@
         {
           "host": "CoreWeave",
           "cost": 0.07274,
-          "timeSec": 902.9
+          "timeSec": 926.9
         },
         {
           "host": "DeepInfra",
           "cost": 0.0868,
-          "timeSec": 4483
+          "timeSec": 4480
         },
         {
           "host": "Novita",
@@ -3237,27 +3237,27 @@
         {
           "host": "Crusoe",
           "cost": 0.11879,
-          "timeSec": 299.4
+          "timeSec": 302.9
         },
         {
           "host": "Parasail",
           "cost": 0.16969,
-          "timeSec": 480.2
+          "timeSec": 477.8
         },
         {
           "host": "Google (Vertex)",
           "cost": 0.20721,
-          "timeSec": 325.9
+          "timeSec": 332.3
         },
         {
           "host": "Baseten",
           "cost": 0.23757,
-          "timeSec": 358.9
+          "timeSec": 355.1
         },
         {
           "host": "Groq",
           "cost": 0.27985,
-          "timeSec": 200.1
+          "timeSec": 201.1
         }
       ]
     },
@@ -3373,7 +3373,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 93.06,
+      "timeSec": 93.65,
       "costBreakdown": {
         "input": 0.26182,
         "nonCacheInput": 0.00663,
@@ -3456,7 +3456,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 436.49,
+      "timeSec": 435.06,
       "costBreakdown": {
         "input": 0.26969,
         "nonCacheInput": 0.00815,
@@ -3539,7 +3539,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 242.4,
+      "timeSec": 243.05,
       "costBreakdown": {
         "input": 0.26955,
         "nonCacheInput": 0.0163,
@@ -3628,7 +3628,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 917.11,
+      "timeSec": 923.29,
       "costBreakdown": {
         "input": 0.29802,
         "nonCacheInput": 0.00089,
@@ -3726,7 +3726,7 @@
         "slug": "deepseek-v4-1-flash-1017",
         "name": "DeepSeek V4.1 Flash 1017"
       },
-      "timeSec": 395.81,
+      "timeSec": 394.96,
       "costBreakdown": {
         "input": 0.34699,
         "nonCacheInput": 0.00115,
@@ -3790,37 +3790,37 @@
         {
           "host": "Modal",
           "cost": 0.41241,
-          "timeSec": 415.3
+          "timeSec": 415.8
         },
         {
           "host": "DeepSeek",
           "cost": 0.42542,
-          "timeSec": 395.8
+          "timeSec": 395
         },
         {
           "host": "Inco (FAST)",
           "cost": 0.5744,
-          "timeSec": 162.1
+          "timeSec": 161.8
         },
         {
           "host": "Modular",
           "cost": 0.62564,
-          "timeSec": 458.8
+          "timeSec": 462.9
         },
         {
           "host": "CoreWeave",
           "cost": 1.42269,
-          "timeSec": 234.1
+          "timeSec": 234.6
         },
         {
           "host": "Verda",
           "cost": 1.42837,
-          "timeSec": 266.3
+          "timeSec": 265.6
         },
         {
           "host": "Scaleway",
           "cost": 14.06591,
-          "timeSec": 458.5
+          "timeSec": 456
         }
       ]
     },
@@ -3846,7 +3846,7 @@
         "slug": "agnes-2-5-pro-theta",
         "name": "Agnes 2.5 Pro Theta"
       },
-      "timeSec": 1836.15,
+      "timeSec": 1864.54,
       "costBreakdown": {
         "input": 0.36812,
         "nonCacheInput": 0.00049,
@@ -3931,7 +3931,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 614.06,
+      "timeSec": 614.43,
       "costBreakdown": {
         "input": 0.32368,
         "nonCacheInput": 0.00115,
@@ -4016,7 +4016,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1054.43,
+      "timeSec": 1041.24,
       "costBreakdown": {
         "input": 0.40901,
         "nonCacheInput": 0.00121,
@@ -4081,42 +4081,42 @@
         {
           "host": "DigitalOcean",
           "cost": 0.41834,
-          "timeSec": 535.5
+          "timeSec": 536.4
         },
         {
           "host": "Modular",
           "cost": 0.43034,
-          "timeSec": 801.3
+          "timeSec": 802.8
         },
         {
           "host": "Novita",
           "cost": 0.43416,
-          "timeSec": 1215
+          "timeSec": 1208.8
         },
         {
           "host": "SiliconFlow",
           "cost": 0.43682,
-          "timeSec": 1239
+          "timeSec": 1262.5
         },
         {
           "host": "GMI",
           "cost": 0.44079,
-          "timeSec": 870.9
+          "timeSec": 863.9
         },
         {
           "host": "Parasail",
           "cost": 0.44286,
-          "timeSec": 745.2
+          "timeSec": 749.7
         },
         {
           "host": "Nebius",
           "cost": 0.44615,
-          "timeSec": 599.6
+          "timeSec": 594.1
         },
         {
           "host": "Together AI",
           "cost": 0.46452,
-          "timeSec": 766.3
+          "timeSec": 757.5
         }
       ],
       "livebench": {
@@ -4159,7 +4159,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 155.18,
+      "timeSec": 156.13,
       "costBreakdown": {
         "input": 0.30278,
         "nonCacheInput": 0.01784,
@@ -4218,22 +4218,22 @@
         {
           "host": "Microsoft Azure",
           "cost": 0.47781,
-          "timeSec": 142
+          "timeSec": 142.9
         },
         {
           "host": "Amazon Bedrock",
           "cost": 0.47899,
-          "timeSec": 144
+          "timeSec": 145.1
         },
         {
           "host": "Anthropic",
           "cost": 0.51134,
-          "timeSec": 155.2
+          "timeSec": 156.1
         },
         {
           "host": "Google",
           "cost": 1.03258,
-          "timeSec": 147.2
+          "timeSec": 148.1
         }
       ]
     },
@@ -4366,7 +4366,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 229.56,
+      "timeSec": 230.59,
       "costBreakdown": {
         "input": 0.50459,
         "nonCacheInput": 0.00063,
@@ -4431,42 +4431,42 @@
         {
           "host": "CoreWeave (NVFP4)",
           "cost": 0.27228,
-          "timeSec": 185.8
+          "timeSec": 187.6
         },
         {
           "host": "Baseten",
           "cost": 0.30689,
-          "timeSec": 145.2
+          "timeSec": 145.7
         },
         {
           "host": "DeepInfra",
           "cost": 0.43586,
-          "timeSec": 206.9
+          "timeSec": 209.7
         },
         {
           "host": "PrimaLabs (NVFP4)",
           "cost": 0.44692,
-          "timeSec": 277.5
+          "timeSec": 279.1
         },
         {
           "host": "Bitdeer AI",
           "cost": 0.53052,
-          "timeSec": 443.3
+          "timeSec": 442.2
         },
         {
           "host": "Crusoe",
           "cost": 0.54838,
-          "timeSec": 435
+          "timeSec": 435.2
         },
         {
           "host": "Together AI (NVFP4)",
           "cost": 0.60887,
-          "timeSec": 229.6
+          "timeSec": 230.6
         },
         {
           "host": "DigitalOcean",
           "cost": 0.93654,
-          "timeSec": 555.3
+          "timeSec": 556.8
         }
       ],
       "livebench": {
@@ -4509,7 +4509,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 362.74,
+      "timeSec": 364.25,
       "costBreakdown": {
         "input": 0.36204,
         "nonCacheInput": 0.0163,
@@ -4596,7 +4596,7 @@
         "slug": "qwen3-8-flash-next",
         "name": "Qwen3.8-Flash-Next"
       },
-      "timeSec": 1768.09,
+      "timeSec": 1775.53,
       "costBreakdown": {
         "input": 0.50204,
         "nonCacheInput": 0.00086,
@@ -4681,7 +4681,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 2582.97,
+      "timeSec": 2607.5,
       "costBreakdown": {
         "input": 0.51621,
         "nonCacheInput": 0.00121,
@@ -4746,12 +4746,12 @@
         {
           "host": "GMI",
           "cost": 0.30306,
-          "timeSec": 1654.7
+          "timeSec": 1658.8
         },
         {
           "host": "Bitdeer AI",
           "cost": 0.39584,
-          "timeSec": 524.7
+          "timeSec": 526.3
         },
         {
           "host": "Zyphra (FP4)",
@@ -4761,12 +4761,12 @@
         {
           "host": "DeepInfra",
           "cost": 0.42908,
-          "timeSec": 1011.4
+          "timeSec": 1013.5
         },
         {
           "host": "CoreWeave",
           "cost": 0.52583,
-          "timeSec": 561.3
+          "timeSec": 561.8
         },
         {
           "host": "Zyphra",
@@ -4776,12 +4776,12 @@
         {
           "host": "Wafer",
           "cost": 0.56029,
-          "timeSec": 792.6
+          "timeSec": 785.5
         },
         {
           "host": "Zai",
           "cost": 0.58331,
-          "timeSec": 2583
+          "timeSec": 2607.5
         }
       ],
       "livebench": {
@@ -4821,7 +4821,7 @@
         "slug": "inkling-2-mini",
         "name": "Inkling 2 Mini"
       },
-      "timeSec": 888.31,
+      "timeSec": 892.5,
       "costBreakdown": {
         "input": 0.51063,
         "nonCacheInput": 0.00083,
@@ -4886,12 +4886,12 @@
         {
           "host": "DeepInfra",
           "cost": 0.50039,
-          "timeSec": 785.1
+          "timeSec": 772.8
         },
         {
           "host": "Thinking Machines",
           "cost": 0.58654,
-          "timeSec": 888.3
+          "timeSec": 892.5
         }
       ],
       "livebench": {
@@ -5019,7 +5019,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 793.09,
+      "timeSec": 793.51,
       "costBreakdown": {
         "input": 0.43535,
         "nonCacheInput": 0.00115,
@@ -5084,42 +5084,42 @@
         {
           "host": "DeepInfra",
           "cost": 0.19424,
-          "timeSec": 1295.3
+          "timeSec": 1304.6
         },
         {
           "host": "SiliconFlow",
           "cost": 0.22953,
-          "timeSec": 784.8
+          "timeSec": 822.1
         },
         {
           "host": "Bitdeer AI",
           "cost": 0.25027,
-          "timeSec": 372.8
+          "timeSec": 371.2
         },
         {
           "host": "GMI",
           "cost": 0.29503,
-          "timeSec": 475.3
+          "timeSec": 478.3
         },
         {
           "host": "Wafer",
           "cost": 0.37588,
-          "timeSec": 715.1
+          "timeSec": 717
         },
         {
           "host": "LithosAI",
           "cost": 0.38764,
-          "timeSec": 607.4
+          "timeSec": 608.1
         },
         {
           "host": "DigitalOcean",
           "cost": 0.45182,
-          "timeSec": 607.4
+          "timeSec": 609.7
         },
         {
           "host": "Databricks",
           "cost": 0.45285,
-          "timeSec": 1068.1
+          "timeSec": 1065
         }
       ],
       "livebench": {
@@ -5165,7 +5165,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 249.66,
+      "timeSec": 252.79,
       "costBreakdown": {
         "input": 0.52033,
         "nonCacheInput": 0.00368,
@@ -5248,7 +5248,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 433.41,
+      "timeSec": 433.83,
       "costBreakdown": {
         "input": 0.40474,
         "nonCacheInput": 0.0163,
@@ -5337,7 +5337,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 132.38,
+      "timeSec": 133.85,
       "costBreakdown": {
         "input": 0.45305,
         "nonCacheInput": 0.0652,
@@ -5428,7 +5428,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 99.84,
+      "timeSec": 99.66,
       "costBreakdown": {
         "input": 0.61715,
         "nonCacheInput": 0.00133,
@@ -5589,7 +5589,7 @@
         "slug": "apodex-1-1",
         "name": "Apodex 1.1"
       },
-      "timeSec": 806.77,
+      "timeSec": 803.11,
       "costBreakdown": {
         "input": 0.4176,
         "nonCacheInput": 0.00085,
@@ -5672,7 +5672,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 220.86,
+      "timeSec": 221.39,
       "costBreakdown": {
         "input": 0.4732,
         "nonCacheInput": 0.01784,
@@ -5763,7 +5763,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 234,
+      "timeSec": 234.72,
       "costBreakdown": {
         "input": 0.50284,
         "nonCacheInput": 0.00762,
@@ -5845,7 +5845,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 899.78,
+      "timeSec": 900.85,
       "costBreakdown": {
         "input": 0.57009,
         "nonCacheInput": 0.00228,
@@ -5930,7 +5930,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 229.47,
+      "timeSec": 230.31,
       "costBreakdown": {
         "input": 0.55601,
         "nonCacheInput": 0.01328,
@@ -6013,7 +6013,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 964.73,
+      "timeSec": 966.41,
       "costBreakdown": {
         "input": 0.66169,
         "nonCacheInput": 0.00815,
@@ -6114,7 +6114,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 175.34,
+      "timeSec": 175.05,
       "costBreakdown": {
         "input": 0.59428,
         "nonCacheInput": 0.03569,
@@ -6173,22 +6173,22 @@
         {
           "host": "Anthropic",
           "cost": 0.97553,
-          "timeSec": 175.3
+          "timeSec": 175.1
         },
         {
           "host": "Amazon Bedrock",
           "cost": 0.97553,
-          "timeSec": 187.7
+          "timeSec": 189.4
         },
         {
           "host": "Microsoft Azure",
           "cost": 1.07154,
-          "timeSec": 169.7
+          "timeSec": 169.3
         },
         {
           "host": "Google",
           "cost": 2.63914,
-          "timeSec": 184.8
+          "timeSec": 186.2
         }
       ]
     },
@@ -6213,7 +6213,7 @@
         "slug": "deepseek-v4-pro",
         "name": "DeepSeek V4 Pro 0813"
       },
-      "timeSec": 926.99,
+      "timeSec": 921.99,
       "costBreakdown": {
         "input": 0.6935,
         "nonCacheInput": 0.00225,
@@ -6272,17 +6272,17 @@
         {
           "host": "Nebius",
           "cost": 0.94152,
-          "timeSec": 1291.6
+          "timeSec": 1265.3
         },
         {
           "host": "DeepSeek",
           "cost": 0.97699,
-          "timeSec": 927
+          "timeSec": 922
         },
         {
           "host": "DigitalOcean",
           "cost": 1.35735,
-          "timeSec": 314.3
+          "timeSec": 317.1
         }
       ]
     },
@@ -6313,7 +6313,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 688.05,
+      "timeSec": 688.04,
       "costBreakdown": {
         "input": 0.61078,
         "nonCacheInput": 0.0163,
@@ -6378,17 +6378,17 @@
         {
           "host": "OpenAI",
           "cost": 1.01438,
-          "timeSec": 688.1
+          "timeSec": 688
         },
         {
           "host": "OpenAI (Fast)",
           "cost": 1.99889,
-          "timeSec": 357.9
+          "timeSec": 359
         },
         {
           "host": "OpenAI (Ultrafast)",
           "cost": 6.06903,
-          "timeSec": 266.5
+          "timeSec": 267.7
         }
       ],
       "livebench": {
@@ -6428,7 +6428,7 @@
         "slug": "tencent-hy4",
         "name": "Tencent Hy4"
       },
-      "timeSec": 798.59,
+      "timeSec": 795.96,
       "costBreakdown": {
         "input": 0.83588,
         "nonCacheInput": 0.00558,
@@ -6513,7 +6513,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 287.02,
+      "timeSec": 291.86,
       "costBreakdown": {
         "input": 0.74263,
         "nonCacheInput": 0.00423,
@@ -6595,7 +6595,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 778.66,
+      "timeSec": 774.18,
       "costBreakdown": {
         "input": 0.9874,
         "nonCacheInput": 0.00047,
@@ -6675,7 +6675,7 @@
         "slug": "inkling-2-small",
         "name": "Inkling 2 Small"
       },
-      "timeSec": 1443.3,
+      "timeSec": 1430.79,
       "costBreakdown": {
         "input": 1.02865,
         "nonCacheInput": 0.00167,
@@ -6740,27 +6740,27 @@
         {
           "host": "DeepInfra",
           "cost": 1.09052,
-          "timeSec": 929.3
+          "timeSec": 909.1
         },
         {
           "host": "Thinking Machines",
           "cost": 1.17843,
-          "timeSec": 1443.3
+          "timeSec": 1430.8
         },
         {
           "host": "Together AI",
           "cost": 1.31442,
-          "timeSec": 459.8
+          "timeSec": 468.2
         },
         {
           "host": "Fireworks",
           "cost": 1.72755,
-          "timeSec": 1876
+          "timeSec": 1781.6
         },
         {
           "host": "Nebius",
           "cost": 2.01313,
-          "timeSec": 1749
+          "timeSec": 1751.5
         }
       ],
       "livebench": {
@@ -6929,7 +6929,7 @@
         "slug": "minimax-m3",
         "name": "MiniMax-M3"
       },
-      "timeSec": 818.53,
+      "timeSec": 836.3,
       "costBreakdown": {
         "input": 1.18064,
         "nonCacheInput": 0.00222,
@@ -6994,42 +6994,42 @@
         {
           "host": "GMI",
           "cost": 0.91175,
-          "timeSec": 998.2
+          "timeSec": 1011.8
         },
         {
           "host": "DeepInfra",
           "cost": 1.11197,
-          "timeSec": 4222.5
+          "timeSec": 4284.8
         },
         {
           "host": "SiliconFlow (FP8)",
           "cost": 1.14436,
-          "timeSec": 865.5
+          "timeSec": 875.1
         },
         {
           "host": "Novita",
           "cost": 1.16331,
-          "timeSec": 1014.2
+          "timeSec": 1012.7
         },
         {
           "host": "Fireworks",
           "cost": 1.26266,
-          "timeSec": 604.6
+          "timeSec": 612.1
         },
         {
           "host": "MiniMax",
           "cost": 1.29097,
-          "timeSec": 818.5
+          "timeSec": 836.3
         },
         {
           "host": "Nebius (FP8)",
           "cost": 1.30746,
-          "timeSec": 576.3
+          "timeSec": 588.5
         },
         {
           "host": "CoreWeave (NVFP4)",
           "cost": 1.48657,
-          "timeSec": 400.8
+          "timeSec": 407.5
         }
       ]
     },
@@ -7052,7 +7052,7 @@
         "slug": "solar-pro-4",
         "name": "Solar Pro 4"
       },
-      "timeSec": 3682.68,
+      "timeSec": 3690.8,
       "costBreakdown": {
         "input": 0.96098,
         "nonCacheInput": 0.00056,
@@ -7138,7 +7138,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 519.41,
+      "timeSec": 520.1,
       "costBreakdown": {
         "input": 1.14437,
         "nonCacheInput": 0.0047,
@@ -7203,17 +7203,17 @@
         {
           "host": "Thinking Machines",
           "cost": 1.35196,
-          "timeSec": 519.4
+          "timeSec": 520.1
         },
         {
           "host": "Modal (NVFP4)",
           "cost": 1.9931,
-          "timeSec": 309.8
+          "timeSec": 316.2
         },
         {
           "host": "Together AI",
           "cost": 2.73848,
-          "timeSec": 416.5
+          "timeSec": 415.3
         }
       ],
       "livebench": {
@@ -7258,7 +7258,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 682.41,
+      "timeSec": 685.17,
       "costBreakdown": {
         "input": 1.29382,
         "nonCacheInput": 0.0045,
@@ -7435,7 +7435,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 719.97,
+      "timeSec": 720.99,
       "costBreakdown": {
         "input": 1.34619,
         "nonCacheInput": 0.00248,
@@ -7494,42 +7494,42 @@
         {
           "host": "Supernova (FP4)",
           "cost": 0.69761,
-          "timeSec": 345.2
+          "timeSec": 347.1
         },
         {
           "host": "Bitdeer AI",
           "cost": 0.698,
-          "timeSec": 163
+          "timeSec": 164
         },
         {
           "host": "DigitalOcean",
           "cost": 1.55,
-          "timeSec": 283.8
+          "timeSec": 291
         },
         {
           "host": "Modal",
           "cost": 1.55,
-          "timeSec": 313.1
+          "timeSec": 311.5
         },
         {
           "host": "Zai",
           "cost": 1.57493,
-          "timeSec": 720
+          "timeSec": 721
         },
         {
           "host": "Inco",
           "cost": 1.58686,
-          "timeSec": 763.7
+          "timeSec": 763.4
         },
         {
           "host": "Scaleway",
           "cost": 10.22137,
-          "timeSec": 525.3
+          "timeSec": 519.6
         },
         {
           "host": "SambaNova",
           "cost": 11.1873,
-          "timeSec": 499.5
+          "timeSec": 503.8
         }
       ]
     },
@@ -7560,7 +7560,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 316.06,
+      "timeSec": 317.06,
       "costBreakdown": {
         "input": 1.09111,
         "nonCacheInput": 0.0652,
@@ -7649,7 +7649,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 414.08,
+      "timeSec": 417.31,
       "costBreakdown": {
         "input": 1.05192,
         "nonCacheInput": 0.01784,
@@ -7736,7 +7736,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 360.85,
+      "timeSec": 355.62,
       "costBreakdown": {
         "input": 1.48331,
         "nonCacheInput": 0.00796,
@@ -7801,27 +7801,27 @@
         {
           "host": "Modal",
           "cost": 1.60693,
-          "timeSec": 340
+          "timeSec": 339.8
         },
         {
           "host": "Nebius (FP4)",
           "cost": 1.61078,
-          "timeSec": 477.8
+          "timeSec": 473.7
         },
         {
           "host": "Baseten",
           "cost": 1.76568,
-          "timeSec": 280.5
+          "timeSec": 276.8
         },
         {
           "host": "Fireworks",
           "cost": 2.01767,
-          "timeSec": 360.9
+          "timeSec": 355.6
         },
         {
           "host": "Together AI",
           "cost": 2.01767,
-          "timeSec": 427.9
+          "timeSec": 425.6
         }
       ],
       "livebench": {
@@ -7863,7 +7863,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1324.11,
+      "timeSec": 1334.14,
       "costBreakdown": {
         "input": 1.37815,
         "nonCacheInput": 0.00229,
@@ -7922,7 +7922,7 @@
         {
           "host": "DeepSeek",
           "cost": 1.76913,
-          "timeSec": 1324.1
+          "timeSec": 1334.1
         },
         {
           "host": "Nebius",
@@ -7932,32 +7932,32 @@
         {
           "host": "Novita",
           "cost": 1.8576,
-          "timeSec": 1413.1
+          "timeSec": 1406.8
         },
         {
           "host": "DigitalOcean",
           "cost": 2.19833,
-          "timeSec": 409.2
+          "timeSec": 418.4
         },
         {
           "host": "SiliconFlow",
           "cost": 2.5197,
-          "timeSec": 2137.1
+          "timeSec": 2149.6
         },
         {
           "host": "GMI",
           "cost": 2.65786,
-          "timeSec": 1457.6
+          "timeSec": 1464
         },
         {
           "host": "DeepInfra",
           "cost": 2.98391,
-          "timeSec": 1562
+          "timeSec": 1537.2
         },
         {
           "host": "Baseten",
           "cost": 4.95029,
-          "timeSec": 864
+          "timeSec": 857
         }
       ]
     },
@@ -7990,7 +7990,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 467.66,
+      "timeSec": 466.74,
       "costBreakdown": {
         "input": 1.23598,
         "nonCacheInput": 0.01342,
@@ -8075,7 +8075,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 529.7,
+      "timeSec": 529.81,
       "costBreakdown": {
         "input": 1.15455,
         "nonCacheInput": 0.01455,
@@ -8161,7 +8161,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 1381.72,
+      "timeSec": 1392.93,
       "costBreakdown": {
         "input": 1.66538,
         "nonCacheInput": 0.00306,
@@ -8246,7 +8246,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 931.27,
+      "timeSec": 918.24,
       "costBreakdown": {
         "input": 1.88963,
         "nonCacheInput": 0.0045,
@@ -8347,7 +8347,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 413.32,
+      "timeSec": 418.38,
       "costBreakdown": {
         "input": 1.36076,
         "nonCacheInput": 0.0652,
@@ -8655,7 +8655,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 407.65,
+      "timeSec": 413.93,
       "costBreakdown": {
         "input": 1.57467,
         "nonCacheInput": 0.03569,
@@ -8833,7 +8833,7 @@
         "slug": "nemotron-3-ultra-550b-a55b",
         "name": "Nemotron 3 Ultra 550B A55B"
       },
-      "timeSec": 267.35,
+      "timeSec": 268.59,
       "costBreakdown": {
         "input": 2.38607,
         "nonCacheInput": 0.00107,
@@ -8898,22 +8898,22 @@
         {
           "host": "DeepInfra",
           "cost": 1.56373,
-          "timeSec": 246.9
+          "timeSec": 248.3
         },
         {
           "host": "Fireworks",
           "cost": 1.84015,
-          "timeSec": 291.6
+          "timeSec": 292.5
         },
         {
           "host": "CoreWeave",
           "cost": 3.15764,
-          "timeSec": 167.4
+          "timeSec": 166.3
         },
         {
           "host": "Nebius",
           "cost": 5.70453,
-          "timeSec": 333.7
+          "timeSec": 333
         }
       ]
     },
@@ -8947,7 +8947,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 1529.09,
+      "timeSec": 1536.96,
       "costBreakdown": {
         "input": 2.24282,
         "nonCacheInput": 0.00296,
@@ -9030,7 +9030,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 538.54,
+      "timeSec": 539.93,
       "costBreakdown": {
         "input": 1.63164,
         "nonCacheInput": 0.0652,
@@ -9287,7 +9287,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 574,
+      "timeSec": 581.42,
       "costBreakdown": {
         "input": 2.66618,
         "nonCacheInput": 0.01207,
@@ -9473,7 +9473,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 322.77,
+      "timeSec": 323.66,
       "costBreakdown": {
         "input": 1.67315,
         "nonCacheInput": 0.07112,
@@ -9558,7 +9558,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 880.36,
+      "timeSec": 882.03,
       "costBreakdown": {
         "input": 2.00212,
         "nonCacheInput": 0.04581,
@@ -9819,7 +9819,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 981.44,
+      "timeSec": 992.44,
       "costBreakdown": {
         "input": 2.7959,
         "nonCacheInput": 0.01061,
@@ -9920,7 +9920,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 543.62,
+      "timeSec": 544.67,
       "costBreakdown": {
         "input": 2.26315,
         "nonCacheInput": 0.03569,
@@ -10006,7 +10006,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 1910.93,
+      "timeSec": 1908.95,
       "costBreakdown": {
         "input": 3.20224,
         "nonCacheInput": 0.00317,
@@ -10071,42 +10071,42 @@
         {
           "host": "Multiverse Computing",
           "cost": 0.33537,
-          "timeSec": 491.3
+          "timeSec": 491.8
         },
         {
           "host": "DeepInfra",
           "cost": 0.92529,
-          "timeSec": 2607.6
+          "timeSec": 2549.8
         },
         {
           "host": "Wafer",
           "cost": 1.06279,
-          "timeSec": 300.2
+          "timeSec": 295.5
         },
         {
           "host": "Parasail (FP8)",
           "cost": 1.77958,
-          "timeSec": 1424.2
+          "timeSec": 1394.8
         },
         {
           "host": "Nebius (FP4)",
           "cost": 1.98004,
-          "timeSec": 274.9
+          "timeSec": 277.5
         },
         {
           "host": "Crusoe",
           "cost": 2.61559,
-          "timeSec": 391.7
+          "timeSec": 392.8
         },
         {
           "host": "CoreWeave (FP8)",
           "cost": 3.30626,
-          "timeSec": 1325.8
+          "timeSec": 1332.7
         },
         {
           "host": "Alibaba Cloud",
           "cost": 3.53229,
-          "timeSec": 1910.9
+          "timeSec": 1908.9
         }
       ],
       "livebench": {
@@ -10234,7 +10234,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1974.58,
+      "timeSec": 1986.08,
       "costBreakdown": {
         "input": 2.95881,
         "nonCacheInput": 0.01675,
@@ -10299,42 +10299,42 @@
         {
           "host": "PrimaLabs",
           "cost": 2.94081,
-          "timeSec": 542.2
+          "timeSec": 542.8
         },
         {
           "host": "Fireworks",
           "cost": 3.18567,
-          "timeSec": 1300.2
+          "timeSec": 1303.2
         },
         {
           "host": "Modal",
           "cost": 3.18797,
-          "timeSec": 612.6
+          "timeSec": 590
         },
         {
           "host": "Inco",
           "cost": 3.19541,
-          "timeSec": 457.6
+          "timeSec": 457.4
         },
         {
           "host": "Makora",
           "cost": 3.20358,
-          "timeSec": 1130.1
+          "timeSec": 1135.5
         },
         {
           "host": "Baseten",
           "cost": 3.26175,
-          "timeSec": 493.5
+          "timeSec": 492
         },
         {
           "host": "Databricks",
           "cost": 3.29405,
-          "timeSec": 643.8
+          "timeSec": 642.9
         },
         {
           "host": "DigitalOcean",
           "cost": 3.41998,
-          "timeSec": 591.9
+          "timeSec": 569.7
         }
       ],
       "livebench": {
@@ -10486,7 +10486,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 896.96,
+      "timeSec": 905.41,
       "costBreakdown": {
         "input": 2.38993,
         "nonCacheInput": 0.02278,
@@ -10569,7 +10569,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 395.27,
+      "timeSec": 395.1,
       "costBreakdown": {
         "input": 2.09237,
         "nonCacheInput": 0.07112,
@@ -10649,7 +10649,7 @@
         "slug": "step-5-preview",
         "name": "Step 5 Preview"
       },
-      "timeSec": 1489.71,
+      "timeSec": 1479.77,
       "costBreakdown": {
         "input": 3.63121,
         "nonCacheInput": 0.00438,
@@ -10750,7 +10750,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 973.57,
+      "timeSec": 981.05,
       "costBreakdown": {
         "input": 2.35673,
         "nonCacheInput": 0.0652,
@@ -10815,12 +10815,12 @@
         {
           "host": "OpenAI",
           "cost": 3.99791,
-          "timeSec": 973.6
+          "timeSec": 981
         },
         {
           "host": "OpenAI (Fast)",
           "cost": 8.20055,
-          "timeSec": 558.7
+          "timeSec": 563.3
         },
         {
           "host": "OpenAI (Ultrafast)",
@@ -10868,7 +10868,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 825.83,
+      "timeSec": 829.23,
       "costBreakdown": {
         "input": 2.86994,
         "nonCacheInput": 0.01784,
@@ -11121,7 +11121,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 814.56,
+      "timeSec": 818.28,
       "costBreakdown": {
         "input": 3.20201,
         "nonCacheInput": 0.02533,
@@ -11202,7 +11202,7 @@
         "slug": "qwen3-8-27b",
         "name": "Qwen3.8 27B"
       },
-      "timeSec": 828.38,
+      "timeSec": 830.56,
       "costBreakdown": {
         "input": 4.49415,
         "nonCacheInput": 0.0033,
@@ -11261,32 +11261,32 @@
         {
           "host": "Multiverse Computing",
           "cost": 0.40702,
-          "timeSec": 212.1
+          "timeSec": 211.4
         },
         {
           "host": "Wafer",
           "cost": 1.17596,
-          "timeSec": 147
+          "timeSec": 145.6
         },
         {
           "host": "Nebius (FP4)",
           "cost": 2.32813,
-          "timeSec": 99.6
+          "timeSec": 99.9
         },
         {
           "host": "Crusoe",
           "cost": 3.31323,
-          "timeSec": 168
+          "timeSec": 169.6
         },
         {
           "host": "SiliconFlow",
           "cost": 4.13271,
-          "timeSec": 871.1
+          "timeSec": 888.2
         },
         {
           "host": "Alibaba Cloud",
           "cost": 4.62875,
-          "timeSec": 828.4
+          "timeSec": 830.6
         }
       ]
     },
@@ -11417,7 +11417,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1542.55,
+      "timeSec": 1545.05,
       "costBreakdown": {
         "input": 4.48572,
         "nonCacheInput": 0.00248,
@@ -11482,42 +11482,42 @@
         {
           "host": "Multiverse Computing",
           "cost": 0.45146,
-          "timeSec": 1462.9
+          "timeSec": 1422.9
         },
         {
           "host": "Supernova (FP4)",
           "cost": 2.21565,
-          "timeSec": 654.3
+          "timeSec": 657.9
         },
         {
           "host": "Bitdeer AI",
           "cost": 2.21565,
-          "timeSec": 364
+          "timeSec": 364.4
         },
         {
           "host": "DeepInfra",
           "cost": 2.39345,
-          "timeSec": 1561
+          "timeSec": 1624.6
         },
         {
           "host": "GMI",
           "cost": 2.52919,
-          "timeSec": 1556.7
+          "timeSec": 1548.9
         },
         {
           "host": "Wafer",
           "cost": 3.12828,
-          "timeSec": 1051.2
+          "timeSec": 1045.7
         },
         {
           "host": "Baseten",
           "cost": 3.44572,
-          "timeSec": 851.3
+          "timeSec": 852.9
         },
         {
           "host": "LithosAI (FP4)",
           "cost": 3.69275,
-          "timeSec": 436.4
+          "timeSec": 449.6
         }
       ]
     },
@@ -11631,7 +11631,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 929.35,
+      "timeSec": 934.94,
       "costBreakdown": {
         "input": 3.97917,
         "nonCacheInput": 0.03569,
@@ -11714,7 +11714,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 1164.58,
+      "timeSec": 1180.33,
       "costBreakdown": {
         "input": 5.64883,
         "nonCacheInput": 0.01195,
@@ -11922,7 +11922,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 1628.35,
+      "timeSec": 1630.86,
       "costBreakdown": {
         "input": 4.32038,
         "nonCacheInput": 0.06443,
@@ -12025,7 +12025,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 1740.69,
+      "timeSec": 1756.15,
       "costBreakdown": {
         "input": 4.52553,
         "nonCacheInput": 0.02846,
@@ -12110,7 +12110,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1169.18,
+      "timeSec": 1172.28,
       "costBreakdown": {
         "input": 5.03077,
         "nonCacheInput": 0.02533,
@@ -12211,7 +12211,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 1491.38,
+      "timeSec": 1501.42,
       "costBreakdown": {
         "input": 4.73429,
         "nonCacheInput": 0.02454,
@@ -12276,12 +12276,12 @@
         {
           "host": "Google (AI Studio)",
           "cost": 7.06165,
-          "timeSec": 1491.4
+          "timeSec": 1501.4
         },
         {
           "host": "Google (Vertex)",
           "cost": 7.68267,
-          "timeSec": 2506.7
+          "timeSec": 2497.7
         }
       ],
       "livebench": {
@@ -12326,7 +12326,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 1773.84,
+      "timeSec": 1766.73,
       "costBreakdown": {
         "input": 5.46327,
         "nonCacheInput": 0.02826,
@@ -12494,7 +12494,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 2486.27,
+      "timeSec": 2450.29,
       "costBreakdown": {
         "input": 5.30019,
         "nonCacheInput": 0.04703,
@@ -12595,7 +12595,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 1374.78,
+      "timeSec": 1379.26,
       "costBreakdown": {
         "input": 7.14435,
         "nonCacheInput": 0.01171,
@@ -12696,7 +12696,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 1527.1,
+      "timeSec": 1528.98,
       "costBreakdown": {
         "input": 6.6211,
         "nonCacheInput": 0.01765,
@@ -12755,12 +12755,12 @@
         {
           "host": "Google (AI Studio)",
           "cost": 8.62924,
-          "timeSec": 1527.1
+          "timeSec": 1529
         },
         {
           "host": "Google (Vertex)",
           "cost": 8.62924,
-          "timeSec": 2000.1
+          "timeSec": 1997.1
         }
       ]
     },
@@ -12791,7 +12791,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 877,
+      "timeSec": 877.52,
       "costBreakdown": {
         "input": 5.1901,
         "nonCacheInput": 0.07112,
@@ -12874,7 +12874,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1863.27,
+      "timeSec": 1870.02,
       "costBreakdown": {
         "input": 7.16675,
         "nonCacheInput": 0.0178,
@@ -12939,22 +12939,22 @@
         {
           "host": "Amazon Bedrock",
           "cost": 8.91292,
-          "timeSec": 1834.7
+          "timeSec": 1835.7
         },
         {
           "host": "Microsoft Azure",
           "cost": 8.91382,
-          "timeSec": 1912.1
+          "timeSec": 1912.6
         },
         {
           "host": "Anthropic",
           "cost": 10.02062,
-          "timeSec": 1863.3
+          "timeSec": 1870
         },
         {
           "host": "Google",
           "cost": 14.46966,
-          "timeSec": 1859.6
+          "timeSec": 1864.4
         }
       ],
       "livebench": {
@@ -13098,7 +13098,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1485.64,
+      "timeSec": 1489.36,
       "costBreakdown": {
         "input": 6.56995,
         "nonCacheInput": 0.03568,
@@ -13163,22 +13163,22 @@
         {
           "host": "Anthropic",
           "cost": 10.03641,
-          "timeSec": 1485.6
+          "timeSec": 1489.4
         },
         {
           "host": "Amazon Bedrock",
           "cost": 10.03641,
-          "timeSec": 1533.4
+          "timeSec": 1544.1
         },
         {
           "host": "Microsoft Azure",
           "cost": 11.43207,
-          "timeSec": 1455.8
+          "timeSec": 1457.6
         },
         {
           "host": "Google",
           "cost": 11.79228,
-          "timeSec": 1497.4
+          "timeSec": 1498.2
         }
       ],
       "livebench": {
@@ -13505,7 +13505,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 1439.82,
+      "timeSec": 1443.71,
       "costBreakdown": {
         "input": 8.39789,
         "nonCacheInput": 0.07113,
@@ -13588,7 +13588,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 2427.8,
+      "timeSec": 2431.21,
       "costBreakdown": {
         "input": 15.64678,
         "nonCacheInput": 0.07111,
@@ -13692,7 +13692,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 31.55,
+      "timeSec": 31.64,
       "frontierIndex": 7.16,
       "intelligenceIndex": 7.16,
       "aaIndex": 9.67,
@@ -13740,7 +13740,7 @@
         "slug": "mistral-small-4",
         "name": "Mistral Small 4"
       },
-      "timeSec": 94.75,
+      "timeSec": 93.96,
       "frontierIndex": 0.89,
       "intelligenceIndex": 0.89,
       "aaIndex": 4.3,
@@ -13791,7 +13791,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 171.44,
+      "timeSec": 172.74,
       "frontierIndex": 18.69,
       "intelligenceIndex": 18.69,
       "aaIndex": 18.45,
@@ -13842,7 +13842,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 128.79,
+      "timeSec": 129.44,
       "frontierIndex": 15.06,
       "intelligenceIndex": 15.06,
       "aaIndex": 18.62,
@@ -13947,7 +13947,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 77.98,
+      "timeSec": 77.87,
       "frontierIndex": 32.82,
       "intelligenceIndex": 32.82,
       "aaIndex": 29.42,
@@ -13993,7 +13993,7 @@
         "slug": "gpt-6-luna",
         "name": "GPT-6 Luna"
       },
-      "timeSec": 98.49,
+      "timeSec": 98.59,
       "frontierIndex": 4.89,
       "intelligenceIndex": 4.89,
       "aaIndex": 9.44,
@@ -14044,7 +14044,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 266.92,
+      "timeSec": 271.38,
       "frontierIndex": 22.63,
       "intelligenceIndex": 22.63,
       "aaIndex": 21.48,
@@ -14095,7 +14095,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 239.87,
+      "timeSec": 241.99,
       "frontierIndex": 20.39,
       "intelligenceIndex": 20.39,
       "aaIndex": 24.6,
@@ -14146,7 +14146,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 358.81,
+      "timeSec": 358.49,
       "frontierIndex": 24.8,
       "intelligenceIndex": 24.8,
       "aaIndex": 23.45,
@@ -14197,7 +14197,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 188.83,
+      "timeSec": 189.64,
       "frontierIndex": 34.76,
       "intelligenceIndex": 34.76,
       "aaIndex": 34.17,
@@ -14246,7 +14246,7 @@
         "slug": "lfm3-vl-2b",
         "name": "LFM3-VL-2B"
       },
-      "timeSec": 121.58,
+      "timeSec": 121.27,
       "frontierIndex": 0.8,
       "intelligenceIndex": 0.8,
       "aaIndex": 1.71,
@@ -14294,7 +14294,7 @@
         "slug": "mimo-v2-6-flash",
         "name": "MiMo-V2.6-Flash"
       },
-      "timeSec": 3491.48,
+      "timeSec": 3511.24,
       "frontierIndex": 26.77,
       "intelligenceIndex": 26.77,
       "aaIndex": 26.83,
@@ -14343,7 +14343,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1113.24,
+      "timeSec": 1047.49,
       "frontierIndex": 24.46,
       "intelligenceIndex": 24.46,
       "aaIndex": 23.08,
@@ -14394,7 +14394,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 229.44,
+      "timeSec": 229.93,
       "frontierIndex": 37.14,
       "intelligenceIndex": 37.14,
       "aaIndex": 36.09,
@@ -14447,7 +14447,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 290.57,
+      "timeSec": 291.11,
       "frontierIndex": 5.79,
       "intelligenceIndex": 5.79,
       "aaIndex": 6.31,
@@ -14498,7 +14498,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 579.68,
+      "timeSec": 585.42,
       "frontierIndex": 29.74,
       "intelligenceIndex": 29.74,
       "aaIndex": 27.86,
@@ -14561,7 +14561,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 382.98,
+      "timeSec": 386.61,
       "frontierIndex": 27.42,
       "intelligenceIndex": 27.42,
       "aaIndex": 29.98,
@@ -14663,7 +14663,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 187.26,
+      "timeSec": 186.64,
       "frontierIndex": 40.14,
       "intelligenceIndex": 40.14,
       "aaIndex": 38.11,
@@ -14708,7 +14708,7 @@
         "slug": "lfm3-1-7b",
         "name": "LFM3-1.7B"
       },
-      "timeSec": 295.11,
+      "timeSec": 294,
       "frontierIndex": 1.87,
       "intelligenceIndex": 1.87,
       "aaIndex": 5.99,
@@ -14759,7 +14759,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 110.57,
+      "timeSec": 111.14,
       "frontierIndex": 42.26,
       "intelligenceIndex": 42.26,
       "aaIndex": 40.55,
@@ -14808,7 +14808,7 @@
         "slug": "gemma-4-26b-a4b",
         "name": "Gemma 4 26B A4B"
       },
-      "timeSec": 1321.31,
+      "timeSec": 1311.89,
       "frontierIndex": 2.79,
       "intelligenceIndex": 2.79,
       "aaIndex": 3.97,
@@ -14956,7 +14956,7 @@
         "slug": "gpt-6-1-terra",
         "name": "GPT-6.1 Terra"
       },
-      "timeSec": 164.93,
+      "timeSec": 164.72,
       "frontierIndex": 30.39,
       "intelligenceIndex": 30.39,
       "aaIndex": 30.47,
@@ -15001,7 +15001,7 @@
         "slug": "nemotron-3-5-lightning",
         "name": "Nemotron 3.5 Lightning"
       },
-      "timeSec": 209.98,
+      "timeSec": 211.01,
       "frontierIndex": 1.72,
       "intelligenceIndex": 1.72,
       "aaIndex": 5.53,
@@ -15052,7 +15052,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 579.28,
+      "timeSec": 582.73,
       "frontierIndex": 31.61,
       "intelligenceIndex": 31.61,
       "aaIndex": 34.59,
@@ -15102,7 +15102,7 @@
         "slug": "mimo-v2-6-pro",
         "name": "MiMo-V2.6-Pro"
       },
-      "timeSec": 2855.48,
+      "timeSec": 2883.8,
       "frontierIndex": 30.97,
       "intelligenceIndex": 30.97,
       "aaIndex": 29.94,
@@ -15165,7 +15165,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 280.3,
+      "timeSec": 280.9,
       "frontierIndex": 43.79,
       "intelligenceIndex": 43.79,
       "aaIndex": 42.54,
@@ -15210,7 +15210,7 @@
         "slug": "reflection-beam",
         "name": "Beam 1.0"
       },
-      "timeSec": 88.51,
+      "timeSec": 88.48,
       "frontierIndex": 17.91,
       "intelligenceIndex": 17.91,
       "aaIndex": 17.66,
@@ -15311,7 +15311,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 358.94,
+      "timeSec": 357.04,
       "frontierIndex": 2.03,
       "intelligenceIndex": 2.03,
       "aaIndex": 3.82,
@@ -15415,7 +15415,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 93.06,
+      "timeSec": 93.65,
       "frontierIndex": 30.79,
       "intelligenceIndex": 30.79,
       "aaIndex": 26.89,
@@ -15466,7 +15466,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 436.49,
+      "timeSec": 435.06,
       "frontierIndex": 45.44,
       "intelligenceIndex": 45.44,
       "aaIndex": 45.25,
@@ -15517,7 +15517,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 242.4,
+      "timeSec": 243.05,
       "frontierIndex": 51.94,
       "intelligenceIndex": 51.94,
       "aaIndex": 52.43,
@@ -15568,7 +15568,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 917.11,
+      "timeSec": 923.29,
       "frontierIndex": 32.84,
       "intelligenceIndex": 32.84,
       "aaIndex": 36.54,
@@ -15628,7 +15628,7 @@
         "slug": "deepseek-v4-1-flash-1017",
         "name": "DeepSeek V4.1 Flash 1017"
       },
-      "timeSec": 395.81,
+      "timeSec": 394.96,
       "frontierIndex": 12.74,
       "intelligenceIndex": 12.74,
       "aaIndex": 18.51,
@@ -15674,7 +15674,7 @@
         "slug": "agnes-2-5-pro-theta",
         "name": "Agnes 2.5 Pro Theta"
       },
-      "timeSec": 1836.15,
+      "timeSec": 1864.54,
       "frontierIndex": 22.08,
       "intelligenceIndex": 22.08,
       "aaIndex": 24.08,
@@ -15727,7 +15727,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 614.06,
+      "timeSec": 614.43,
       "frontierIndex": 29.44,
       "intelligenceIndex": 29.44,
       "aaIndex": 28.74,
@@ -15780,7 +15780,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1054.43,
+      "timeSec": 1041.24,
       "frontierIndex": 33.42,
       "intelligenceIndex": 33.42,
       "aaIndex": 29.06,
@@ -15843,7 +15843,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 155.18,
+      "timeSec": 156.13,
       "frontierIndex": 23.31,
       "intelligenceIndex": 23.31,
       "aaIndex": 25.6,
@@ -15942,7 +15942,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 229.56,
+      "timeSec": 230.59,
       "frontierIndex": 8.54,
       "intelligenceIndex": 8.54,
       "aaIndex": 13.62,
@@ -16005,7 +16005,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 362.74,
+      "timeSec": 364.25,
       "frontierIndex": 52.88,
       "intelligenceIndex": 52.88,
       "aaIndex": 54.84,
@@ -16054,7 +16054,7 @@
         "slug": "qwen3-8-flash-next",
         "name": "Qwen3.8-Flash-Next"
       },
-      "timeSec": 1768.09,
+      "timeSec": 1775.53,
       "frontierIndex": 27.45,
       "intelligenceIndex": 27.45,
       "aaIndex": 28.47,
@@ -16107,7 +16107,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 2582.97,
+      "timeSec": 2607.5,
       "frontierIndex": 28.08,
       "intelligenceIndex": 28.08,
       "aaIndex": 27.74,
@@ -16167,7 +16167,7 @@
         "slug": "inkling-2-mini",
         "name": "Inkling 2 Mini"
       },
-      "timeSec": 888.31,
+      "timeSec": 892.5,
       "frontierIndex": 18.58,
       "intelligenceIndex": 18.58,
       "aaIndex": 20.13,
@@ -16283,7 +16283,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 793.09,
+      "timeSec": 793.51,
       "frontierIndex": 32.7,
       "intelligenceIndex": 32.7,
       "aaIndex": 32.4,
@@ -16349,7 +16349,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 249.66,
+      "timeSec": 252.79,
       "frontierIndex": 6.62,
       "intelligenceIndex": 6.62,
       "aaIndex": 11.03,
@@ -16400,7 +16400,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 433.41,
+      "timeSec": 433.83,
       "frontierIndex": 53.68,
       "intelligenceIndex": 53.68,
       "aaIndex": 55.63,
@@ -16451,7 +16451,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 132.38,
+      "timeSec": 133.85,
       "frontierIndex": 48.16,
       "intelligenceIndex": 48.16,
       "aaIndex": 45.65,
@@ -16504,7 +16504,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 99.84,
+      "timeSec": 99.66,
       "frontierIndex": 9.84,
       "intelligenceIndex": 9.84,
       "aaIndex": 11.66,
@@ -16601,7 +16601,7 @@
         "slug": "apodex-1-1",
         "name": "Apodex 1.1"
       },
-      "timeSec": 806.77,
+      "timeSec": 803.11,
       "frontierIndex": 12.49,
       "intelligenceIndex": 12.49,
       "aaIndex": 13.72,
@@ -16652,7 +16652,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 220.86,
+      "timeSec": 221.39,
       "frontierIndex": 28.86,
       "intelligenceIndex": 28.86,
       "aaIndex": 30.87,
@@ -16705,7 +16705,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 234,
+      "timeSec": 234.72,
       "frontierIndex": 45.72,
       "intelligenceIndex": 45.72,
       "aaIndex": 41.13,
@@ -16755,7 +16755,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 899.78,
+      "timeSec": 900.85,
       "frontierIndex": 21.39,
       "intelligenceIndex": 21.39,
       "aaIndex": 20.8,
@@ -16808,7 +16808,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 229.47,
+      "timeSec": 230.31,
       "frontierIndex": 47.23,
       "intelligenceIndex": 47.23,
       "aaIndex": 44.08,
@@ -16859,7 +16859,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 964.73,
+      "timeSec": 966.41,
       "frontierIndex": 50.29,
       "intelligenceIndex": 50.29,
       "aaIndex": 51.39,
@@ -16922,7 +16922,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 175.34,
+      "timeSec": 175.05,
       "frontierIndex": 33.9,
       "intelligenceIndex": 33.9,
       "aaIndex": 34.75,
@@ -16967,7 +16967,7 @@
         "slug": "deepseek-v4-pro",
         "name": "DeepSeek V4 Pro 0813"
       },
-      "timeSec": 926.99,
+      "timeSec": 921.99,
       "frontierIndex": 11.01,
       "intelligenceIndex": 11.01,
       "aaIndex": 12.57,
@@ -17018,7 +17018,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 688.05,
+      "timeSec": 688.04,
       "frontierIndex": 55.38,
       "intelligenceIndex": 55.38,
       "aaIndex": 57.26,
@@ -17078,7 +17078,7 @@
         "slug": "tencent-hy4",
         "name": "Tencent Hy4"
       },
-      "timeSec": 798.59,
+      "timeSec": 795.96,
       "frontierIndex": 37.92,
       "intelligenceIndex": 37.92,
       "aaIndex": 34.57,
@@ -17131,7 +17131,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 287.02,
+      "timeSec": 291.86,
       "frontierIndex": 2.68,
       "intelligenceIndex": 2.68,
       "aaIndex": 4.65,
@@ -17181,7 +17181,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 778.66,
+      "timeSec": 774.18,
       "frontierIndex": 30.95,
       "intelligenceIndex": 30.95,
       "aaIndex": 31.29,
@@ -17229,7 +17229,7 @@
         "slug": "inkling-2-small",
         "name": "Inkling 2 Small"
       },
-      "timeSec": 1443.3,
+      "timeSec": 1430.79,
       "frontierIndex": 28.83,
       "intelligenceIndex": 28.83,
       "aaIndex": 30.68,
@@ -17353,7 +17353,7 @@
         "slug": "minimax-m3",
         "name": "MiniMax-M3"
       },
-      "timeSec": 818.53,
+      "timeSec": 836.3,
       "frontierIndex": 16.68,
       "intelligenceIndex": 16.68,
       "aaIndex": 19.05,
@@ -17396,7 +17396,7 @@
         "slug": "solar-pro-4",
         "name": "Solar Pro 4"
       },
-      "timeSec": 3682.68,
+      "timeSec": 3690.8,
       "frontierIndex": 7.9,
       "intelligenceIndex": 7.9,
       "aaIndex": 14.16,
@@ -17450,7 +17450,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 519.41,
+      "timeSec": 520.1,
       "frontierIndex": 8.55,
       "intelligenceIndex": 8.55,
       "aaIndex": 12.53,
@@ -17515,7 +17515,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 682.41,
+      "timeSec": 685.17,
       "frontierIndex": 23.76,
       "intelligenceIndex": 23.76,
       "aaIndex": 23.08,
@@ -17616,7 +17616,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 719.97,
+      "timeSec": 720.99,
       "frontierIndex": 24.56,
       "intelligenceIndex": 24.56,
       "aaIndex": 23.11,
@@ -17667,7 +17667,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 316.06,
+      "timeSec": 317.06,
       "frontierIndex": 54.98,
       "intelligenceIndex": 54.98,
       "aaIndex": 57.05,
@@ -17718,7 +17718,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 414.08,
+      "timeSec": 417.31,
       "frontierIndex": 39.9,
       "intelligenceIndex": 39.9,
       "aaIndex": 41.48,
@@ -17773,7 +17773,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 360.85,
+      "timeSec": 355.62,
       "frontierIndex": 23.3,
       "intelligenceIndex": 23.3,
       "aaIndex": 24.88,
@@ -17835,7 +17835,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1324.11,
+      "timeSec": 1334.14,
       "frontierIndex": 23.72,
       "intelligenceIndex": 23.72,
       "aaIndex": 23.06,
@@ -17888,7 +17888,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 467.66,
+      "timeSec": 466.74,
       "frontierIndex": 51.87,
       "intelligenceIndex": 51.87,
       "aaIndex": 50.99,
@@ -17941,7 +17941,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 529.7,
+      "timeSec": 529.81,
       "frontierIndex": 54.53,
       "intelligenceIndex": 54.53,
       "aaIndex": 54.91,
@@ -17995,7 +17995,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 1381.72,
+      "timeSec": 1392.93,
       "frontierIndex": 11.28,
       "intelligenceIndex": 11.28,
       "aaIndex": 15.69,
@@ -18048,7 +18048,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 931.27,
+      "timeSec": 918.24,
       "frontierIndex": 26.57,
       "intelligenceIndex": 26.57,
       "aaIndex": 26.12,
@@ -18111,7 +18111,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 413.32,
+      "timeSec": 418.38,
       "frontierIndex": 58.21,
       "intelligenceIndex": 58.21,
       "aaIndex": 60.29,
@@ -18279,7 +18279,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 407.65,
+      "timeSec": 413.93,
       "frontierIndex": 46.3,
       "intelligenceIndex": 46.3,
       "aaIndex": 48.26,
@@ -18375,7 +18375,7 @@
         "slug": "nemotron-3-ultra-550b-a55b",
         "name": "Nemotron 3 Ultra 550B A55B"
       },
-      "timeSec": 267.35,
+      "timeSec": 268.59,
       "frontierIndex": 5.52,
       "intelligenceIndex": 5.52,
       "aaIndex": 11.76,
@@ -18429,7 +18429,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 1529.09,
+      "timeSec": 1536.96,
       "frontierIndex": 15.43,
       "intelligenceIndex": 15.43,
       "aaIndex": 17.5,
@@ -18480,7 +18480,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 538.54,
+      "timeSec": 539.93,
       "frontierIndex": 59.16,
       "intelligenceIndex": 59.16,
       "aaIndex": 61.76,
@@ -18635,7 +18635,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 574,
+      "timeSec": 581.42,
       "frontierIndex": 29.69,
       "intelligenceIndex": 29.69,
       "aaIndex": 31.13,
@@ -18751,7 +18751,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 322.77,
+      "timeSec": 323.66,
       "frontierIndex": 51.43,
       "intelligenceIndex": 51.43,
       "aaIndex": 53.89,
@@ -18804,7 +18804,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 880.36,
+      "timeSec": 882.03,
       "frontierIndex": 53.51,
       "intelligenceIndex": 53.51,
       "aaIndex": 54.07,
@@ -18963,7 +18963,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 981.44,
+      "timeSec": 992.44,
       "frontierIndex": 43.6,
       "intelligenceIndex": 43.6,
       "aaIndex": 42.79,
@@ -19026,7 +19026,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 543.62,
+      "timeSec": 544.67,
       "frontierIndex": 49.94,
       "intelligenceIndex": 49.94,
       "aaIndex": 51.79,
@@ -19080,7 +19080,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 1910.93,
+      "timeSec": 1908.95,
       "frontierIndex": 17.4,
       "intelligenceIndex": 17.4,
       "aaIndex": 20.11,
@@ -19196,7 +19196,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1974.58,
+      "timeSec": 1986.08,
       "frontierIndex": 47.35,
       "intelligenceIndex": 47.35,
       "aaIndex": 46.55,
@@ -19324,7 +19324,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 896.96,
+      "timeSec": 905.41,
       "frontierIndex": 57.49,
       "intelligenceIndex": 57.49,
       "aaIndex": 59.82,
@@ -19375,7 +19375,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 395.27,
+      "timeSec": 395.1,
       "frontierIndex": 52.79,
       "intelligenceIndex": 52.79,
       "aaIndex": 56.32,
@@ -19423,7 +19423,7 @@
         "slug": "step-5-preview",
         "name": "Step 5 Preview"
       },
-      "timeSec": 1489.71,
+      "timeSec": 1479.77,
       "frontierIndex": 27.91,
       "intelligenceIndex": 27.91,
       "aaIndex": 28.52,
@@ -19486,7 +19486,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 973.57,
+      "timeSec": 981.05,
       "frontierIndex": 60.04,
       "intelligenceIndex": 60.04,
       "aaIndex": 62.19,
@@ -19549,7 +19549,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 825.83,
+      "timeSec": 829.23,
       "frontierIndex": 47.41,
       "intelligenceIndex": 47.41,
       "aaIndex": 49.87,
@@ -19700,7 +19700,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 814.56,
+      "timeSec": 818.28,
       "frontierIndex": 41.16,
       "intelligenceIndex": 41.16,
       "aaIndex": 40.53,
@@ -19749,7 +19749,7 @@
         "slug": "qwen3-8-27b",
         "name": "Qwen3.8 27B"
       },
-      "timeSec": 828.38,
+      "timeSec": 830.56,
       "frontierIndex": 4.59,
       "intelligenceIndex": 4.59,
       "aaIndex": 10.03,
@@ -19862,7 +19862,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1542.55,
+      "timeSec": 1545.05,
       "frontierIndex": 31.39,
       "intelligenceIndex": 31.39,
       "aaIndex": 31.55,
@@ -19964,7 +19964,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 929.35,
+      "timeSec": 934.94,
       "frontierIndex": 54.48,
       "intelligenceIndex": 54.48,
       "aaIndex": 57.52,
@@ -20015,7 +20015,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 1164.58,
+      "timeSec": 1180.33,
       "frontierIndex": 33.27,
       "intelligenceIndex": 33.27,
       "aaIndex": 35.18,
@@ -20131,7 +20131,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 1628.35,
+      "timeSec": 1630.86,
       "frontierIndex": 57.87,
       "intelligenceIndex": 57.87,
       "aaIndex": 61.55,
@@ -20196,7 +20196,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 1740.69,
+      "timeSec": 1756.15,
       "frontierIndex": 57.28,
       "intelligenceIndex": 57.28,
       "aaIndex": 58.36,
@@ -20249,7 +20249,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1169.18,
+      "timeSec": 1172.28,
       "frontierIndex": 44.68,
       "intelligenceIndex": 44.68,
       "aaIndex": 43.73,
@@ -20312,7 +20312,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 1491.38,
+      "timeSec": 1501.42,
       "frontierIndex": 48.55,
       "intelligenceIndex": 48.55,
       "aaIndex": 50.51,
@@ -20377,7 +20377,7 @@
         "label": "low",
         "level": 20
       },
-      "timeSec": 1773.84,
+      "timeSec": 1766.73,
       "frontierIndex": 51.87,
       "intelligenceIndex": 51.87,
       "aaIndex": 54.17,
@@ -20481,7 +20481,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 2486.27,
+      "timeSec": 2450.29,
       "frontierIndex": 58.34,
       "intelligenceIndex": 58.34,
       "aaIndex": 60.13,
@@ -20544,7 +20544,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 1374.78,
+      "timeSec": 1379.26,
       "frontierIndex": 32.82,
       "intelligenceIndex": 32.82,
       "aaIndex": 35.37,
@@ -20607,7 +20607,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 1527.1,
+      "timeSec": 1528.98,
       "frontierIndex": 46.25,
       "intelligenceIndex": 46.25,
       "aaIndex": 47.71,
@@ -20658,7 +20658,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 877,
+      "timeSec": 877.52,
       "frontierIndex": 58.12,
       "intelligenceIndex": 58.12,
       "aaIndex": 61.87,
@@ -20709,7 +20709,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1863.27,
+      "timeSec": 1870.02,
       "frontierIndex": 52.57,
       "intelligenceIndex": 52.57,
       "aaIndex": 54.73,
@@ -20835,7 +20835,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1485.64,
+      "timeSec": 1489.36,
       "frontierIndex": 56.36,
       "intelligenceIndex": 56.36,
       "aaIndex": 59.12,
@@ -21063,7 +21063,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 1439.82,
+      "timeSec": 1443.71,
       "frontierIndex": 59.01,
       "intelligenceIndex": 59.01,
       "aaIndex": 62.22,
@@ -21114,7 +21114,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 2427.8,
+      "timeSec": 2431.21,
       "frontierIndex": 60.95,
       "intelligenceIndex": 60.95,
       "aaIndex": 64.77,
@@ -21180,7 +21180,7 @@
         "slug": "mimo-v2-6-flash",
         "name": "MiMo-V2.6-Flash"
       },
-      "timeSec": 3491.48,
+      "timeSec": 3511.24,
       "humanIndex": 49.19,
       "intelligenceIndex": 49.19,
       "aaIndex": 26.83,
@@ -21260,7 +21260,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 229.44,
+      "timeSec": 229.93,
       "humanIndex": 48.79,
       "intelligenceIndex": 48.79,
       "aaIndex": 36.09,
@@ -21342,7 +21342,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 290.57,
+      "timeSec": 291.11,
       "humanIndex": 26.24,
       "intelligenceIndex": 26.24,
       "aaIndex": 6.31,
@@ -21422,7 +21422,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 579.68,
+      "timeSec": 585.42,
       "humanIndex": 44.65,
       "intelligenceIndex": 44.65,
       "aaIndex": 27.86,
@@ -21501,7 +21501,7 @@
         "slug": "gemma-4-26b-a4b",
         "name": "Gemma 4 26B A4B"
       },
-      "timeSec": 1321.31,
+      "timeSec": 1311.89,
       "humanIndex": 26.33,
       "intelligenceIndex": 26.33,
       "aaIndex": 3.97,
@@ -21741,7 +21741,7 @@
         "slug": "mimo-v2-6-pro",
         "name": "MiMo-V2.6-Pro"
       },
-      "timeSec": 2855.48,
+      "timeSec": 2883.8,
       "humanIndex": 53.19,
       "intelligenceIndex": 53.19,
       "aaIndex": 29.94,
@@ -21901,7 +21901,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 358.94,
+      "timeSec": 357.04,
       "humanIndex": 9.4,
       "intelligenceIndex": 9.4,
       "aaIndex": 3.82,
@@ -21982,7 +21982,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 917.11,
+      "timeSec": 923.29,
       "humanIndex": 50.75,
       "intelligenceIndex": 50.75,
       "aaIndex": 36.54,
@@ -21994,9 +21994,9 @@
         "webdev": 39.82,
         "designWeb": 57.99,
         "designUi": 46,
-        "creativeCraft": 50.13,
+        "creativeCraft": 50.02,
         "deliverable": 58.41,
-        "pureVisual": 52.46,
+        "pureVisual": 52.44,
         "spatialMotion": 54.47,
         "antiSlop": 76.2
       },
@@ -22004,7 +22004,7 @@
         "website": 57.99,
         "uicomponent": 38.79,
         "dataviz": 53.2,
-        "gamedev": 51.75,
+        "gamedev": 51.53,
         "svg": 48.5
       },
       "arenaRaw": {
@@ -22016,13 +22016,13 @@
         "webdevVotes": 8776,
         "designWebElo": 1304,
         "designWebWinRate": 48.5,
-        "designWebBattles": 6426,
-        "designAvgCostUsd": 0.0195,
+        "designWebBattles": 6427,
+        "designAvgCostUsd": 0.0194,
         "designUiElo": 1262,
         "designUiWinRate": 49.9,
         "designUiBattles": 483,
         "designDatavizElo": 1276,
-        "designGameElo": 1313,
+        "designGameElo": 1312,
         "designSvgElo": 1259,
         "gdpvalElo": 1629.3,
         "briefcaseElo": 1570.9,
@@ -22065,7 +22065,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1054.43,
+      "timeSec": 1041.24,
       "humanIndex": 44.85,
       "intelligenceIndex": 44.85,
       "aaIndex": 29.06,
@@ -22147,7 +22147,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 229.56,
+      "timeSec": 230.59,
       "humanIndex": 22.22,
       "intelligenceIndex": 22.22,
       "aaIndex": 13.62,
@@ -22225,7 +22225,7 @@
         "slug": "qwen3-8-flash-next",
         "name": "Qwen3.8-Flash-Next"
       },
-      "timeSec": 1768.09,
+      "timeSec": 1775.53,
       "humanIndex": 52.47,
       "intelligenceIndex": 52.47,
       "aaIndex": 28.47,
@@ -22307,7 +22307,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 2582.97,
+      "timeSec": 2607.5,
       "humanIndex": 50.69,
       "intelligenceIndex": 50.69,
       "aaIndex": 27.74,
@@ -22384,7 +22384,7 @@
         "slug": "inkling-2-mini",
         "name": "Inkling 2 Mini"
       },
-      "timeSec": 888.31,
+      "timeSec": 892.5,
       "humanIndex": 33.84,
       "intelligenceIndex": 33.84,
       "aaIndex": 20.13,
@@ -22417,8 +22417,8 @@
         "webdevElo": 1559.8,
         "webdevVotes": 1312,
         "designWebElo": 1324,
-        "designWebWinRate": 50.2,
-        "designWebBattles": 1206,
+        "designWebWinRate": 50.3,
+        "designWebBattles": 1208,
         "designAvgCostUsd": 0.0319,
         "designUiElo": 1263,
         "designUiWinRate": 47.8,
@@ -22467,7 +22467,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 793.09,
+      "timeSec": 793.51,
       "humanIndex": 60.28,
       "intelligenceIndex": 60.28,
       "aaIndex": 32.4,
@@ -22550,7 +22550,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 99.84,
+      "timeSec": 99.66,
       "humanIndex": 32.8,
       "intelligenceIndex": 32.8,
       "aaIndex": 11.66,
@@ -22629,7 +22629,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 899.78,
+      "timeSec": 900.85,
       "humanIndex": 37.64,
       "intelligenceIndex": 37.64,
       "aaIndex": 20.8,
@@ -22709,7 +22709,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 964.73,
+      "timeSec": 966.41,
       "humanIndex": 55.58,
       "intelligenceIndex": 55.58,
       "aaIndex": 51.39,
@@ -22790,7 +22790,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 688.05,
+      "timeSec": 688.04,
       "humanIndex": 71.48,
       "intelligenceIndex": 71.48,
       "aaIndex": 57.26,
@@ -22868,7 +22868,7 @@
         "slug": "tencent-hy4",
         "name": "Tencent Hy4"
       },
-      "timeSec": 798.59,
+      "timeSec": 795.96,
       "humanIndex": 47.1,
       "intelligenceIndex": 47.1,
       "aaIndex": 34.57,
@@ -22901,9 +22901,9 @@
         "webdevElo": 1650.1,
         "webdevVotes": 2909,
         "designWebElo": 1303,
-        "designWebWinRate": 47.8,
-        "designWebBattles": 2357,
-        "designAvgCostUsd": 0.0579,
+        "designWebWinRate": 47.7,
+        "designWebBattles": 2359,
+        "designAvgCostUsd": 0.0578,
         "designUiElo": 1192,
         "designUiWinRate": 39,
         "designUiBattles": 177,
@@ -22951,7 +22951,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 287.02,
+      "timeSec": 291.86,
       "humanIndex": 19.23,
       "intelligenceIndex": 19.23,
       "aaIndex": 4.65,
@@ -23031,7 +23031,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 778.66,
+      "timeSec": 774.18,
       "humanIndex": 45.32,
       "intelligenceIndex": 45.32,
       "aaIndex": 31.29,
@@ -23108,7 +23108,7 @@
         "slug": "inkling-2-small",
         "name": "Inkling 2 Small"
       },
-      "timeSec": 1443.3,
+      "timeSec": 1430.79,
       "humanIndex": 48.63,
       "intelligenceIndex": 48.63,
       "aaIndex": 30.68,
@@ -23222,8 +23222,8 @@
         "webdevVotes": 6737,
         "designWebElo": 1365,
         "designWebWinRate": 54.1,
-        "designWebBattles": 4345,
-        "designAvgCostUsd": 0.1637,
+        "designWebBattles": 4349,
+        "designAvgCostUsd": 0.164,
         "designUiElo": 1355,
         "designUiWinRate": 58.9,
         "designUiBattles": 501,
@@ -23267,7 +23267,7 @@
         "slug": "minimax-m3",
         "name": "MiniMax-M3"
       },
-      "timeSec": 818.53,
+      "timeSec": 836.3,
       "humanIndex": 28.51,
       "intelligenceIndex": 28.51,
       "aaIndex": 19.05,
@@ -23340,7 +23340,7 @@
         "slug": "solar-pro-4",
         "name": "Solar Pro 4"
       },
-      "timeSec": 3682.68,
+      "timeSec": 3690.8,
       "humanIndex": 24.83,
       "intelligenceIndex": 24.83,
       "aaIndex": 14.16,
@@ -23423,7 +23423,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 519.41,
+      "timeSec": 520.1,
       "humanIndex": 26.02,
       "intelligenceIndex": 26.02,
       "aaIndex": 12.53,
@@ -23457,8 +23457,8 @@
         "webdevVotes": null,
         "designWebElo": 1262,
         "designWebWinRate": 44.1,
-        "designWebBattles": 10639,
-        "designAvgCostUsd": 0.0398,
+        "designWebBattles": 10640,
+        "designAvgCostUsd": 0.0397,
         "designUiElo": 1182,
         "designUiWinRate": 40.1,
         "designUiBattles": 1444,
@@ -23504,7 +23504,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 414.08,
+      "timeSec": 417.31,
       "humanIndex": 57.88,
       "intelligenceIndex": 57.88,
       "aaIndex": 41.48,
@@ -23588,26 +23588,26 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 360.85,
-      "humanIndex": 37.27,
-      "intelligenceIndex": 37.27,
+      "timeSec": 355.62,
+      "humanIndex": 37.21,
+      "intelligenceIndex": 37.21,
       "aaIndex": 24.88,
-      "indexDelta": 12.39,
+      "indexDelta": 12.33,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
         "docCraft": null,
         "webdev": 27.11,
-        "designWeb": 75.95,
+        "designWeb": 75.64,
         "designUi": 57.84,
         "creativeCraft": 36.25,
         "deliverable": 24.48,
-        "pureVisual": 65.73,
+        "pureVisual": 65.54,
         "spatialMotion": null,
         "antiSlop": 15.2
       },
       "designSub": {
-        "website": 75.95,
+        "website": 75.64,
         "uicomponent": 48.94,
         "dataviz": 66.75,
         "gamedev": 36.25,
@@ -23620,10 +23620,10 @@
         "docVotes": null,
         "webdevElo": 1527,
         "webdevVotes": 2038,
-        "designWebElo": 1353,
+        "designWebElo": 1352,
         "designWebWinRate": 51.6,
-        "designWebBattles": 4382,
-        "designAvgCostUsd": 0.0811,
+        "designWebBattles": 4384,
+        "designAvgCostUsd": 0.0812,
         "designUiElo": 1292,
         "designUiWinRate": 48.9,
         "designUiBattles": 707,
@@ -23668,7 +23668,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1324.11,
+      "timeSec": 1334.14,
       "humanIndex": 33.63,
       "intelligenceIndex": 33.63,
       "aaIndex": 23.06,
@@ -23751,7 +23751,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 931.27,
+      "timeSec": 918.24,
       "humanIndex": 40.27,
       "intelligenceIndex": 40.27,
       "aaIndex": 26.12,
@@ -23915,27 +23915,27 @@
         "level": 60
       },
       "timeSec": 471.18,
-      "humanIndex": 56.93,
-      "intelligenceIndex": 56.93,
+      "humanIndex": 56.94,
+      "intelligenceIndex": 56.94,
       "aaIndex": 44.1,
-      "indexDelta": 12.83,
+      "indexDelta": 12.84,
       "humanScores": {
         "chatVibe": 56.39,
         "rawChatVibe": 56.39,
         "docCraft": null,
         "webdev": 57.8,
         "designWeb": 71.02,
-        "designUi": 48,
+        "designUi": 48.15,
         "creativeCraft": 57.97,
         "deliverable": 43.26,
-        "pureVisual": 62,
+        "pureVisual": 62.03,
         "spatialMotion": 64.88,
         "antiSlop": 83.8
       },
       "designSub": {
         "website": 71.02,
         "uicomponent": 45.71,
-        "dataviz": 50.29,
+        "dataviz": 50.59,
         "gamedev": 45.89,
         "svg": 70.05
       },
@@ -23953,7 +23953,7 @@
         "designUiElo": 1283,
         "designUiWinRate": 52,
         "designUiBattles": 1019,
-        "designDatavizElo": 1266,
+        "designDatavizElo": 1267,
         "designGameElo": 1286,
         "designSvgElo": 1349,
         "gdpvalElo": 1513.7,
@@ -23989,7 +23989,7 @@
         "slug": "nemotron-3-ultra-550b-a55b",
         "name": "Nemotron 3 Ultra 550B A55B"
       },
-      "timeSec": 267.35,
+      "timeSec": 268.59,
       "humanIndex": 13.98,
       "intelligenceIndex": 13.98,
       "aaIndex": 11.76,
@@ -24154,7 +24154,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 880.36,
+      "timeSec": 882.03,
       "humanIndex": 64.07,
       "intelligenceIndex": 64.07,
       "aaIndex": 54.07,
@@ -24188,7 +24188,7 @@
         "webdevVotes": 2012,
         "designWebElo": 1375,
         "designWebWinRate": 58.2,
-        "designWebBattles": 1548,
+        "designWebBattles": 1549,
         "designAvgCostUsd": 0.1643,
         "designUiElo": 1327,
         "designUiWinRate": 53.6,
@@ -24236,7 +24236,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 981.44,
+      "timeSec": 992.44,
       "humanIndex": 68.79,
       "intelligenceIndex": 68.79,
       "aaIndex": 42.79,
@@ -24319,7 +24319,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 1910.93,
+      "timeSec": 1908.95,
       "humanIndex": 36.85,
       "intelligenceIndex": 36.85,
       "aaIndex": 20.11,
@@ -24401,7 +24401,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1974.58,
+      "timeSec": 1986.08,
       "humanIndex": 69.26,
       "intelligenceIndex": 69.26,
       "aaIndex": 46.55,
@@ -24560,7 +24560,7 @@
         "slug": "step-5-preview",
         "name": "Step 5 Preview"
       },
-      "timeSec": 1489.71,
+      "timeSec": 1479.77,
       "humanIndex": 41.4,
       "intelligenceIndex": 41.4,
       "aaIndex": 28.52,
@@ -24640,7 +24640,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 973.57,
+      "timeSec": 981.05,
       "humanIndex": 72.9,
       "intelligenceIndex": 72.9,
       "aaIndex": 62.19,
@@ -24652,7 +24652,7 @@
         "webdev": 74.23,
         "designWeb": 83.68,
         "designUi": 59.48,
-        "creativeCraft": 82.58,
+        "creativeCraft": 82.59,
         "deliverable": 68.57,
         "pureVisual": 77.74,
         "spatialMotion": 85.1,
@@ -24662,7 +24662,7 @@
         "website": 83.68,
         "uicomponent": 59.48,
         "dataviz": null,
-        "gamedev": 82.58,
+        "gamedev": 82.59,
         "svg": null
       },
       "arenaRaw": {
@@ -24800,7 +24800,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1542.55,
+      "timeSec": 1545.05,
       "humanIndex": 52.07,
       "intelligenceIndex": 52.07,
       "aaIndex": 31.55,
@@ -24914,8 +24914,8 @@
         "webdevVotes": 9541,
         "designWebElo": 1389,
         "designWebWinRate": 58.6,
-        "designWebBattles": 6041,
-        "designAvgCostUsd": 1.5763,
+        "designWebBattles": 6047,
+        "designAvgCostUsd": 1.5776,
         "designUiElo": 1385,
         "designUiWinRate": 65.8,
         "designUiBattles": 678,
@@ -24963,7 +24963,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 1628.35,
+      "timeSec": 1630.86,
       "humanIndex": 72.56,
       "intelligenceIndex": 72.56,
       "aaIndex": 61.55,
@@ -24974,18 +24974,18 @@
         "docCraft": null,
         "webdev": 75.05,
         "designWeb": 83.31,
-        "designUi": 61.79,
-        "creativeCraft": 68.06,
+        "designUi": 61.7,
+        "creativeCraft": 68.24,
         "deliverable": 74.79,
-        "pureVisual": 75.42,
+        "pureVisual": 75.41,
         "spatialMotion": 78.78,
         "antiSlop": 32
       },
       "designSub": {
         "website": 83.31,
         "uicomponent": 63.59,
-        "dataviz": 59.99,
-        "gamedev": 68.06,
+        "dataviz": 59.8,
+        "gamedev": 68.24,
         "svg": null
       },
       "arenaRaw": {
@@ -24996,14 +24996,14 @@
         "webdevElo": 1765.3,
         "webdevVotes": 2308,
         "designWebElo": 1383,
-        "designWebWinRate": 58.2,
-        "designWebBattles": 1150,
-        "designAvgCostUsd": 0.4025,
+        "designWebWinRate": 58.1,
+        "designWebBattles": 1154,
+        "designAvgCostUsd": 0.4026,
         "designUiElo": 1340,
         "designUiWinRate": 58.5,
         "designUiBattles": 188,
-        "designDatavizElo": 1313,
-        "designGameElo": 1397,
+        "designDatavizElo": 1312,
+        "designGameElo": 1398,
         "designSvgElo": null,
         "gdpvalElo": null,
         "briefcaseElo": 1698.4,
@@ -25046,11 +25046,11 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1169.18,
-      "humanIndex": 69.52,
-      "intelligenceIndex": 69.52,
+      "timeSec": 1172.28,
+      "humanIndex": 69.53,
+      "intelligenceIndex": 69.53,
       "aaIndex": 43.73,
-      "indexDelta": 25.79,
+      "indexDelta": 25.8,
       "humanScores": {
         "chatVibe": 79.04,
         "rawChatVibe": 79.04,
@@ -25058,9 +25058,9 @@
         "webdev": 67.56,
         "designWeb": 91.61,
         "designUi": 64.11,
-        "creativeCraft": 68.18,
+        "creativeCraft": 68.28,
         "deliverable": 72.97,
-        "pureVisual": 80.63,
+        "pureVisual": 80.65,
         "spatialMotion": 44.76,
         "antiSlop": 41.1
       },
@@ -25069,7 +25069,7 @@
         "uicomponent": 70.88,
         "dataviz": 57.34,
         "gamedev": 68.56,
-        "svg": 67.79
+        "svg": 68
       },
       "arenaRaw": {
         "chatElo": 1511.9,
@@ -25087,7 +25087,7 @@
         "designUiBattles": 398,
         "designDatavizElo": 1294,
         "designGameElo": 1395,
-        "designSvgElo": 1342,
+        "designSvgElo": 1343,
         "gdpvalElo": 1770.3,
         "briefcaseElo": 1658.7,
         "aa3dElo": null,
@@ -25127,7 +25127,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 1491.38,
+      "timeSec": 1501.42,
       "humanIndex": 62.54,
       "intelligenceIndex": 62.54,
       "aaIndex": 50.51,
@@ -25210,7 +25210,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 2486.27,
+      "timeSec": 2450.29,
       "humanIndex": 71.63,
       "intelligenceIndex": 71.63,
       "aaIndex": 60.13,
@@ -25291,7 +25291,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 1374.78,
+      "timeSec": 1379.26,
       "humanIndex": 56.31,
       "intelligenceIndex": 56.31,
       "aaIndex": 35.37,
@@ -25372,7 +25372,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1863.27,
+      "timeSec": 1870.02,
       "humanIndex": 75.17,
       "intelligenceIndex": 75.17,
       "aaIndex": 54.73,
@@ -25406,8 +25406,8 @@
         "webdevVotes": 6973,
         "designWebElo": 1360,
         "designWebWinRate": 53.7,
-        "designWebBattles": 3474,
-        "designAvgCostUsd": 0.4114,
+        "designWebBattles": 3476,
+        "designAvgCostUsd": 0.4112,
         "designUiElo": 1374,
         "designUiWinRate": 62.2,
         "designUiBattles": 703,
@@ -25534,7 +25534,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1485.64,
+      "timeSec": 1489.36,
       "humanIndex": 79.66,
       "intelligenceIndex": 79.66,
       "aaIndex": 59.12,
@@ -25777,7 +25777,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 2427.8,
+      "timeSec": 2431.21,
       "humanIndex": 80.73,
       "intelligenceIndex": 80.73,
       "aaIndex": 64.77,
@@ -27747,7 +27747,7 @@
             "uicomponent": 1361,
             "dataviz": 1294,
             "gamedev": 1395,
-            "svg": 1342
+            "svg": 1343
           }
         },
         {
@@ -27827,7 +27827,7 @@
           "cost": 6.244666943602518,
           "score": 1389,
           "winRate": 58.6,
-          "battles": 6041,
+          "battles": 6047,
           "suites": {
             "website": 1389,
             "uicomponent": 1385,
@@ -27842,12 +27842,12 @@
           "name": "kimi-k3",
           "score": 1389,
           "winRate": 59.8,
-          "battles": 5061,
+          "battles": 5064,
           "suites": {
             "website": 1389,
             "uicomponent": 1340,
             "dataviz": 1346,
-            "gamedev": 1343,
+            "gamedev": 1342,
             "svg": 1350
           }
         },
@@ -27905,13 +27905,13 @@
           "modelId": "7c667f2d-0149-4eb1-864c-7e66c166ad88",
           "cost": 6.444838101104699,
           "score": 1383,
-          "winRate": 58.2,
-          "battles": 1150,
+          "winRate": 58.1,
+          "battles": 1154,
           "suites": {
             "website": 1383,
             "uicomponent": 1340,
-            "dataviz": 1313,
-            "gamedev": 1397
+            "dataviz": 1312,
+            "gamedev": 1398
           }
         },
         {
@@ -27973,7 +27973,7 @@
           "cost": 3.1601590757006157,
           "score": 1375,
           "winRate": 58.2,
-          "battles": 1548,
+          "battles": 1549,
           "suites": {
             "website": 1375,
             "uicomponent": 1327,
@@ -27991,7 +27991,7 @@
           "suites": {
             "website": 1367,
             "uicomponent": 1325,
-            "dataviz": 1317,
+            "dataviz": 1318,
             "gamedev": 1349,
             "svg": 1356
           }
@@ -28041,7 +28041,7 @@
           "cost": 1.2720632679446995,
           "score": 1365,
           "winRate": 54.1,
-          "battles": 4345,
+          "battles": 4349,
           "suites": {
             "website": 1365,
             "uicomponent": 1355,
@@ -28059,7 +28059,7 @@
           "cost": 10.020621343395753,
           "score": 1360,
           "winRate": 53.7,
-          "battles": 3474,
+          "battles": 3476,
           "suites": {
             "website": 1360,
             "uicomponent": 1374,
@@ -28078,7 +28078,7 @@
           "suites": {
             "website": 1359,
             "uicomponent": 1327,
-            "dataviz": 1333,
+            "dataviz": 1334,
             "gamedev": 1295,
             "svg": 1334
           }
@@ -28102,11 +28102,11 @@
           "rank": 23,
           "rawName": "gpt-5.6-sol",
           "name": "gpt-5.6-sol",
-          "score": 1353,
+          "score": 1354,
           "winRate": 56.4,
-          "battles": 13089,
+          "battles": 13091,
           "suites": {
-            "website": 1353,
+            "website": 1354,
             "uicomponent": 1306,
             "dataviz": 1286,
             "gamedev": 1297,
@@ -28115,23 +28115,6 @@
         },
         {
           "rank": 24,
-          "rawName": "muse-spark-open",
-          "name": "Muse Spark Open (xhigh)",
-          "creator": "Meta",
-          "modelId": "3661c8fb-caf7-4118-aa18-65b84fea8e44",
-          "cost": 1.7656761794720652,
-          "score": 1353,
-          "winRate": 51.6,
-          "battles": 4382,
-          "suites": {
-            "website": 1353,
-            "uicomponent": 1292,
-            "dataviz": 1351,
-            "gamedev": 1238
-          }
-        },
-        {
-          "rank": 25,
           "rawName": "claude-fable-5-1",
           "name": "Claude Fable 5.1 (max)",
           "creator": "Anthropic",
@@ -28149,7 +28132,7 @@
           }
         },
         {
-          "rank": 26,
+          "rank": 25,
           "rawName": "claude-opus-5",
           "name": "Claude Opus 5 (max)",
           "creator": "Anthropic",
@@ -28164,6 +28147,23 @@
             "dataviz": 1321,
             "gamedev": 1316,
             "svg": 1354
+          }
+        },
+        {
+          "rank": 26,
+          "rawName": "muse-spark-open",
+          "name": "Muse Spark Open (xhigh)",
+          "creator": "Meta",
+          "modelId": "3661c8fb-caf7-4118-aa18-65b84fea8e44",
+          "cost": 1.7656761794720652,
+          "score": 1352,
+          "winRate": 51.6,
+          "battles": 4384,
+          "suites": {
+            "website": 1352,
+            "uicomponent": 1292,
+            "dataviz": 1351,
+            "gamedev": 1238
           }
         },
         {
@@ -28223,7 +28223,7 @@
           "name": "colorado",
           "score": 1341,
           "winRate": 52.8,
-          "battles": 5318,
+          "battles": 5321,
           "suites": {
             "website": 1341,
             "uicomponent": 1342,
@@ -28277,7 +28277,7 @@
           "suites": {
             "website": 1338,
             "uicomponent": 1283,
-            "dataviz": 1266,
+            "dataviz": 1267,
             "gamedev": 1286,
             "svg": 1349
           }
@@ -28362,21 +28362,6 @@
         },
         {
           "rank": 39,
-          "rawName": "claude-sonnet-4-6",
-          "name": "claude-sonnet-4-6",
-          "score": 1326,
-          "winRate": 60,
-          "battles": 13640,
-          "suites": {
-            "website": 1326,
-            "uicomponent": 1257,
-            "dataviz": 1271,
-            "gamedev": 1230,
-            "svg": 1237
-          }
-        },
-        {
-          "rank": 40,
           "rawName": "deca-2.5-mini",
           "name": "deca-2.5-mini",
           "score": 1326,
@@ -28385,8 +28370,23 @@
           "suites": {
             "website": 1326,
             "uicomponent": 1255,
-            "dataviz": 1221,
+            "dataviz": 1222,
             "gamedev": 1226
+          }
+        },
+        {
+          "rank": 40,
+          "rawName": "claude-sonnet-4-6",
+          "name": "claude-sonnet-4-6",
+          "score": 1325,
+          "winRate": 60,
+          "battles": 13640,
+          "suites": {
+            "website": 1325,
+            "uicomponent": 1257,
+            "dataviz": 1271,
+            "gamedev": 1230,
+            "svg": 1237
           }
         },
         {
@@ -28442,8 +28442,8 @@
           "modelId": "da3ba2f4-f4f1-43b6-95dc-8e9fa2a48402",
           "cost": 0.5865441229709887,
           "score": 1324,
-          "winRate": 50.2,
-          "battles": 1206,
+          "winRate": 50.3,
+          "battles": 1208,
           "suites": {
             "website": 1324,
             "uicomponent": 1263,
@@ -28457,7 +28457,7 @@
           "name": "yoda",
           "score": 1322,
           "winRate": 52.3,
-          "battles": 15837,
+          "battles": 15838,
           "suites": {
             "website": 1322,
             "uicomponent": 1264,
@@ -28517,13 +28517,13 @@
           "name": "qwen3.7-max",
           "score": 1316,
           "winRate": 54.5,
-          "battles": 18387,
+          "battles": 18391,
           "suites": {
             "website": 1316,
             "uicomponent": 1256,
             "dataviz": 1270,
             "gamedev": 1234,
-            "svg": 1256
+            "svg": 1257
           }
         },
         {
@@ -28554,7 +28554,7 @@
           "suites": {
             "website": 1313,
             "uicomponent": 1196,
-            "dataviz": 1272,
+            "dataviz": 1273,
             "gamedev": 1232
           }
         },
@@ -28594,7 +28594,7 @@
           "name": "mimo-v2.5-pro",
           "score": 1311,
           "winRate": 51.3,
-          "battles": 15031,
+          "battles": 15033,
           "suites": {
             "website": 1311,
             "uicomponent": 1239,
@@ -28839,7 +28839,7 @@
       "shortName": "mini-swe-agent - GPT-6 Luna (max)",
       "codingAgentIndex": 25.0539668187249,
       "intelligenceIndex": 25.0539668187249,
-      "cost": 0.16017974401548615,
+      "cost": 0.16017974401548618,
       "creator": {
         "name": "OpenAI",
         "color": "#1f1f1f"
@@ -29445,7 +29445,7 @@
       "shortName": "DeepSeek Harness - DeepSeek V4.1 Flash 1017 (max)",
       "codingAgentIndex": 36.8337115781471,
       "intelligenceIndex": 36.8337115781471,
-      "cost": 0.320957200254154,
+      "cost": 0.320957200254155,
       "creator": {
         "name": "DeepSeek",
         "color": "#2243e6"
@@ -32729,7 +32729,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 579.68,
+      "timeSec": 585.42,
       "subscores": {
         "frontierCode": 25.17,
         "terminalBench": 12.63,
@@ -32775,17 +32775,17 @@
         {
           "host": "OpenAI (Flex)",
           "cost": 0.07598,
-          "timeSec": 2376.7
+          "timeSec": 2374.6
         },
         {
           "host": "OpenAI",
           "cost": 0.15196,
-          "timeSec": 579.7
+          "timeSec": 585.4
         },
         {
           "host": "Microsoft Azure",
           "cost": 0.16077,
-          "timeSec": 854.9
+          "timeSec": 847.2
         }
       ]
     },
@@ -32817,7 +32817,7 @@
         "slug": "mimo-v2-6-pro",
         "name": "MiMo-V2.6-Pro"
       },
-      "timeSec": 2855.48,
+      "timeSec": 2883.8,
       "subscores": {
         "frontierCode": 23.97,
         "terminalBench": 34.85,
@@ -32863,22 +32863,22 @@
         {
           "host": "GMI (BF16)",
           "cost": 0.18829,
-          "timeSec": 2596.9
+          "timeSec": 2643
         },
         {
           "host": "DeepInfra",
           "cost": 0.23481,
-          "timeSec": 1422
+          "timeSec": 1446.5
         },
         {
           "host": "Xiaomi",
           "cost": 0.25718,
-          "timeSec": 2855.5
+          "timeSec": 2883.8
         },
         {
           "host": "PrimaLabs",
           "cost": 2.56149,
-          "timeSec": 627.1
+          "timeSec": 624.6
         }
       ]
     },
@@ -32905,7 +32905,7 @@
         "slug": "reflection-beam",
         "name": "Beam 1.0"
       },
-      "timeSec": 88.51,
+      "timeSec": 88.48,
       "subscores": {
         "frontierCode": 5.08,
         "terminalBench": 3.03,
@@ -32951,27 +32951,27 @@
         {
           "host": "CoreWeave (NVFP4)",
           "cost": 0.26546,
-          "timeSec": 88.4
+          "timeSec": 88.5
         },
         {
           "host": "DigitalOcean",
           "cost": 0.27761,
-          "timeSec": 177.7
+          "timeSec": 177.9
         },
         {
           "host": "Together AI (NVFP4)",
           "cost": 0.28441,
-          "timeSec": 106.1
+          "timeSec": 106.6
         },
         {
           "host": "Baseten (NVFP4)",
           "cost": 0.44863,
-          "timeSec": 71.8
+          "timeSec": 72
         },
         {
           "host": "Nebius (NVFP4)",
           "cost": 0.46244,
-          "timeSec": 88.5
+          "timeSec": 88.2
         }
       ]
     },
@@ -33006,7 +33006,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 2582.97,
+      "timeSec": 2607.5,
       "subscores": {
         "frontierCode": 17.2,
         "terminalBench": 32.83,
@@ -33052,12 +33052,12 @@
         {
           "host": "GMI",
           "cost": 0.30306,
-          "timeSec": 1654.7
+          "timeSec": 1658.8
         },
         {
           "host": "Bitdeer AI",
           "cost": 0.39584,
-          "timeSec": 524.7
+          "timeSec": 526.3
         },
         {
           "host": "Zyphra (FP4)",
@@ -33067,12 +33067,12 @@
         {
           "host": "DeepInfra",
           "cost": 0.42908,
-          "timeSec": 1011.4
+          "timeSec": 1013.5
         },
         {
           "host": "CoreWeave",
           "cost": 0.52583,
-          "timeSec": 561.3
+          "timeSec": 561.8
         },
         {
           "host": "Zyphra",
@@ -33082,12 +33082,12 @@
         {
           "host": "Wafer",
           "cost": 0.56029,
-          "timeSec": 792.6
+          "timeSec": 785.5
         },
         {
           "host": "Zai",
           "cost": 0.58331,
-          "timeSec": 2583
+          "timeSec": 2607.5
         }
       ]
     },
@@ -33122,7 +33122,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 793.09,
+      "timeSec": 793.51,
       "subscores": {
         "frontierCode": 28.24,
         "terminalBench": 33.84,
@@ -33168,42 +33168,42 @@
         {
           "host": "DeepInfra",
           "cost": 0.19424,
-          "timeSec": 1295.3
+          "timeSec": 1304.6
         },
         {
           "host": "SiliconFlow",
           "cost": 0.22953,
-          "timeSec": 784.8
+          "timeSec": 822.1
         },
         {
           "host": "Bitdeer AI",
           "cost": 0.25027,
-          "timeSec": 372.8
+          "timeSec": 371.2
         },
         {
           "host": "GMI",
           "cost": 0.29503,
-          "timeSec": 475.3
+          "timeSec": 478.3
         },
         {
           "host": "Wafer",
           "cost": 0.37588,
-          "timeSec": 715.1
+          "timeSec": 717
         },
         {
           "host": "LithosAI",
           "cost": 0.38764,
-          "timeSec": 607.4
+          "timeSec": 608.1
         },
         {
           "host": "DigitalOcean",
           "cost": 0.45182,
-          "timeSec": 607.4
+          "timeSec": 609.7
         },
         {
           "host": "Databricks",
           "cost": 0.45285,
-          "timeSec": 1068.1
+          "timeSec": 1065
         }
       ]
     },
@@ -33303,7 +33303,7 @@
         "label": "medium",
         "level": 30
       },
-      "timeSec": 682.41,
+      "timeSec": 685.17,
       "subscores": {
         "frontierCode": 13.32,
         "terminalBench": 23.23,
@@ -33372,7 +33372,7 @@
         "slug": "tencent-hy4",
         "name": "Tencent Hy4"
       },
-      "timeSec": 798.59,
+      "timeSec": 795.96,
       "subscores": {
         "frontierCode": 31.22,
         "terminalBench": 37.37,
@@ -33442,7 +33442,7 @@
         "slug": "minimax-m3",
         "name": "MiniMax-M3"
       },
-      "timeSec": 818.53,
+      "timeSec": 836.3,
       "subscores": {
         "frontierCode": 23.03,
         "terminalBench": 2.02,
@@ -33488,42 +33488,42 @@
         {
           "host": "GMI",
           "cost": 0.91175,
-          "timeSec": 998.2
+          "timeSec": 1011.8
         },
         {
           "host": "DeepInfra",
           "cost": 1.11197,
-          "timeSec": 4222.5
+          "timeSec": 4284.8
         },
         {
           "host": "SiliconFlow (FP8)",
           "cost": 1.14436,
-          "timeSec": 865.5
+          "timeSec": 875.1
         },
         {
           "host": "Novita",
           "cost": 1.16331,
-          "timeSec": 1014.2
+          "timeSec": 1012.7
         },
         {
           "host": "Fireworks",
           "cost": 1.26266,
-          "timeSec": 604.6
+          "timeSec": 612.1
         },
         {
           "host": "MiniMax",
           "cost": 1.29097,
-          "timeSec": 818.5
+          "timeSec": 836.3
         },
         {
           "host": "Nebius (FP8)",
           "cost": 1.30746,
-          "timeSec": 576.3
+          "timeSec": 588.5
         },
         {
           "host": "CoreWeave (NVFP4)",
           "cost": 1.48657,
-          "timeSec": 400.8
+          "timeSec": 407.5
         }
       ]
     },
@@ -33558,7 +33558,7 @@
         "label": "high",
         "level": 40
       },
-      "timeSec": 931.27,
+      "timeSec": 918.24,
       "subscores": {
         "frontierCode": 14.96,
         "terminalBench": 24.75,
@@ -33717,7 +33717,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 1910.93,
+      "timeSec": 1908.95,
       "subscores": {
         "frontierCode": 14.91,
         "terminalBench": 5.56,
@@ -33763,42 +33763,42 @@
         {
           "host": "Multiverse Computing",
           "cost": 0.33537,
-          "timeSec": 491.3
+          "timeSec": 491.8
         },
         {
           "host": "DeepInfra",
           "cost": 0.92529,
-          "timeSec": 2607.6
+          "timeSec": 2549.8
         },
         {
           "host": "Wafer",
           "cost": 1.06279,
-          "timeSec": 300.2
+          "timeSec": 295.5
         },
         {
           "host": "Parasail (FP8)",
           "cost": 1.77958,
-          "timeSec": 1424.2
+          "timeSec": 1394.8
         },
         {
           "host": "Nebius (FP4)",
           "cost": 1.98004,
-          "timeSec": 274.9
+          "timeSec": 277.5
         },
         {
           "host": "Crusoe",
           "cost": 2.61559,
-          "timeSec": 391.7
+          "timeSec": 392.8
         },
         {
           "host": "CoreWeave (FP8)",
           "cost": 3.30626,
-          "timeSec": 1325.8
+          "timeSec": 1332.7
         },
         {
           "host": "Alibaba Cloud",
           "cost": 3.53229,
-          "timeSec": 1910.9
+          "timeSec": 1908.9
         }
       ]
     },
@@ -33830,7 +33830,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1542.55,
+      "timeSec": 1545.05,
       "subscores": {
         "frontierCode": 21.59,
         "terminalBench": 41.92,
@@ -33876,42 +33876,42 @@
         {
           "host": "Multiverse Computing",
           "cost": 0.45146,
-          "timeSec": 1462.9
+          "timeSec": 1422.9
         },
         {
           "host": "Supernova (FP4)",
           "cost": 2.21565,
-          "timeSec": 654.3
+          "timeSec": 657.9
         },
         {
           "host": "Bitdeer AI",
           "cost": 2.21565,
-          "timeSec": 364
+          "timeSec": 364.4
         },
         {
           "host": "DeepInfra",
           "cost": 2.39345,
-          "timeSec": 1561
+          "timeSec": 1624.6
         },
         {
           "host": "GMI",
           "cost": 2.52919,
-          "timeSec": 1556.7
+          "timeSec": 1548.9
         },
         {
           "host": "Wafer",
           "cost": 3.12828,
-          "timeSec": 1051.2
+          "timeSec": 1045.7
         },
         {
           "host": "Baseten",
           "cost": 3.44572,
-          "timeSec": 851.3
+          "timeSec": 852.9
         },
         {
           "host": "LithosAI (FP4)",
           "cost": 3.69275,
-          "timeSec": 436.4
+          "timeSec": 449.6
         }
       ]
     },
@@ -34148,7 +34148,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1974.58,
+      "timeSec": 1986.08,
       "subscores": {
         "frontierCode": 25.45,
         "terminalBench": 67.17,
@@ -34194,42 +34194,42 @@
         {
           "host": "PrimaLabs",
           "cost": 2.94081,
-          "timeSec": 542.2
+          "timeSec": 542.8
         },
         {
           "host": "Fireworks",
           "cost": 3.18567,
-          "timeSec": 1300.2
+          "timeSec": 1303.2
         },
         {
           "host": "Modal",
           "cost": 3.18797,
-          "timeSec": 612.6
+          "timeSec": 590
         },
         {
           "host": "Inco",
           "cost": 3.19541,
-          "timeSec": 457.6
+          "timeSec": 457.4
         },
         {
           "host": "Makora",
           "cost": 3.20358,
-          "timeSec": 1130.1
+          "timeSec": 1135.5
         },
         {
           "host": "Baseten",
           "cost": 3.26175,
-          "timeSec": 493.5
+          "timeSec": 492
         },
         {
           "host": "Databricks",
           "cost": 3.29405,
-          "timeSec": 643.8
+          "timeSec": 642.9
         },
         {
           "host": "DigitalOcean",
           "cost": 3.41998,
-          "timeSec": 591.9
+          "timeSec": 569.7
         }
       ]
     },
@@ -34259,7 +34259,7 @@
         "slug": "step-5-preview",
         "name": "Step 5 Preview"
       },
-      "timeSec": 1489.71,
+      "timeSec": 1479.77,
       "subscores": {
         "frontierCode": 11.58,
         "terminalBench": 33.33,
@@ -34467,7 +34467,7 @@
         "slug": "nemotron-3-ultra-550b-a55b",
         "name": "Nemotron 3 Ultra 550B A55B"
       },
-      "timeSec": 267.35,
+      "timeSec": 268.59,
       "subscores": {
         "frontierCode": 1.09,
         "terminalBench": 0.51,
@@ -34513,22 +34513,22 @@
         {
           "host": "DeepInfra",
           "cost": 1.56373,
-          "timeSec": 246.9
+          "timeSec": 248.3
         },
         {
           "host": "Fireworks",
           "cost": 1.84015,
-          "timeSec": 291.6
+          "timeSec": 292.5
         },
         {
           "host": "CoreWeave",
           "cost": 3.15764,
-          "timeSec": 167.4
+          "timeSec": 166.3
         },
         {
           "host": "Nebius",
           "cost": 5.70453,
-          "timeSec": 333.7
+          "timeSec": 333
         }
       ]
     },
@@ -34727,7 +34727,7 @@
         "label": "max",
         "level": 60
       },
-      "timeSec": 1485.64,
+      "timeSec": 1489.36,
       "subscores": {
         "frontierCode": 46.9,
         "terminalBench": 59.6,
@@ -34773,22 +34773,22 @@
         {
           "host": "Anthropic",
           "cost": 10.03641,
-          "timeSec": 1485.6
+          "timeSec": 1489.4
         },
         {
           "host": "Amazon Bedrock",
           "cost": 10.03641,
-          "timeSec": 1533.4
+          "timeSec": 1544.1
         },
         {
           "host": "Microsoft Azure",
           "cost": 11.43207,
-          "timeSec": 1455.8
+          "timeSec": 1457.6
         },
         {
           "host": "Google",
           "cost": 11.79228,
-          "timeSec": 1497.4
+          "timeSec": 1498.2
         }
       ]
     },
@@ -34821,7 +34821,7 @@
         "label": "xhigh",
         "level": 50
       },
-      "timeSec": 1374.78,
+      "timeSec": 1379.26,
       "subscores": {
         "frontierCode": 28.88,
         "terminalBench": 25.76,
@@ -34866,7 +34866,7 @@
     }
   ],
   "mediaSourceUrl": "https://artificialanalysis.ai/image",
-  "mediaModelCount": 261,
+  "mediaModelCount": 262,
   "mediaModels": [
     {
       "id": "tts:6de03a42-66ce-484a-9c01-95fe9b4d7422",
@@ -34897,7 +34897,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1059.5,
         "pricePer1mChars": 0.65,
-        "ttfaMs": 1584,
+        "ttfaMs": 1578,
         "cps": 240.2
       },
       "releaseDate": "2025-01-27"
@@ -34932,7 +34932,7 @@
         "ttsElo": 887.5,
         "pricePer1mChars": 2.82,
         "ttfaMs": null,
-        "cps": 2.9
+        "cps": 3
       },
       "releaseDate": "2023-06-13"
     },
@@ -35058,8 +35058,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 916.3,
         "pricePer1mChars": 4,
-        "ttfaMs": 744,
-        "cps": 414.8
+        "ttfaMs": 746,
+        "cps": 407.4
       },
       "releaseDate": "2016-09-08"
     },
@@ -35077,7 +35077,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 25.14,
+      "timeSec": 24.55,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -35093,7 +35093,7 @@
         "ttsElo": 885,
         "pricePer1mChars": 4,
         "ttfaMs": 668,
-        "cps": 434.4
+        "cps": 394.2
       },
       "releaseDate": "2018-08-28"
     },
@@ -35126,7 +35126,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 830.6,
         "pricePer1mChars": 4,
-        "ttfaMs": 90,
+        "ttfaMs": 92,
         "cps": 947
       },
       "releaseDate": "2016-11-30"
@@ -35300,7 +35300,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 11.76,
+      "timeSec": 11.65,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -35315,8 +35315,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1295.8,
         "pricePer1mChars": 6.58,
-        "ttfaMs": 91,
-        "cps": 195.2
+        "ttfaMs": 92,
+        "cps": 185.3
       },
       "releaseDate": "2026-11-03"
     },
@@ -35334,7 +35334,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.39,
+      "timeSec": 7.57,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -35350,7 +35350,7 @@
         "ttsElo": 1255.9,
         "pricePer1mChars": 6.58,
         "ttfaMs": 92,
-        "cps": 121.8
+        "cps": 124.5
       },
       "releaseDate": "2026-07-01"
     },
@@ -35368,7 +35368,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.41,
+      "timeSec": 6.44,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -35384,7 +35384,7 @@
         "ttsElo": 1113.1,
         "pricePer1mChars": 6.58,
         "ttfaMs": 110,
-        "cps": 108.6
+        "cps": 109.9
       },
       "releaseDate": "2026-02-19"
     },
@@ -35639,8 +35639,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1074.5,
         "pricePer1mChars": 9.15,
-        "ttfaMs": 4762,
-        "cps": 43.5
+        "ttfaMs": 4779,
+        "cps": 43.1
       },
       "releaseDate": "2025-12-10"
     },
@@ -35689,7 +35689,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 8.34,
+      "timeSec": 8.19,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -35704,8 +35704,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1159.8,
         "pricePer1mChars": 10,
-        "ttfaMs": 142,
-        "cps": 144
+        "ttfaMs": 147,
+        "cps": 136.8
       },
       "releaseDate": "2026-07-21"
     },
@@ -35738,7 +35738,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1153.7,
         "pricePer1mChars": 10,
-        "ttfaMs": 158,
+        "ttfaMs": 159,
         "cps": 132.1
       },
       "releaseDate": "2026-10-28"
@@ -35896,7 +35896,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1138.1,
         "pricePer1mChars": 10.1,
-        "ttfaMs": 472,
+        "ttfaMs": 468,
         "cps": 141.8
       },
       "releaseDate": "2026-05-25"
@@ -35915,7 +35915,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.48,
+      "timeSec": 7.57,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -35930,8 +35930,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1044.9,
         "pricePer1mChars": 10.1,
-        "ttfaMs": 387,
-        "cps": 125.6
+        "ttfaMs": 390,
+        "cps": 128.5
       },
       "releaseDate": "2025-07-08"
     },
@@ -35981,7 +35981,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 13.71,
+      "timeSec": 13.76,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -35996,8 +35996,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1215.7,
         "pricePer1mChars": 10.42,
-        "ttfaMs": 79,
-        "cps": 214.7
+        "ttfaMs": 80,
+        "cps": 221.2
       },
       "releaseDate": "2026-08-25"
     },
@@ -36108,7 +36108,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.09,
+      "timeSec": 7.08,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36123,7 +36123,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1264.6,
         "pricePer1mChars": 11.03,
-        "ttfaMs": 467,
+        "ttfaMs": 444,
         "cps": 112
       },
       "releaseDate": "2026-09-23"
@@ -36157,7 +36157,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 942.2,
         "pricePer1mChars": 11.03,
-        "ttfaMs": 627,
+        "ttfaMs": 623,
         "cps": 56.4
       },
       "releaseDate": "2025-09-22"
@@ -36222,7 +36222,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1211.4,
         "pricePer1mChars": 13,
-        "ttfaMs": 443,
+        "ttfaMs": 465,
         "cps": 107.1
       },
       "releaseDate": "2026-10-20"
@@ -36274,7 +36274,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 2.43,
+      "timeSec": 2.47,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36290,7 +36290,7 @@
         "ttsElo": 1309.5,
         "pricePer1mChars": 14,
         "ttfaMs": 4951,
-        "cps": 40.9
+        "cps": 41.1
       },
       "releaseDate": "2026-11-19"
     },
@@ -36354,7 +36354,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1180.9,
         "pricePer1mChars": 14.23,
-        "ttfaMs": 291,
+        "ttfaMs": 292,
         "cps": 18.1
       },
       "releaseDate": "2026-08-12"
@@ -36373,7 +36373,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 5.87,
+      "timeSec": 5.82,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36389,7 +36389,7 @@
         "ttsElo": 1278.2,
         "pricePer1mChars": 15,
         "ttfaMs": 256,
-        "cps": 80.9
+        "cps": 79.3
       },
       "releaseDate": "2026-10-29"
     },
@@ -36422,7 +36422,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1240.8,
         "pricePer1mChars": 15,
-        "ttfaMs": 262,
+        "ttfaMs": 264,
         "cps": 71.6
       },
       "releaseDate": "2026-10-14"
@@ -36441,7 +36441,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 10.5,
+      "timeSec": 10.48,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36457,7 +36457,7 @@
         "ttsElo": 1208.2,
         "pricePer1mChars": 15,
         "ttfaMs": 214,
-        "cps": 173.2
+        "cps": 171.1
       },
       "releaseDate": "2026-10-28"
     },
@@ -36475,7 +36475,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 10.93,
+      "timeSec": 10.94,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36491,7 +36491,7 @@
         "ttsElo": 1189.5,
         "pricePer1mChars": 15,
         "ttfaMs": null,
-        "cps": 158.4
+        "cps": 156.8
       },
       "releaseDate": "2026-06-18"
     },
@@ -36524,7 +36524,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1181,
         "pricePer1mChars": 15,
-        "ttfaMs": 221,
+        "ttfaMs": 215,
         "cps": 68.7
       },
       "releaseDate": "2026-10-14"
@@ -36543,7 +36543,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 9.64,
+      "timeSec": 10.07,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36558,8 +36558,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1163.5,
         "pricePer1mChars": 15,
-        "ttfaMs": 288,
-        "cps": 163.8
+        "ttfaMs": 286,
+        "cps": 170.5
       },
       "releaseDate": "2026-03-16"
     },
@@ -36623,7 +36623,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1104.1,
         "pricePer1mChars": 15,
-        "ttfaMs": 175,
+        "ttfaMs": 177,
         "cps": 113.8
       },
       "releaseDate": "2026-03-10"
@@ -36673,7 +36673,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 3.48,
+      "timeSec": 3.52,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36689,7 +36689,7 @@
         "ttsElo": 1090.8,
         "pricePer1mChars": 15,
         "ttfaMs": null,
-        "cps": 57.7
+        "cps": 59.6
       },
       "releaseDate": "2025-06-03"
     },
@@ -36707,7 +36707,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 10.97,
+      "timeSec": 10.79,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36722,8 +36722,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1086.8,
         "pricePer1mChars": 15,
-        "ttfaMs": 1421,
-        "cps": 176.7
+        "ttfaMs": 1431,
+        "cps": 172.2
       },
       "releaseDate": "2023-11-06"
     },
@@ -36772,7 +36772,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 4.57,
+      "timeSec": 4.59,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36788,7 +36788,7 @@
         "ttsElo": 1034.6,
         "pricePer1mChars": 15,
         "ttfaMs": null,
-        "cps": 69.1
+        "cps": 70.1
       },
       "releaseDate": "2026-06-04"
     },
@@ -36821,7 +36821,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1033.2,
         "pricePer1mChars": 15,
-        "ttfaMs": 170,
+        "ttfaMs": 174,
         "cps": 73.8
       },
       "releaseDate": "2018-09-24"
@@ -36871,7 +36871,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 7.01,
+      "timeSec": 7.09,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36886,7 +36886,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1094,
         "pricePer1mChars": 16,
-        "ttfaMs": 568,
+        "ttfaMs": 582,
         "cps": 110.5
       },
       "releaseDate": "2026-03-26"
@@ -36905,7 +36905,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 51.11,
+      "timeSec": 57.46,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36920,8 +36920,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 894.6,
         "pricePer1mChars": 16,
-        "ttfaMs": 168,
-        "cps": 818
+        "ttfaMs": 173,
+        "cps": 994.3
       },
       "releaseDate": "2019-07-30"
     },
@@ -36955,7 +36955,7 @@
         "ttsElo": 891.6,
         "pricePer1mChars": 16,
         "ttfaMs": 489,
-        "cps": 600.7
+        "cps": 592.8
       },
       "releaseDate": "2022-06-27"
     },
@@ -36973,7 +36973,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 3.76,
+      "timeSec": 3.78,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -36988,7 +36988,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1285.8,
         "pricePer1mChars": 16.49,
-        "ttfaMs": 769,
+        "ttfaMs": 728,
         "cps": 61.1
       },
       "releaseDate": "2026-09-23"
@@ -37069,7 +37069,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 2.63,
+      "timeSec": 2.6,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37084,8 +37084,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1217.3,
         "pricePer1mChars": 18.31,
-        "ttfaMs": 957,
-        "cps": 40.2
+        "ttfaMs": 958,
+        "cps": 39.2
       },
       "releaseDate": "2026-04-15"
     },
@@ -37118,7 +37118,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1038.3,
         "pricePer1mChars": 18.31,
-        "ttfaMs": 8453,
+        "ttfaMs": 8581,
         "cps": 19.1
       },
       "releaseDate": "2025-12-10"
@@ -37153,72 +37153,6 @@
         "imgEditElo": null,
         "pricePer1k": 19
       }
-    },
-    {
-      "id": "tts:115c856c-4b94-4c4d-b9c9-5fb7817ca4a4",
-      "slug": "qwen-audio-3-1-tts-plus",
-      "name": "Qwen-Audio-3.1-TTS-Plus",
-      "shortName": "Qwen-Audio-3.1-TTS-Plus",
-      "mediaKind": "tts",
-      "intelligenceIndex": 81.64,
-      "cost": 0.01931,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": 81.64
-      },
-      "mediaRaw": {
-        "kind": "tts",
-        "unitZh": "每千字语音",
-        "unitEn": "/ 1k chars",
-        "ttsElo": 1299.5,
-        "pricePer1mChars": 19.31,
-        "ttfaMs": null,
-        "cps": null
-      },
-      "releaseDate": "2026-09-24"
-    },
-    {
-      "id": "tts:895c1700-65d0-4ddf-afa0-0c1a16fa064d",
-      "slug": "qwen-audio-3-1-tts-plus-controlled-voice",
-      "name": "Qwen-Audio-3.1-TTS-Plus",
-      "shortName": "Qwen-Audio-3.1-TTS-Plus (controlled voice)",
-      "mediaKind": "tts",
-      "intelligenceIndex": 80.18,
-      "cost": 0.01931,
-      "creator": {
-        "name": "Alibaba",
-        "color": "#ff7018"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "mediaScores": {
-        "t2i": null,
-        "imgEdit": null,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": 80.18
-      },
-      "mediaRaw": {
-        "kind": "tts",
-        "unitZh": "每千字语音",
-        "unitEn": "/ 1k chars",
-        "ttsElo": 1287.1,
-        "pricePer1mChars": 19.31,
-        "ttfaMs": null,
-        "cps": null
-      },
-      "releaseDate": "2026-09-24"
     },
     {
       "id": "tts:0e0fb28e-5626-439f-a816-e7f05896daf9",
@@ -37329,7 +37263,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.16,
+      "timeSec": 6.81,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37345,7 +37279,7 @@
         "ttsElo": 1279.2,
         "pricePer1mChars": 19.5,
         "ttfaMs": 212,
-        "cps": 105.7
+        "cps": 115.9
       },
       "releaseDate": "2026-10-28"
     },
@@ -37552,7 +37486,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.45,
+      "timeSec": 6.74,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37586,7 +37520,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 5.05,
+      "timeSec": 5.12,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37601,8 +37535,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1271.7,
         "pricePer1mChars": 20.83,
-        "ttfaMs": 185,
-        "cps": 80.2
+        "ttfaMs": 184,
+        "cps": 81
       },
       "releaseDate": "2026-08-31"
     },
@@ -37651,7 +37585,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 4.68,
+      "timeSec": 4.67,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -37667,7 +37601,7 @@
         "ttsElo": 1152.3,
         "pricePer1mChars": 22,
         "ttfaMs": 168,
-        "cps": 76.7
+        "cps": 75.2
       },
       "releaseDate": "2026-03-30"
     },
@@ -37731,8 +37665,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1028.3,
         "pricePer1mChars": 25,
-        "ttfaMs": 388,
-        "cps": 79
+        "ttfaMs": 390,
+        "cps": 84.3
       },
       "releaseDate": "2026-03-24"
     },
@@ -37923,6 +37857,105 @@
         "imgEditElo": null,
         "pricePer1k": 26
       }
+    },
+    {
+      "id": "tts:7c372343-eb8f-48dd-b6a7-006cb3e7aa5d",
+      "slug": "qwen-audio-3-1-tts-plus-provider-voice",
+      "name": "Qwen-Audio-3.1-TTS-Plus",
+      "shortName": "Qwen-Audio-3.1-TTS-Plus (provider voice)",
+      "mediaKind": "tts",
+      "intelligenceIndex": 86.69,
+      "cost": 0.02759,
+      "creator": {
+        "name": "Alibaba",
+        "color": "#ff7018"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 86.69
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1349.2,
+        "pricePer1mChars": 27.59,
+        "ttfaMs": null,
+        "cps": null
+      },
+      "releaseDate": "2026-09-24"
+    },
+    {
+      "id": "tts:115c856c-4b94-4c4d-b9c9-5fb7817ca4a4",
+      "slug": "qwen-audio-3-1-tts-plus",
+      "name": "Qwen-Audio-3.1-TTS-Plus",
+      "shortName": "Qwen-Audio-3.1-TTS-Plus",
+      "mediaKind": "tts",
+      "intelligenceIndex": 81.64,
+      "cost": 0.02759,
+      "creator": {
+        "name": "Alibaba",
+        "color": "#ff7018"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 81.64
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1299.5,
+        "pricePer1mChars": 27.59,
+        "ttfaMs": null,
+        "cps": null
+      },
+      "releaseDate": "2026-09-24"
+    },
+    {
+      "id": "tts:895c1700-65d0-4ddf-afa0-0c1a16fa064d",
+      "slug": "qwen-audio-3-1-tts-plus-controlled-voice",
+      "name": "Qwen-Audio-3.1-TTS-Plus",
+      "shortName": "Qwen-Audio-3.1-TTS-Plus (controlled voice)",
+      "mediaKind": "tts",
+      "intelligenceIndex": 80.18,
+      "cost": 0.02759,
+      "creator": {
+        "name": "Alibaba",
+        "color": "#ff7018"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "mediaScores": {
+        "t2i": null,
+        "imgEdit": null,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": 80.18
+      },
+      "mediaRaw": {
+        "kind": "tts",
+        "unitZh": "每千字语音",
+        "unitEn": "/ 1k chars",
+        "ttsElo": 1287.1,
+        "pricePer1mChars": 27.59,
+        "ttfaMs": null,
+        "cps": null
+      },
+      "releaseDate": "2026-09-24"
     },
     {
       "id": "img:aef67397-7859-4806-8fbb-6b50e391feec",
@@ -38139,7 +38172,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1108.8,
         "pricePer1mChars": 30,
-        "ttfaMs": 2377,
+        "ttfaMs": 2355,
         "cps": 106.1
       },
       "releaseDate": "2023-11-06"
@@ -38251,7 +38284,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.45,
+      "timeSec": 6.47,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -38266,7 +38299,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1062.6,
         "pricePer1mChars": 30,
-        "ttfaMs": 241,
+        "ttfaMs": 243,
         "cps": 107.9
       },
       "releaseDate": "2024-05-08"
@@ -38396,7 +38429,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1026.3,
         "pricePer1mChars": 30,
-        "ttfaMs": 546,
+        "ttfaMs": 540,
         "cps": 104.7
       },
       "releaseDate": "2025-01-20"
@@ -38555,7 +38588,7 @@
         "ttsElo": 904.1,
         "pricePer1mChars": 31.13,
         "ttfaMs": 495,
-        "cps": 488.5
+        "cps": 497.4
       },
       "releaseDate": "2025-03-06"
     },
@@ -38760,7 +38793,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 3.31,
+      "timeSec": 3.35,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -38775,7 +38808,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1229.9,
         "pricePer1mChars": 34,
-        "ttfaMs": 338,
+        "ttfaMs": 353,
         "cps": 48.5
       },
       "releaseDate": "2026-08-23"
@@ -39044,7 +39077,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.46,
+      "timeSec": 6.48,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39060,7 +39093,7 @@
         "ttsElo": 1343,
         "pricePer1mChars": 40,
         "ttfaMs": 208,
-        "cps": 100.9
+        "cps": 101.2
       },
       "releaseDate": "2026-09-28"
     },
@@ -39109,7 +39142,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 2.51,
+      "timeSec": 2.49,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39125,7 +39158,7 @@
         "ttsElo": 1137.2,
         "pricePer1mChars": 40,
         "ttfaMs": 4689,
-        "cps": 37.5
+        "cps": 36.9
       },
       "releaseDate": "2026-02-12"
     },
@@ -39269,7 +39302,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 3.82,
+      "timeSec": 3.86,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39285,7 +39318,7 @@
         "ttsElo": 1034.9,
         "pricePer1mChars": 40,
         "ttfaMs": 1911,
-        "cps": 64.4
+        "cps": 66.1
       },
       "releaseDate": "2026-08-05"
     },
@@ -39458,7 +39491,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": true,
-      "timeSec": 2.17,
+      "timeSec": 2.18,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39474,7 +39507,7 @@
         "ttsElo": 917.5,
         "pricePer1mChars": 40.44,
         "ttfaMs": null,
-        "cps": 33
+        "cps": 32.9
       },
       "releaseDate": "2023-11-08"
     },
@@ -39492,7 +39525,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 1.44,
+      "timeSec": 1.35,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39507,8 +39540,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1053,
         "pricePer1mChars": 45,
-        "ttfaMs": 259,
-        "cps": 22.2
+        "ttfaMs": 270,
+        "cps": 21.7
       },
       "releaseDate": "2026-08-12"
     },
@@ -39610,7 +39643,7 @@
         "ttsElo": 1154.5,
         "pricePer1mChars": 47.78,
         "ttfaMs": 72,
-        "cps": 61.5
+        "cps": 61.4
       },
       "releaseDate": "2026-08-31"
     },
@@ -39705,7 +39738,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1296.8,
         "pricePer1mChars": 49,
-        "ttfaMs": 291,
+        "ttfaMs": 295,
         "cps": 186.5
       },
       "releaseDate": "2026-08-17"
@@ -39740,7 +39773,7 @@
         "ttsElo": 1195.8,
         "pricePer1mChars": 49,
         "ttfaMs": 283,
-        "cps": 165.5
+        "cps": 168.1
       },
       "releaseDate": "2026-05-04"
     },
@@ -39758,7 +39791,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 7.32,
+      "timeSec": 7.36,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39773,7 +39806,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1063.9,
         "pricePer1mChars": 49,
-        "ttfaMs": 442,
+        "ttfaMs": 460,
         "cps": 135.3
       },
       "releaseDate": "2025-10-29"
@@ -39792,7 +39825,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 4.63,
+      "timeSec": 4.8,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39808,7 +39841,7 @@
         "ttsElo": 1218.5,
         "pricePer1mChars": 50,
         "ttfaMs": 321,
-        "cps": 74.2
+        "cps": 72.1
       },
       "releaseDate": "2026-08-19"
     },
@@ -39857,7 +39890,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 5.17,
+      "timeSec": 5.13,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39873,7 +39906,7 @@
         "ttsElo": 1117.9,
         "pricePer1mChars": 50,
         "ttfaMs": 143,
-        "cps": 83.3
+        "cps": 82.1
       },
       "releaseDate": "2026-10-22"
     },
@@ -39891,7 +39924,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 45.32,
+      "timeSec": 45.75,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39907,7 +39940,7 @@
         "ttsElo": 1094.3,
         "pricePer1mChars": 50,
         "ttfaMs": 256,
-        "cps": 746.5
+        "cps": 720.2
       },
       "releaseDate": "2024-07-19"
     },
@@ -39925,7 +39958,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 38.67,
+      "timeSec": 39.23,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39941,7 +39974,7 @@
         "ttsElo": 1074.9,
         "pricePer1mChars": 50,
         "ttfaMs": 153,
-        "cps": 608.4
+        "cps": 617.6
       },
       "releaseDate": "2024-12-18"
     },
@@ -39959,7 +39992,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.31,
+      "timeSec": 6.38,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -39974,7 +40007,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1071.7,
         "pricePer1mChars": 50,
-        "ttfaMs": 627,
+        "ttfaMs": 624,
         "cps": 99.8
       },
       "releaseDate": "2025-01-15"
@@ -39993,7 +40026,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 5.16,
+      "timeSec": 5.18,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -40008,7 +40041,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1052.6,
         "pricePer1mChars": 50,
-        "ttfaMs": 134,
+        "ttfaMs": 139,
         "cps": 84.8
       },
       "releaseDate": "2026-05-19"
@@ -40105,7 +40138,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1151,
         "pricePer1mChars": 60,
-        "ttfaMs": 436,
+        "ttfaMs": 439,
         "cps": 110.8
       },
       "releaseDate": "2026-02-14"
@@ -40251,7 +40284,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.68,
+      "timeSec": 6.77,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -40266,7 +40299,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1089.7,
         "pricePer1mChars": 60,
-        "ttfaMs": 403,
+        "ttfaMs": 397,
         "cps": 111.1
       },
       "releaseDate": "2025-03-31"
@@ -40689,7 +40722,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 3.82,
+      "timeSec": 3.98,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -40705,7 +40738,7 @@
         "ttsElo": 1339.8,
         "pricePer1mChars": 80,
         "ttfaMs": 576,
-        "cps": 60.1
+        "cps": 62.6
       },
       "releaseDate": "2026-09-28"
     },
@@ -40831,8 +40864,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1216.6,
         "pricePer1mChars": 85,
-        "ttfaMs": 4403,
-        "cps": 42
+        "ttfaMs": 4168,
+        "cps": 42.3
       },
       "releaseDate": "2026-08-26"
     },
@@ -40850,7 +40883,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 2.45,
+      "timeSec": 2.46,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -40866,7 +40899,7 @@
         "ttsElo": 1180.6,
         "pricePer1mChars": 85,
         "ttfaMs": 4629,
-        "cps": 43.4
+        "cps": 42.5
       },
       "releaseDate": "2026-04-30"
     },
@@ -41044,7 +41077,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 3.88,
+      "timeSec": 3.91,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -41060,7 +41093,7 @@
         "ttsElo": 1194.2,
         "pricePer1mChars": 100,
         "ttfaMs": 430,
-        "cps": 58.7
+        "cps": 59.8
       },
       "releaseDate": "2026-02-02"
     },
@@ -41078,7 +41111,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 6.76,
+      "timeSec": 6.91,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -41093,7 +41126,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1173,
         "pricePer1mChars": 100,
-        "ttfaMs": 461,
+        "ttfaMs": 464,
         "cps": 103.3
       },
       "releaseDate": "2026-02-14"
@@ -41189,8 +41222,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1124.6,
         "pricePer1mChars": 100,
-        "ttfaMs": 469,
-        "cps": 104.4
+        "ttfaMs": 471,
+        "cps": 107.2
       },
       "releaseDate": "2025-10-30"
     },
@@ -41304,7 +41337,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 18.65,
+      "timeSec": 17.97,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -41320,7 +41353,7 @@
         "ttsElo": 1091.2,
         "pricePer1mChars": 100,
         "ttfaMs": 720,
-        "cps": 245.1
+        "cps": 263
       },
       "releaseDate": "2023-08-22"
     },
@@ -41338,7 +41371,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 4.69,
+      "timeSec": 4.89,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -41372,7 +41405,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 3.9,
+      "timeSec": 3.81,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -41387,8 +41420,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 987.6,
         "pricePer1mChars": 100,
-        "ttfaMs": 132,
-        "cps": 66
+        "ttfaMs": 135,
+        "cps": 64.2
       },
       "releaseDate": "2024-07-23"
     },
@@ -41641,8 +41674,8 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1074.8,
         "pricePer1mChars": 160,
-        "ttfaMs": 1554,
-        "cps": 282.6
+        "ttfaMs": 1558,
+        "cps": 283.4
       },
       "releaseDate": "2023-02-08"
     },
@@ -41676,7 +41709,7 @@
         "ttsElo": 1067,
         "pricePer1mChars": 160,
         "ttfaMs": 2310,
-        "cps": 79.7
+        "cps": 78.9
       },
       "releaseDate": "2023-12-23"
     },
@@ -41758,7 +41791,7 @@
       },
       "isReasoning": false,
       "isOpenWeights": false,
-      "timeSec": 4.3,
+      "timeSec": 4.35,
       "mediaScores": {
         "t2i": null,
         "imgEdit": null,
@@ -41773,7 +41806,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1069.7,
         "pricePer1mChars": 191.56,
-        "ttfaMs": 583,
+        "ttfaMs": 581,
         "cps": 62.2
       },
       "releaseDate": "2026-05-07"
@@ -43301,6 +43334,42 @@
   ],
   "diffEvents": [
     {
+      "date": "2026-11-28",
+      "releaseDate": "2026-09-24",
+      "kind": "new",
+      "tab": "media",
+      "id": "tts:7c372343-eb8f-48dd-b6a7-006cb3e7aa5d",
+      "name": "Qwen-Audio-3.1-TTS-Plus (provider voice)",
+      "creator": "Alibaba",
+      "mediaKind": "tts",
+      "score": 86.7,
+      "cost": 0.0276
+    },
+    {
+      "date": "2026-11-28",
+      "kind": "price-up",
+      "tab": "media",
+      "id": "tts:115c856c-4b94-4c4d-b9c9-5fb7817ca4a4",
+      "name": "Qwen-Audio-3.1-TTS-Plus",
+      "creator": "Alibaba",
+      "mediaKind": "tts",
+      "oldCost": 0.0193,
+      "cost": 0.0276,
+      "pct": 43
+    },
+    {
+      "date": "2026-11-28",
+      "kind": "price-up",
+      "tab": "media",
+      "id": "tts:895c1700-65d0-4ddf-afa0-0c1a16fa064d",
+      "name": "Qwen-Audio-3.1-TTS-Plus (controlled voice)",
+      "creator": "Alibaba",
+      "mediaKind": "tts",
+      "oldCost": 0.0193,
+      "cost": 0.0276,
+      "pct": 43
+    },
+    {
       "date": "2026-11-27",
       "releaseDate": "2026-11-23",
       "kind": "new",
@@ -43487,39 +43556,6 @@
       "oldCost": 0.5686,
       "cost": 0.5429,
       "pct": -5
-    },
-    {
-      "date": "2026-11-26",
-      "kind": "price-up",
-      "tab": "models",
-      "id": "094ea3e3-ce41-419e-8bd1-723389663158",
-      "name": "Step 5 Preview",
-      "creator": "StepFun",
-      "oldCost": 2.3453,
-      "cost": 3.9376,
-      "pct": 68
-    },
-    {
-      "date": "2026-11-26",
-      "kind": "price-up",
-      "tab": "models",
-      "id": "15c4cbd7-b9aa-42c8-9ce5-5abbde0e6963",
-      "name": "Solar Pro 4",
-      "creator": "Upstage",
-      "oldCost": 0.9557,
-      "cost": 1.3347,
-      "pct": 40
-    },
-    {
-      "date": "2026-11-26",
-      "kind": "price-up",
-      "tab": "models",
-      "id": "583f98fb-c4b8-4df3-8d40-60ac0ed69882",
-      "name": "Muse Glimmer (high)",
-      "creator": "Meta",
-      "oldCost": 0.1782,
-      "cost": 0.2061,
-      "pct": 16
     }
   ]
 }
