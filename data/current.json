@@ -4,7 +4,7 @@
   "sourceUrl": "https://artificialanalysis.ai/",
   "manifestPath": "/data/b2ca3023f67eb50f.txt",
   "hostsManifestPath": "/data/324ed05c14a0dc8b.txt",
-  "updatedAt": "2026-11-28T02:17:13.809Z",
+  "updatedAt": "2026-11-28T04:17:14.039Z",
   "updateIntervalHours": 2,
   "changelog": [
     {
@@ -21423,10 +21423,10 @@
         "level": 60
       },
       "timeSec": 568.51,
-      "humanIndex": 44.65,
-      "intelligenceIndex": 44.65,
+      "humanIndex": 44.64,
+      "intelligenceIndex": 44.64,
       "aaIndex": 27.86,
-      "indexDelta": 16.79,
+      "indexDelta": 16.78,
       "humanScores": {
         "chatVibe": 49,
         "rawChatVibe": 49,
@@ -21434,9 +21434,9 @@
         "webdev": 36.29,
         "designWeb": 62.84,
         "designUi": 40.13,
-        "creativeCraft": 45.12,
+        "creativeCraft": 45.02,
         "deliverable": 29.91,
-        "pureVisual": 54.07,
+        "pureVisual": 54.05,
         "spatialMotion": 46.73,
         "antiSlop": 80.7
       },
@@ -21444,7 +21444,7 @@
         "website": 62.84,
         "uicomponent": 46.02,
         "dataviz": 34.23,
-        "gamedev": 34.92,
+        "gamedev": 34.73,
         "svg": 55.32
       },
       "arenaRaw": {
@@ -21456,13 +21456,13 @@
         "webdevVotes": 32623,
         "designWebElo": 1316,
         "designWebWinRate": 48.9,
-        "designWebBattles": 4748,
+        "designWebBattles": 4751,
         "designAvgCostUsd": 0.007,
         "designUiElo": 1284,
         "designUiWinRate": 52.9,
         "designUiBattles": 1464,
         "designDatavizElo": 1210,
-        "designGameElo": 1233,
+        "designGameElo": 1232,
         "designSvgElo": 1286,
         "gdpvalElo": 1443.9,
         "briefcaseElo": 1335.6,
@@ -21822,10 +21822,10 @@
         "level": 60
       },
       "timeSec": 576.76,
-      "humanIndex": 38.91,
-      "intelligenceIndex": 38.91,
+      "humanIndex": 38.9,
+      "intelligenceIndex": 38.9,
       "aaIndex": 23.79,
-      "indexDelta": 15.12,
+      "indexDelta": 15.11,
       "humanScores": {
         "chatVibe": 55.03,
         "rawChatVibe": 53.99,
@@ -21833,9 +21833,9 @@
         "webdev": 24.93,
         "designWeb": 54.67,
         "designUi": 29.57,
-        "creativeCraft": 32.2,
+        "creativeCraft": 32.07,
         "deliverable": 31.73,
-        "pureVisual": 43.72,
+        "pureVisual": 43.7,
         "spatialMotion": null,
         "antiSlop": null
       },
@@ -21844,7 +21844,7 @@
         "uicomponent": 28.87,
         "dataviz": 30.27,
         "gamedev": 23.39,
-        "svg": 41
+        "svg": 40.75
       },
       "arenaRaw": {
         "chatElo": 1453,
@@ -21855,14 +21855,14 @@
         "webdevVotes": 12115,
         "designWebElo": 1296,
         "designWebWinRate": 48.9,
-        "designWebBattles": 13068,
+        "designWebBattles": 13071,
         "designAvgCostUsd": 0.0091,
         "designUiElo": 1233,
         "designUiWinRate": 47.9,
         "designUiBattles": 1857,
         "designDatavizElo": 1198,
         "designGameElo": 1169,
-        "designSvgElo": 1230,
+        "designSvgElo": 1229,
         "gdpvalElo": 1469.5,
         "briefcaseElo": 1338.5,
         "aa3dElo": null,
@@ -21993,17 +21993,17 @@
         "docCraft": null,
         "webdev": 39.82,
         "designWeb": 57.99,
-        "designUi": 46,
+        "designUi": 45.85,
         "creativeCraft": 50.01,
         "deliverable": 58.41,
-        "pureVisual": 52.44,
+        "pureVisual": 52.42,
         "spatialMotion": 54.47,
         "antiSlop": 76.2
       },
       "designSub": {
         "website": 57.99,
         "uicomponent": 38.79,
-        "dataviz": 53.2,
+        "dataviz": 52.91,
         "gamedev": 51.53,
         "svg": 48.49
       },
@@ -22016,12 +22016,12 @@
         "webdevVotes": 8776,
         "designWebElo": 1304,
         "designWebWinRate": 48.5,
-        "designWebBattles": 6427,
-        "designAvgCostUsd": 0.0194,
+        "designWebBattles": 6430,
+        "designAvgCostUsd": 0.0195,
         "designUiElo": 1262,
         "designUiWinRate": 49.9,
         "designUiBattles": 483,
-        "designDatavizElo": 1276,
+        "designDatavizElo": 1275,
         "designGameElo": 1312,
         "designSvgElo": 1259,
         "gdpvalElo": 1629.3,
@@ -22159,9 +22159,9 @@
         "webdev": null,
         "designWeb": 20.95,
         "designUi": 17.07,
-        "creativeCraft": 11.94,
+        "creativeCraft": 12.02,
         "deliverable": 6.92,
-        "pureVisual": 18.51,
+        "pureVisual": 18.52,
         "spatialMotion": null,
         "antiSlop": 33.5
       },
@@ -22169,7 +22169,7 @@
         "website": 20.95,
         "uicomponent": 13.44,
         "dataviz": 20.7,
-        "gamedev": 11.94,
+        "gamedev": 12.02,
         "svg": null
       },
       "arenaRaw": {
@@ -22187,7 +22187,7 @@
         "designUiWinRate": 32.7,
         "designUiBattles": 312,
         "designDatavizElo": 1097,
-        "designGameElo": 1064,
+        "designGameElo": 1065,
         "designSvgElo": null,
         "gdpvalElo": 1162.4,
         "briefcaseElo": 998.8,
@@ -22479,9 +22479,9 @@
         "webdev": 54.25,
         "designWeb": 73.85,
         "designUi": 52.48,
-        "creativeCraft": 53.47,
+        "creativeCraft": 53.33,
         "deliverable": 66.11,
-        "pureVisual": 64.12,
+        "pureVisual": 64.1,
         "spatialMotion": null,
         "antiSlop": 53.3
       },
@@ -22490,7 +22490,7 @@
         "uicomponent": 50,
         "dataviz": 54.95,
         "gamedev": 50.44,
-        "svg": 56.49
+        "svg": 56.23
       },
       "arenaRaw": {
         "chatElo": null,
@@ -22508,7 +22508,7 @@
         "designUiBattles": 1091,
         "designDatavizElo": 1281,
         "designGameElo": 1307,
-        "designSvgElo": 1291,
+        "designSvgElo": 1290,
         "gdpvalElo": 1745.8,
         "briefcaseElo": 1570.4,
         "aa3dElo": null,
@@ -22710,10 +22710,10 @@
         "level": 60
       },
       "timeSec": 976.51,
-      "humanIndex": 55.57,
-      "intelligenceIndex": 55.57,
+      "humanIndex": 55.58,
+      "intelligenceIndex": 55.58,
       "aaIndex": 51.39,
-      "indexDelta": 4.18,
+      "indexDelta": 4.19,
       "humanScores": {
         "chatVibe": 63.9,
         "rawChatVibe": 63.9,
@@ -22721,9 +22721,9 @@
         "webdev": 60.33,
         "designWeb": 70.29,
         "designUi": 36.45,
-        "creativeCraft": 61.9,
+        "creativeCraft": 61.99,
         "deliverable": 35.69,
-        "pureVisual": 59.9,
+        "pureVisual": 59.92,
         "spatialMotion": null,
         "antiSlop": 82.2
       },
@@ -22732,7 +22732,7 @@
         "uicomponent": 43.45,
         "dataviz": 29.45,
         "gamedev": 51.75,
-        "svg": 72.04
+        "svg": 72.23
       },
       "arenaRaw": {
         "chatElo": 1473.9,
@@ -22750,7 +22750,7 @@
         "designUiBattles": 278,
         "designDatavizElo": 1168,
         "designGameElo": 1313,
-        "designSvgElo": 1361,
+        "designSvgElo": 1362,
         "gdpvalElo": 1475,
         "briefcaseElo": 1398.3,
         "aa3dElo": null,
@@ -22791,28 +22791,28 @@
         "level": 60
       },
       "timeSec": 699.53,
-      "humanIndex": 71.49,
-      "intelligenceIndex": 71.49,
+      "humanIndex": 71.5,
+      "intelligenceIndex": 71.5,
       "aaIndex": 57.26,
-      "indexDelta": 14.23,
+      "indexDelta": 14.24,
       "humanScores": {
         "chatVibe": 59.05,
         "rawChatVibe": 59.05,
         "docCraft": null,
         "webdev": 73.32,
-        "designWeb": 88.12,
+        "designWeb": 88.26,
         "designUi": 60.69,
-        "creativeCraft": 75.44,
+        "creativeCraft": 75.31,
         "deliverable": 64.84,
-        "pureVisual": 80.29,
+        "pureVisual": 80.37,
         "spatialMotion": 80.05,
         "antiSlop": 89.9
       },
       "designSub": {
-        "website": 88.12,
+        "website": 88.26,
         "uicomponent": 60.69,
         "dataviz": null,
-        "gamedev": 75.44,
+        "gamedev": 75.31,
         "svg": null
       },
       "arenaRaw": {
@@ -22822,15 +22822,15 @@
         "docVotes": null,
         "webdevElo": 1754.8,
         "webdevVotes": 2336,
-        "designWebElo": 1412,
-        "designWebWinRate": 62.3,
-        "designWebBattles": 713,
+        "designWebElo": 1413,
+        "designWebWinRate": 62.4,
+        "designWebBattles": 715,
         "designAvgCostUsd": 0.1843,
         "designUiElo": 1334,
         "designUiWinRate": 58.2,
         "designUiBattles": 110,
         "designDatavizElo": null,
-        "designGameElo": 1443,
+        "designGameElo": 1442,
         "designSvgElo": null,
         "gdpvalElo": null,
         "briefcaseElo": 1611.6,
@@ -22869,10 +22869,10 @@
         "name": "Tencent Hy4"
       },
       "timeSec": 791.53,
-      "humanIndex": 47.02,
-      "intelligenceIndex": 47.02,
+      "humanIndex": 47.01,
+      "intelligenceIndex": 47.01,
       "aaIndex": 34.57,
-      "indexDelta": 12.45,
+      "indexDelta": 12.44,
       "humanScores": {
         "chatVibe": null,
         "rawChatVibe": null,
@@ -22880,9 +22880,9 @@
         "webdev": 52.25,
         "designWeb": 57.11,
         "designUi": 32.47,
-        "creativeCraft": 37.75,
+        "creativeCraft": 37.55,
         "deliverable": 42.5,
-        "pureVisual": 46.54,
+        "pureVisual": 46.52,
         "spatialMotion": null,
         "antiSlop": null
       },
@@ -22890,7 +22890,7 @@
         "website": 57.11,
         "uicomponent": 23.12,
         "dataviz": 41.82,
-        "gamedev": 37.75,
+        "gamedev": 37.55,
         "svg": null
       },
       "arenaRaw": {
@@ -22908,7 +22908,7 @@
         "designUiWinRate": 39,
         "designUiBattles": 177,
         "designDatavizElo": 1226,
-        "designGameElo": 1245,
+        "designGameElo": 1244,
         "designSvgElo": null,
         "gdpvalElo": null,
         "briefcaseElo": 1444.9,
@@ -23189,29 +23189,29 @@
         "level": 60
       },
       "timeSec": 1513.43,
-      "humanIndex": 67.22,
-      "intelligenceIndex": 67.22,
+      "humanIndex": 67.2,
+      "intelligenceIndex": 67.2,
       "aaIndex": 54.66,
-      "indexDelta": 12.56,
+      "indexDelta": 12.54,
       "humanScores": {
         "chatVibe": 67.54,
         "rawChatVibe": 67.54,
         "docCraft": null,
         "webdev": 72.1,
         "designWeb": 79.45,
-        "designUi": 61,
-        "creativeCraft": 72.72,
+        "designUi": 60.72,
+        "creativeCraft": 72.79,
         "deliverable": 55.85,
-        "pureVisual": 73.96,
+        "pureVisual": 73.86,
         "spatialMotion": 70.75,
         "antiSlop": 74.6
       },
       "designSub": {
         "website": 79.45,
-        "uicomponent": 69.55,
+        "uicomponent": 68.98,
         "dataviz": 52.46,
         "gamedev": 66.96,
-        "svg": 78.47
+        "svg": 78.63
       },
       "arenaRaw": {
         "chatElo": 1481.9,
@@ -23224,12 +23224,12 @@
         "designWebWinRate": 54.1,
         "designWebBattles": 4357,
         "designAvgCostUsd": 0.1648,
-        "designUiElo": 1355,
-        "designUiWinRate": 58.9,
-        "designUiBattles": 501,
+        "designUiElo": 1353,
+        "designUiWinRate": 58.6,
+        "designUiBattles": 503,
         "designDatavizElo": 1275,
         "designGameElo": 1386,
-        "designSvgElo": 1399,
+        "designSvgElo": 1400,
         "gdpvalElo": 1607.4,
         "briefcaseElo": 1556.3,
         "aa3dElo": 1121.1,
@@ -23301,7 +23301,7 @@
         "webdevVotes": 20926,
         "designWebElo": 1297,
         "designWebWinRate": 51.4,
-        "designWebBattles": 16545,
+        "designWebBattles": 16548,
         "designAvgCostUsd": 0.0167,
         "designUiElo": 1227,
         "designUiWinRate": 49.9,
@@ -23669,26 +23669,26 @@
         "level": 60
       },
       "timeSec": 1292.85,
-      "humanIndex": 33.63,
-      "intelligenceIndex": 33.63,
+      "humanIndex": 33.64,
+      "intelligenceIndex": 33.64,
       "aaIndex": 23.06,
-      "indexDelta": 10.57,
+      "indexDelta": 10.58,
       "humanScores": {
         "chatVibe": 56.46,
         "rawChatVibe": 56.46,
         "docCraft": null,
         "webdev": 14.86,
         "designWeb": 45.76,
-        "designUi": 25.38,
+        "designUi": 25.5,
         "creativeCraft": 28.97,
         "deliverable": 26.41,
-        "pureVisual": 36.69,
+        "pureVisual": 36.73,
         "spatialMotion": null,
         "antiSlop": null
       },
       "designSub": {
         "website": 45.76,
-        "uicomponent": 21.04,
+        "uicomponent": 21.28,
         "dataviz": 29.71,
         "gamedev": 29.11,
         "svg": 28.83
@@ -23704,7 +23704,7 @@
         "designWebWinRate": 50.8,
         "designWebBattles": 14658,
         "designAvgCostUsd": 0.0135,
-        "designUiElo": 1204,
+        "designUiElo": 1205,
         "designUiWinRate": 50.6,
         "designUiBattles": 2112,
         "designDatavizElo": 1196,
@@ -23867,7 +23867,7 @@
         "webdevVotes": 13627,
         "designWebElo": 1409,
         "designWebWinRate": 59.3,
-        "designWebBattles": 24245,
+        "designWebBattles": 24247,
         "designAvgCostUsd": 0.1495,
         "designUiElo": 1340,
         "designUiWinRate": 58,
@@ -23948,8 +23948,8 @@
         "webdevVotes": 8574,
         "designWebElo": 1338,
         "designWebWinRate": 52.6,
-        "designWebBattles": 3858,
-        "designAvgCostUsd": 0.1537,
+        "designWebBattles": 3860,
+        "designAvgCostUsd": 0.1536,
         "designUiElo": 1283,
         "designUiWinRate": 52,
         "designUiBattles": 1019,
@@ -24641,28 +24641,28 @@
         "level": 60
       },
       "timeSec": 1010.63,
-      "humanIndex": 72.9,
-      "intelligenceIndex": 72.9,
+      "humanIndex": 72.89,
+      "intelligenceIndex": 72.89,
       "aaIndex": 62.19,
-      "indexDelta": 10.71,
+      "indexDelta": 10.7,
       "humanScores": {
         "chatVibe": 60.45,
         "rawChatVibe": 60.45,
         "docCraft": null,
         "webdev": 74.23,
         "designWeb": 83.68,
-        "designUi": 59.48,
-        "creativeCraft": 82.59,
+        "designUi": 59.2,
+        "creativeCraft": 82.71,
         "deliverable": 68.57,
-        "pureVisual": 77.74,
+        "pureVisual": 77.69,
         "spatialMotion": 85.1,
         "antiSlop": 92.9
       },
       "designSub": {
         "website": 83.68,
-        "uicomponent": 59.48,
+        "uicomponent": 59.2,
         "dataviz": null,
-        "gamedev": 82.59,
+        "gamedev": 82.71,
         "svg": null
       },
       "arenaRaw": {
@@ -24676,11 +24676,11 @@
         "designWebWinRate": 58.4,
         "designWebBattles": 1066,
         "designAvgCostUsd": 0.9109,
-        "designUiElo": 1326,
-        "designUiWinRate": 55.8,
-        "designUiBattles": 181,
+        "designUiElo": 1325,
+        "designUiWinRate": 55.7,
+        "designUiBattles": 183,
         "designDatavizElo": null,
-        "designGameElo": 1500,
+        "designGameElo": 1501,
         "designSvgElo": null,
         "gdpvalElo": null,
         "briefcaseElo": 1642.3,
@@ -24914,8 +24914,8 @@
         "webdevVotes": 9541,
         "designWebElo": 1389,
         "designWebWinRate": 58.6,
-        "designWebBattles": 6050,
-        "designAvgCostUsd": 1.579,
+        "designWebBattles": 6054,
+        "designAvgCostUsd": 1.5798,
         "designUiElo": 1385,
         "designUiWinRate": 65.8,
         "designUiBattles": 678,
@@ -24964,28 +24964,28 @@
         "level": 50
       },
       "timeSec": 1571.69,
-      "humanIndex": 72.59,
-      "intelligenceIndex": 72.59,
+      "humanIndex": 72.6,
+      "intelligenceIndex": 72.6,
       "aaIndex": 61.55,
-      "indexDelta": 11.04,
+      "indexDelta": 11.05,
       "humanScores": {
         "chatVibe": 78.73,
         "rawChatVibe": 78.73,
         "docCraft": null,
         "webdev": 75.05,
-        "designWeb": 83.53,
+        "designWeb": 83.54,
         "designUi": 61.79,
-        "creativeCraft": 68.42,
+        "creativeCraft": 68.43,
         "deliverable": 74.79,
-        "pureVisual": 75.58,
+        "pureVisual": 75.59,
         "spatialMotion": 78.78,
         "antiSlop": 32
       },
       "designSub": {
-        "website": 83.53,
+        "website": 83.54,
         "uicomponent": 63.59,
         "dataviz": 59.99,
-        "gamedev": 68.42,
+        "gamedev": 68.43,
         "svg": null
       },
       "arenaRaw": {
@@ -24996,9 +24996,9 @@
         "webdevElo": 1765.3,
         "webdevVotes": 2308,
         "designWebElo": 1384,
-        "designWebWinRate": 58.2,
-        "designWebBattles": 1163,
-        "designAvgCostUsd": 0.4041,
+        "designWebWinRate": 58.1,
+        "designWebBattles": 1166,
+        "designAvgCostUsd": 0.4037,
         "designUiElo": 1340,
         "designUiWinRate": 58.5,
         "designUiBattles": 188,
@@ -25080,7 +25080,7 @@
         "webdevVotes": 2049,
         "designWebElo": 1427,
         "designWebWinRate": 63.7,
-        "designWebBattles": 5152,
+        "designWebBattles": 5153,
         "designAvgCostUsd": 0.4276,
         "designUiElo": 1361,
         "designUiWinRate": 62.1,
@@ -25454,26 +25454,26 @@
         "level": 50
       },
       "timeSec": 2734.35,
-      "humanIndex": 57.69,
-      "intelligenceIndex": 57.69,
+      "humanIndex": 57.67,
+      "intelligenceIndex": 57.67,
       "aaIndex": 33.69,
-      "indexDelta": 24,
+      "indexDelta": 23.98,
       "humanScores": {
         "chatVibe": 68.32,
         "rawChatVibe": 68.32,
         "docCraft": null,
         "webdev": 57.49,
         "designWeb": 63.26,
-        "designUi": 57.34,
+        "designUi": 57.16,
         "creativeCraft": 47.82,
         "deliverable": 63.55,
-        "pureVisual": 60.41,
+        "pureVisual": 60.34,
         "spatialMotion": 42.9,
         "antiSlop": 22.8
       },
       "designSub": {
         "website": 63.26,
-        "uicomponent": 60.36,
+        "uicomponent": 60.01,
         "dataviz": 54.32,
         "gamedev": 47.82,
         "svg": null
@@ -25489,7 +25489,7 @@
         "designWebWinRate": 50.8,
         "designWebBattles": 6217,
         "designAvgCostUsd": 0.206,
-        "designUiElo": 1324,
+        "designUiElo": 1323,
         "designUiWinRate": 56.3,
         "designUiBattles": 1442,
         "designDatavizElo": 1279,
@@ -25778,10 +25778,10 @@
         "level": 60
       },
       "timeSec": 2422.67,
-      "humanIndex": 80.73,
-      "intelligenceIndex": 80.73,
+      "humanIndex": 80.74,
+      "intelligenceIndex": 80.74,
       "aaIndex": 64.77,
-      "indexDelta": 15.96,
+      "indexDelta": 15.97,
       "humanScores": {
         "chatVibe": 75.34,
         "rawChatVibe": 75.34,
@@ -25789,9 +25789,9 @@
         "webdev": 82.83,
         "designWeb": 87.88,
         "designUi": 77.13,
-        "creativeCraft": 85.21,
+        "creativeCraft": 85.4,
         "deliverable": 81.95,
-        "pureVisual": 85.03,
+        "pureVisual": 85.05,
         "spatialMotion": 81.2,
         "antiSlop": 79.2
       },
@@ -25799,7 +25799,7 @@
         "website": 87.88,
         "uicomponent": 77.13,
         "dataviz": null,
-        "gamedev": 85.21,
+        "gamedev": 85.4,
         "svg": null
       },
       "arenaRaw": {
@@ -25817,7 +25817,7 @@
         "designUiWinRate": 65.8,
         "designUiBattles": 240,
         "designDatavizElo": null,
-        "designGameElo": 1538,
+        "designGameElo": 1540,
         "designSvgElo": null,
         "gdpvalElo": 1830.1,
         "briefcaseElo": 1782.7,
@@ -27741,7 +27741,7 @@
           "cost": 6.9520364786062245,
           "score": 1427,
           "winRate": 63.7,
-          "battles": 5152,
+          "battles": 5153,
           "suites": {
             "website": 1427,
             "uicomponent": 1361,
@@ -27757,13 +27757,13 @@
           "creator": "OpenAI",
           "modelId": "a1a84b18-e8c9-48fb-8e04-6003bd9f6ff4",
           "cost": 1.014379970300768,
-          "score": 1412,
-          "winRate": 62.3,
-          "battles": 713,
+          "score": 1413,
+          "winRate": 62.4,
+          "battles": 715,
           "suites": {
-            "website": 1412,
+            "website": 1413,
             "uicomponent": 1334,
-            "gamedev": 1443
+            "gamedev": 1442
           }
         },
         {
@@ -27775,13 +27775,13 @@
           "cost": 2.3857813858107244,
           "score": 1409,
           "winRate": 59.3,
-          "battles": 24245,
+          "battles": 24247,
           "suites": {
             "website": 1409,
             "uicomponent": 1337,
             "dataviz": 1339,
             "gamedev": 1314,
-            "svg": 1342
+            "svg": 1341
           }
         },
         {
@@ -27797,7 +27797,7 @@
           "suites": {
             "website": 1405,
             "uicomponent": 1393,
-            "gamedev": 1538
+            "gamedev": 1540
           }
         },
         {
@@ -27809,7 +27809,7 @@
           "cost": 2.3857813858107244,
           "score": 1401,
           "winRate": 57.9,
-          "battles": 21387,
+          "battles": 21390,
           "suites": {
             "website": 1401,
             "uicomponent": 1340,
@@ -27827,7 +27827,7 @@
           "cost": 6.244666943602518,
           "score": 1389,
           "winRate": 58.6,
-          "battles": 6050,
+          "battles": 6054,
           "suites": {
             "website": 1389,
             "uicomponent": 1385,
@@ -27866,7 +27866,7 @@
             "uicomponent": 1360,
             "dataviz": 1331,
             "gamedev": 1462,
-            "svg": 1456
+            "svg": 1457
           }
         },
         {
@@ -27893,8 +27893,8 @@
           "battles": 1066,
           "suites": {
             "website": 1385,
-            "uicomponent": 1326,
-            "gamedev": 1500
+            "uicomponent": 1325,
+            "gamedev": 1501
           }
         },
         {
@@ -27905,8 +27905,8 @@
           "modelId": "7c667f2d-0149-4eb1-864c-7e66c166ad88",
           "cost": 6.444838101104699,
           "score": 1384,
-          "winRate": 58.2,
-          "battles": 1163,
+          "winRate": 58.1,
+          "battles": 1166,
           "suites": {
             "website": 1384,
             "uicomponent": 1340,
@@ -27993,7 +27993,7 @@
             "uicomponent": 1325,
             "dataviz": 1318,
             "gamedev": 1349,
-            "svg": 1356
+            "svg": 1355
           }
         },
         {
@@ -28044,10 +28044,10 @@
           "battles": 4357,
           "suites": {
             "website": 1365,
-            "uicomponent": 1355,
+            "uicomponent": 1353,
             "dataviz": 1275,
             "gamedev": 1386,
-            "svg": 1399
+            "svg": 1400
           }
         },
         {
@@ -28074,7 +28074,7 @@
           "name": "hampshire",
           "score": 1359,
           "winRate": 51.8,
-          "battles": 18290,
+          "battles": 18292,
           "suites": {
             "website": 1359,
             "uicomponent": 1327,
@@ -28109,7 +28109,7 @@
             "website": 1354,
             "uicomponent": 1306,
             "dataviz": 1286,
-            "gamedev": 1297,
+            "gamedev": 1296,
             "svg": 1343
           }
         },
@@ -28190,7 +28190,7 @@
           "name": "gemini-3.7-flash",
           "score": 1344,
           "winRate": 53.6,
-          "battles": 47066,
+          "battles": 47068,
           "suites": {
             "website": 1344,
             "uicomponent": 1282,
@@ -28214,7 +28214,7 @@
             "uicomponent": 1268,
             "dataviz": 1275,
             "gamedev": 1244,
-            "svg": 1291
+            "svg": 1290
           }
         },
         {
@@ -28273,7 +28273,7 @@
           "cost": 2.465800491412395,
           "score": 1338,
           "winRate": 52.6,
-          "battles": 3858,
+          "battles": 3860,
           "suites": {
             "website": 1338,
             "uicomponent": 1283,
@@ -28293,7 +28293,7 @@
             "website": 1336,
             "uicomponent": 1304,
             "dataviz": 1299,
-            "gamedev": 1307,
+            "gamedev": 1306,
             "svg": 1342
           }
         },
@@ -28312,7 +28312,7 @@
             "uicomponent": 1275,
             "dataviz": 1168,
             "gamedev": 1313,
-            "svg": 1361
+            "svg": 1362
           }
         },
         {
@@ -28342,7 +28342,7 @@
             "uicomponent": 1264,
             "dataviz": 1263,
             "gamedev": 1249,
-            "svg": 1268
+            "svg": 1267
           }
         },
         {
@@ -28357,7 +28357,7 @@
             "uicomponent": 1278,
             "dataviz": 1244,
             "gamedev": 1271,
-            "svg": 1292
+            "svg": 1291
           }
         },
         {
@@ -28385,7 +28385,7 @@
             "website": 1325,
             "uicomponent": 1257,
             "dataviz": 1271,
-            "gamedev": 1230,
+            "gamedev": 1229,
             "svg": 1237
           }
         },
@@ -28395,7 +28395,7 @@
           "name": "glm-5.2",
           "score": 1325,
           "winRate": 49.8,
-          "battles": 30273,
+          "battles": 30276,
           "suites": {
             "website": 1325,
             "uicomponent": 1278,
@@ -28485,13 +28485,13 @@
           "name": "claude-sonnet-5",
           "score": 1317,
           "winRate": 52.5,
-          "battles": 13550,
+          "battles": 13555,
           "suites": {
             "website": 1317,
             "uicomponent": 1261,
             "dataviz": 1245,
             "gamedev": 1256,
-            "svg": 1236
+            "svg": 1235
           }
         },
         {
@@ -28506,7 +28506,7 @@
           "battles": 6217,
           "suites": {
             "website": 1317,
-            "uicomponent": 1324,
+            "uicomponent": 1323,
             "dataviz": 1279,
             "gamedev": 1295
           }
@@ -28523,7 +28523,7 @@
             "uicomponent": 1256,
             "dataviz": 1270,
             "gamedev": 1234,
-            "svg": 1257
+            "svg": 1256
           }
         },
         {
@@ -28535,12 +28535,12 @@
           "cost": 0.15195575732105837,
           "score": 1316,
           "winRate": 48.9,
-          "battles": 4748,
+          "battles": 4751,
           "suites": {
             "website": 1316,
             "uicomponent": 1284,
             "dataviz": 1210,
-            "gamedev": 1233,
+            "gamedev": 1232,
             "svg": 1286
           }
         },
@@ -28554,7 +28554,7 @@
           "suites": {
             "website": 1313,
             "uicomponent": 1196,
-            "dataviz": 1272,
+            "dataviz": 1273,
             "gamedev": 1232
           }
         },
@@ -28584,7 +28584,7 @@
             "website": 1312,
             "uicomponent": 1273,
             "dataviz": 1259,
-            "gamedev": 1240,
+            "gamedev": 1239,
             "svg": 1272
           }
         },
@@ -28639,7 +28639,7 @@
           "name": "gemini-3.5-flash",
           "score": 1309,
           "winRate": 53.8,
-          "battles": 20666,
+          "battles": 20668,
           "suites": {
             "website": 1309,
             "uicomponent": 1259,
@@ -28660,7 +28660,7 @@
             "uicomponent": 1242,
             "dataviz": 1244,
             "gamedev": 1225,
-            "svg": 1230
+            "svg": 1229
           }
         },
         {
@@ -34897,7 +34897,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1059.7,
         "pricePer1mChars": 0.65,
-        "ttfaMs": 1578,
+        "ttfaMs": 1572,
         "cps": 240.2
       },
       "releaseDate": "2025-01-27"
@@ -34942,7 +34942,7 @@
       "name": "Step Image Edit 2",
       "shortName": "Step Image Edit 2",
       "mediaKind": "image",
-      "intelligenceIndex": 46.55,
+      "intelligenceIndex": 46.45,
       "cost": 0.003,
       "creator": {
         "name": "StepFun",
@@ -34952,7 +34952,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 46.55,
+        "imgEdit": 46.45,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -34963,7 +34963,7 @@
         "unitZh": "每张图",
         "unitEn": "/ image",
         "t2iElo": null,
-        "imgEditElo": 1006.99,
+        "imgEditElo": 1006.46,
         "pricePer1k": 3
       }
     },
@@ -34973,7 +34973,7 @@
       "name": "P-Image-Ideogram (Very Low)",
       "shortName": "P-Image-Ideogram (Very Low)",
       "mediaKind": "image",
-      "intelligenceIndex": 32.35,
+      "intelligenceIndex": 32.41,
       "cost": 0.003,
       "creator": {
         "name": "Pruna AI",
@@ -34982,7 +34982,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 32.35,
+        "t2i": 32.41,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -34993,7 +34993,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 913.86,
+        "t2iElo": 914.22,
         "imgEditElo": null,
         "pricePer1k": 3
       }
@@ -35004,7 +35004,7 @@
       "name": "FLUX.1 [schnell]",
       "shortName": "FLUX.1 [schnell]",
       "mediaKind": "image",
-      "intelligenceIndex": 11.33,
+      "intelligenceIndex": 11.31,
       "cost": 0.003,
       "creator": {
         "name": "Black Forest Labs",
@@ -35013,7 +35013,7 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 11.33,
+        "t2i": 11.31,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35024,7 +35024,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 741.94,
+        "t2iElo": 741.72,
         "imgEditElo": null,
         "pricePer1k": 3
       }
@@ -35126,7 +35126,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 830.6,
         "pricePer1mChars": 4,
-        "ttfaMs": 92,
+        "ttfaMs": 93,
         "cps": 947
       },
       "releaseDate": "2016-11-30"
@@ -35137,7 +35137,7 @@
       "name": "FLUX.2 [dev] Flash",
       "shortName": "FLUX.2 [dev] Flash",
       "mediaKind": "image",
-      "intelligenceIndex": 45.88,
+      "intelligenceIndex": 45.78,
       "cost": 0.005,
       "creator": {
         "name": "Fal",
@@ -35146,8 +35146,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 45.26,
-        "imgEdit": 46.49,
+        "t2i": 45.2,
+        "imgEdit": 46.35,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35157,8 +35157,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 985.24,
-        "imgEditElo": 1006.69,
+        "t2iElo": 984.9,
+        "imgEditElo": 1005.96,
         "pricePer1k": 5
       }
     },
@@ -35168,7 +35168,7 @@
       "name": "Z-Image Turbo",
       "shortName": "Z-Image Turbo",
       "mediaKind": "image",
-      "intelligenceIndex": 36.4,
+      "intelligenceIndex": 36.32,
       "cost": 0.005,
       "creator": {
         "name": "Alibaba",
@@ -35177,7 +35177,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 36.4,
+        "t2i": 36.32,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35188,7 +35188,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 937.32,
+        "t2iElo": 936.85,
         "imgEditElo": null,
         "pricePer1k": 5
       }
@@ -35199,7 +35199,7 @@
       "name": "P-Image",
       "shortName": "P-Image",
       "mediaKind": "image",
-      "intelligenceIndex": 28.7,
+      "intelligenceIndex": 28.69,
       "cost": 0.005,
       "creator": {
         "name": "Pruna AI",
@@ -35208,7 +35208,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 28.7,
+        "t2i": 28.69,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35219,7 +35219,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 891.42,
+        "t2iElo": 891.38,
         "imgEditElo": null,
         "pricePer1k": 5
       }
@@ -35230,7 +35230,7 @@
       "name": "HiDream-O1-Image-Dev",
       "shortName": "HiDream-O1-Image-Dev",
       "mediaKind": "image",
-      "intelligenceIndex": 20.92,
+      "intelligenceIndex": 20.91,
       "cost": 0.005,
       "creator": {
         "name": "HiDream",
@@ -35239,8 +35239,8 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 17.3,
-        "imgEdit": 24.54,
+        "t2i": 17.23,
+        "imgEdit": 24.6,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35250,8 +35250,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 806.12,
-        "imgEditElo": 878.65,
+        "t2iElo": 805.52,
+        "imgEditElo": 879.09,
         "pricePer1k": 5
       }
     },
@@ -35261,7 +35261,7 @@
       "name": "Luma Photon Flash",
       "shortName": "Luma Photon Flash",
       "mediaKind": "image",
-      "intelligenceIndex": 13.98,
+      "intelligenceIndex": 14.07,
       "cost": 0.005,
       "creator": {
         "name": "Luma Labs",
@@ -35270,7 +35270,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 13.98,
+        "t2i": 14.07,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35281,7 +35281,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 773.23,
+        "t2iElo": 774.29,
         "imgEditElo": null,
         "pricePer1k": 5
       }
@@ -35383,7 +35383,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1113.7,
         "pricePer1mChars": 6.58,
-        "ttfaMs": 110,
+        "ttfaMs": 108,
         "cps": 109.9
       },
       "releaseDate": "2026-02-19"
@@ -35394,7 +35394,7 @@
       "name": "Recraft V4.1 Flash",
       "shortName": "Recraft V4.1 Flash",
       "mediaKind": "image",
-      "intelligenceIndex": 38.4,
+      "intelligenceIndex": 38.35,
       "cost": 0.007,
       "creator": {
         "name": "Recraft",
@@ -35403,7 +35403,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 38.4,
+        "t2i": 38.35,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35414,7 +35414,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 948.4,
+        "t2iElo": 948.14,
         "imgEditElo": null,
         "pricePer1k": 7
       }
@@ -35425,7 +35425,7 @@
       "name": "Ideogram 4.0 Instant",
       "shortName": "Ideogram 4.0 Instant",
       "mediaKind": "image",
-      "intelligenceIndex": 45.4,
+      "intelligenceIndex": 45.58,
       "cost": 0.0075,
       "creator": {
         "name": "Fal",
@@ -35434,7 +35434,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 45.4,
+        "t2i": 45.58,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35445,7 +35445,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 985.97,
+        "t2iElo": 986.92,
         "imgEditElo": null,
         "pricePer1k": 7.5
       }
@@ -35456,7 +35456,7 @@
       "name": "P-Image-Ideogram (Low)",
       "shortName": "P-Image-Ideogram (Low)",
       "mediaKind": "image",
-      "intelligenceIndex": 41.56,
+      "intelligenceIndex": 41.54,
       "cost": 0.0075,
       "creator": {
         "name": "Pruna AI",
@@ -35465,7 +35465,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 41.56,
+        "t2i": 41.54,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35476,7 +35476,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 965.61,
+        "t2iElo": 965.49,
         "imgEditElo": null,
         "pricePer1k": 7.5
       }
@@ -35487,7 +35487,7 @@
       "name": "FLUX.2 [dev] Turbo",
       "shortName": "FLUX.2 [dev] Turbo",
       "mediaKind": "image",
-      "intelligenceIndex": 47.9,
+      "intelligenceIndex": 47.78,
       "cost": 0.008,
       "creator": {
         "name": "Fal",
@@ -35496,8 +35496,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 47.55,
-        "imgEdit": 48.25,
+        "t2i": 47.49,
+        "imgEdit": 48.06,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35507,8 +35507,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 997.22,
-        "imgEditElo": 1015.88,
+        "t2iElo": 996.89,
+        "imgEditElo": 1014.86,
         "pricePer1k": 8
       }
     },
@@ -35561,8 +35561,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 55.68,
-        "imgEdit": 58.21,
+        "t2i": 55.76,
+        "imgEdit": 58.15,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35572,8 +35572,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1039.75,
-        "imgEditElo": 1068.19,
+        "t2iElo": 1040.17,
+        "imgEditElo": 1067.83,
         "pricePer1k": 9
       }
     },
@@ -35650,7 +35650,7 @@
       "name": "Muse Image",
       "shortName": "Muse Image",
       "mediaKind": "image",
-      "intelligenceIndex": 70.04,
+      "intelligenceIndex": 70.07,
       "cost": 0.01,
       "creator": {
         "name": "Meta",
@@ -35659,8 +35659,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 70.98,
-        "imgEdit": 69.1,
+        "t2i": 71.07,
+        "imgEdit": 69.08,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35670,8 +35670,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1126.55,
-        "imgEditElo": 1129.88,
+        "t2iElo": 1127.12,
+        "imgEditElo": 1129.73,
         "pricePer1k": 10
       }
     },
@@ -35704,7 +35704,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1158.9,
         "pricePer1mChars": 10,
-        "ttfaMs": 147,
+        "ttfaMs": 142,
         "cps": 136.8
       },
       "releaseDate": "2026-07-21"
@@ -35749,7 +35749,7 @@
       "name": "P-Image-Ideogram (Medium)",
       "shortName": "P-Image-Ideogram (Medium)",
       "mediaKind": "image",
-      "intelligenceIndex": 43.76,
+      "intelligenceIndex": 43.87,
       "cost": 0.01,
       "creator": {
         "name": "Pruna AI",
@@ -35758,7 +35758,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 43.76,
+        "t2i": 43.87,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35769,7 +35769,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 977.32,
+        "t2iElo": 977.91,
         "imgEditElo": null,
         "pricePer1k": 10
       }
@@ -35780,7 +35780,7 @@
       "name": "P-Image-Edit",
       "shortName": "P-Image-Edit",
       "mediaKind": "image",
-      "intelligenceIndex": 41.83,
+      "intelligenceIndex": 41.81,
       "cost": 0.01,
       "creator": {
         "name": "Pruna AI",
@@ -35790,7 +35790,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 41.83,
+        "imgEdit": 41.81,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35801,7 +35801,7 @@
         "unitZh": "每张图",
         "unitEn": "/ image",
         "t2iElo": null,
-        "imgEditElo": 982.04,
+        "imgEditElo": 981.94,
         "pricePer1k": 10
       }
     },
@@ -35811,7 +35811,7 @@
       "name": "HiDream-O1-Image",
       "shortName": "HiDream-O1-Image",
       "mediaKind": "image",
-      "intelligenceIndex": 40.05,
+      "intelligenceIndex": 39.97,
       "cost": 0.01,
       "creator": {
         "name": "HiDream",
@@ -35820,8 +35820,8 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 44.1,
-        "imgEdit": 36,
+        "t2i": 44.02,
+        "imgEdit": 35.91,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35831,8 +35831,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 979.13,
-        "imgEditElo": 950.04,
+        "t2iElo": 978.67,
+        "imgEditElo": 949.54,
         "pricePer1k": 10
       }
     },
@@ -35842,7 +35842,7 @@
       "name": "Z-Image Base",
       "shortName": "Z-Image Base",
       "mediaKind": "image",
-      "intelligenceIndex": 29.25,
+      "intelligenceIndex": 29.14,
       "cost": 0.01,
       "creator": {
         "name": "Alibaba",
@@ -35851,7 +35851,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 29.25,
+        "t2i": 29.14,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -35862,7 +35862,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 894.92,
+        "t2iElo": 894.24,
         "imgEditElo": null,
         "pricePer1k": 10
       }
@@ -35930,7 +35930,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1045.1,
         "pricePer1mChars": 10.1,
-        "ttfaMs": 390,
+        "ttfaMs": 386,
         "cps": 128.5
       },
       "releaseDate": "2025-07-08"
@@ -35941,7 +35941,7 @@
       "name": "MAI-Image-2.7-Flash",
       "shortName": "MAI-Image-2.7-Flash",
       "mediaKind": "image",
-      "intelligenceIndex": 76.26,
+      "intelligenceIndex": 76.29,
       "cost": 0.01024,
       "creator": {
         "name": "Microsoft AI",
@@ -35950,8 +35950,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 76.02,
-        "imgEdit": 76.5,
+        "t2i": 76.05,
+        "imgEdit": 76.53,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -35961,8 +35961,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1160.34,
-        "imgEditElo": 1178.75,
+        "t2iElo": 1160.52,
+        "imgEditElo": 1179,
         "pricePer1k": 10.24
       },
       "releaseDate": "2026-11-17"
@@ -35996,7 +35996,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1216.6,
         "pricePer1mChars": 10.42,
-        "ttfaMs": 80,
+        "ttfaMs": 79,
         "cps": 221.2
       },
       "releaseDate": "2026-08-25"
@@ -36007,7 +36007,7 @@
       "name": "ERNIE Image Turbo",
       "shortName": "ERNIE Image Turbo",
       "mediaKind": "image",
-      "intelligenceIndex": 32.73,
+      "intelligenceIndex": 32.63,
       "cost": 0.01049,
       "creator": {
         "name": "Baidu",
@@ -36016,7 +36016,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 32.73,
+        "t2i": 32.63,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -36027,7 +36027,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 916.16,
+        "t2iElo": 915.55,
         "imgEditElo": null,
         "pricePer1k": 10.49
       }
@@ -36038,7 +36038,7 @@
       "name": "Ideogram 4.0 Fast",
       "shortName": "Ideogram 4.0 Fast",
       "mediaKind": "image",
-      "intelligenceIndex": 41.5,
+      "intelligenceIndex": 41.48,
       "cost": 0.0105,
       "creator": {
         "name": "Fal",
@@ -36047,7 +36047,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 41.5,
+        "t2i": 41.48,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -36058,7 +36058,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 965.28,
+        "t2iElo": 965.14,
         "imgEditElo": null,
         "pricePer1k": 10.5
       }
@@ -36069,7 +36069,7 @@
       "name": "GPT Image 1 Mini (medium)",
       "shortName": "GPT Image 1 Mini (medium)",
       "mediaKind": "image",
-      "intelligenceIndex": 35.41,
+      "intelligenceIndex": 35.7,
       "cost": 0.011,
       "creator": {
         "name": "OpenAI",
@@ -36078,8 +36078,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 36.94,
-        "imgEdit": 33.89,
+        "t2i": 37.4,
+        "imgEdit": 34.01,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36089,8 +36089,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 940.31,
-        "imgEditElo": 937.94,
+        "t2iElo": 942.91,
+        "imgEditElo": 938.64,
         "pricePer1k": 11
       }
     },
@@ -36123,7 +36123,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1265.2,
         "pricePer1mChars": 11.03,
-        "ttfaMs": 444,
+        "ttfaMs": 405,
         "cps": 112
       },
       "releaseDate": "2026-09-23"
@@ -36157,7 +36157,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 942.2,
         "pricePer1mChars": 11.03,
-        "ttfaMs": 623,
+        "ttfaMs": 627,
         "cps": 56.4
       },
       "releaseDate": "2025-09-22"
@@ -36222,7 +36222,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1213.9,
         "pricePer1mChars": 13,
-        "ttfaMs": 465,
+        "ttfaMs": 443,
         "cps": 107.1
       },
       "releaseDate": "2026-10-20"
@@ -36300,7 +36300,7 @@
       "name": "FLUX.2 [klein] 4B",
       "shortName": "FLUX.2 [klein] 4B",
       "mediaKind": "image",
-      "intelligenceIndex": 27.75,
+      "intelligenceIndex": 27.8,
       "cost": 0.014,
       "creator": {
         "name": "Black Forest Labs",
@@ -36309,8 +36309,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 21.18,
-        "imgEdit": 34.31,
+        "t2i": 21.09,
+        "imgEdit": 34.5,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36320,8 +36320,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 838.81,
-        "imgEditElo": 940.35,
+        "t2iElo": 838.11,
+        "imgEditElo": 941.47,
         "pricePer1k": 14
       }
     },
@@ -36354,7 +36354,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1181.6,
         "pricePer1mChars": 14.23,
-        "ttfaMs": 292,
+        "ttfaMs": 291,
         "cps": 18.1
       },
       "releaseDate": "2026-08-12"
@@ -36422,7 +36422,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1241,
         "pricePer1mChars": 15,
-        "ttfaMs": 264,
+        "ttfaMs": 263,
         "cps": 71.6
       },
       "releaseDate": "2026-10-14"
@@ -36456,7 +36456,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1209.7,
         "pricePer1mChars": 15,
-        "ttfaMs": 214,
+        "ttfaMs": 213,
         "cps": 171.1
       },
       "releaseDate": "2026-10-28"
@@ -36524,7 +36524,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1181.1,
         "pricePer1mChars": 15,
-        "ttfaMs": 215,
+        "ttfaMs": 227,
         "cps": 68.7
       },
       "releaseDate": "2026-10-14"
@@ -36569,7 +36569,7 @@
       "name": "Krea 2 Medium Turbo",
       "shortName": "Krea 2 Medium Turbo",
       "mediaKind": "image",
-      "intelligenceIndex": 51.94,
+      "intelligenceIndex": 51.95,
       "cost": 0.015,
       "creator": {
         "name": "Krea",
@@ -36578,7 +36578,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 51.94,
+        "t2i": 51.95,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -36589,7 +36589,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1020.13,
+        "t2iElo": 1020.16,
         "imgEditElo": null,
         "pricePer1k": 15
       }
@@ -36623,7 +36623,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1104.5,
         "pricePer1mChars": 15,
-        "ttfaMs": 177,
+        "ttfaMs": 178,
         "cps": 113.8
       },
       "releaseDate": "2026-03-10"
@@ -36634,7 +36634,7 @@
       "name": "P-Image-Ideogram (High)",
       "shortName": "P-Image-Ideogram (High)",
       "mediaKind": "image",
-      "intelligenceIndex": 47.5,
+      "intelligenceIndex": 47.46,
       "cost": 0.015,
       "creator": {
         "name": "Pruna AI",
@@ -36643,7 +36643,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 47.5,
+        "t2i": 47.46,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -36654,7 +36654,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 996.95,
+        "t2iElo": 996.75,
         "imgEditElo": null,
         "pricePer1k": 15
       }
@@ -36722,7 +36722,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1086.9,
         "pricePer1mChars": 15,
-        "ttfaMs": 1431,
+        "ttfaMs": 1437,
         "cps": 172.2
       },
       "releaseDate": "2023-11-06"
@@ -36733,7 +36733,7 @@
       "name": "FLUX.2 [klein] 9B",
       "shortName": "FLUX.2 [klein] 9B",
       "mediaKind": "image",
-      "intelligenceIndex": 41.4,
+      "intelligenceIndex": 41.37,
       "cost": 0.015,
       "creator": {
         "name": "Black Forest Labs",
@@ -36742,8 +36742,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 35.31,
-        "imgEdit": 47.49,
+        "t2i": 35.33,
+        "imgEdit": 47.41,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36753,8 +36753,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 931.11,
-        "imgEditElo": 1011.89,
+        "t2iElo": 931.22,
+        "imgEditElo": 1011.5,
         "pricePer1k": 15
       }
     },
@@ -36832,7 +36832,7 @@
       "name": "Qwen-Image-2.1-Turbo",
       "shortName": "Qwen-Image-2.1-Turbo",
       "mediaKind": "image",
-      "intelligenceIndex": 54.97,
+      "intelligenceIndex": 54.88,
       "cost": 0.016,
       "creator": {
         "name": "Alibaba",
@@ -36841,8 +36841,8 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 53.12,
-        "imgEdit": 56.83,
+        "t2i": 53.05,
+        "imgEdit": 56.72,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -36852,8 +36852,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1026.27,
-        "imgEditElo": 1060.8,
+        "t2iElo": 1025.9,
+        "imgEditElo": 1060.21,
         "pricePer1k": 16
       }
     },
@@ -36886,7 +36886,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1093.5,
         "pricePer1mChars": 16,
-        "ttfaMs": 582,
+        "ttfaMs": 588,
         "cps": 110.5
       },
       "releaseDate": "2026-03-26"
@@ -36920,7 +36920,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 894.4,
         "pricePer1mChars": 16,
-        "ttfaMs": 173,
+        "ttfaMs": 174,
         "cps": 994.3
       },
       "releaseDate": "2019-07-30"
@@ -36988,7 +36988,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1285.1,
         "pricePer1mChars": 16.49,
-        "ttfaMs": 728,
+        "ttfaMs": 716,
         "cps": 61.1
       },
       "releaseDate": "2026-09-23"
@@ -37030,7 +37030,7 @@
       "name": "Lucid Origin Fast",
       "shortName": "Lucid Origin Fast",
       "mediaKind": "image",
-      "intelligenceIndex": 25.09,
+      "intelligenceIndex": 24.91,
       "cost": 0.01794,
       "creator": {
         "name": "Leonardo.Ai",
@@ -37039,7 +37039,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 25.09,
+        "t2i": 24.91,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -37050,7 +37050,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 867.52,
+        "t2iElo": 866.23,
         "imgEditElo": null,
         "pricePer1k": 17.94
       }
@@ -37084,7 +37084,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1217.8,
         "pricePer1mChars": 18.31,
-        "ttfaMs": 958,
+        "ttfaMs": 972,
         "cps": 39.2
       },
       "releaseDate": "2026-04-15"
@@ -37129,7 +37129,7 @@
       "name": "Luma Photon",
       "shortName": "Luma Photon",
       "mediaKind": "image",
-      "intelligenceIndex": 21.06,
+      "intelligenceIndex": 21.09,
       "cost": 0.019,
       "creator": {
         "name": "Luma Labs",
@@ -37138,7 +37138,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 21.06,
+        "t2i": 21.09,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -37149,7 +37149,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 837.81,
+        "t2iElo": 838.06,
         "imgEditElo": null,
         "pricePer1k": 19
       }
@@ -37193,7 +37193,7 @@
       "name": "Phoenix 1.0 Fast",
       "shortName": "Phoenix 1.0 Fast",
       "mediaKind": "image",
-      "intelligenceIndex": 19.67,
+      "intelligenceIndex": 19.53,
       "cost": 0.01943,
       "creator": {
         "name": "Leonardo.Ai",
@@ -37202,7 +37202,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 19.67,
+        "t2i": 19.53,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -37213,7 +37213,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 826.71,
+        "t2iElo": 825.5,
         "imgEditElo": null,
         "pricePer1k": 19.43
       }
@@ -37224,7 +37224,7 @@
       "name": "MAI-Image-2.6-Flash",
       "shortName": "MAI-Image-2.6-Flash",
       "mediaKind": "image",
-      "intelligenceIndex": 71.16,
+      "intelligenceIndex": 71.09,
       "cost": 0.019456,
       "creator": {
         "name": "Microsoft AI",
@@ -37234,7 +37234,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": 70.54,
-        "imgEdit": 71.77,
+        "imgEdit": 71.65,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37244,8 +37244,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1123.75,
-        "imgEditElo": 1146.59,
+        "t2iElo": 1123.78,
+        "imgEditElo": 1145.78,
         "pricePer1k": 19.46
       }
     },
@@ -37278,7 +37278,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1279.5,
         "pricePer1mChars": 19.5,
-        "ttfaMs": 212,
+        "ttfaMs": 209,
         "cps": 115.9
       },
       "releaseDate": "2026-10-28"
@@ -37289,7 +37289,7 @@
       "name": "MAI-Image-2.5-Flash",
       "shortName": "MAI-Image-2.5-Flash",
       "mediaKind": "image",
-      "intelligenceIndex": 58.62,
+      "intelligenceIndex": 58.69,
       "cost": 0.019968,
       "creator": {
         "name": "Microsoft AI",
@@ -37298,8 +37298,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 54.81,
-        "imgEdit": 62.43,
+        "t2i": 54.79,
+        "imgEdit": 62.58,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37309,8 +37309,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1035.13,
-        "imgEditElo": 1091.18,
+        "t2iElo": 1035.02,
+        "imgEditElo": 1092.02,
         "pricePer1k": 19.97
       }
     },
@@ -37320,7 +37320,7 @@
       "name": "Seedream 5.5",
       "shortName": "Seedream 5.5",
       "mediaKind": "image",
-      "intelligenceIndex": 72.94,
+      "intelligenceIndex": 72.87,
       "cost": 0.02,
       "creator": {
         "name": "ByteDance Seed",
@@ -37329,8 +37329,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 72.22,
-        "imgEdit": 73.65,
+        "t2i": 72.15,
+        "imgEdit": 73.58,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37340,8 +37340,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1134.47,
-        "imgEditElo": 1158.92,
+        "t2iElo": 1134.05,
+        "imgEditElo": 1158.42,
         "pricePer1k": 20
       },
       "releaseDate": "2026-11-09"
@@ -37361,8 +37361,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 52.7,
-        "imgEdit": 59.51,
+        "t2i": 52.66,
+        "imgEdit": 59.56,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37372,8 +37372,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1024.08,
-        "imgEditElo": 1075.16,
+        "t2iElo": 1023.87,
+        "imgEditElo": 1075.45,
         "pricePer1k": 20
       }
     },
@@ -37383,7 +37383,7 @@
       "name": "Qwen Image",
       "shortName": "Qwen Image",
       "mediaKind": "image",
-      "intelligenceIndex": 31.89,
+      "intelligenceIndex": 31.87,
       "cost": 0.02,
       "creator": {
         "name": "Alibaba",
@@ -37392,7 +37392,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 31.89,
+        "t2i": 31.87,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -37403,7 +37403,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 911.11,
+        "t2iElo": 911,
         "imgEditElo": null,
         "pricePer1k": 20
       }
@@ -37447,7 +37447,7 @@
       "name": "FIBO Lite",
       "shortName": "FIBO Lite",
       "mediaKind": "image",
-      "intelligenceIndex": 18.33,
+      "intelligenceIndex": 18.37,
       "cost": 0.02,
       "creator": {
         "name": "Bria",
@@ -37456,7 +37456,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 18.33,
+        "t2i": 18.37,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -37467,7 +37467,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 815.31,
+        "t2iElo": 815.66,
         "imgEditElo": null,
         "pricePer1k": 20
       }
@@ -37501,7 +37501,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1132,
         "pricePer1mChars": 20.2,
-        "ttfaMs": 721,
+        "ttfaMs": 728,
         "cps": 103
       },
       "releaseDate": "2026-05-25"
@@ -37535,7 +37535,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1273.1,
         "pricePer1mChars": 20.83,
-        "ttfaMs": 184,
+        "ttfaMs": 185,
         "cps": 81
       },
       "releaseDate": "2026-08-31"
@@ -37546,7 +37546,7 @@
       "name": "H3-Image",
       "shortName": "H3-Image",
       "mediaKind": "image",
-      "intelligenceIndex": 65.25,
+      "intelligenceIndex": 65.32,
       "cost": 0.02179,
       "creator": {
         "name": "MiniMax",
@@ -37555,8 +37555,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 60.62,
-        "imgEdit": 69.87,
+        "t2i": 60.7,
+        "imgEdit": 69.94,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37566,8 +37566,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1066.18,
-        "imgEditElo": 1134.61,
+        "t2iElo": 1066.62,
+        "imgEditElo": 1135.01,
         "pricePer1k": 21.79
       }
     },
@@ -37620,8 +37620,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 42.77,
-        "imgEdit": 62.64,
+        "t2i": 42.86,
+        "imgEdit": 62.54,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37631,8 +37631,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 972.04,
-        "imgEditElo": 1092.36,
+        "t2iElo": 972.56,
+        "imgEditElo": 1091.76,
         "pricePer1k": 24
       }
     },
@@ -37665,7 +37665,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1028.5,
         "pricePer1mChars": 25,
-        "ttfaMs": 390,
+        "ttfaMs": 391,
         "cps": 84.3
       },
       "releaseDate": "2026-03-24"
@@ -37709,7 +37709,7 @@
       "name": "FLUX.1 Krea [dev]",
       "shortName": "FLUX.1 Krea [dev]",
       "mediaKind": "image",
-      "intelligenceIndex": 25.84,
+      "intelligenceIndex": 25.91,
       "cost": 0.025,
       "creator": {
         "name": "Black Forest Labs",
@@ -37718,7 +37718,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 25.84,
+        "t2i": 25.91,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -37729,7 +37729,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 872.62,
+        "t2iElo": 873.13,
         "imgEditElo": null,
         "pricePer1k": 25
       }
@@ -37740,7 +37740,7 @@
       "name": "FLUX.1 Kontext [dev]",
       "shortName": "FLUX.1 Kontext [dev]",
       "mediaKind": "image",
-      "intelligenceIndex": 25.43,
+      "intelligenceIndex": 25.47,
       "cost": 0.025,
       "creator": {
         "name": "Black Forest Labs",
@@ -37750,7 +37750,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 25.43,
+        "imgEdit": 25.47,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37761,7 +37761,7 @@
         "unitZh": "每张图",
         "unitEn": "/ image",
         "t2iElo": null,
-        "imgEditElo": 884.84,
+        "imgEditElo": 885.08,
         "pricePer1k": 25
       }
     },
@@ -37771,7 +37771,7 @@
       "name": "FLUX.1 [dev]",
       "shortName": "FLUX.1 [dev]",
       "mediaKind": "image",
-      "intelligenceIndex": 18.1,
+      "intelligenceIndex": 18.05,
       "cost": 0.025,
       "creator": {
         "name": "Black Forest Labs",
@@ -37780,7 +37780,7 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 18.1,
+        "t2i": 18.05,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -37791,7 +37791,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 813.29,
+        "t2iElo": 812.84,
         "imgEditElo": null,
         "pricePer1k": 25
       }
@@ -37802,7 +37802,7 @@
       "name": "Wan 2.7",
       "shortName": "Wan 2.7",
       "mediaKind": "image",
-      "intelligenceIndex": 49.35,
+      "intelligenceIndex": 49.39,
       "cost": 0.026,
       "creator": {
         "name": "Alibaba",
@@ -37811,8 +37811,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 45.96,
-        "imgEdit": 52.74,
+        "t2i": 45.88,
+        "imgEdit": 52.89,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37822,8 +37822,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 988.88,
-        "imgEditElo": 1039.31,
+        "t2iElo": 988.46,
+        "imgEditElo": 1040.06,
         "pricePer1k": 26
       }
     },
@@ -37833,7 +37833,7 @@
       "name": "SRPO",
       "shortName": "SRPO",
       "mediaKind": "image",
-      "intelligenceIndex": 20.77,
+      "intelligenceIndex": 20.75,
       "cost": 0.026,
       "creator": {
         "name": "Tencent",
@@ -37842,7 +37842,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 20.77,
+        "t2i": 20.75,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -37853,7 +37853,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 835.57,
+        "t2iElo": 835.38,
         "imgEditElo": null,
         "pricePer1k": 26
       }
@@ -37963,7 +37963,7 @@
       "name": "Kling Image 3.0 Omni",
       "shortName": "Kling Image 3.0 Omni",
       "mediaKind": "image",
-      "intelligenceIndex": 35.73,
+      "intelligenceIndex": 35.66,
       "cost": 0.028,
       "creator": {
         "name": "KlingAI",
@@ -37972,8 +37972,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 34.53,
-        "imgEdit": 36.92,
+        "t2i": 34.44,
+        "imgEdit": 36.88,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -37983,8 +37983,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 926.67,
-        "imgEditElo": 955.23,
+        "t2iElo": 926.13,
+        "imgEditElo": 955,
         "pricePer1k": 28
       }
     },
@@ -37994,7 +37994,7 @@
       "name": "Kling Image O1",
       "shortName": "Kling Image O1",
       "mediaKind": "image",
-      "intelligenceIndex": 35.07,
+      "intelligenceIndex": 35.09,
       "cost": 0.028,
       "creator": {
         "name": "KlingAI",
@@ -38004,7 +38004,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 35.07,
+        "imgEdit": 35.09,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38015,7 +38015,7 @@
         "unitZh": "每张图",
         "unitEn": "/ image",
         "t2iElo": null,
-        "imgEditElo": 944.77,
+        "imgEditElo": 944.88,
         "pricePer1k": 28
       }
     },
@@ -38025,7 +38025,7 @@
       "name": "Canva Craft",
       "shortName": "Canva Craft",
       "mediaKind": "image",
-      "intelligenceIndex": 75.64,
+      "intelligenceIndex": 75.53,
       "cost": 0.03,
       "creator": {
         "name": "Canva",
@@ -38034,7 +38034,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 75.64,
+        "t2i": 75.53,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -38045,7 +38045,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1157.61,
+        "t2iElo": 1156.88,
         "imgEditElo": null,
         "pricePer1k": 30
       }
@@ -38056,7 +38056,7 @@
       "name": "Qwen-Image-3.0",
       "shortName": "Qwen-Image-3.0",
       "mediaKind": "image",
-      "intelligenceIndex": 60.48,
+      "intelligenceIndex": 60.39,
       "cost": 0.03,
       "creator": {
         "name": "Alibaba",
@@ -38065,8 +38065,8 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 62.28,
-        "imgEdit": 58.68,
+        "t2i": 62.22,
+        "imgEdit": 58.57,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38076,8 +38076,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1075.32,
-        "imgEditElo": 1070.71,
+        "t2iElo": 1075.01,
+        "imgEditElo": 1070.11,
         "pricePer1k": 30
       }
     },
@@ -38096,8 +38096,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 52.92,
-        "imgEdit": 53.45,
+        "t2i": 53.02,
+        "imgEdit": 53.36,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38107,8 +38107,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1025.24,
-        "imgEditElo": 1043.03,
+        "t2iElo": 1025.76,
+        "imgEditElo": 1042.54,
         "pricePer1k": 30
       }
     },
@@ -38118,7 +38118,7 @@
       "name": "Wan2.6 Text to Image",
       "shortName": "Wan2.6 Text to Image",
       "mediaKind": "image",
-      "intelligenceIndex": 51.37,
+      "intelligenceIndex": 51.36,
       "cost": 0.03,
       "creator": {
         "name": "Alibaba",
@@ -38127,7 +38127,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 51.37,
+        "t2i": 51.36,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -38138,7 +38138,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1017.14,
+        "t2iElo": 1017.1,
         "imgEditElo": null,
         "pricePer1k": 30
       }
@@ -38172,7 +38172,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1108.9,
         "pricePer1mChars": 30,
-        "ttfaMs": 2355,
+        "ttfaMs": 2399,
         "cps": 106.1
       },
       "releaseDate": "2023-11-06"
@@ -38183,7 +38183,7 @@
       "name": "Krea 2 Medium",
       "shortName": "Krea 2 Medium",
       "mediaKind": "image",
-      "intelligenceIndex": 50.71,
+      "intelligenceIndex": 50.69,
       "cost": 0.03,
       "creator": {
         "name": "Krea",
@@ -38192,7 +38192,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 50.71,
+        "t2i": 50.69,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -38203,7 +38203,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1013.69,
+        "t2iElo": 1013.61,
         "imgEditElo": null,
         "pricePer1k": 30
       }
@@ -38214,7 +38214,7 @@
       "name": "Ming-Image-0.1-Design",
       "shortName": "Ming-Image-0.1-Design",
       "mediaKind": "image",
-      "intelligenceIndex": 48.31,
+      "intelligenceIndex": 48.27,
       "cost": 0.03,
       "creator": {
         "name": "InclusionAI",
@@ -38223,7 +38223,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 48.31,
+        "t2i": 48.27,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -38234,7 +38234,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1001.18,
+        "t2iElo": 1000.96,
         "imgEditElo": null,
         "pricePer1k": 30
       }
@@ -38245,7 +38245,7 @@
       "name": "FLUX.2 [pro]",
       "shortName": "FLUX.2 [pro]",
       "mediaKind": "image",
-      "intelligenceIndex": 47.88,
+      "intelligenceIndex": 47.78,
       "cost": 0.03,
       "creator": {
         "name": "Black Forest Labs",
@@ -38254,8 +38254,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 48.75,
-        "imgEdit": 47.01,
+        "t2i": 48.78,
+        "imgEdit": 46.77,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38265,8 +38265,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1003.48,
-        "imgEditElo": 1009.4,
+        "t2iElo": 1003.65,
+        "imgEditElo": 1008.15,
         "pricePer1k": 30
       }
     },
@@ -38299,7 +38299,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1062.8,
         "pricePer1mChars": 30,
-        "ttfaMs": 243,
+        "ttfaMs": 240,
         "cps": 107.9
       },
       "releaseDate": "2024-05-08"
@@ -38344,7 +38344,7 @@
       "name": "Qwen Image Plus 2601",
       "shortName": "Qwen Image Plus 2601",
       "mediaKind": "image",
-      "intelligenceIndex": 40.49,
+      "intelligenceIndex": 40.75,
       "cost": 0.03,
       "creator": {
         "name": "Alibaba",
@@ -38353,7 +38353,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 40.49,
+        "t2i": 40.75,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -38364,7 +38364,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 959.82,
+        "t2iElo": 961.25,
         "imgEditElo": null,
         "pricePer1k": 30
       }
@@ -38375,7 +38375,7 @@
       "name": "Qwen Image Edit Plus 2509",
       "shortName": "Qwen Image Edit Plus 2509",
       "mediaKind": "image",
-      "intelligenceIndex": 38.21,
+      "intelligenceIndex": 38.05,
       "cost": 0.03,
       "creator": {
         "name": "Alibaba",
@@ -38385,7 +38385,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 38.21,
+        "imgEdit": 38.05,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38396,7 +38396,7 @@
         "unitZh": "每张图",
         "unitEn": "/ image",
         "t2iElo": null,
-        "imgEditElo": 962.36,
+        "imgEditElo": 961.47,
         "pricePer1k": 30
       }
     },
@@ -38440,7 +38440,7 @@
       "name": "Dreamina 3.1",
       "shortName": "Dreamina 3.1",
       "mediaKind": "image",
-      "intelligenceIndex": 34.85,
+      "intelligenceIndex": 34.83,
       "cost": 0.03,
       "creator": {
         "name": "ByteDance",
@@ -38449,7 +38449,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 34.85,
+        "t2i": 34.83,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -38460,7 +38460,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 928.51,
+        "t2iElo": 928.35,
         "imgEditElo": null,
         "pricePer1k": 30
       }
@@ -38471,7 +38471,7 @@
       "name": "Vidu Q2",
       "shortName": "Vidu Q2",
       "mediaKind": "image",
-      "intelligenceIndex": 33.14,
+      "intelligenceIndex": 33.06,
       "cost": 0.03,
       "creator": {
         "name": "Vidu",
@@ -38480,8 +38480,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 29.86,
-        "imgEdit": 36.42,
+        "t2i": 29.92,
+        "imgEdit": 36.2,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38491,8 +38491,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 898.75,
-        "imgEditElo": 952.4,
+        "t2iElo": 899.14,
+        "imgEditElo": 951.14,
         "pricePer1k": 30
       }
     },
@@ -38502,7 +38502,7 @@
       "name": "Qwen Image Edit",
       "shortName": "Qwen Image Edit",
       "mediaKind": "image",
-      "intelligenceIndex": 25.67,
+      "intelligenceIndex": 25.78,
       "cost": 0.03,
       "creator": {
         "name": "Alibaba",
@@ -38512,7 +38512,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 25.67,
+        "imgEdit": 25.78,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38523,7 +38523,7 @@
         "unitZh": "每张图",
         "unitEn": "/ image",
         "t2iElo": null,
-        "imgEditElo": 886.45,
+        "imgEditElo": 887.23,
         "pricePer1k": 30
       }
     },
@@ -38533,7 +38533,7 @@
       "name": "Step1X-Edit",
       "shortName": "Step1X-Edit",
       "mediaKind": "image",
-      "intelligenceIndex": 3.3,
+      "intelligenceIndex": 3.26,
       "cost": 0.03,
       "creator": {
         "name": "StepFun",
@@ -38543,7 +38543,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 3.3,
+        "imgEdit": 3.26,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38554,7 +38554,7 @@
         "unitZh": "每张图",
         "unitEn": "/ image",
         "t2iElo": null,
-        "imgEditElo": 585.04,
+        "imgEditElo": 583.13,
         "pricePer1k": 30
       }
     },
@@ -38587,7 +38587,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 903.9,
         "pricePer1mChars": 31.13,
-        "ttfaMs": 495,
+        "ttfaMs": 484,
         "cps": 497.4
       },
       "releaseDate": "2025-03-06"
@@ -38598,7 +38598,7 @@
       "name": "ERNIE Image",
       "shortName": "ERNIE Image",
       "mediaKind": "image",
-      "intelligenceIndex": 31.42,
+      "intelligenceIndex": 31.36,
       "cost": 0.03146,
       "creator": {
         "name": "Baidu",
@@ -38607,7 +38607,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 31.42,
+        "t2i": 31.36,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -38618,7 +38618,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 908.31,
+        "t2iElo": 907.94,
         "imgEditElo": null,
         "pricePer1k": 31.46
       }
@@ -38629,7 +38629,7 @@
       "name": "Fibo 2.0",
       "shortName": "Fibo 2.0",
       "mediaKind": "image",
-      "intelligenceIndex": 58.42,
+      "intelligenceIndex": 58.36,
       "cost": 0.032,
       "creator": {
         "name": "Bria",
@@ -38639,7 +38639,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": 55.11,
-        "imgEdit": 61.73,
+        "imgEdit": 61.61,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38649,8 +38649,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1036.72,
-        "imgEditElo": 1087.28,
+        "t2iElo": 1036.71,
+        "imgEditElo": 1086.65,
         "pricePer1k": 32
       }
     },
@@ -38660,7 +38660,7 @@
       "name": "HunyuanImage 3.0 (Tencent Cloud)",
       "shortName": "HunyuanImage 3.0 (Tencent Cloud)",
       "mediaKind": "image",
-      "intelligenceIndex": 48.61,
+      "intelligenceIndex": 48.66,
       "cost": 0.032,
       "creator": {
         "name": "Tencent",
@@ -38670,7 +38670,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": 46.66,
-        "imgEdit": 50.57,
+        "imgEdit": 50.67,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38680,8 +38680,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 992.59,
-        "imgEditElo": 1027.99,
+        "t2iElo": 992.57,
+        "imgEditElo": 1028.5,
         "pricePer1k": 32
       }
     },
@@ -38691,7 +38691,7 @@
       "name": "P-Image-Ideogram (Very High)",
       "shortName": "P-Image-Ideogram (Very High)",
       "mediaKind": "image",
-      "intelligenceIndex": 46.8,
+      "intelligenceIndex": 47.04,
       "cost": 0.033,
       "creator": {
         "name": "Pruna AI",
@@ -38700,7 +38700,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 46.8,
+        "t2i": 47.04,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -38711,7 +38711,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 993.32,
+        "t2iElo": 994.55,
         "imgEditElo": null,
         "pricePer1k": 33
       }
@@ -38722,7 +38722,7 @@
       "name": "Nano Banana 2.1",
       "shortName": "Nano Banana 2.1",
       "mediaKind": "image",
-      "intelligenceIndex": 75.32,
+      "intelligenceIndex": 75.2,
       "cost": 0.0336,
       "creator": {
         "name": "Google",
@@ -38731,8 +38731,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 77.99,
-        "imgEdit": 72.66,
+        "t2i": 77.83,
+        "imgEdit": 72.57,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38742,8 +38742,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1174.86,
-        "imgEditElo": 1152.34,
+        "t2iElo": 1173.61,
+        "imgEditElo": 1151.73,
         "pricePer1k": 33.6
       },
       "releaseDate": "2026-10-06"
@@ -38754,7 +38754,7 @@
       "name": "Nano Banana 2 Lite (Gemini 3.1 Flash Lite Image)",
       "shortName": "Nano Banana 2 Lite",
       "mediaKind": "image",
-      "intelligenceIndex": 61.87,
+      "intelligenceIndex": 61.85,
       "cost": 0.0336,
       "creator": {
         "name": "Google",
@@ -38763,8 +38763,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 68.35,
-        "imgEdit": 55.39,
+        "t2i": 68.37,
+        "imgEdit": 55.33,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38774,8 +38774,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1110.33,
-        "imgEditElo": 1053.22,
+        "t2iElo": 1110.45,
+        "imgEditElo": 1052.88,
         "pricePer1k": 33.6
       }
     },
@@ -38808,7 +38808,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1231.3,
         "pricePer1mChars": 34,
-        "ttfaMs": 353,
+        "ttfaMs": 388,
         "cps": 48.5
       },
       "releaseDate": "2026-08-23"
@@ -38819,7 +38819,7 @@
       "name": "MAI-Image-2.7",
       "shortName": "MAI-Image-2.7",
       "mediaKind": "image",
-      "intelligenceIndex": 82.12,
+      "intelligenceIndex": 82.19,
       "cost": 0.034816,
       "creator": {
         "name": "Microsoft AI",
@@ -38828,8 +38828,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 82.93,
-        "imgEdit": 81.31,
+        "t2i": 82.97,
+        "imgEdit": 81.42,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38839,8 +38839,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1215.9,
-        "imgEditElo": 1216.57,
+        "t2iElo": 1216.32,
+        "imgEditElo": 1217.54,
         "pricePer1k": 34.82
       },
       "releaseDate": "2026-11-17"
@@ -38851,7 +38851,7 @@
       "name": "Seedream 5.0 Lite",
       "shortName": "Seedream 5.0 Lite",
       "mediaKind": "image",
-      "intelligenceIndex": 54.36,
+      "intelligenceIndex": 54.27,
       "cost": 0.035,
       "creator": {
         "name": "ByteDance Seed",
@@ -38860,8 +38860,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 51.66,
-        "imgEdit": 57.07,
+        "t2i": 51.63,
+        "imgEdit": 56.9,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38871,8 +38871,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1018.68,
-        "imgEditElo": 1062.11,
+        "t2iElo": 1018.52,
+        "imgEditElo": 1061.17,
         "pricePer1k": 35
       }
     },
@@ -38882,7 +38882,7 @@
       "name": "Recraft V4.1 Utility",
       "shortName": "Recraft V4.1 Utility",
       "mediaKind": "image",
-      "intelligenceIndex": 53.12,
+      "intelligenceIndex": 53.07,
       "cost": 0.035,
       "creator": {
         "name": "Recraft",
@@ -38891,7 +38891,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 53.12,
+        "t2i": 53.07,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -38902,7 +38902,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1026.27,
+        "t2iElo": 1026.01,
         "imgEditElo": null,
         "pricePer1k": 35
       }
@@ -38913,7 +38913,7 @@
       "name": "Qwen Image 2.0 (2026-03-03)",
       "shortName": "Qwen Image 2.0",
       "mediaKind": "image",
-      "intelligenceIndex": 42.59,
+      "intelligenceIndex": 42.52,
       "cost": 0.035,
       "creator": {
         "name": "Alibaba",
@@ -38922,8 +38922,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 46.58,
-        "imgEdit": 38.6,
+        "t2i": 46.29,
+        "imgEdit": 38.74,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38933,8 +38933,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 992.16,
-        "imgEditElo": 964.5,
+        "t2iElo": 990.65,
+        "imgEditElo": 965.28,
         "pricePer1k": 35
       }
     },
@@ -38944,7 +38944,7 @@
       "name": "H3-Image Highspeed",
       "shortName": "H3-Image Highspeed",
       "mediaKind": "image",
-      "intelligenceIndex": 65.56,
+      "intelligenceIndex": 65.42,
       "cost": 0.03529,
       "creator": {
         "name": "MiniMax",
@@ -38953,8 +38953,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 61.67,
-        "imgEdit": 69.45,
+        "t2i": 61.43,
+        "imgEdit": 69.41,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38964,8 +38964,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1071.95,
-        "imgEditElo": 1131.99,
+        "t2iElo": 1070.62,
+        "imgEditElo": 1131.75,
         "pricePer1k": 35.29
       }
     },
@@ -38975,7 +38975,7 @@
       "name": "Qwen-Image-2.1-Pro",
       "shortName": "Qwen-Image-2.1-Pro",
       "mediaKind": "image",
-      "intelligenceIndex": 58.83,
+      "intelligenceIndex": 58.93,
       "cost": 0.035333,
       "creator": {
         "name": "Alibaba",
@@ -38984,8 +38984,8 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 59.29,
-        "imgEdit": 58.36,
+        "t2i": 59.41,
+        "imgEdit": 58.45,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -38995,8 +38995,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1058.97,
-        "imgEditElo": 1068.98,
+        "t2iElo": 1059.62,
+        "imgEditElo": 1069.46,
         "pricePer1k": 35.33
       }
     },
@@ -39006,7 +39006,7 @@
       "name": "MAI-Image-2.6",
       "shortName": "MAI-Image-2.6",
       "mediaKind": "image",
-      "intelligenceIndex": 74.78,
+      "intelligenceIndex": 74.67,
       "cost": 0.038912,
       "creator": {
         "name": "Microsoft AI",
@@ -39015,8 +39015,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 77,
-        "imgEdit": 72.57,
+        "t2i": 76.86,
+        "imgEdit": 72.48,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39026,8 +39026,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1167.41,
-        "imgEditElo": 1151.76,
+        "t2iElo": 1166.42,
+        "imgEditElo": 1151.18,
         "pricePer1k": 38.91
       },
       "releaseDate": "2026-08-10"
@@ -39038,7 +39038,7 @@
       "name": "Nano Banana (Gemini 2.5 Flash Image)",
       "shortName": "Nano Banana",
       "mediaKind": "image",
-      "intelligenceIndex": 44.19,
+      "intelligenceIndex": 44.09,
       "cost": 0.039,
       "creator": {
         "name": "Google",
@@ -39047,8 +39047,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 45.87,
-        "imgEdit": 42.5,
+        "t2i": 45.82,
+        "imgEdit": 42.37,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39058,8 +39058,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 988.43,
-        "imgEditElo": 985.61,
+        "t2iElo": 988.18,
+        "imgEditElo": 984.93,
         "pricePer1k": 39
       }
     },
@@ -39092,7 +39092,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1343.8,
         "pricePer1mChars": 40,
-        "ttfaMs": 208,
+        "ttfaMs": 211,
         "cps": 101.2
       },
       "releaseDate": "2026-09-28"
@@ -39103,7 +39103,7 @@
       "name": "Qwen-Image-3.0-Pro",
       "shortName": "Qwen-Image-3.0-Pro",
       "mediaKind": "image",
-      "intelligenceIndex": 63.98,
+      "intelligenceIndex": 64,
       "cost": 0.04,
       "creator": {
         "name": "Alibaba",
@@ -39112,8 +39112,8 @@
       "isReasoning": false,
       "isOpenWeights": true,
       "mediaScores": {
-        "t2i": 65.43,
-        "imgEdit": 62.54,
+        "t2i": 65.49,
+        "imgEdit": 62.52,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39123,8 +39123,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1093.13,
-        "imgEditElo": 1091.76,
+        "t2iElo": 1093.48,
+        "imgEditElo": 1091.69,
         "pricePer1k": 40
       }
     },
@@ -39168,7 +39168,7 @@
       "name": "Seedream 4.5",
       "shortName": "Seedream 4.5",
       "mediaKind": "image",
-      "intelligenceIndex": 53.23,
+      "intelligenceIndex": 53.28,
       "cost": 0.04,
       "creator": {
         "name": "ByteDance Seed",
@@ -39177,8 +39177,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 53.81,
-        "imgEdit": 52.65,
+        "t2i": 53.9,
+        "imgEdit": 52.67,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39188,8 +39188,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1029.92,
-        "imgEditElo": 1038.84,
+        "t2iElo": 1030.36,
+        "imgEditElo": 1038.92,
         "pricePer1k": 40
       }
     },
@@ -39232,7 +39232,7 @@
       "name": "Cosmos3-Super-Text2Image",
       "shortName": "Cosmos3-Super-Text2Image",
       "mediaKind": "image",
-      "intelligenceIndex": 45.78,
+      "intelligenceIndex": 45.68,
       "cost": 0.04,
       "creator": {
         "name": "NVIDIA",
@@ -39241,7 +39241,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 45.78,
+        "t2i": 45.68,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -39252,7 +39252,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 987.98,
+        "t2iElo": 987.41,
         "imgEditElo": null,
         "pricePer1k": 40
       }
@@ -39263,7 +39263,7 @@
       "name": "Reve V1 (December)",
       "shortName": "Reve V1 (December)",
       "mediaKind": "image",
-      "intelligenceIndex": 42.12,
+      "intelligenceIndex": 42.21,
       "cost": 0.04,
       "creator": {
         "name": "Reve",
@@ -39273,7 +39273,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 42.12,
+        "imgEdit": 42.21,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39284,7 +39284,7 @@
         "unitZh": "每张图",
         "unitEn": "/ image",
         "t2iElo": null,
-        "imgEditElo": 983.6,
+        "imgEditElo": 984.07,
         "pricePer1k": 40
       }
     },
@@ -39317,7 +39317,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1035,
         "pricePer1mChars": 40,
-        "ttfaMs": 1911,
+        "ttfaMs": 1434,
         "cps": 66.1
       },
       "releaseDate": "2026-08-05"
@@ -39328,7 +39328,7 @@
       "name": "FLUX.1 Kontext [pro]",
       "shortName": "FLUX.1 Kontext [pro]",
       "mediaKind": "image",
-      "intelligenceIndex": 32.13,
+      "intelligenceIndex": 31.95,
       "cost": 0.04,
       "creator": {
         "name": "Black Forest Labs",
@@ -39337,8 +39337,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 34.51,
-        "imgEdit": 29.76,
+        "t2i": 34.5,
+        "imgEdit": 29.41,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39348,8 +39348,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 926.52,
-        "imgEditElo": 913.11,
+        "t2iElo": 926.45,
+        "imgEditElo": 910.93,
         "pricePer1k": 40
       }
     },
@@ -39359,7 +39359,7 @@
       "name": "FIBO Edit",
       "shortName": "FIBO Edit",
       "mediaKind": "image",
-      "intelligenceIndex": 30.25,
+      "intelligenceIndex": 30.35,
       "cost": 0.04,
       "creator": {
         "name": "Bria",
@@ -39369,7 +39369,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 30.25,
+        "imgEdit": 30.35,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39380,7 +39380,7 @@
         "unitZh": "每张图",
         "unitEn": "/ image",
         "t2iElo": null,
-        "imgEditElo": 916.18,
+        "imgEditElo": 916.75,
         "pricePer1k": 40
       }
     },
@@ -39390,7 +39390,7 @@
       "name": "FLUX1.1 [pro]",
       "shortName": "FLUX1.1 [pro]",
       "mediaKind": "image",
-      "intelligenceIndex": 25.72,
+      "intelligenceIndex": 25.78,
       "cost": 0.04,
       "creator": {
         "name": "Black Forest Labs",
@@ -39399,7 +39399,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 25.72,
+        "t2i": 25.78,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -39410,7 +39410,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 871.79,
+        "t2iElo": 872.24,
         "imgEditElo": null,
         "pricePer1k": 40
       }
@@ -39421,7 +39421,7 @@
       "name": "FIBO",
       "shortName": "FIBO",
       "mediaKind": "image",
-      "intelligenceIndex": 23.26,
+      "intelligenceIndex": 23.25,
       "cost": 0.04,
       "creator": {
         "name": "Bria",
@@ -39430,7 +39430,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 23.26,
+        "t2i": 23.25,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -39441,7 +39441,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 854.48,
+        "t2iElo": 854.41,
         "imgEditElo": null,
         "pricePer1k": 40
       }
@@ -39452,7 +39452,7 @@
       "name": "Luma UNI 1",
       "shortName": "Luma UNI 1",
       "mediaKind": "image",
-      "intelligenceIndex": 50.55,
+      "intelligenceIndex": 50.59,
       "cost": 0.0404,
       "creator": {
         "name": "Luma Labs",
@@ -39461,8 +39461,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 47.64,
-        "imgEdit": 53.46,
+        "t2i": 47.67,
+        "imgEdit": 53.51,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39472,8 +39472,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 997.71,
-        "imgEditElo": 1043.04,
+        "t2iElo": 997.84,
+        "imgEditElo": 1043.31,
         "pricePer1k": 40.4
       }
     },
@@ -39540,7 +39540,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1052,
         "pricePer1mChars": 45,
-        "ttfaMs": 270,
+        "ttfaMs": 275,
         "cps": 21.7
       },
       "releaseDate": "2026-08-12"
@@ -39642,7 +39642,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1154.2,
         "pricePer1mChars": 47.78,
-        "ttfaMs": 72,
+        "ttfaMs": 71,
         "cps": 61.4
       },
       "releaseDate": "2026-08-31"
@@ -39662,8 +39662,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 69.02,
-        "imgEdit": 67.46,
+        "t2i": 69.16,
+        "imgEdit": 67.32,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39673,8 +39673,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1114.37,
-        "imgEditElo": 1119.96,
+        "t2iElo": 1115.22,
+        "imgEditElo": 1119.17,
         "pricePer1k": 48
       }
     },
@@ -39684,7 +39684,7 @@
       "name": "MAI-Image-2.5",
       "shortName": "MAI-Image-2.5",
       "mediaKind": "image",
-      "intelligenceIndex": 68.83,
+      "intelligenceIndex": 68.86,
       "cost": 0.048128,
       "creator": {
         "name": "Microsoft AI",
@@ -39693,8 +39693,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 69.46,
-        "imgEdit": 68.2,
+        "t2i": 69.48,
+        "imgEdit": 68.24,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39704,8 +39704,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1117.08,
-        "imgEditElo": 1124.41,
+        "t2iElo": 1117.16,
+        "imgEditElo": 1124.67,
         "pricePer1k": 48.13
       }
     },
@@ -39738,7 +39738,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1297.1,
         "pricePer1mChars": 49,
-        "ttfaMs": 295,
+        "ttfaMs": 284,
         "cps": 186.5
       },
       "releaseDate": "2026-08-17"
@@ -39772,7 +39772,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1196.3,
         "pricePer1mChars": 49,
-        "ttfaMs": 283,
+        "ttfaMs": 277,
         "cps": 168.1
       },
       "releaseDate": "2026-05-04"
@@ -39806,7 +39806,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1063.8,
         "pricePer1mChars": 49,
-        "ttfaMs": 460,
+        "ttfaMs": 443,
         "cps": 135.3
       },
       "releaseDate": "2025-10-29"
@@ -39840,7 +39840,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1219.7,
         "pricePer1mChars": 50,
-        "ttfaMs": 321,
+        "ttfaMs": 318,
         "cps": 72.1
       },
       "releaseDate": "2026-08-19"
@@ -39851,7 +39851,7 @@
       "name": "grok-imagine-image-quality",
       "shortName": "grok-imagine-image-quality",
       "mediaKind": "image",
-      "intelligenceIndex": 60.58,
+      "intelligenceIndex": 60.52,
       "cost": 0.05,
       "creator": {
         "name": "SpaceXAI",
@@ -39861,7 +39861,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": 57.59,
-        "imgEdit": 63.56,
+        "imgEdit": 63.44,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -39871,8 +39871,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1049.89,
-        "imgEditElo": 1097.47,
+        "t2iElo": 1049.84,
+        "imgEditElo": 1096.83,
         "pricePer1k": 50
       }
     },
@@ -39905,7 +39905,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1118.7,
         "pricePer1mChars": 50,
-        "ttfaMs": 143,
+        "ttfaMs": 146,
         "cps": 82.1
       },
       "releaseDate": "2026-10-22"
@@ -39939,7 +39939,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1094.3,
         "pricePer1mChars": 50,
-        "ttfaMs": 256,
+        "ttfaMs": 230,
         "cps": 720.2
       },
       "releaseDate": "2024-07-19"
@@ -39973,7 +39973,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1075.1,
         "pricePer1mChars": 50,
-        "ttfaMs": 153,
+        "ttfaMs": 150,
         "cps": 617.6
       },
       "releaseDate": "2024-12-18"
@@ -40007,7 +40007,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1071.5,
         "pricePer1mChars": 50,
-        "ttfaMs": 624,
+        "ttfaMs": 626,
         "cps": 99.8
       },
       "releaseDate": "2025-01-15"
@@ -40041,7 +40041,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1052.9,
         "pricePer1mChars": 50,
-        "ttfaMs": 139,
+        "ttfaMs": 136,
         "cps": 84.8
       },
       "releaseDate": "2026-05-19"
@@ -40052,7 +40052,7 @@
       "name": "GLM-Image",
       "shortName": "GLM-Image",
       "mediaKind": "image",
-      "intelligenceIndex": 23.3,
+      "intelligenceIndex": 23.36,
       "cost": 0.05,
       "creator": {
         "name": "Z AI",
@@ -40061,8 +40061,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 28.59,
-        "imgEdit": 18.02,
+        "t2i": 28.62,
+        "imgEdit": 18.09,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -40072,8 +40072,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 890.75,
-        "imgEditElo": 827.62,
+        "t2iElo": 890.9,
+        "imgEditElo": 828.26,
         "pricePer1k": 50
       }
     },
@@ -40083,7 +40083,7 @@
       "name": "Grok Imagine Image 2.0",
       "shortName": "Grok Imagine Image 2.0",
       "mediaKind": "image",
-      "intelligenceIndex": 71.97,
+      "intelligenceIndex": 71.98,
       "cost": 0.06,
       "creator": {
         "name": "SpaceXAI",
@@ -40092,8 +40092,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 77.05,
-        "imgEdit": 66.89,
+        "t2i": 77.17,
+        "imgEdit": 66.79,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -40103,8 +40103,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1167.77,
-        "imgEditElo": 1116.63,
+        "t2iElo": 1168.7,
+        "imgEditElo": 1116.06,
         "pricePer1k": 60
       },
       "releaseDate": "2026-08-07"
@@ -40138,7 +40138,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1151.3,
         "pricePer1mChars": 60,
-        "ttfaMs": 439,
+        "ttfaMs": 440,
         "cps": 110.8
       },
       "releaseDate": "2026-02-14"
@@ -40149,7 +40149,7 @@
       "name": "Krea 2 Large",
       "shortName": "Krea 2 Large",
       "mediaKind": "image",
-      "intelligenceIndex": 54.82,
+      "intelligenceIndex": 54.89,
       "cost": 0.06,
       "creator": {
         "name": "Krea",
@@ -40158,7 +40158,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 54.82,
+        "t2i": 54.89,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -40169,7 +40169,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1035.2,
+        "t2iElo": 1035.58,
         "imgEditElo": null,
         "pricePer1k": 60
       }
@@ -40203,7 +40203,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1126.2,
         "pricePer1mChars": 60,
-        "ttfaMs": 430,
+        "ttfaMs": 431,
         "cps": 109.2
       },
       "releaseDate": "2025-10-30"
@@ -40214,7 +40214,7 @@
       "name": "FLUX.2 [flex]",
       "shortName": "FLUX.2 [flex]",
       "mediaKind": "image",
-      "intelligenceIndex": 48.97,
+      "intelligenceIndex": 48.99,
       "cost": 0.06,
       "creator": {
         "name": "Black Forest Labs",
@@ -40223,8 +40223,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 53.22,
-        "imgEdit": 44.73,
+        "t2i": 53.18,
+        "imgEdit": 44.8,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -40234,8 +40234,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1026.79,
-        "imgEditElo": 997.42,
+        "t2iElo": 1026.62,
+        "imgEditElo": 997.78,
         "pricePer1k": 60
       }
     },
@@ -40245,7 +40245,7 @@
       "name": "Ideogram 4.0",
       "shortName": "Ideogram 4.0",
       "mediaKind": "image",
-      "intelligenceIndex": 48.78,
+      "intelligenceIndex": 48.72,
       "cost": 0.06,
       "creator": {
         "name": "Ideogram",
@@ -40254,7 +40254,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 48.78,
+        "t2i": 48.72,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -40265,7 +40265,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1003.66,
+        "t2iElo": 1003.31,
         "imgEditElo": null,
         "pricePer1k": 60
       }
@@ -40299,7 +40299,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1089.8,
         "pricePer1mChars": 60,
-        "ttfaMs": 397,
+        "ttfaMs": 403,
         "cps": 111.1
       },
       "releaseDate": "2025-03-31"
@@ -40310,7 +40310,7 @@
       "name": "Qwen Image Edit Plus 2511",
       "shortName": "Qwen Image Edit Plus 2511",
       "mediaKind": "image",
-      "intelligenceIndex": 44.49,
+      "intelligenceIndex": 43.89,
       "cost": 0.06,
       "creator": {
         "name": "Alibaba",
@@ -40320,7 +40320,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 44.49,
+        "imgEdit": 43.89,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -40331,7 +40331,7 @@
         "unitZh": "每张图",
         "unitEn": "/ image",
         "t2iElo": null,
-        "imgEditElo": 996.19,
+        "imgEditElo": 993,
         "pricePer1k": 60
       }
     },
@@ -40341,7 +40341,7 @@
       "name": "Ideogram 3.0",
       "shortName": "Ideogram 3.0",
       "mediaKind": "image",
-      "intelligenceIndex": 31.13,
+      "intelligenceIndex": 30.88,
       "cost": 0.06,
       "creator": {
         "name": "Ideogram",
@@ -40350,7 +40350,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 31.13,
+        "t2i": 30.88,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -40361,7 +40361,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 906.55,
+        "t2iElo": 905.02,
         "imgEditElo": null,
         "pricePer1k": 60
       }
@@ -40372,7 +40372,7 @@
       "name": "FLUX1.1 [pro] Ultra",
       "shortName": "FLUX1.1 [pro] Ultra",
       "mediaKind": "image",
-      "intelligenceIndex": 23.19,
+      "intelligenceIndex": 23.42,
       "cost": 0.06,
       "creator": {
         "name": "Black Forest Labs",
@@ -40381,7 +40381,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 23.19,
+        "t2i": 23.42,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -40392,7 +40392,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 853.97,
+        "t2iElo": 855.62,
         "imgEditElo": null,
         "pricePer1k": 60
       }
@@ -40403,7 +40403,7 @@
       "name": "HiDream-E1.1",
       "shortName": "HiDream-E1.1",
       "mediaKind": "image",
-      "intelligenceIndex": 11.75,
+      "intelligenceIndex": 11.81,
       "cost": 0.06,
       "creator": {
         "name": "HiDream",
@@ -40413,7 +40413,7 @@
       "isOpenWeights": true,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 11.75,
+        "imgEdit": 11.81,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -40424,7 +40424,7 @@
         "unitZh": "每张图",
         "unitEn": "/ image",
         "t2iElo": null,
-        "imgEditElo": 762.28,
+        "imgEditElo": 763.07,
         "pricePer1k": 60
       }
     },
@@ -40434,7 +40434,7 @@
       "name": "Kling Image 4.0",
       "shortName": "Kling Image 4.0",
       "mediaKind": "image",
-      "intelligenceIndex": 78.02,
+      "intelligenceIndex": 78.03,
       "cost": 0.063,
       "creator": {
         "name": "KlingAI",
@@ -40443,8 +40443,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 78.76,
-        "imgEdit": 77.27,
+        "t2i": 78.74,
+        "imgEdit": 77.31,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -40454,8 +40454,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1180.77,
-        "imgEditElo": 1184.44,
+        "t2iElo": 1180.58,
+        "imgEditElo": 1184.7,
         "pricePer1k": 63
       },
       "releaseDate": "2026-11-17"
@@ -40466,7 +40466,7 @@
       "name": "Nano Banana 2 (Gemini 3.1 Flash Image)",
       "shortName": "Nano Banana 2",
       "mediaKind": "image",
-      "intelligenceIndex": 71.1,
+      "intelligenceIndex": 71.11,
       "cost": 0.067,
       "creator": {
         "name": "Google",
@@ -40475,7 +40475,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 73.74,
+        "t2i": 73.77,
         "imgEdit": 68.46,
         "t2v": null,
         "i2v": null,
@@ -40486,8 +40486,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1144.53,
-        "imgEditElo": 1125.95,
+        "t2iElo": 1144.72,
+        "imgEditElo": 1125.98,
         "pricePer1k": 67
       }
     },
@@ -40497,7 +40497,7 @@
       "name": "Krea 3 (Fast)",
       "shortName": "Krea 3 (Fast)",
       "mediaKind": "image",
-      "intelligenceIndex": 67.83,
+      "intelligenceIndex": 67.88,
       "cost": 0.07,
       "creator": {
         "name": "Krea",
@@ -40507,7 +40507,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 67.83,
+        "imgEdit": 67.88,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -40518,7 +40518,7 @@
         "unitZh": "每张图",
         "unitEn": "/ image",
         "t2iElo": null,
-        "imgEditElo": 1122.18,
+        "imgEditElo": 1122.5,
         "pricePer1k": 70
       }
     },
@@ -40537,8 +40537,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 52.13,
-        "imgEdit": 45.15,
+        "t2i": 52.21,
+        "imgEdit": 45.08,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -40548,8 +40548,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1021.12,
-        "imgEditElo": 999.62,
+        "t2iElo": 1021.51,
+        "imgEditElo": 999.3,
         "pricePer1k": 70
       }
     },
@@ -40559,7 +40559,7 @@
       "name": "HiDream-O1-Edit-2.0",
       "shortName": "HiDream-O1-Edit-2.0",
       "mediaKind": "image",
-      "intelligenceIndex": 65.66,
+      "intelligenceIndex": 65.65,
       "cost": 0.075,
       "creator": {
         "name": "HiDream",
@@ -40569,7 +40569,7 @@
       "isOpenWeights": true,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 65.66,
+        "imgEdit": 65.65,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -40580,7 +40580,7 @@
         "unitZh": "每张图",
         "unitEn": "/ image",
         "t2iElo": null,
-        "imgEditElo": 1109.47,
+        "imgEditElo": 1109.4,
         "pricePer1k": 75
       }
     },
@@ -40590,7 +40590,7 @@
       "name": "Qwen Image 2.0 Pro (2026-04-22)",
       "shortName": "Qwen Image 2.0 Pro",
       "mediaKind": "image",
-      "intelligenceIndex": 55.11,
+      "intelligenceIndex": 55.17,
       "cost": 0.075,
       "creator": {
         "name": "Alibaba",
@@ -40599,8 +40599,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 54.54,
-        "imgEdit": 55.69,
+        "t2i": 54.35,
+        "imgEdit": 56,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -40610,8 +40610,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1033.7,
-        "imgEditElo": 1054.77,
+        "t2iElo": 1032.71,
+        "imgEditElo": 1056.4,
         "pricePer1k": 75
       }
     },
@@ -40621,7 +40621,7 @@
       "name": "Wan 2.7 Pro",
       "shortName": "Wan 2.7 Pro",
       "mediaKind": "image",
-      "intelligenceIndex": 49.84,
+      "intelligenceIndex": 49.8,
       "cost": 0.075,
       "creator": {
         "name": "Alibaba",
@@ -40630,8 +40630,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 44.83,
-        "imgEdit": 54.85,
+        "t2i": 44.7,
+        "imgEdit": 54.89,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -40641,8 +40641,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 982.95,
-        "imgEditElo": 1050.33,
+        "t2iElo": 982.25,
+        "imgEditElo": 1050.59,
         "pricePer1k": 75
       }
     },
@@ -40652,7 +40652,7 @@
       "name": "Qwen Image Edit Max 2601",
       "shortName": "Qwen Image Edit Max 2601",
       "mediaKind": "image",
-      "intelligenceIndex": 41.74,
+      "intelligenceIndex": 41.77,
       "cost": 0.075,
       "creator": {
         "name": "Alibaba",
@@ -40662,7 +40662,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 41.74,
+        "imgEdit": 41.77,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -40673,7 +40673,7 @@
         "unitZh": "每张图",
         "unitEn": "/ image",
         "t2iElo": null,
-        "imgEditElo": 981.53,
+        "imgEditElo": 981.73,
         "pricePer1k": 75
       }
     },
@@ -40683,7 +40683,7 @@
       "name": "Phoenix 0.9 Ultra",
       "shortName": "Phoenix 0.9 Ultra",
       "mediaKind": "image",
-      "intelligenceIndex": 21.03,
+      "intelligenceIndex": 21.16,
       "cost": 0.07624,
       "creator": {
         "name": "Leonardo.Ai",
@@ -40692,7 +40692,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 21.03,
+        "t2i": 21.16,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -40703,7 +40703,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 837.58,
+        "t2iElo": 838.6,
         "imgEditElo": null,
         "pricePer1k": 76.24
       }
@@ -40737,7 +40737,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1340,
         "pricePer1mChars": 80,
-        "ttfaMs": 576,
+        "ttfaMs": 579,
         "cps": 62.6
       },
       "releaseDate": "2026-09-28"
@@ -40748,7 +40748,7 @@
       "name": "DreamImage 2.0",
       "shortName": "DreamImage 2.0",
       "mediaKind": "image",
-      "intelligenceIndex": 54.55,
+      "intelligenceIndex": 54.48,
       "cost": 0.08,
       "creator": {
         "name": "Newport AI",
@@ -40758,7 +40758,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 54.55,
+        "imgEdit": 54.48,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -40769,7 +40769,7 @@
         "unitZh": "每张图",
         "unitEn": "/ image",
         "t2iElo": null,
-        "imgEditElo": 1048.76,
+        "imgEditElo": 1048.43,
         "pricePer1k": 80
       }
     },
@@ -40810,7 +40810,7 @@
       "name": "FLUX.1 Kontext [max]",
       "shortName": "FLUX.1 Kontext [max]",
       "mediaKind": "image",
-      "intelligenceIndex": 33.86,
+      "intelligenceIndex": 33.8,
       "cost": 0.08,
       "creator": {
         "name": "Black Forest Labs",
@@ -40819,8 +40819,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 35.32,
-        "imgEdit": 32.39,
+        "t2i": 35.23,
+        "imgEdit": 32.38,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -40830,8 +40830,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 931.17,
-        "imgEditElo": 929.13,
+        "t2iElo": 930.64,
+        "imgEditElo": 929.09,
         "pricePer1k": 80
       }
     },
@@ -40864,7 +40864,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1216.9,
         "pricePer1mChars": 85,
-        "ttfaMs": 4168,
+        "ttfaMs": 4232,
         "cps": 42.3
       },
       "releaseDate": "2026-08-26"
@@ -40909,7 +40909,7 @@
       "name": "Lucid Origin Ultra",
       "shortName": "Lucid Origin Ultra",
       "mediaKind": "image",
-      "intelligenceIndex": 26.42,
+      "intelligenceIndex": 26.34,
       "cost": 0.08671,
       "creator": {
         "name": "Leonardo.Ai",
@@ -40918,7 +40918,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 26.42,
+        "t2i": 26.34,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -40929,7 +40929,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 876.55,
+        "t2iElo": 876.03,
         "imgEditElo": null,
         "pricePer1k": 86.71
       }
@@ -41006,7 +41006,7 @@
       "name": "Seedream 5.0 Pro",
       "shortName": "Seedream 5.0 Pro",
       "mediaKind": "image",
-      "intelligenceIndex": 68.45,
+      "intelligenceIndex": 68.43,
       "cost": 0.09,
       "creator": {
         "name": "ByteDance Seed",
@@ -41015,8 +41015,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 67.39,
-        "imgEdit": 69.52,
+        "t2i": 67.18,
+        "imgEdit": 69.68,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -41026,8 +41026,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1104.56,
-        "imgEditElo": 1132.44,
+        "t2iElo": 1103.31,
+        "imgEditElo": 1133.41,
         "pricePer1k": 90
       }
     },
@@ -41037,7 +41037,7 @@
       "name": "Krea 3 (Ultra)",
       "shortName": "Krea 3 (Ultra)",
       "mediaKind": "image",
-      "intelligenceIndex": 73.04,
+      "intelligenceIndex": 72.94,
       "cost": 0.1,
       "creator": {
         "name": "Krea",
@@ -41047,7 +41047,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": null,
-        "imgEdit": 73.04,
+        "imgEdit": 72.94,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -41058,7 +41058,7 @@
         "unitZh": "每张图",
         "unitEn": "/ image",
         "t2iElo": null,
-        "imgEditElo": 1154.86,
+        "imgEditElo": 1154.18,
         "pricePer1k": 100
       },
       "releaseDate": "2026-10-15"
@@ -41092,7 +41092,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1194.3,
         "pricePer1mChars": 100,
-        "ttfaMs": 430,
+        "ttfaMs": 429,
         "cps": 59.8
       },
       "releaseDate": "2026-02-02"
@@ -41126,7 +41126,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1173.1,
         "pricePer1mChars": 100,
-        "ttfaMs": 464,
+        "ttfaMs": 467,
         "cps": 103.3
       },
       "releaseDate": "2026-02-14"
@@ -41137,7 +41137,7 @@
       "name": "Luma UNI 1 Max",
       "shortName": "Luma UNI 1 Max",
       "mediaKind": "image",
-      "intelligenceIndex": 56.42,
+      "intelligenceIndex": 56.39,
       "cost": 0.1,
       "creator": {
         "name": "Luma Labs",
@@ -41146,8 +41146,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 53.03,
-        "imgEdit": 59.81,
+        "t2i": 53,
+        "imgEdit": 59.79,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -41157,8 +41157,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1025.81,
-        "imgEditElo": 1076.78,
+        "t2iElo": 1025.63,
+        "imgEditElo": 1076.68,
         "pricePer1k": 100
       }
     },
@@ -41168,7 +41168,7 @@
       "name": "Ideogram 4.5 (High)",
       "shortName": "Ideogram 4.5 (High)",
       "mediaKind": "image",
-      "intelligenceIndex": 54.39,
+      "intelligenceIndex": 54.28,
       "cost": 0.1,
       "creator": {
         "name": "Ideogram",
@@ -41177,8 +41177,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 51.42,
-        "imgEdit": 57.35,
+        "t2i": 51.29,
+        "imgEdit": 57.27,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -41188,8 +41188,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1017.38,
-        "imgEditElo": 1063.56,
+        "t2iElo": 1016.7,
+        "imgEditElo": 1063.17,
         "pricePer1k": 100
       }
     },
@@ -41222,7 +41222,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1124.5,
         "pricePer1mChars": 100,
-        "ttfaMs": 471,
+        "ttfaMs": 472,
         "cps": 107.2
       },
       "releaseDate": "2025-10-30"
@@ -41233,7 +41233,7 @@
       "name": "Ideogram 4.6 (High)",
       "shortName": "Ideogram 4.6 (High)",
       "mediaKind": "image",
-      "intelligenceIndex": 53.64,
+      "intelligenceIndex": 53.5,
       "cost": 0.1,
       "creator": {
         "name": "Ideogram",
@@ -41242,8 +41242,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 45.28,
-        "imgEdit": 61.99,
+        "t2i": 45.18,
+        "imgEdit": 61.83,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -41253,8 +41253,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 985.34,
-        "imgEditElo": 1088.72,
+        "t2iElo": 984.8,
+        "imgEditElo": 1087.84,
         "pricePer1k": 100
       }
     },
@@ -41264,7 +41264,7 @@
       "name": "Ideogram 4.0 (Quality)",
       "shortName": "Ideogram 4.0 (Quality)",
       "mediaKind": "image",
-      "intelligenceIndex": 53.13,
+      "intelligenceIndex": 53.05,
       "cost": 0.1,
       "creator": {
         "name": "Ideogram",
@@ -41273,7 +41273,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 53.13,
+        "t2i": 53.05,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -41284,7 +41284,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1026.35,
+        "t2iElo": 1025.94,
         "imgEditElo": null,
         "pricePer1k": 100
       }
@@ -41318,7 +41318,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1105.2,
         "pricePer1mChars": 100,
-        "ttfaMs": 451,
+        "ttfaMs": 449,
         "cps": 101.6
       },
       "releaseDate": "2025-03-31"
@@ -41352,7 +41352,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1091.6,
         "pricePer1mChars": 100,
-        "ttfaMs": 720,
+        "ttfaMs": 625,
         "cps": 263
       },
       "releaseDate": "2023-08-22"
@@ -41420,7 +41420,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 987.7,
         "pricePer1mChars": 100,
-        "ttfaMs": 135,
+        "ttfaMs": 136,
         "cps": 64.2
       },
       "releaseDate": "2024-07-23"
@@ -41431,7 +41431,7 @@
       "name": "Bagel",
       "shortName": "Bagel",
       "mediaKind": "image",
-      "intelligenceIndex": 8.76,
+      "intelligenceIndex": 8.65,
       "cost": 0.1,
       "creator": {
         "name": "ByteDance",
@@ -41441,7 +41441,7 @@
       "isOpenWeights": false,
       "mediaScores": {
         "t2i": 4.22,
-        "imgEdit": 13.3,
+        "imgEdit": 13.09,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -41451,8 +41451,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 603.27,
-        "imgEditElo": 780.72,
+        "t2iElo": 603.17,
+        "imgEditElo": 778.36,
         "pricePer1k": 100
       }
     },
@@ -41462,7 +41462,7 @@
       "name": "MAI-Image-2.5-Pro",
       "shortName": "MAI-Image-2.5-Pro",
       "mediaKind": "image",
-      "intelligenceIndex": 68.78,
+      "intelligenceIndex": 68.75,
       "cost": 0.108544,
       "creator": {
         "name": "Microsoft AI",
@@ -41471,8 +41471,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 69.36,
-        "imgEdit": 68.21,
+        "t2i": 69.31,
+        "imgEdit": 68.18,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -41482,8 +41482,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1116.43,
-        "imgEditElo": 1124.47,
+        "t2iElo": 1116.11,
+        "imgEditElo": 1124.28,
         "pricePer1k": 108.54
       }
     },
@@ -41527,7 +41527,7 @@
       "name": "LongCat Image",
       "shortName": "LongCat Image",
       "mediaKind": "image",
-      "intelligenceIndex": 25.61,
+      "intelligenceIndex": 25.71,
       "cost": 0.13,
       "creator": {
         "name": "Meituan",
@@ -41536,8 +41536,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 24.21,
-        "imgEdit": 27,
+        "t2i": 24.15,
+        "imgEdit": 27.27,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -41547,8 +41547,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 861.35,
-        "imgEditElo": 895.42,
+        "t2iElo": 860.89,
+        "imgEditElo": 897.17,
         "pricePer1k": 130
       }
     },
@@ -41558,7 +41558,7 @@
       "name": "GPT Image 1.5 (high)",
       "shortName": "GPT Image 1.5 (high)",
       "mediaKind": "image",
-      "intelligenceIndex": 69.06,
+      "intelligenceIndex": 68.99,
       "cost": 0.133,
       "creator": {
         "name": "OpenAI",
@@ -41567,7 +41567,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 70.92,
+        "t2i": 70.78,
         "imgEdit": 67.2,
         "t2v": null,
         "i2v": null,
@@ -41578,7 +41578,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1126.15,
+        "t2iElo": 1125.29,
         "imgEditElo": 1118.44,
         "pricePer1k": 133
       }
@@ -41589,7 +41589,7 @@
       "name": "Nano Banana Pro (Gemini 3 Pro Image)",
       "shortName": "Nano Banana Pro",
       "mediaKind": "image",
-      "intelligenceIndex": 67.82,
+      "intelligenceIndex": 67.75,
       "cost": 0.134,
       "creator": {
         "name": "Google",
@@ -41598,8 +41598,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 69.51,
-        "imgEdit": 66.13,
+        "t2i": 69.42,
+        "imgEdit": 66.08,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -41609,8 +41609,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1117.35,
-        "imgEditElo": 1112.19,
+        "t2iElo": 1116.84,
+        "imgEditElo": 1111.87,
         "pricePer1k": 134
       }
     },
@@ -41620,7 +41620,7 @@
       "name": "OmniGen V2",
       "shortName": "OmniGen V2",
       "mediaKind": "image",
-      "intelligenceIndex": 10.79,
+      "intelligenceIndex": 10.91,
       "cost": 0.15,
       "creator": {
         "name": "VectorSpaceLab",
@@ -41629,8 +41629,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 8.51,
-        "imgEdit": 13.08,
+        "t2i": 8.58,
+        "imgEdit": 13.23,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -41640,8 +41640,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 700.54,
-        "imgEditElo": 778.26,
+        "t2iElo": 701.79,
+        "imgEditElo": 780,
         "pricePer1k": 150
       }
     },
@@ -41674,7 +41674,7 @@
         "unitEn": "/ 1k chars",
         "ttsElo": 1075,
         "pricePer1mChars": 160,
-        "ttfaMs": 1558,
+        "ttfaMs": 1559,
         "cps": 283.4
       },
       "releaseDate": "2023-02-08"
@@ -41719,7 +41719,7 @@
       "name": "GPT Image 1 (high)",
       "shortName": "GPT Image 1 (high)",
       "mediaKind": "image",
-      "intelligenceIndex": 48.12,
+      "intelligenceIndex": 47.97,
       "cost": 0.167,
       "creator": {
         "name": "OpenAI",
@@ -41728,8 +41728,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 51.58,
-        "imgEdit": 44.66,
+        "t2i": 51.64,
+        "imgEdit": 44.29,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -41739,8 +41739,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1018.23,
-        "imgEditElo": 997.08,
+        "t2iElo": 1018.55,
+        "imgEditElo": 995.12,
         "pricePer1k": 167
       }
     },
@@ -41915,7 +41915,7 @@
       "name": "Recraft V4.1 Utility Pro",
       "shortName": "Recraft V4.1 Utility Pro",
       "mediaKind": "image",
-      "intelligenceIndex": 52.16,
+      "intelligenceIndex": 52.04,
       "cost": 0.21,
       "creator": {
         "name": "Recraft",
@@ -41924,7 +41924,7 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 52.16,
+        "t2i": 52.04,
         "imgEdit": null,
         "t2v": null,
         "i2v": null,
@@ -41935,7 +41935,7 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1021.28,
+        "t2iElo": 1020.63,
         "imgEditElo": null,
         "pricePer1k": 210
       }
@@ -41946,7 +41946,7 @@
       "name": "GPT Image 2.6 Sunburst (max)",
       "shortName": "GPT Image 2.6 Sunburst (max)",
       "mediaKind": "image",
-      "intelligenceIndex": 84.15,
+      "intelligenceIndex": 84.2,
       "cost": 0.21072,
       "creator": {
         "name": "OpenAI",
@@ -41955,8 +41955,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 87.58,
-        "imgEdit": 80.72,
+        "t2i": 87.69,
+        "imgEdit": 80.71,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -41966,8 +41966,40 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1264.48,
-        "imgEditElo": 1211.6,
+        "t2iElo": 1265.79,
+        "imgEditElo": 1211.49,
+        "pricePer1k": 210.72
+      },
+      "releaseDate": "2026-11-04"
+    },
+    {
+      "id": "img:ac1b5565-d063-480e-a593-ce244705cd43",
+      "slug": "gpt-image-2-6-flare",
+      "name": "GPT Image 2.6 Flare (max)",
+      "shortName": "GPT Image 2.6 Flare (max)",
+      "mediaKind": "image",
+      "intelligenceIndex": 81.98,
+      "cost": 0.21072,
+      "creator": {
+        "name": "OpenAI",
+        "color": "#1f1f1f"
+      },
+      "isReasoning": false,
+      "isOpenWeights": false,
+      "mediaScores": {
+        "t2i": 84.12,
+        "imgEdit": 79.85,
+        "t2v": null,
+        "i2v": null,
+        "vidEdit": null,
+        "tts": null
+      },
+      "mediaRaw": {
+        "kind": "image",
+        "unitZh": "每张图",
+        "unitEn": "/ image",
+        "t2iElo": 1227.18,
+        "imgEditElo": 1204.37,
         "pricePer1k": 210.72
       },
       "releaseDate": "2026-11-04"
@@ -41987,8 +42019,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 84.43,
-        "imgEdit": 79.43,
+        "t2i": 84.37,
+        "imgEdit": 79.48,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -41998,43 +42030,11 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1230.27,
-        "imgEditElo": 1201.05,
+        "t2iElo": 1229.64,
+        "imgEditElo": 1201.39,
         "pricePer1k": 210.72
       },
       "releaseDate": "2026-09-08"
-    },
-    {
-      "id": "img:ac1b5565-d063-480e-a593-ce244705cd43",
-      "slug": "gpt-image-2-6-flare",
-      "name": "GPT Image 2.6 Flare (max)",
-      "shortName": "GPT Image 2.6 Flare (max)",
-      "mediaKind": "image",
-      "intelligenceIndex": 81.93,
-      "cost": 0.21072,
-      "creator": {
-        "name": "OpenAI",
-        "color": "#1f1f1f"
-      },
-      "isReasoning": false,
-      "isOpenWeights": false,
-      "mediaScores": {
-        "t2i": 84.02,
-        "imgEdit": 79.84,
-        "t2v": null,
-        "i2v": null,
-        "vidEdit": null,
-        "tts": null
-      },
-      "mediaRaw": {
-        "kind": "image",
-        "unitZh": "每张图",
-        "unitEn": "/ image",
-        "t2iElo": 1226.27,
-        "imgEditElo": 1204.35,
-        "pricePer1k": 210.72
-      },
-      "releaseDate": "2026-11-04"
     },
     {
       "id": "img:ac3abe51-14ca-4c04-b215-01a85f3a36ac",
@@ -42042,7 +42042,7 @@
       "name": "GPT Image 2.5 Flare (max)",
       "shortName": "GPT Image 2.5 Flare (max)",
       "mediaKind": "image",
-      "intelligenceIndex": 80,
+      "intelligenceIndex": 79.99,
       "cost": 0.21072,
       "creator": {
         "name": "OpenAI",
@@ -42051,8 +42051,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 82.44,
-        "imgEdit": 77.56,
+        "t2i": 82.51,
+        "imgEdit": 77.47,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -42062,8 +42062,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1211.52,
-        "imgEditElo": 1186.57,
+        "t2iElo": 1212.08,
+        "imgEditElo": 1185.93,
         "pricePer1k": 210.72
       },
       "releaseDate": "2026-09-08"
@@ -42074,7 +42074,7 @@
       "name": "GPT Image 2 (high)",
       "shortName": "GPT Image 2 (high)",
       "mediaKind": "image",
-      "intelligenceIndex": 75.75,
+      "intelligenceIndex": 75.81,
       "cost": 0.211,
       "creator": {
         "name": "OpenAI",
@@ -42083,8 +42083,8 @@
       "isReasoning": false,
       "isOpenWeights": false,
       "mediaScores": {
-        "t2i": 80.71,
-        "imgEdit": 70.78,
+        "t2i": 80.8,
+        "imgEdit": 70.82,
         "t2v": null,
         "i2v": null,
         "vidEdit": null,
@@ -42094,8 +42094,8 @@
         "kind": "image",
         "unitZh": "每张图",
         "unitEn": "/ image",
-        "t2iElo": 1196.48,
-        "imgEditElo": 1140.28,
+        "t2iElo": 1197.24,
+        "imgEditElo": 1140.53,
         "pricePer1k": 211
       },
       "releaseDate": "2026-04-21"
